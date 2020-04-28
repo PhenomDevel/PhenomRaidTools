@@ -4,15 +4,27 @@ local AceGUI = LibStub("AceGUI-3.0")
 
 
 -------------------------------------------------------------------------------
+-- Local Helper
+
+local RegisterESCHandler = function()
+	_G["mainFrameName"] = PRT.mainFrame.frame
+    -- Register the global variable `MyGlobalFrameName` as a "special frame"
+    -- so that it is closed when the escape key is pressed.
+    tinsert(UISpecialFrames, "mainFrameName")
+end
+
+
+-------------------------------------------------------------------------------
 -- Public API
 
 PRT.CreateMainFrame = function(profile)
 	PRT.mainFrame = AceGUI:Create("Frame")
 	PRT.mainFrame:SetTitle("Phenom Raid Tools")
+	PRT.mainFrame:SetStatusText("Phenom Raid Tools - Encounter Configuration")
 	PRT.mainFrame:SetLayout("Fill")
 	PRT.mainFrame:SetCallback("OnClose",function(widget) AceGUI:Release(widget) end)
-	PRT.mainFrame:SetWidth(1000)
-	PRT.mainFrame:SetHeight(600)
+	PRT.mainFrame:SetWidth(1400)
+	PRT.mainFrame:SetHeight(800)
 
 	PRT.mainFrameContent = AceGUI:Create("ScrollFrame")
 	PRT.mainFrameContent:SetLayout("Flow")	
@@ -43,6 +55,8 @@ PRT.CreateMainFrame = function(profile)
 	PRT.mainFrameContent:AddChild(debugModeCheckbox)
 	PRT.mainFrameContent:AddChild(encounterHeading)
 	PRT.mainFrameContent:AddChild(PRT.EncounterTabGroup(profile.encounters))
-	
+
+	RegisterESCHandler()
+
 	PRT.mainFrame:AddChild(PRT.mainFrameContent)
 end	

@@ -22,7 +22,7 @@ PRT.EmptyMessage = function()
         message = "TODO",
         duration = 5,
         targets = {
-            "TODO"
+            "ALL"
         },
         delay = 0
     }
@@ -45,7 +45,7 @@ PRT.EmptyTimer = function()
     return {
         startCondition = PRT.EmptyCondition(),
         stopCondition = PRT.EmptyCondition(),
-        name = "TODO",
+        name = "Timer Name",
         timings = {
             PRT.EmptyTiming()
         }
@@ -67,7 +67,7 @@ end
 PRT.EmptyRotation = function()
     return {
         triggerCondition = PRT.EmptyCondition(),
-        name = "TODO",
+        name = "Rotation Name",
         entries = {
             PRT.EmptyRotationEntry()
         },
@@ -83,7 +83,7 @@ end
 
 PRT.EmptyPercentage = function()
     return {
-        name = "TODO",
+        name = "Percentage Name",
         unitID = "player",
         values = {
             {
@@ -102,8 +102,8 @@ end
 
 PRT.EmptyEncounter = function()
     return {
-        id = "TODO",
-        name = "TODO", 
+        id = "Encounter ID",
+        name = "Encounter Name", 
         Timers = {
             PRT.EmptyTimer()
         },

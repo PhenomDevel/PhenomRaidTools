@@ -88,7 +88,7 @@ PRT.MessageWidget = function (message)
 
 	if message then
 		if message.targets then
-			targetsEditBox:SetText(PRT:TargetsToString(message.targets))
+			targetsEditBox:SetText(PRT.TargetsToString(message.targets))
 		end
 		if message.message then
 			messageEditBox:SetText(message.message)
