@@ -24,7 +24,7 @@ PRT.TriggerTabGroupSelected = function(container, encounter, key)
 	container:ReleaseChildren()
 
 	if key == "timers" then
-		local widget = PRT.TimerTabGroup(encounter.Timers)
+		local widget = PRT.Timer.TimerTabGroup(encounter.Timers)
 		container:AddChild(widget)
 	elseif key == "rotations" then
 		local widget = PRT.RotationTabGroup(encounter.Rotations)

@@ -13,6 +13,7 @@ PhenomRaidTools.lua
 Core/Utils.lua
 Core/TriggerHandler.lua
 Core/EncounterSetup.lua
+Core/MessageQueue.lua
 
 UI/AceHelper.lua
 UI/Common.lua

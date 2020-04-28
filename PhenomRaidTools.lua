@@ -159,7 +159,7 @@ function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 
 				-- Process Message Queue after activations
 				if timers or rotations or percentages then
-					--PRT.ProcessMessageQueue()
+					PRT.ProcessMessageQueue()
 				end
 			end
 		end

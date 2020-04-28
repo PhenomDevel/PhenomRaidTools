@@ -3,19 +3,13 @@
 
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
-
-local messageQueue = {}
-
-function PRT:AddMessage()
-
-end
+PRT.MessageQueue = {}
 
 PRT.SendMessageToSlave = function(message)
-    if aura_env.config.testMode then
         C_ChatInfo.SendAddonMessage("PRT_MSG", message, "WHISPER", UnitName("player")) 
-    else
+
         C_ChatInfo.SendAddonMessage("PRT_MSG", message, "RAID") 
-    end
+   
 end
 
 PRT.MessageToReceiverMessage = function(message)
@@ -36,7 +30,8 @@ PRT.ExecuteMessageAction = function(message)
         
         local receiverMessage = PRT.MessageToReceiverMessage(targetMessage)
         
-        if (UnitExists(targetMessage.target) and (UnitInRaid(targetMessage.target) or aura_env.config.testMode)) 
+        if (UnitExists(targetMessage.target) )
+        -- and (UnitInRaid(targetMessage.target))) 
         or targetMessage.target == "ALL" 
         or targetMessage.target == "HEALER" 
         or targetMessage.target == "TANK" 
@@ -45,13 +40,13 @@ PRT.ExecuteMessageAction = function(message)
             and targetMessage.target ~= "HEALER" 
             and targetMessage.target ~= "TANK" 
             and targetMessage.target ~= "DAMAGER" then
-                PRT.Log("Sending new message to `"..WA_ClassColorName(targetMessage.target).."` - "..receiverMessage)
+                PRT:Print("Sending new message to `"..targetMessage.target.."` - "..receiverMessage)
             else
-                PRT.Log("Sending new message to `"..(targetMessage.target or "NO TARGET").."` - "..receiverMessage)
+                PRT:Print("Sending new message to `"..(targetMessage.target or "NO TARGET").."` - "..receiverMessage)
             end 
             PRT.SendMessageToSlave(receiverMessage)
         else
-            PRT.Log("Skipped message due to missing / not existing target")
+            PRT:Print("Skipped message due to missing / not existing target")
         end                     
     end    
 end

@@ -2,11 +2,13 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 local AceGUI = LibStub("AceGUI-3.0")
 
+local Timer = {}
+PRT.Timer = Timer
 
 -------------------------------------------------------------------------------
 -- Timer
 
-PRT.TimingWidget = function(timing)
+Timer.TimingWidget = function(timing)
     PRT:Print("TimingWidget", timing)
     local timingWidget = PRT:SimpleGroup() 
 
@@ -30,7 +32,7 @@ PRT.TimingWidget = function(timing)
 	return timingWidget
 end
 
-PRT.TimerOptionsTabGroupSelected = function(container, timer, key)
+Timer.TimerOptionsTabGroupSelected = function(container, timer, key)
 	container:ReleaseChildren()
 
 	if key == "startCondition" then
@@ -43,7 +45,7 @@ PRT.TimerOptionsTabGroupSelected = function(container, timer, key)
         local timingsHeading = PRT.Heading("Timings")
         local timingsTabs = PRT.TableToTabs(timer.timings, true)
         local timingsTabGroup = PRT.TabGroup(nil, timingsTabs)
-        timingsTabGroup:SetCallback("OnGroupSelected", function(widget, event, key) PRT.TabGroupSelected(widget, timer.timings, key, PRT.TimingWidget, PRT.EmptyTiming, "Delete Timing") end)        
+        timingsTabGroup:SetCallback("OnGroupSelected", function(widget, event, key) PRT.TabGroupSelected(widget, timer.timings, key, Timer.TimingWidget, PRT.EmptyTiming, "Delete Timing") end)        
         timingsTabGroup:SelectTab(1)
         container:AddChild(timingsTabGroup)
 	end
@@ -51,7 +53,7 @@ PRT.TimerOptionsTabGroupSelected = function(container, timer, key)
 	PRT.mainFrameContent:DoLayout()
 end
 
-PRT.TimerWidget = function(timer)
+Timer.TimerWidget = function(timer)
     PRT:Print("TimerWidget", timer)
 
     local timerWidget = PRT:SimpleGroup()
@@ -65,7 +67,7 @@ PRT.TimerWidget = function(timer)
         {value = "timings", text = "Timings"}
 	}
 	local timerOptionsTabGroup = PRT.TabGroup(nil, tabs)
-	timerOptionsTabGroup:SetCallback("OnGroupSelected", function(widget, event, key) PRT.TimerOptionsTabGroupSelected(widget, timer, key) end)
+	timerOptionsTabGroup:SetCallback("OnGroupSelected", function(widget, event, key) Timer.TimerOptionsTabGroupSelected(widget, timer, key) end)
     timerOptionsTabGroup:SelectTab("startCondition")
 
     -- Setup Widget
@@ -76,12 +78,12 @@ PRT.TimerWidget = function(timer)
 	return timerWidget
 end
 
-PRT.TimerTabGroup = function(timers)
+Timer.TimerTabGroup = function(timers)
     PRT:Print("TimerTabGroup", timers)
 	local tabs = PRT.TableToTabs(timers, true)
 	local timersTabGroupWidget = PRT.TabGroup(nil, tabs)
  
-    timersTabGroupWidget:SetCallback("OnGroupSelected", function(widget, event, key) PRT.TabGroupSelected(widget, timers, key, PRT.TimerWidget, PRT.EmptyTimer, "Delete Timer") end)
+    timersTabGroupWidget:SetCallback("OnGroupSelected", function(widget, event, key) PRT.TabGroupSelected(widget, timers, key, Timer.TimerWidget, PRT.EmptyTimer, "Delete Timer") end)
 
     timersTabGroupWidget:SelectTab(nil)
     if timers then

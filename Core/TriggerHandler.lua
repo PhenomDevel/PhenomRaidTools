@@ -126,6 +126,7 @@ PRT.CheckTimerTimings = function(timers)
                     local messagesByTime = timingByTime.messages
                     if messagesByTime ~= nil and messagesByTime.executed ~= true then
                         -- PRT.ExecuteMessages(messagesByTime)   
+                        PRT.AddMessagesToQueue(messagesByTime)
                         PRT:Print("CheckTimerTimings - Execute Messages")                     
                         messagesByTime.executed = true
                     end

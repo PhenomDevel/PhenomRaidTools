@@ -163,9 +163,7 @@ PRT.EmptyTiming = function()
     return {
         seconds = 1,
         messages = {
-            {
-                PRT.EmptyMessage()
-            }
+            PRT.EmptyMessage()
         }
     }
 end
