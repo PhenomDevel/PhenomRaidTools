@@ -28,7 +28,7 @@ PRT.CheckTimerStartConditions = function(timers, event, combatEvent, spellID, ta
         for i, timer in ipairs(timers) do                     
             if timer.startCondition ~= nil and timer.started ~= true then     
                 if PRT.CheckCondition(timer.startCondition, event, combatEvent, spellID, targetGUID, sourceGUID) then
-                    PRT:Print("[Timer]", "Started timer `"..(timer.name or "NO NAME").."` at "..GetTime())
+                    PRT:DebugTimer("Started timer `"..(timer.name or "NO NAME").."` at "..GetTime())
                     timer.started = true
                     timer.startedAt = GetTime()
                 end
@@ -42,7 +42,7 @@ PRT.CheckTimerStopConditions = function(timers, event, combatEvent, spellID, tar
         for i, timer in ipairs(timers) do
             if timer.stopCondition ~= nil and timer.started == true then
                 if PRT.CheckCondition(timer.stopCondition, event, combatEvent, spellID, sourceGUID, targetGUID) then
-                    PRT:Print("[Timer]", "Stopped timer `"..(timer.name or "NO NAME").."` at "..GetTime())
+                    PRT:DebugTimer("Stopped timer `"..(timer.name or "NO NAME").."` at "..GetTime())
                     timer.started = false
                     
                     for i, timing in pairs(timer.timings) do
@@ -80,9 +80,8 @@ PRT.CheckTimerTimings = function(timers)
                 if timingByTime then
                     local messagesByTime = timingByTime.messages
                     if messagesByTime ~= nil and messagesByTime.executed ~= true then
-                        -- PRT.ExecuteMessages(messagesByTime)   
                         PRT.AddMessagesToQueue(messagesByTime)
-                        PRT:Print("CheckTimerTimings - Execute Messages")                     
+                        PRT:DebugTimer("Adding", table.getn(messagesByTime), "messages to message queue")                  
                         messagesByTime.executed = true
                     end
                 end
@@ -105,72 +104,76 @@ PRT.GetRotationCounter = function(rotation)
     end
 end
 
-PRT.GetSpellRotationMessages = function(spellRotation)
-    local spellRotationCounter = PRT.GetSpellRotationCounter(spellRotation)
-    
-    if spellRotation ~= nil then
-        if spellRotation.rotation ~= nil then
-            local messagesByCounter = spellRotation.rotation[spellRotationCounter]         
-            
-            if messagesByCounter ~= nil then
-                return messagesByCounter
+PRT.GetRotationMessages = function(rotation)
+    local rotationCounter = PRT.GetRotationCounter(rotation)
+    if rotation ~= nil then
+        if rotation.entries ~= nil then
+            local messagesByCounter = rotation.entries[rotationCounter]         
+
+            if messagesByCounter.messages ~= nil then
+                return messagesByCounter.messages
             end
         end
     end
 end
 
-PRT.IncrementSpellRotationCounter = function(spellRotation)
-    local rotationCurrentCount = PRT.GetSpellRotationCounter(spellRotation)
+PRT.IncrementRotationCounter = function(rotation)
+    local rotationCurrentCount = PRT.GetRotationCounter(rotation)
     local newCounterValue = rotationCurrentCount + 1
     
-    PRT.Log(PRT.Highlight("[SpellRotation]", PRT.options.colors.spellRotation), "Increment spell rotation ("..(spellRotation.name or "")..")".."counter to `"..newCounterValue.."`")
-    spellRotation.counter = newCounterValue
+    --PRT.Log(PRT.Highlight("[SpellRotation]", PRT.options.colors.spellRotation), "Increment spell rotation ("..(spellRotation.name or "")..")".."counter to `"..newCounterValue.."`")
+    rotation.counter = newCounterValue
 end 
 
-PRT.UpdateSpellRotationCounter = function(spellRotation)
-    if spellRotation ~= nil then
-        if spellRotation.rotation ~= nil then
-            local rotationCurrentCount = PRT.GetSpellRotationCounter(spellRotation)
-            local rotationMaxCount = table.getn(spellRotation.rotation)
-            
+PRT.UpdateRotationCounter = function(rotation)
+    if rotation ~= nil then
+        if rotation.entries ~= nil then
+            local rotationCurrentCount = PRT.GetRotationCounter(rotation)
+            local rotationMaxCount = table.getn(rotation.entries)
             if rotationCurrentCount >= rotationMaxCount then
-                if spellRotation.shouldRestart == true then
-                    PRT.Log(PRT.Highlight("[SpellRotation]", PRT.options.colors.spellRotation), "Resetting spell rotation ("..(spellRotation.name or "")..")".."counter to 1")
-                    spellRotation.counter = 1
-                else
-                    PRT.IncrementSpellRotationCounter(spellRotation)
+                if rotation.shouldRestart == true then
+                    PRT:DebugRotation("Resetting rotation counter to 1")
+                    rotation.counter = 1
+                else                   
+                    PRT.IncrementRotationCounter(rotation)
+                    PRT:DebugRotation("Incrementing rotation counter to", rotation.counter)
                 end
-            else
-                PRT.IncrementSpellRotationCounter(spellRotation)
+            else                
+                PRT.IncrementRotationCounter(rotation)
+                PRT:DebugRotation("Incrementing rotation counter to", rotation.counter)
             end
         end
     end
 end
 
-PRT.CheckStopIgnore = function(spellRotation)
-    if spellRotation.ignoreAfterActivation and spellRotation.ignored == true then
-        if ((spellRotation.lastActivation or 0) + (spellRotation.ignoreDuration or 5)) < GetTime() then
-            spellRotation.ignored = false
-            PRT.Log(PRT.Highlight("[SpellRotation]", PRT.options.colors.spellRotation), "Stopped ignoring spell rotation")
+PRT.CheckStopIgnoreRotationCondition = function(rotation)
+    if rotation.ignoreAfterActivation and rotation.ignored == true then
+        if ((rotation.lastActivation or 0) + (rotation.ignoreDuration or 5)) < GetTime() then
+            rotation.ignored = false
+            PRT:DebugRotation("Stopped ignoring rotation", rotation.name)
         end 
-    end  
-end 
+    end 
+end
 
-PRT.CheckSpellRotationTriggerCondition = function(spellRotations, event, combatEvent, spellID, targetGUID, sourceGUID)
-    if spellRotations ~= nil then
-        for i, spellRotation in ipairs(spellRotations) do
-            if spellRotation.triggerCondition ~= nil then
-                PRT.CheckStopIgnore(spellRotation)
-                if spellRotation.ignored ~= true then
-                    if PRT.CheckCondition(spellRotation.triggerCondition, event, combatEvent, spellID, targetGUID, sourceGUID) then
-                        local messages = PRT.GetSpellRotationMessages(spellRotation)
-                        
+PRT.CheckRotationTriggerCondition = function(rotations, event, combatEvent, spellID, targetGUID, sourceGUID)  
+    if rotations ~= nil then
+        for i, rotation in ipairs(rotations) do
+            if rotation.triggerCondition ~= nil then
+                PRT.CheckStopIgnoreRotationCondition(rotation)
+                
+                if rotation.ignored ~= true then
+                    if PRT.CheckCondition(rotation.triggerCondition, event, combatEvent, spellID, targetGUID, sourceGUID) then                        
+                        local messages = PRT.GetRotationMessages(rotation)
                         PRT.AddMessagesToQueue(messages)
-                        PRT.UpdateSpellRotationCounter(spellRotation)
-                        spellRotation.lastActivation = GetTime()
-                        if spellRotation.ignoreAfterActivation == true then
-                            spellRotation.ignored = true
-                            PRT.Log(PRT.Highlight("[SpellRotation]", PRT.options.colors.spellRotation), "Started ignoring spell rotation")
+
+                        PRT:DebugRotation("Rotation trigger condition met")
+                        PRT:DebugRotation("Adding", table.getn(messages), "messages to message queue")
+
+                        PRT.UpdateRotationCounter(rotation)
+                        rotation.lastActivation = GetTime()
+                        if rotation.ignoreAfterActivation == true then
+                            rotation.ignored = true
+                            PRT:DebugRotation("Started ignoring rotation", rotation.name, "for", rotation.ignoreDuration)
                         end 
                     end
                 end     

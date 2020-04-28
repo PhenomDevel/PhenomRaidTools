@@ -9,7 +9,6 @@ PRT.Timer = Timer
 -- Timer
 
 Timer.TimingWidget = function(timing)
-    PRT:Print("TimingWidget", timing)
     local timingWidget = PRT:SimpleGroup() 
 
     -- Seconds
@@ -54,8 +53,6 @@ Timer.TimerOptionsTabGroupSelected = function(container, timer, key)
 end
 
 Timer.TimerWidget = function(timer)
-    PRT:Print("TimerWidget", timer)
-
     local timerWidget = PRT:SimpleGroup()
 
     local nameEditBox = PRT.EditBox("Name", timer.name)
@@ -79,7 +76,6 @@ Timer.TimerWidget = function(timer)
 end
 
 Timer.TimerTabGroup = function(timers)
-    PRT:Print("TimerTabGroup", timers)
 	local tabs = PRT.TableToTabs(timers, true)
 	local timersTabGroupWidget = PRT.TabGroup(nil, tabs)
  

@@ -83,12 +83,12 @@ function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 
 					-- Checking Rotation activation
 					if rotations then
-						--PRT.CheckSpellRotationTriggerCondition(spellRotations, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
+						PRT.CheckRotationTriggerCondition(rotations, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
 					end
 
 					-- Checking Percentage activation
 					if percentages then
-						--PRT.CheckUnitHealthTrackers(unitHealthTrackers)
+						--PRT.CheckUnitHealthTrackers(percentages)
 					end
 
 					-- Process Message Queue after activations

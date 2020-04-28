@@ -1,15 +1,10 @@
--- Author      : Kevin
--- Create Date : 4/25/2020 8:16:33 AM
-
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 PRT.MessageQueue = {}
 
 PRT.SendMessageToSlave = function(message)
-        C_ChatInfo.SendAddonMessage("PRT_MSG", message, "WHISPER", UnitName("player")) 
-
-        C_ChatInfo.SendAddonMessage("PRT_MSG", message, "RAID") 
-   
+    C_ChatInfo.SendAddonMessage("PRT_MSG", message, "WHISPER", UnitName("player")) 
+    C_ChatInfo.SendAddonMessage("PRT_MSG", message, "RAID")    
 end
 
 PRT.MessageToReceiverMessage = function(message)
@@ -73,6 +68,7 @@ PRT.AddMessageToQueue = function(message)
 end
 
 PRT.AddMessagesToQueue = function(messages)
+    PRT:PrintTable("", messages)
     if messages ~= nil then
         for i, message in ipairs(messages) do
             PRT.AddMessageToQueue(message)

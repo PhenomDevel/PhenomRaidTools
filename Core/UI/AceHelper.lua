@@ -100,6 +100,7 @@ PRT.TabGroup = function(title, tabs)
 	local widget = AceGUI:Create("EditBox")
 	widget:SetLabel(label)
 	widget:SetText(value)
+	widget:SetWidth(150)
  
 	return widget
  end

@@ -15,19 +15,6 @@ end
 
 
 -------------------------------------------------------------------------------
--- Timing
-
-PRT.EmptyTiming = function()
-    return {
-        seconds = 1,
-        messages = {
-            PRT.EmptyMessage()
-        }
-    }
-end
-
-
--------------------------------------------------------------------------------
 -- Message
 
 PRT.EmptyMessage = function()
@@ -45,6 +32,15 @@ end
 -------------------------------------------------------------------------------
 -- Timer
 
+PRT.EmptyTiming = function()
+    return {
+        seconds = 1,
+        messages = {
+            PRT.EmptyMessage()
+        }
+    }
+end
+
 PRT.EmptyTimer = function()
     return {
         startCondition = PRT.EmptyCondition(),
@@ -60,12 +56,20 @@ end
 -------------------------------------------------------------------------------
 -- Rotation
 
+PRT.EmptyRotationEntry = function()
+    return {
+        messages = {
+            PRT.EmptyMessage()
+        }
+    }
+end
+
 PRT.EmptyRotation = function()
     return {
         triggerCondition = PRT.EmptyCondition(),
         name = "TODO",
-        rotation = {
-
+        entries = {
+            PRT.EmptyRotationEntry()
         },
         shouldRestart = true,
         ignoreAfterActivation = false,

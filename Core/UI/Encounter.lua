@@ -38,7 +38,6 @@ PRT.TriggerTabGroupSelected = function(container, encounter, key)
 end
 
 PRT.EncounterWidget = function(encounter)
-	PRT:Print("EncounterWidget", encounter)
 	local encounterWidget = PRT:SimpleGroup()
 	encounterWidget:SetLayout("Flow")
 
@@ -69,7 +68,6 @@ PRT.EncounterWidget = function(encounter)
 end
 
 function PRT:EncounterTabGroup(encounters)
-	PRT:Print("EncounterTabGroup", encounters)
 	local tabs = PRT.TableToTabs(encounters, true)
 	local encountersTabGroupWidget = PRT.TabGroup(nil, tabs)
  

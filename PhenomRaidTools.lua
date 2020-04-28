@@ -20,6 +20,13 @@ local defaults = {
 		},
 		currentEncounter = {
 			inFight = false
+		},
+		colors = {
+			general = "FFFFFFAA",
+			timers = "FFFF8000",
+			rotations = "FFA335EE",
+			percentages = "FF0070DD",
+
 		}
 	}
 }
@@ -73,15 +80,16 @@ function PRT:CreateMainFrame()
 
 	-- testmode
 	local testModeCheckbox = PRT.CheckBox("Test mode?", self.db.profile.testMode)
-	testModeCheckbox:SetCallback("OnValueChanged", function(widget) self.db.profile.testMode = widget:GetValue() end)
+	testModeCheckbox:SetCallback("OnValueChanged", function(widget) self.db.profile.testMode = widget:GetValue() end)	
 
 	local testEncounterIDEditBox = PRT.EditBox("EditBox", self.db.profile.testEncounterID)	
 	testEncounterIDEditBox:SetLabel("Test Encounter ID")
 	testEncounterIDEditBox:SetCallback("OnTextChanged", function(widget) self.db.profile.testEncounterID = tonumber(widget:GetText()) end)
-
+	
 	-- debug?
 	local debugModeCheckbox = PRT.CheckBox("Debug mode?", self.db.profile.debugMode)
 	debugModeCheckbox:SetCallback("OnValueChanged", function(widget) self.db.profile.debugMode = widget:GetValue() end)
+	debugModeCheckbox:SetFullWidth(true)
 
 	local encounterHeading = PRT.Heading("Encounters")
 
@@ -98,7 +106,7 @@ end
 	
 function PRT:OpenPRT(input)
 	if UnitAffectingCombat("player") then
-		print("Can't open during combat")
+		PRT:Debug("Can't open during combat")
 	else
 		PRT:Open()	
 	end

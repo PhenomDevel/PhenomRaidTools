@@ -64,7 +64,6 @@ PRT.TableToTabs = function(t, withNewTab, newTabText)
 		end
 	end
     if withNewTab then
-        print(newTabText)
 		table.insert(tabs, {value = "new", text = (newTabText or "+")})
 	end
  
@@ -99,6 +98,24 @@ end
 
 function PRT:Debug(...)
     if self.db.profile.debugMode then
-        PRT:Print(...)
+        PRT:Print("|c"..self.db.profile.colors.general, ..., "|r")
+    end
+end
+
+function PRT:DebugTimer(...)
+    if self.db.profile.debugMode then
+        PRT:Print("|c"..self.db.profile.colors.timers, "[Timer] - ", ..., "|r")
+    end
+end
+
+function PRT:DebugRotation(...)
+    if self.db.profile.debugMode then
+        PRT:Print("|c"..self.db.profile.colors.rotations, "[Rotation] - ", ..., "|r")
+    end
+end
+
+function PRT:DebugPercentage(...)
+    if self.db.profile.debugMode then
+        PRT:Print("|c"..self.db.profile.colors.percentages, "[Percentage] - ", ..., "|r")
     end
 end

@@ -19,7 +19,7 @@ PRT.ConditionWidget = function(condition)
 	local targetEditBox = AceGUI:Create("EditBox")
 	targetEditBox:SetLabel("Target")
 	targetEditBox:SetCallback("OnTextChanged", function(widget) condition.target = widget:GetText() end)
-	
+
 	local sourceEditBox = AceGUI:Create("EditBox")
 	sourceEditBox:SetLabel("Source")	
 	sourceEditBox:SetCallback("OnTextChanged", function(widget) condition.source = widget:GetText() end)
@@ -50,7 +50,7 @@ PRT.ConditionWidget = function(condition)
 		end
 	end	
 
-	conditionGroupWidget:AddChild(eventEditBox)
+	conditionGroupWidget:AddChild(eventEditBox)	
 	conditionGroupWidget:AddChild(spellIDEditBox)
 	conditionGroupWidget:AddChild(targetEditBox)
 	conditionGroupWidget:AddChild(sourceEditBox)
@@ -65,6 +65,9 @@ PRT.MessageWidget = function (message)
 	local targetsEditBox = AceGUI:Create("EditBox")
 	targetsEditBox:SetLabel("Targets")   
 	targetsEditBox:SetCallback("OnTextChanged", function(widget) message.targets = PRT.StringToTargets(widget:GetText()) end) 
+
+	local targetsLabel = PRT.Label("Use commas to separate targets")
+	targetsLabel:SetFullWidth(true)
 
 	local messageEditBox = AceGUI:Create("EditBox")	
     messageEditBox:SetLabel("Message")
@@ -94,6 +97,7 @@ PRT.MessageWidget = function (message)
 	end
 
 	messageWidget:AddChild(targetsEditBox)
+	messageWidget:AddChild(targetsLabel)
 	messageWidget:AddChild(messageEditBox)
 	messageWidget:AddChild(delayEditBox)
 	messageWidget:AddChild(durationEditBox)
