@@ -77,8 +77,25 @@ PRT.EmptyRotation = function()
     }
 end
 
+
 -------------------------------------------------------------------------------
 -- Percentage
+
+PRT.EmptyPercentage = function()
+    return {
+        name = "TODO",
+        unitID = "player",
+        values = {
+            {
+                value = 50,
+                messages = {
+                    PRT.EmptyMessage()
+                }
+            }
+        }
+    }
+end
+
 
 -------------------------------------------------------------------------------
 -- Encounter

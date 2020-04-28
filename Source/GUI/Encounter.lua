@@ -2,11 +2,13 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 local AceGUI = LibStub("AceGUI-3.0")
 
+local Encounter = {}
+
 
 -------------------------------------------------------------------------------
--- Encounter
+-- Local Helper
 
-PRT.EncounterTabs = function(encounters)
+Encounter.EncounterTabs = function(encounters)
 	local tabs = {}
 	
 	if encounters then
@@ -20,25 +22,24 @@ PRT.EncounterTabs = function(encounters)
 	return tabs
 end
 
-PRT.TriggerTabGroupSelected = function(container, encounter, key)
+Encounter.TriggerTabGroupSelected = function(container, encounter, key)
 	container:ReleaseChildren()
+	local widget = nil
 
 	if key == "timers" then
-		local widget = PRT.Timer.TimerTabGroup(encounter.Timers)
-		container:AddChild(widget)
+		widget = PRT.TimerTabGroup(encounter.Timers)
 	elseif key == "rotations" then
-		local widget = PRT.RotationTabGroup(encounter.Rotations)
-		container:AddChild(widget)		
+		widget = PRT.RotationTabGroup(encounter.Rotations)
 	elseif key == "percentages" then
-		local widget = PRT.PercentageTabGroup(encounter.Percentages)
-		container:AddChild(widget)	
+		widget = PRT.PercentageTabGroup(encounter.Percentages)		
 	end
 
+	container:AddChild(widget)	
 	PRT.mainFrameContent:DoLayout()
 end
 
-PRT.EncounterWidget = function(encounter)
-	local encounterWidget = PRT:SimpleGroup()
+Encounter.EncounterWidget = function(encounter)
+	local encounterWidget = PRT.SimpleGroup()
 	encounterWidget:SetLayout("Flow")
 
 	local idEditBox = PRT.EditBox("ID", encounter.id)	
@@ -53,7 +54,7 @@ PRT.EncounterWidget = function(encounter)
 		{value = "percentages", text = "Unit HP Values"}
 	}
 	local triggerTabGroup = PRT.TabGroup(nil, tabs)
-	triggerTabGroup:SetCallback("OnGroupSelected", function(widget, event, key) PRT.TriggerTabGroupSelected(widget, encounter, key) end)	
+	triggerTabGroup:SetCallback("OnGroupSelected", function(widget, event, key) Encounter.TriggerTabGroupSelected(widget, encounter, key) end)	
 
 	triggerTabGroup:SelectTab("timers")
 
@@ -67,11 +68,16 @@ PRT.EncounterWidget = function(encounter)
 	return encounterWidget
 end
 
-function PRT:EncounterTabGroup(encounters)
+
+-------------------------------------------------------------------------------
+-- Public API
+
+PRT.EncounterTabGroup = function(encounters)
+	PRT:PrintTable("", encounters)
 	local tabs = PRT.TableToTabs(encounters, true)
 	local encountersTabGroupWidget = PRT.TabGroup(nil, tabs)
  
-	encountersTabGroupWidget:SetCallback("OnGroupSelected", function(widget, event, key) PRT.TabGroupSelected(widget, encounters, key, PRT.EncounterWidget, PRT.EmptyEncounter, "Delete Encounter") end)
+	encountersTabGroupWidget:SetCallback("OnGroupSelected", function(widget, event, key) PRT.TabGroupSelected(widget, encounters, key, Encounter.EncounterWidget, PRT.EmptyEncounter, "Delete Encounter") end)
 
 	if encounters then
 		if table.getn(encounters) > 0 then

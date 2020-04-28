@@ -2,25 +2,28 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 local AceGUI = LibStub("AceGUI-3.0")
 
+
+-------------------------------------------------------------------------------
+-- Public API
+
 PRT.ConditionWidget = function(condition)
-	PRT:Print("ConditionGroupWidget", condition)
 	local conditionGroupWidget = AceGUI:Create("SimpleGroup")
 	conditionGroupWidget:SetLayout("Flow")
 	conditionGroupWidget:SetFullWidth(true)
 
-	local eventEditBox = AceGUI:Create("EditBox")
+	local eventEditBox = PRT.EditBox("EditBox")
 	eventEditBox:SetLabel("Event")
 	eventEditBox:SetCallback("OnTextChanged", function(widget) condition.event = widget:GetText() end)
 	
-	local spellIDEditBox = AceGUI:Create("EditBox")
+	local spellIDEditBox = PRT.EditBox("EditBox")
 	spellIDEditBox:SetLabel("Spell-ID")	
 	spellIDEditBox:SetCallback("OnTextChanged", function(widget) condition.spellID = tonumber(widget:GetText()) end)
 
-	local targetEditBox = AceGUI:Create("EditBox")
+	local targetEditBox = PRT.EditBox("EditBox")
 	targetEditBox:SetLabel("Target")
 	targetEditBox:SetCallback("OnTextChanged", function(widget) condition.target = widget:GetText() end)
 
-	local sourceEditBox = AceGUI:Create("EditBox")
+	local sourceEditBox = PRT.EditBox("EditBox")
 	sourceEditBox:SetLabel("Source")	
 	sourceEditBox:SetCallback("OnTextChanged", function(widget) condition.source = widget:GetText() end)
 
@@ -59,25 +62,27 @@ PRT.ConditionWidget = function(condition)
 end
 
 PRT.MessageWidget = function (message)
-	PRT:Print("MessageWidget", message)
 	local messageWidget = PRT.SimpleGroup()
 
-	local targetsEditBox = AceGUI:Create("EditBox")
+	local targetsEditBox = PRT.EditBox("EditBox", PRT:TargetsToString(message.targets))
 	targetsEditBox:SetLabel("Targets")   
 	targetsEditBox:SetCallback("OnTextChanged", function(widget) message.targets = PRT.StringToTargets(widget:GetText()) end) 
 
 	local targetsLabel = PRT.Label("Use commas to separate targets")
 	targetsLabel:SetFullWidth(true)
 
-	local messageEditBox = AceGUI:Create("EditBox")	
+	local messageEditBox = PRT.EditBox("EditBox")	
     messageEditBox:SetLabel("Message")
     messageEditBox:SetCallback("OnTextChanged", function(widget) message.message = widget:GetText() end)
 
-	local delayEditBox = AceGUI:Create("EditBox")	
+	local messageLabel = PRT.Label("Use `%s` if you want to display the countdown")
+	messageLabel:SetFullWidth(true)
+
+	local delayEditBox = PRT.EditBox("EditBox")	
 	delayEditBox:SetLabel("Delay (s)")
 	delayEditBox:SetCallback("OnTextChanged", function(widget) message.delay = tonumber(widget:GetText()) end)
 
-	local durationEditBox = AceGUI:Create("EditBox")	
+	local durationEditBox = PRT.EditBox("EditBox")	
 	durationEditBox:SetLabel("Duration (s)")
 	durationEditBox:SetCallback("OnTextChanged", function(widget) message.duration = tonumber(widget:GetText()) end)
 
@@ -99,6 +104,7 @@ PRT.MessageWidget = function (message)
 	messageWidget:AddChild(targetsEditBox)
 	messageWidget:AddChild(targetsLabel)
 	messageWidget:AddChild(messageEditBox)
+	messageWidget:AddChild(messageLabel)
 	messageWidget:AddChild(delayEditBox)
 	messageWidget:AddChild(durationEditBox)
 

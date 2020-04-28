@@ -4,7 +4,7 @@ local AceGUI = LibStub("AceGUI-3.0")
 
 
 -------------------------------------------------------------------------------
--- Helper
+-- Public API
 
 PRT.MaximizeWidget = function(widget)
 	widget:SetFullWidth(true)
@@ -66,10 +66,6 @@ PRT.MaximizeWidget = function(widget)
     PRT.mainFrameContent:DoLayout()
 end
 
-
--------------------------------------------------------------------------------
--- Widget Helper
-
 PRT.TabGroup = function(title, tabs)
 	local widget = AceGUI:Create("TabGroup")
     if title then
@@ -100,7 +96,7 @@ PRT.TabGroup = function(title, tabs)
 	local widget = AceGUI:Create("EditBox")
 	widget:SetLabel(label)
 	widget:SetText(value)
-	widget:SetWidth(150)
+	widget:SetWidth(200)
  
 	return widget
  end
@@ -119,4 +115,13 @@ PRT.TabGroup = function(title, tabs)
     widget:SetLayout("Flow")
 
     return widget
+ end
+
+ PRT.SelectFirstTab = function(container, t)
+	container:SelectTab(nil)
+    if t then
+		if table.getn(t) > 0 then
+			container:SelectTab(1)
+		end
+	end
  end

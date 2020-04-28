@@ -2,7 +2,13 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 local AceGUI = LibStub("AceGUI-3.0")
 
-PRT.RotationEntryWidget = function(entry)
+local Rotation = {}
+
+
+-------------------------------------------------------------------------------
+-- Local Helper
+
+Rotation.RotationEntryWidget = function(entry)
     local rotationEntryWidget = PRT:SimpleGroup() 
 
     -- Messages
@@ -10,7 +16,8 @@ PRT.RotationEntryWidget = function(entry)
     local messagesTabs = PRT.TableToTabs(entry.messages, true)
 	local messagesTabGroup = PRT.TabGroup(nil, messagesTabs)
     messagesTabGroup:SetCallback("OnGroupSelected", function(widget, event, key) PRT.TabGroupSelected(widget, entry.messages, key, PRT.MessageWidget, PRT.EmptyMessage, "Delete Message") end)
-    messagesTabGroup:SelectTab(1)
+
+    PRT.SelectFirstTab(messagesTabGroup, entry.messages)    	
 
     rotationEntryWidget:AddChild(messagesHeading)
     rotationEntryWidget:AddChild(messagesTabGroup)
@@ -18,7 +25,7 @@ PRT.RotationEntryWidget = function(entry)
 	return rotationEntryWidget
 end
 
-PRT.RotationWidget = function(rotation)
+Rotation.RotationWidget = function(rotation)
     local rotationWidget = PRT:SimpleGroup()
 
     local nameEditBox = PRT.EditBox("Name", rotation.name)
@@ -29,7 +36,7 @@ PRT.RotationWidget = function(rotation)
     shouldRestartCheckBox:SetCallback("OnValueChanged", function(widget) rotation.shouldRestart = widget:GetValue() end)
     shouldRestartCheckBox:SetFullWidth(true)
     
-    local ignoreAfterActivationCheckBox =  PRT.CheckBox("Ignore after activation?", rotation.ignoreAfterActivation)
+    local ignoreAfterActivationCheckBox = PRT.CheckBox("Ignore after activation?", rotation.ignoreAfterActivation)
     ignoreAfterActivationCheckBox:SetCallback("OnValueChanged", function(widget) rotation.ignoreAfterActivation = widget:GetValue() end)
 
     local ignoreDurationEditBox = PRT.EditBox("Ignore duration", rotation.ignoreDuration)
@@ -42,7 +49,7 @@ PRT.RotationWidget = function(rotation)
 
     local tabs = PRT.TableToTabs(rotation.entries, true)
 	local entriesTabGroupWidget = PRT.TabGroup(nil, tabs)
-    entriesTabGroupWidget:SetCallback("OnGroupSelected", function(widget, event,key) PRT.TabGroupSelected(widget, rotation.entries, key, PRT.RotationEntryWidget, PRT.EmptyRotationEntry, "Delete Rotation Entry") end)    
+    entriesTabGroupWidget:SetCallback("OnGroupSelected", function(widget, event,key) PRT.TabGroupSelected(widget, rotation.entries, key, Rotation.RotationEntryWidget, PRT.EmptyRotationEntry, "Delete Rotation Entry") end)    
 
     entriesTabGroupWidget:SelectTab(nil)
     if rotation.entries then
@@ -64,18 +71,17 @@ PRT.RotationWidget = function(rotation)
 	return rotationWidget
 end
 
+
+-------------------------------------------------------------------------------
+-- Public API
+
 PRT.RotationTabGroup = function(rotations)
 	local tabs = PRT.TableToTabs(rotations, true)
 	local rotationsTabGroupWidget = PRT.TabGroup(nil, tabs)
  
-    rotationsTabGroupWidget:SetCallback("OnGroupSelected", function(widget, event, key) PRT.TabGroupSelected(widget, rotations, key, PRT.RotationWidget, PRT.EmptyRotation, "Delete Rotation") end)
+    rotationsTabGroupWidget:SetCallback("OnGroupSelected", function(widget, event, key) PRT.TabGroupSelected(widget, rotations, key, Rotation.RotationWidget, PRT.EmptyRotation, "Delete Rotation") end)
     
-    rotationsTabGroupWidget:SelectTab(nil)
-    if rotations then
-		if table.getn(rotations) > 0 then
-			rotationsTabGroupWidget:SelectTab(1)
-		end
-	end
+    PRT.SelectFirstTab(rotationsTabGroupWidget, rotations)
 
     return rotationsTabGroupWidget
 end

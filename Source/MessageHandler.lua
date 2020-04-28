@@ -2,12 +2,21 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 PRT.MessageQueue = {}
 
-PRT.SendMessageToSlave = function(message)
-    C_ChatInfo.SendAddonMessage("PRT_MSG", message, "WHISPER", UnitName("player")) 
-    C_ChatInfo.SendAddonMessage("PRT_MSG", message, "RAID")    
+local MessageHandler = {}
+
+-------------------------------------------------------------------------------
+-- Local Helper
+
+MessageHandler.SendMessageToSlave = function(message)
+    if PRT.db.profile.testMode then
+        C_ChatInfo.SendAddonMessage("PRT_MSG", message, "WHISPER", UnitName("player")) 
+        C_ChatInfo.SendAddonMessage("PRT_MSG", message, "RAID") 
+    else
+        C_ChatInfo.SendAddonMessage("PRT_MSG", message, "RAID")    
+    end
 end
 
-PRT.MessageToReceiverMessage = function(message)
+MessageHandler.MessageToReceiverMessage = function(message)
     local target = message.target or ""
     local spellID = message.spellID or ""
     local duration = message.duration or ""
@@ -16,14 +25,14 @@ PRT.MessageToReceiverMessage = function(message)
     return target.."?"..spellID.."#"..duration.."&"..message
 end
 
-PRT.ExecuteMessageAction = function(message)
+MessageHandler.ExecuteMessageAction = function(message)
     for i, target in ipairs(message.targets) do
         local targetMessage = {}
         targetMessage.target = target
         targetMessage.duration = message.duration
         targetMessage.message = message.message
         
-        local receiverMessage = PRT.MessageToReceiverMessage(targetMessage)
+        local receiverMessage = MessageHandler.MessageToReceiverMessage(targetMessage)
         
         if (UnitExists(targetMessage.target) )
         -- and (UnitInRaid(targetMessage.target))) 
@@ -35,27 +44,31 @@ PRT.ExecuteMessageAction = function(message)
             and targetMessage.target ~= "HEALER" 
             and targetMessage.target ~= "TANK" 
             and targetMessage.target ~= "DAMAGER" then
-                PRT:Print("Sending new message to `"..targetMessage.target.."` - "..receiverMessage)
+                PRT.Debug("Sending new message to `"..targetMessage.target.."` - "..receiverMessage)
             else
-                PRT:Print("Sending new message to `"..(targetMessage.target or "NO TARGET").."` - "..receiverMessage)
+                PRT.Debug("Sending new message to `"..(targetMessage.target or "NO TARGET").."` - "..receiverMessage)
             end 
-            PRT.SendMessageToSlave(receiverMessage)
+            MessageHandler.SendMessageToSlave(receiverMessage)
         else
-            PRT:Print("Skipped message due to missing / not existing target")
+            PRT.Debug("Skipped message due to missing / not existing target")
         end                     
     end    
 end
 
+
+-------------------------------------------------------------------------------
+-- Public API
+
 PRT.ExecuteMessage = function(message)
     if message then
-        PRT.ExecuteMessageAction(message)    
+        MessageHandler.ExecuteMessageAction(message)    
     end
 end
 
 PRT.ExecuteMessages = function(messages)  
     if messages then
         for i, message in pairs(messages) do
-            PRT.ExecuteMessage(message)
+            MessageHandler.ExecuteMessage(message)
         end
     end
 end
@@ -68,7 +81,6 @@ PRT.AddMessageToQueue = function(message)
 end
 
 PRT.AddMessagesToQueue = function(messages)
-    PRT:PrintTable("", messages)
     if messages ~= nil then
         for i, message in ipairs(messages) do
             PRT.AddMessageToQueue(message)

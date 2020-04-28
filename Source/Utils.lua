@@ -1,5 +1,9 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
+
+-------------------------------------------------------------------------------
+-- Public API
+
 PRT.StringSplit = function(s, delimiter)
     result = {};
     for match in (s..delimiter):gmatch("(.-)"..delimiter) do
@@ -9,14 +13,14 @@ PRT.StringSplit = function(s, delimiter)
     return result;
 end
 
-function PRT:Texture(spellID, size)
+PRT.Texture = function(spellID, size)
     if spellID ~= nil then
         local _, _, spellTexture = GetSpellInfo(spellID)
         return "|T"..(spellTexture or "Interface\\Icons\\INV_MISC_QUESTIONMARK")..":"..(size or "18").."|t"
     end
 end
 
-function PRT:PrintTable(prefix, t)
+PRT.PrintTable = function(prefix, t)
     if t ~= nil then
         for k, v in pairs(t) do
             if type(v) == "table" then
@@ -35,7 +39,7 @@ function PRT:PrintTable(prefix, t)
     end
 end
 
-function PRT:TargetsToString(targets)
+PRT.TargetsToString = function(targets)
     if targets then
         local s = ""    
         for i, target in ipairs(targets) do
@@ -96,26 +100,26 @@ PRT.CopyTable = function(orig, copies)
     return copy
 end
 
-function PRT:Debug(...)
-    if self.db.profile.debugMode then
-        PRT:Print("|c"..self.db.profile.colors.general, ..., "|r")
+PRT.Debug = function(...)
+    if PRT.db.profile.debugMode then
+        PRT:Print("|c"..PRT.db.profile.colors.general, ...)
     end
 end
 
-function PRT:DebugTimer(...)
-    if self.db.profile.debugMode then
-        PRT:Print("|c"..self.db.profile.colors.timers, "[Timer] - ", ..., "|r")
+PRT.DebugTimer = function(...)
+    if PRT.db.profile.debugMode then
+        PRT:Print("|c"..PRT.db.profile.colors.timers, "[Timer] - ", ...)
     end
 end
 
-function PRT:DebugRotation(...)
-    if self.db.profile.debugMode then
-        PRT:Print("|c"..self.db.profile.colors.rotations, "[Rotation] - ", ..., "|r")
+PRT.DebugRotation = function(...)
+    if PRT.db.profile.debugMode then
+        PRT:Print("|c"..PRT.db.profile.colors.rotations, "[Rotation] - ", ...)
     end
 end
 
-function PRT:DebugPercentage(...)
-    if self.db.profile.debugMode then
-        PRT:Print("|c"..self.db.profile.colors.percentages, "[Percentage] - ", ..., "|r")
+PRT.DebugPercentage = function(...)
+    if PRT.db.profile.debugMode then
+        PRT:Print("|c"..PRT.db.profile.colors.percentages, "[Percentage] - ", ...)
     end
 end

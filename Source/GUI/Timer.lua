@@ -3,7 +3,6 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local AceGUI = LibStub("AceGUI-3.0")
 
 local Timer = {}
-PRT.Timer = Timer
 
 -------------------------------------------------------------------------------
 -- Timer
@@ -20,7 +19,7 @@ Timer.TimingWidget = function(timing)
     local messagesTabs = PRT.TableToTabs(timing.messages, true)
 	local messagesTabGroup = PRT.TabGroup(nil, messagesTabs)
     messagesTabGroup:SetCallback("OnGroupSelected", function(widget, event, key) PRT.TabGroupSelected(widget, timing.messages, key, PRT.MessageWidget, PRT.EmptyMessage, "Delete Message") end)
-    messagesTabGroup:SelectTab(1)
+    PRT.SelectFirstTab(messagesTabGroup, timing.messages)  
 
     -- Setup Widget
     timingWidget:AddChild(secondsEditBox)
@@ -45,7 +44,7 @@ Timer.TimerOptionsTabGroupSelected = function(container, timer, key)
         local timingsTabs = PRT.TableToTabs(timer.timings, true)
         local timingsTabGroup = PRT.TabGroup(nil, timingsTabs)
         timingsTabGroup:SetCallback("OnGroupSelected", function(widget, event, key) PRT.TabGroupSelected(widget, timer.timings, key, Timer.TimingWidget, PRT.EmptyTiming, "Delete Timing") end)        
-        timingsTabGroup:SelectTab(1)
+        PRT.SelectFirstTab(timingsTabGroup, timer.timings)  
         container:AddChild(timingsTabGroup)
 	end
 
@@ -62,10 +61,11 @@ Timer.TimerWidget = function(timer)
 		{value = "startCondition", text = "Start Condition"},
         {value = "stopCondition", text = "Stop Condition"},
         {value = "timings", text = "Timings"}
-	}
+    }
+    
 	local timerOptionsTabGroup = PRT.TabGroup(nil, tabs)
 	timerOptionsTabGroup:SetCallback("OnGroupSelected", function(widget, event, key) Timer.TimerOptionsTabGroupSelected(widget, timer, key) end)
-    timerOptionsTabGroup:SelectTab("startCondition")
+    timerOptionsTabGroup:SelectTab("startCondition")    
 
     -- Setup Widget
     timerWidget:AddChild(nameEditBox)
@@ -75,18 +75,17 @@ Timer.TimerWidget = function(timer)
 	return timerWidget
 end
 
-Timer.TimerTabGroup = function(timers)
+
+-------------------------------------------------------------------------------
+-- Public API
+
+PRT.TimerTabGroup = function(timers)
 	local tabs = PRT.TableToTabs(timers, true)
 	local timersTabGroupWidget = PRT.TabGroup(nil, tabs)
  
     timersTabGroupWidget:SetCallback("OnGroupSelected", function(widget, event, key) PRT.TabGroupSelected(widget, timers, key, Timer.TimerWidget, PRT.EmptyTimer, "Delete Timer") end)
 
-    timersTabGroupWidget:SelectTab(nil)
-    if timers then
-		if table.getn(timers) > 0 then
-			timersTabGroupWidget:SelectTab(1)
-		end
-	end
+    PRT.SelectFirstTab(timersTabGroupWidget, timers)  
 
     return timersTabGroupWidget
 end

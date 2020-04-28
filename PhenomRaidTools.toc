@@ -8,15 +8,17 @@ embeds.xml
 
 PhenomRaidTools.lua
 
-Core/Utils.lua
-Core/TriggerHandler.lua
-Core/EncounterHelper.lua
-Core/MessageHandler.lua
-Core/EventHandler.lua
+Source/Utils.lua
+Source/EncounterHelper.lua
+Source/EventHandler.lua
+Source/MessageHandler.lua
+Source/TriggerHandler.lua
 
-Core/UI/AceHelper.lua
-Core/UI/Common.lua
-Core/UI/Encounter.lua
-Core/UI/Timer.lua
-Core/UI/Rotation.lua
-Core/UI/Percentage.lua
+Source/GUI/AceHelper.lua
+Source/GUI/Common.lua
+Source/GUI/Encounter.lua
+Source/GUI/Timer.lua
+Source/GUI/Rotation.lua
+Source/GUI/Percentage.lua
+Source/GUI/Core.lua
+Source/GUI/Overlay.lua
