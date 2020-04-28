@@ -11,6 +11,11 @@ local testEncounter = {
 
 local defaults = {
 	profile = {
+		testMode = false,
+		testEncounterID = 9999,
+		debugMode = false,
+		showOverlay = true,
+		hideOverlayAfterCombat = false,
 		encounters = {						
 		},
 		currentEncounter = {
@@ -28,8 +33,6 @@ function PRT:OnInitialize()
 end
 
 function PRT:OnEnable()
-	self:RegisterEvent("PLAYER_ENTERING_WORLD")
-	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	self:RegisterEvent("PLAYER_REGEN_DISABLED")
 	self:RegisterEvent("PLAYER_REGEN_ENABLED")
 	self:RegisterEvent("ENCOUNTER_START")
@@ -61,110 +64,46 @@ function PRT:CreateMainFrame()
 	PRT.mainFrame:SetHeight(600)
 
 	PRT.mainFrameContent = AceGUI:Create("ScrollFrame")
-	PRT.mainFrameContent:SetLayout("List")	
+	PRT.mainFrameContent:SetLayout("Flow")	
 	PRT.mainFrameContent:SetFullHeight(true)
 	PRT.mainFrameContent:SetAutoAdjustHeight(true)
 
-	PRT.mainFrameContent:AddChild(PRT:EncounterTabGroup(self.db.profile.encounters))
+	-- Options
+	local optionsHeading = PRT.Heading("Options")
 
+	-- testmode
+	local testModeCheckbox = PRT.CheckBox("Test mode?", self.db.profile.testMode)
+	testModeCheckbox:SetCallback("OnValueChanged", function(widget) self.db.profile.testMode = widget:GetValue() end)
+
+	local testEncounterIDEditBox = PRT.EditBox("EditBox", self.db.profile.testEncounterID)	
+	testEncounterIDEditBox:SetLabel("Test Encounter ID")
+	testEncounterIDEditBox:SetCallback("OnTextChanged", function(widget) self.db.profile.testEncounterID = tonumber(widget:GetText()) end)
+
+	-- debug?
+	local debugModeCheckbox = PRT.CheckBox("Debug mode?", self.db.profile.debugMode)
+	debugModeCheckbox:SetCallback("OnValueChanged", function(widget) self.db.profile.debugMode = widget:GetValue() end)
+
+	local encounterHeading = PRT.Heading("Encounters")
+
+	PRT.mainFrameContent:AddChild(optionsHeading)
+	PRT.mainFrameContent:AddChild(testModeCheckbox)
+	PRT.mainFrameContent:AddChild(testEncounterIDEditBox)
+	PRT.mainFrameContent:AddChild(debugModeCheckbox)
+	PRT.mainFrameContent:AddChild(encounterHeading)
+
+	PRT.mainFrameContent:AddChild(PRT:EncounterTabGroup(self.db.profile.encounters))
+	
 	PRT.mainFrame:AddChild(PRT.mainFrameContent)
 end	
 	
 function PRT:OpenPRT(input)
-	PRT:Open()	
-end
-
-function PRT:TabGroupTest()
-	local tabGroup = AceGUI:Create("TabGroup")
-	
-end	
-
-
--------------------------------------------------------------------------------
--- Events
-
-function PRT:PLAYER_ENTERING_WORLD()
-	print("PLAYER_ENTERING_WORLD")
-	PRT.currentEncounter = {}
-end
-
-function PRT:ENCOUNTER_START()
-	print("ENCOUNTER_START - TODO Initialize")
-end
-
-function PRT:ENCOUNTER_END()
-	print("ENCOUNTER_END - TODO Initialize")
-end
-
-function PRT:PLAYER_REGEN_DISABLED()
-	print("PLAYER_REGEN_DISABLED")
-	PRT.currentEncounter.inFight = true
-	PRT.currentEncounter.lastCheck = GetTime()	
-	PRT.currentEncounter.encounter = PRT.CopyTable(self.db.profile.encounters[1])
-end
-
-PRT.ResetTimers = function()
-	local timers = PRT.currentEncounter.encounter.Timers
-
-	if timers then
-		for i, timer in ipairs(timers) do
-			timer.started = false
-			timer.startedAt = nil
-		end
-	end
-
-end
-
-function PRT:PLAYER_REGEN_ENABLED()
-	print("PLAYER_REGEN_ENABLED")
-	PRT.currentEncounter.inFight = false
-
-	PRT.ResetTimers()
-	--PRT.ResetRotations()
-	--PRT.ResetPercentages()
-end
-
-function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
-	local timestamp, combatEvent, _, sourceGUID, sourceName, _, _, targetGUID, targetName, _, _, eventSpellID,_,_, eventExtraSpellID = CombatLogGetCurrentEventInfo()
-
-	if sourceName == UnitName("player") then
-		print(sourceName..": "..combatEvent)
-	end
-
-	if PRT.currentEncounter.inFight then
-		if PRT.currentEncounter.encounter then
-			-- Check for activations 10 times a second
-			if GetTime() > PRT.currentEncounter.lastCheck + 0.1 then
-				PRT.currentEncounter.lastCheck = GetTime()
-				local timers = PRT.currentEncounter.encounter.Timers
-				local rotations = PRT.currentEncounter.encounter.Rotations
-				local percentages = PRT.currentEncounter.encounter.Percentages
-
-				-- Checking Timer activation
-				if timers then
-					PRT.CheckTimerStartConditions(timers, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
-					PRT.CheckTimerStopConditions(timers, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
-					PRT.CheckTimerTimings(timers)
-				end
-
-				-- Checking Rotation activation
-				if rotations then
-					--PRT.CheckSpellRotationTriggerCondition(spellRotations, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
-				end
-
-				-- Checking Percentage activation
-				if percentages then
-					--PRT.CheckUnitHealthTrackers(unitHealthTrackers)
-				end
-
-				-- Process Message Queue after activations
-				if timers or rotations or percentages then
-					PRT.ProcessMessageQueue()
-				end
-			end
-		end
+	if UnitAffectingCombat("player") then
+		print("Can't open during combat")
+	else
+		PRT:Open()	
 	end
 end
+
 
 -------------------------------------------------------------------------------
 -- Chat Commands

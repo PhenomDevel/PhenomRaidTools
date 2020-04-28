@@ -43,7 +43,7 @@ PRT.EncounterWidget = function(encounter)
 	encounterWidget:SetLayout("Flow")
 
 	local idEditBox = PRT.EditBox("ID", encounter.id)	
-	idEditBox:SetCallback("OnTextChanged", function(widget) encounter.id = widget:GetText() end)
+	idEditBox:SetCallback("OnTextChanged", function(widget) encounter.id = tonumber(widget:GetText()) end)
 
 	local nameEditBox = PRT.EditBox("Name", encounter.name)
 	nameEditBox:SetCallback("OnTextChanged", function(widget) encounter.name = widget:GetText() end)

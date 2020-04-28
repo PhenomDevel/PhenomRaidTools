@@ -11,7 +11,10 @@ PRT.RotationWidget = function(rotation)
     nameEditBox:SetCallback("OnTextChanged", function(widget) rotation.name = widget:GetText() end)
 
     local shouldRestartCheckBox =  PRT.CheckBox("Should rotation restart?", rotation.shouldRestart)
+    shouldRestartCheckBox:SetCallback("OnValueChanged", function(widget) PRT.testMode = widget:GetValue() end)
+    
     local ignoreAfterActivationCheckBox =  PRT.CheckBox("Ignore after activation?", rotation.ignoreAfterActivation)
+    ignoreAfterActivationCheckBox:SetCallback("OnValueChanged", function(widget) PRT.testMode = widget:GetValue() end)
 
     local ignoreDurationEditBox = PRT.EditBox("Ignore duration", rotation.ignoreDuration)
     ignoreDurationEditBox:SetCallback("OnTextChanged", function(widget) rotation.ignoreDuration = widget:GetText() end)
@@ -35,7 +38,7 @@ PRT.RotationTabGroup = function(rotations)
 	local tabs = PRT.TableToTabs(rotations, true)
 	local rotationsTabGroupWidget = PRT.TabGroup(nil, tabs)
  
-    rotationsTabGroupWidget:SetCallback("OnGroupSelected", function(widget, event, key) PRT.TabGroupSelected(widget, rotations, key, PRT.TableToTabs, PRT.RotationWidget, PRT.EmptyRotation, "Delete Rotation") end)
+    rotationsTabGroupWidget:SetCallback("OnGroupSelected", function(widget, event, key) PRT.TabGroupSelected (widget, rotations, key, PRT.RotationWidget, PRT.EmptyRotation, "Delete Rotation") end)
     
     rotationsTabGroupWidget:SelectTab(nil)
     if rotations then

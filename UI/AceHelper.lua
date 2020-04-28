@@ -88,6 +88,13 @@ PRT.TabGroup = function(title, tabs)
 
 	return widget
  end
+ 
+ PRT.Label = function(label)
+	local widget = AceGUI:Create("Label")
+	widget:SetText(label)
+
+	return widget
+ end
 
  PRT.EditBox = function(label, value)
 	local widget = AceGUI:Create("EditBox")

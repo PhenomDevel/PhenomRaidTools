@@ -14,6 +14,7 @@ Core/Utils.lua
 Core/TriggerHandler.lua
 Core/EncounterSetup.lua
 Core/MessageQueue.lua
+Core/EventHandler.lua
 
 UI/AceHelper.lua
 UI/Common.lua

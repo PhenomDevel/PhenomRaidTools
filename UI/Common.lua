@@ -14,7 +14,7 @@ PRT.ConditionWidget = function(condition)
 	
 	local spellIDEditBox = AceGUI:Create("EditBox")
 	spellIDEditBox:SetLabel("Spell-ID")	
-	spellIDEditBox:SetCallback("OnTextChanged", function(widget) condition.spellID = widget:GetText() end)
+	spellIDEditBox:SetCallback("OnTextChanged", function(widget) condition.spellID = tonumber(widget:GetText()) end)
 
 	local targetEditBox = AceGUI:Create("EditBox")
 	targetEditBox:SetLabel("Target")
@@ -72,11 +72,11 @@ PRT.MessageWidget = function (message)
 
 	local delayEditBox = AceGUI:Create("EditBox")	
 	delayEditBox:SetLabel("Delay (s)")
-	delayEditBox:SetCallback("OnTextChanged", function(widget) message.delay = widget:GetText() end)
+	delayEditBox:SetCallback("OnTextChanged", function(widget) message.delay = tonumber(widget:GetText()) end)
 
 	local durationEditBox = AceGUI:Create("EditBox")	
 	durationEditBox:SetLabel("Duration (s)")
-	durationEditBox:SetCallback("OnTextChanged", function(widget) message.duration = widget:GetText() end)
+	durationEditBox:SetCallback("OnTextChanged", function(widget) message.duration = tonumber(widget:GetText()) end)
 
 	if message then
 		if message.targets then

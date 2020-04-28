@@ -96,3 +96,9 @@ PRT.CopyTable = function(orig, copies)
     end
     return copy
 end
+
+function PRT:Debug(...)
+    if self.db.profile.debugMode then
+        PRT:Print(...)
+    end
+end

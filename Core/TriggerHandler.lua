@@ -1,5 +1,100 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
+
+-------------------------------------------------------------------------------
+-- Helper
+
+PRT.CheckCondition = function(condition, event, combatEvent, spellID, sourceGUID, targetGUID)
+    if condition ~= nil then
+        if condition.event == event or condition.event == combatEvent then
+            if condition.spellID == nil or condition.spellID == spellID then
+                if condition.source == nil or UnitGUID(condition.source or "") == sourceGUID then
+                    if condition.target == nil or UnitGUID(condition.target or "") == targetGUID then
+                        return true
+                    end
+                end
+            end         
+        end
+    end
+    return false
+end
+
+
+-------------------------------------------------------------------------------
+-- Timer
+
+PRT.CheckTimerStartConditions = function(timers, event, combatEvent, spellID, targetGUID, sourceGUID)   
+    if timers ~= nil then
+        for i, timer in ipairs(timers) do                     
+            if timer.startCondition ~= nil and timer.started ~= true then     
+                if PRT.CheckCondition(timer.startCondition, event, combatEvent, spellID, targetGUID, sourceGUID) then
+                    PRT:Print("[Timer]", "Started timer `"..(timer.name or "NO NAME").."` at "..GetTime())
+                    timer.started = true
+                    timer.startedAt = GetTime()
+                end
+            end
+        end
+    end
+end
+
+PRT.CheckTimerStopConditions = function(timers, event, combatEvent, spellID, targetGUID, sourceGUID)
+    if timers ~= nil then
+        for i, timer in ipairs(timers) do
+            if timer.stopCondition ~= nil and timer.started == true then
+                if PRT.CheckCondition(timer.stopCondition, event, combatEvent, spellID, sourceGUID, targetGUID) then
+                    PRT:Print("[Timer]", "Stopped timer `"..(timer.name or "NO NAME").."` at "..GetTime())
+                    timer.started = false
+                    
+                    for i, timing in pairs(timer.timings) do
+                        timing.executed = false  
+                    end   
+                end
+            end
+        end
+    end
+end
+
+PRT.FilterTimingsTable = function(timings, timeOffset)
+    local value
+    if timings then
+        for i, v in ipairs(timings) do
+            if v.seconds == timeOffset then
+                if not value then
+                    value = v
+                end
+            end
+        end
+    end
+    return value
+end
+
+PRT.CheckTimerTimings = function(timers)
+    local currentTime = GetTime()    
+    if timers ~= nil then
+        for i, timer in ipairs(timers) do
+            if timer.started == true and timer.timings ~= nil then                
+                local elapsedTime = PRT.Round(currentTime - timer.startedAt)
+                local timings = timer.timings
+                local timingByTime = PRT.FilterTimingsTable(timings, elapsedTime)
+                
+                if timingByTime then
+                    local messagesByTime = timingByTime.messages
+                    if messagesByTime ~= nil and messagesByTime.executed ~= true then
+                        -- PRT.ExecuteMessages(messagesByTime)   
+                        PRT.AddMessagesToQueue(messagesByTime)
+                        PRT:Print("CheckTimerTimings - Execute Messages")                     
+                        messagesByTime.executed = true
+                    end
+                end
+            end
+        end
+    end
+end
+
+
+-------------------------------------------------------------------------------
+-- Rotations
+
 PRT.GetRotationCounter = function(rotation)
     if rotation ~= nil then
         if rotation.counter ~= nil then
@@ -52,90 +147,6 @@ PRT.UpdateSpellRotationCounter = function(spellRotation)
     end
 end
 
-PRT.CheckCondition = function(condition, event, combatEvent, spellID, sourceGUID, targetGUID)
-    if condition ~= nil then
-        if condition.event == event or condition.event == combatEvent then
-            if condition.spellID == nil or condition.spellID == spellID then
-                if condition.source == nil or UnitGUID(condition.source or "") == sourceGUID then
-                    if condition.target == nil or UnitGUID(condition.target or "") == targetGUID then
-                        return true
-                    end
-                end
-            end         
-        end
-    end
-    return false
-end
-
-PRT.CheckTimerStartConditions = function(timers, event, combatEvent, spellID, targetGUID, sourceGUID)   
-    if timers ~= nil then
-        for i, timer in ipairs(timers) do                     
-            if timer.startCondition ~= nil and timer.started ~= true then     
-                if PRT.CheckCondition(timer.startCondition, event, combatEvent, spellID, targetGUID, sourceGUID) then
-                    PRT:Print("[Timer]", "Started timer `"..(timer.name or "NO NAME").."` at "..GetTime())
-                    timer.started = true
-                    timer.startedAt = GetTime()
-                end
-            end
-        end
-    end
-end
-
-PRT.CheckTimerStopConditions = function(timers, event, combatEvent, spellID, targetGUID, sourceGUID)
-    if timers ~= nil then
-        for i, timer in ipairs(timers) do
-            if timer.stopCondition ~= nil and timer.started == true then
-                if PRT.CheckCondition(timer.stopCondition, event, combatEvent, spellID, sourceGUID, targetGUID) then
-                    PRT:Print("[Timer]", "Stopped timer `"..(timer.name or "NO NAME").."` at "..GetTime())
-                    timer.started = false
-                    
-                    for i, timing in pairs(timer.timings) do
-                        timing.executed = false  
-                    end   
-                end
-            end
-        end
-    end
-end
-
-PRT.FilterTimingsTable = function(timings, timeOffset)
-    local value
-    if timings then
-        for i, v in ipairs(timings) do
-            print(v.seconds, timeOffset, v.seconds == timeOffset)
-            if v.seconds == timeOffset then
-                if not value then
-                    value = v
-                end
-            end
-        end
-    end
-    return value
-end
-
-PRT.CheckTimerTimings = function(timers)
-    local currentTime = GetTime()    
-    if timers ~= nil then
-        for i, timer in ipairs(timers) do
-            if timer.started == true and timer.timings ~= nil then                
-                local elapsedTime = PRT.Round(currentTime - timer.startedAt)
-                local timings = timer.timings
-                local timingByTime = PRT.FilterTimingsTable(timings, elapsedTime)
-                
-                if timingByTime then
-                    local messagesByTime = timingByTime.messages
-                    if messagesByTime ~= nil and messagesByTime.executed ~= true then
-                        -- PRT.ExecuteMessages(messagesByTime)   
-                        PRT.AddMessagesToQueue(messagesByTime)
-                        PRT:Print("CheckTimerTimings - Execute Messages")                     
-                        messagesByTime.executed = true
-                    end
-                end
-            end
-        end
-    end
-end
-
 PRT.CheckStopIgnore = function(spellRotation)
     if spellRotation.ignoreAfterActivation and spellRotation.ignored == true then
         if ((spellRotation.lastActivation or 0) + (spellRotation.ignoreDuration or 5)) < GetTime() then
@@ -168,6 +179,10 @@ PRT.CheckSpellRotationTriggerCondition = function(spellRotations, event, combatE
     end
 end
 
+
+-------------------------------------------------------------------------------
+-- Percentages
+
 PRT.CheckUnitHealthTrackers = function(unitHealthTrackers)
     if unitHealthTrackers ~= nil then
         for i, unitHealthTracker in ipairs(unitHealthTrackers) do
@@ -185,6 +200,10 @@ PRT.CheckUnitHealthTrackers = function(unitHealthTrackers)
         end
     end
 end
+
+
+-------------------------------------------------------------------------------
+-- Message Queue Processing
 
 PRT.ProcessMessage = function(message)
     PRT.ExecuteMessage(message)
