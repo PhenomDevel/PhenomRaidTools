@@ -73,7 +73,6 @@ end
 -- Public API
 
 PRT.EncounterTabGroup = function(encounters)
-	PRT:PrintTable("", encounters)
 	local tabs = PRT.TableToTabs(encounters, true)
 	local encountersTabGroupWidget = PRT.TabGroup(nil, tabs)
  
