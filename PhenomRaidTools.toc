@@ -1,0 +1,23 @@
+## Interface: 80205
+## Title: PhenomRaidTools
+## Version: 0.0.0.1
+## Author: Phenom
+## SavedVariables: PhenomRaidToolsDB
+
+embeds.xml
+
+
+
+PhenomRaidTools.lua
+
+Core/Utils.lua
+Core/TriggerHandler.lua
+Core/EncounterSetup.lua
+
+UI/AceHelper.lua
+UI/Common.lua
+UI/Encounter.lua
+UI/Timer.lua
+UI/Rotation.lua
+
+UI/Percentage.lua
