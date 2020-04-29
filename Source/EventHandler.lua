@@ -75,7 +75,8 @@ function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 			if PRT.currentEncounter.encounter then
 					local timers = PRT.currentEncounter.encounter.Timers
 					local rotations = PRT.currentEncounter.encounter.Rotations
-					local percentages = PRT.currentEncounter.encounter.Percentages
+					local healthPercentages = PRT.currentEncounter.encounter.HealthPercentages
+					local powerPercentages = PRT.currentEncounter.encounter.PowerPercentages
 
 					-- Checking Timer activation
 					if timers then
@@ -89,13 +90,18 @@ function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 						PRT.CheckRotationTriggerCondition(rotations, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
 					end
 
-					-- Checking Percentage activation
-					if percentages then
-						--PRT.CheckUnitHealthTrackers(percentages)
+					-- Checking Health Percentage activation
+					if healthPercentages then
+						PRT.CheckUnitHealthPercentages(healthPercentages)
+					end
+
+					-- Checking Resource Percentage activation
+					if powerPercentages then
+						PRT.CheckUnitPowerPercentages(powerPercentages)
 					end
 
 					-- Process Message Queue after activations
-					if timers or rotations or percentages then
+					if timers or rotations or healthPercentages or powerPercentages then
 						PRT.ProcessMessageQueue()
 					end
 			end

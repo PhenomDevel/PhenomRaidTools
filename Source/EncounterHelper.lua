@@ -80,18 +80,21 @@ end
 
 -------------------------------------------------------------------------------
 -- Percentage
+PRT.EmptyPercentageValue = function()
+    return {
+        value = 50,
+        messages = {
+            PRT.EmptyMessage()
+        }
+    }
+end
 
 PRT.EmptyPercentage = function()
     return {
         name = "Percentage Name",
         unitID = "player",
         values = {
-            {
-                value = 50,
-                messages = {
-                    PRT.EmptyMessage()
-                }
-            }
+            PRT.EmptyPercentageValue()
         }
     }
 end
@@ -109,11 +112,15 @@ PRT.EmptyEncounter = function()
         },
 
         Rotations = {
-
+            PRT.EmptyRotation()
         },
 
-        Percentages = {
+        HealthPercentages = {
+            PRT.EmptyPercentage()
+        },
 
+        PowerPercentages = {
+            PRT.EmptyPercentage()
         }
     }
 end

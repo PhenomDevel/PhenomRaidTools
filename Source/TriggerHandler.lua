@@ -35,6 +35,20 @@ TriggerHandler.FilterTimingsTable = function(timings, timeOffset)
     return value
 end
 
+TriggerHandler.FilterPercentagesTable = function(percentages, percent)
+    local value
+    if percentages then
+        for i, v in ipairs(percentages) do
+            if v.value == percent then
+                if not value then
+                    value = v
+                end
+            end
+        end
+    end
+    return value
+end
+
 TriggerHandler.GetRotationCounter = function(rotation)
     if rotation ~= nil then
         if rotation.counter ~= nil then
@@ -146,6 +160,7 @@ PRT.CheckTimerTimings = function(timers)
                     local messagesByTime = timingByTime.messages
                     if messagesByTime ~= nil and messagesByTime.executed ~= true then
                         PRT.AddMessagesToQueue(messagesByTime)
+                        PRT.DebugTimer("Timer trigger condition met")
                         PRT.DebugTimer("Adding", table.getn(messagesByTime), "messages to message queue")                  
                         messagesByTime.executed = true
                     end
@@ -183,19 +198,45 @@ PRT.CheckRotationTriggerCondition = function(rotations, event, combatEvent, spel
     end
 end
 
--- Percentages
-PRT.CheckUnitPercentages = function(percentages)
+-- Health Percentages
+PRT.CheckUnitHealthPercentages = function(percentages)
     if percentages ~= nil then
         for i, percentage in ipairs(percentages) do
             if UnitExists(percentage.unitID) then
                 local unitCurrentHP = UnitHealth(percentage.unitID)
                 local unitMaxHP = UnitHealthMax(percentage.unitID)
                 local unitHPPercent = PRT.Round(unitCurrentHP / unitMaxHP * 100, 0)                
-                local messagesByHP = percentage.hpValues[unitHPPercent]
-                
-                if messagesByHP ~= nil and not messagesByHP.executed == true then
-                    PRT.AddMessagesToQueue(messagesByHP)
-                    messagesByHP.executed = true             
+                local messagesByHP = TriggerHandler.FilterPercentagesTable(percentage.values, unitHPPercent)
+
+                if messagesByHP then
+                    if messagesByHP.messages ~= nil and not messagesByHP.executed == true then
+                        PRT.DebugPercentage("Health Percentage trigger condition met")
+                        PRT.DebugPercentage("Adding", table.getn(messagesByHP.messages), "messages to message queue")
+                        PRT.AddMessagesToQueue(messagesByHP.messages)
+                        messagesByHP.executed = true             
+                    end
+                end
+            end            
+        end
+    end
+end
+
+PRT.CheckUnitPowerPercentages = function(percentages)
+    if percentages ~= nil then
+        for i, percentage in ipairs(percentages) do
+            if UnitExists(percentage.unitID) then
+                local unitCurrentPower = UnitPower(percentage.unitID)
+                local unitMaxPower = UnitPowerMax(percentage.unitID)
+                local unitPowerPercent = PRT.Round(unitCurrentPower / unitMaxPower * 100, 0)                
+                local messagesByPower = TriggerHandler.FilterPercentagesTable(percentage.values, unitPowerPercent)
+
+                if messagesByPower then
+                    if messagesByPower.messages ~= nil and not messagesByPower.executed == true then
+                        PRT.DebugPercentage("Power Percentage trigger condition met")
+                        PRT.DebugPercentage("Adding", table.getn(messagesByPower.messages), "messages to message queue")
+                        PRT.AddMessagesToQueue(messagesByPower.messages)
+                        messagesByPower.executed = true             
+                    end
                 end
             end            
         end

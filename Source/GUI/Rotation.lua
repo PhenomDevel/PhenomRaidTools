@@ -51,12 +51,7 @@ Rotation.RotationWidget = function(rotation)
 	local entriesTabGroupWidget = PRT.TabGroup(nil, tabs)
     entriesTabGroupWidget:SetCallback("OnGroupSelected", function(widget, event,key) PRT.TabGroupSelected(widget, rotation.entries, key, Rotation.RotationEntryWidget, PRT.EmptyRotationEntry, "Delete Rotation Entry") end)    
 
-    entriesTabGroupWidget:SelectTab(nil)
-    if rotation.entries then
-		if table.getn(rotation.entries) > 0 then
-			entriesTabGroupWidget:SelectTab(1)
-		end
-	end
+    PRT.SelectFirstTab(entriesTabGroupWidget, rotation.entries)
 
     -- Setup Widget
     rotationWidget:AddChild(nameEditBox)

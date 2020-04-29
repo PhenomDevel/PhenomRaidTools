@@ -30,8 +30,10 @@ Encounter.TriggerTabGroupSelected = function(container, encounter, key)
 		widget = PRT.TimerTabGroup(encounter.Timers)
 	elseif key == "rotations" then
 		widget = PRT.RotationTabGroup(encounter.Rotations)
-	elseif key == "percentages" then
-		widget = PRT.PercentageTabGroup(encounter.Percentages)		
+	elseif key == "healthPercentages" then
+		widget = PRT.HealthPercentageTabGroup(encounter.HealthPercentages)		
+	elseif key == "powerPercentages" then
+		widget = PRT.PowerPercentageTabGroup(encounter.PowerPercentages)	
 	end
 
 	container:AddChild(widget)	
@@ -51,7 +53,8 @@ Encounter.EncounterWidget = function(encounter)
 	local tabs = {
 		{value = "timers", text = "Timers"},
 		{value = "rotations", text = "Rotations"},
-		{value = "percentages", text = "Unit HP Values"}
+		{value = "healthPercentages", text = "Health Percentages"},
+		{value = "powerPercentages", text = "Power Percentages"}
 	}
 	local triggerTabGroup = PRT.TabGroup(nil, tabs)
 	triggerTabGroup:SetCallback("OnGroupSelected", function(widget, event, key) Encounter.TriggerTabGroupSelected(widget, encounter, key) end)	
