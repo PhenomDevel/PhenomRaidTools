@@ -61,7 +61,7 @@ end
 
 function PRT:OpenPRT(input)
 	if UnitAffectingCombat("player") then
-		PRT:Debug("Can't open during combat")
+		PRT:Print("Can't open during combat")
 	else
 		PRT:Open()	
 	end
