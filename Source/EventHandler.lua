@@ -4,6 +4,13 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 -------------------------------------------------------------------------------
 -- Local Helper
 
+local essentialEvents = {
+	"PLAYER_REGEN_DISABLED", 
+	"PLAYER_REGEN_ENABLED",
+	"ENCOUNTER_START",
+	"ENCOUNTER_END"
+}
+
 local FilterEncounterTable = function(encounters, id)
     local value
     if encounters then
@@ -21,6 +28,18 @@ end
 
 -------------------------------------------------------------------------------
 -- Public API
+
+PRT.RegisterEssentialEvents = function()
+	for i, event in ipairs(essentialEvents) do
+		PRT:RegisterEvent(event)
+	end
+end
+
+PRT.UnregisterEssentialEvents = function()
+	for i, event in ipairs(essentialEvents) do
+		PRT:UnregisterEvent(event)
+	end
+end
 
 function PRT:ENCOUNTER_START(event, encounterID, encounterName)
 	PRT.Debug("Encounter started - ", encounterID, encounterName)

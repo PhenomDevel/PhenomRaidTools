@@ -40,17 +40,11 @@ end
 function PRT:OnEnable()
 	-- NOTE:
 	-- Register all events we need to start or stop the condition checks
-	self:RegisterEvent("PLAYER_REGEN_DISABLED")
-	self:RegisterEvent("PLAYER_REGEN_ENABLED")
-	self:RegisterEvent("ENCOUNTER_START")
-	self:RegisterEvent("ENCOUNTER_END")
+	PRT.RegisterEssentialEvents()
 end
 
 function PRT:OnDisable()
-	self:UnregisterEvent("PLAYER_REGEN_DISABLED")
-	self:UnregisterEvent("PLAYER_REGEN_ENABLED")
-	self:UnregisterEvent("ENCOUNTER_START")
-	self:UnregisterEvent("ENCOUNTER_END")
+	PRT.UnregisterEssentialEvents()
 end
 
 function PRT:Open()
