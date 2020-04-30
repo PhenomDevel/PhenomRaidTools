@@ -38,8 +38,7 @@ PRT.CreateMainFrame = function(profile)
 	local testModeCheckbox = PRT.CheckBox("Test mode?", profile.testMode)
 	testModeCheckbox:SetCallback("OnValueChanged", function(widget) profile.testMode = widget:GetValue() end)	
 
-	local testEncounterIDEditBox = PRT.EditBox("EditBox", profile.testEncounterID)	
-	testEncounterIDEditBox:SetLabel("Test Encounter ID")
+	local testEncounterIDEditBox = PRT.EditBox("Test Encounter ID", profile.testEncounterID)	
 	testEncounterIDEditBox:SetCallback("OnTextChanged", function(widget) profile.testEncounterID = tonumber(widget:GetText()) end)
 	
 	-- Add debugmode gui elements

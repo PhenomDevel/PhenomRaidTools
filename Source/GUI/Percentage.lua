@@ -36,6 +36,13 @@ Percentage.PercentageWidget = function(percentage)
 
     local unitIDEditBox = PRT.EditBox("Unit-ID", percentage.unitID)
     unitIDEditBox:SetCallback("OnTextChanged", function(widget) percentage.unitID = widget:GetText() end)
+    
+    local ignoreAfterActivationCheckBox = PRT.CheckBox("Check again?", percentage.ignoreAfterActivation)
+    ignoreAfterActivationCheckBox:SetCallback("OnValueChanged", function(widget) percentage.ignoreAfterActivation = widget:GetValue() end)
+    ignoreAfterActivationCheckBox:SetFullWidth(true)
+
+    local ignoreDurationEditBox = PRT.EditBox("Delay for next check (s)", percentage.ignoreDuration)
+    ignoreDurationEditBox:SetCallback("OnTextChanged", function(widget) percentage.ignoreDuration = tonumber(widget:GetText()) end)
 
     local tabs = PRT.TableToTabs(percentage.values, true)
 	local valuesTabGroupWidget = PRT.TabGroup(nil, tabs)
@@ -46,6 +53,9 @@ Percentage.PercentageWidget = function(percentage)
     -- Setup Widget
     percentageWidget:AddChild(nameEditBox)
     percentageWidget:AddChild(unitIDEditBox)
+    percentageWidget:AddChild(ignoreAfterActivationCheckBox)
+    percentageWidget:AddChild(ignoreDurationEditBox)
+
     percentageWidget:AddChild(valuesTabGroupWidget)
 
 	return percentageWidget

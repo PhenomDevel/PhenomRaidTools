@@ -101,11 +101,11 @@ TriggerHandler.UpdateRotationCounter = function(rotation)
     end
 end
 
-TriggerHandler.CheckStopIgnoreRotationCondition = function(rotation)
-    if rotation.ignoreAfterActivation and rotation.ignored == true then
-        if ((rotation.lastActivation or 0) + (rotation.ignoreDuration or 5)) < GetTime() then
-            rotation.ignored = false
-            PRT.DebugRotation("Stopped ignoring rotation", rotation.name)
+TriggerHandler.CheckStopIgnoreRotationCondition = function(trigger)
+    if trigger.ignoreAfterActivation and trigger.ignored == true then
+        if ((trigger.lastActivation or 0) + (trigger.ignoreDuration or 5)) < GetTime() then
+            trigger.ignored = false
+            PRT.Debug("Stopped ignoring trigger", trigger.name)
         end 
     end 
 end
@@ -202,21 +202,33 @@ end
 PRT.CheckUnitHealthPercentages = function(percentages)
     if percentages ~= nil then
         for i, percentage in ipairs(percentages) do
-            if UnitExists(percentage.unitID) then
-                local unitCurrentHP = UnitHealth(percentage.unitID)
-                local unitMaxHP = UnitHealthMax(percentage.unitID)
-                local unitHPPercent = PRT.Round(unitCurrentHP / unitMaxHP * 100, 0)                
-                local messagesByHP = TriggerHandler.FilterPercentagesTable(percentage.values, unitHPPercent)
 
-                if messagesByHP then
-                    if messagesByHP.messages ~= nil and not messagesByHP.executed == true then
-                        PRT.DebugPercentage("Health Percentage trigger condition met")
-                        PRT.DebugPercentage("Adding", table.getn(messagesByHP.messages), "messages to message queue")
-                        PRT.AddMessagesToQueue(messagesByHP.messages)
-                        messagesByHP.executed = true             
+            TriggerHandler.CheckStopIgnoreRotationCondition(percentage)
+
+            if percentage.ignored ~= true then
+                if UnitExists(percentage.unitID) then
+                    local unitCurrentHP = UnitHealth(percentage.unitID)
+                    local unitMaxHP = UnitHealthMax(percentage.unitID)
+                    local unitHPPercent = PRT.Round(unitCurrentHP / unitMaxHP * 100, 0)                
+                    local messagesByHP = TriggerHandler.FilterPercentagesTable(percentage.values, unitHPPercent)
+
+                    if messagesByHP then
+                        if messagesByHP.messages ~= nil and not messagesByHP.executed == true then
+                            PRT.DebugPercentage("Health Percentage trigger condition met")
+                            PRT.DebugPercentage("Adding", table.getn(messagesByHP.messages), "messages to message queue")
+                            PRT.AddMessagesToQueue(messagesByHP.messages)
+                            
+                            percentage.lastActivation = GetTime()
+                            if percentage.ignoreAfterActivation == true then
+                                percentage.ignored = true
+                                PRT.DebugRotation("Started ignoring percentage", percentage.name, "for", percentage.ignoreDuration)
+                            else
+                                messagesByHP.executed = true
+                            end
+                        end
                     end
-                end
-            end            
+                end 
+            end           
         end
     end
 end
@@ -224,25 +236,41 @@ end
 PRT.CheckUnitPowerPercentages = function(percentages)
     if percentages ~= nil then
         for i, percentage in ipairs(percentages) do
-            if UnitExists(percentage.unitID) then
-                local unitCurrentPower = UnitPower(percentage.unitID)
-                local unitMaxPower = UnitPowerMax(percentage.unitID)
-                local unitPowerPercent = PRT.Round(unitCurrentPower / unitMaxPower * 100, 0)                
-                local messagesByPower = TriggerHandler.FilterPercentagesTable(percentage.values, unitPowerPercent)
 
-                if messagesByPower then
-                    if messagesByPower.messages ~= nil and not messagesByPower.executed == true then
-                        PRT.DebugPercentage("Power Percentage trigger condition met")
-                        PRT.DebugPercentage("Adding", table.getn(messagesByPower.messages), "messages to message queue")
-                        PRT.AddMessagesToQueue(messagesByPower.messages)
-                        messagesByPower.executed = true             
+            TriggerHandler.CheckStopIgnoreRotationCondition(percentage)
+
+            if percentage.ignored ~= true then
+                if UnitExists(percentage.unitID) then
+                    local unitCurrentPower = UnitPower(percentage.unitID)
+                    local unitMaxPower = UnitPowerMax(percentage.unitID)
+                    local unitPowerPercent = PRT.Round(unitCurrentPower / unitMaxPower * 100, 0)                
+                    local messagesByPower = TriggerHandler.FilterPercentagesTable(percentage.values, unitPowerPercent)
+
+                    if messagesByPower then
+                        if messagesByPower.messages ~= nil and not messagesByPower.executed == true then
+                            PRT.DebugPercentage("Power Percentage trigger condition met")
+                            PRT.DebugPercentage("Adding", table.getn(messagesByPower.messages), "messages to message queue")
+                            PRT.AddMessagesToQueue(messagesByPower.messages)
+                            
+                            percentage.lastActivation = GetTime()
+                            if percentage.ignoreAfterActivation == true then
+                                percentage.ignored = true
+                                PRT.DebugRotation("Started ignoring percentage", percentage.name, "for", percentage.ignoreDuration)
+                            else
+                                messagesByPower.executed = true
+                            end
+                        end
                     end
-                end
-            end            
+                end 
+            end           
         end
     end
 end
 
+
+-- Wenn restart = true und nicht executed und nicht ignoriert -> go
+-- Wenn ignorieren nach activierung 
+-- ignored = true
 
 -------------------------------------------------------------------------------
 -- Message Queue Processing

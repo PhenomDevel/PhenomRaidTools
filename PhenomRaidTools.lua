@@ -10,6 +10,7 @@ local defaults = {
 	profile = {
 		testMode = false,
 		testEncounterID = 9999,
+		testEncounterName = "Example Encounter",
 		debugMode = false,
 		showOverlay = true,
 		hideOverlayAfterCombat = false,

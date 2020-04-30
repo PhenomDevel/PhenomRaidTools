@@ -95,7 +95,9 @@ PRT.EmptyPercentage = function()
         unitID = "player",
         values = {
             PRT.EmptyPercentageValue()
-        }
+        },
+        ignoreAfterActivation = true,
+        ignoreDuration = 10
     }
 end
 

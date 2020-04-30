@@ -101,6 +101,20 @@ PRT.TabGroup = function(title, tabs)
 	return widget
  end
 
+ PRT.Dropdown = function(label, values, value)
+	local dropdownItems = {}
+	for i,v in ipairs(values) do
+		dropdownItems[v.id] = v.name
+ 	end
+
+	local widget = AceGUI:Create("Dropdown")
+	widget:SetLabel(label)
+	widget:SetText(value)
+	widget:SetWidth(200)
+	widget:SetList(dropdownItems)
+	return widget
+ end
+
  PRT.CheckBox = function(label, value)
 	local widget = AceGUI:Create("CheckBox")
 	widget:SetLabel(label)
