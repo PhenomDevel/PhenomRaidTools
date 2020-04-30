@@ -268,10 +268,6 @@ PRT.CheckUnitPowerPercentages = function(percentages)
 end
 
 
--- Wenn restart = true und nicht executed und nicht ignoriert -> go
--- Wenn ignorieren nach activierung 
--- ignored = true
-
 -------------------------------------------------------------------------------
 -- Message Queue Processing
 
