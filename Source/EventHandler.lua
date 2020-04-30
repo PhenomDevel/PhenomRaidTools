@@ -92,37 +92,37 @@ function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 		local timestamp, combatEvent, _, sourceGUID, sourceName, _, _, targetGUID, targetName, _, _, eventSpellID,_,_, eventExtraSpellID = CombatLogGetCurrentEventInfo()
 		if PRT.currentEncounter.inFight then
 			if PRT.currentEncounter.encounter then
-					local timers = PRT.currentEncounter.encounter.Timers
-					local rotations = PRT.currentEncounter.encounter.Rotations
-					local healthPercentages = PRT.currentEncounter.encounter.HealthPercentages
-					local powerPercentages = PRT.currentEncounter.encounter.PowerPercentages
+				local timers = PRT.currentEncounter.encounter.Timers
+				local rotations = PRT.currentEncounter.encounter.Rotations
+				local healthPercentages = PRT.currentEncounter.encounter.HealthPercentages
+				local powerPercentages = PRT.currentEncounter.encounter.PowerPercentages
 
-					-- Checking Timer activation
-					if timers then
-						PRT.CheckTimerStartConditions(timers, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
-						PRT.CheckTimerStopConditions(timers, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
-						PRT.CheckTimerTimings(timers)
-					end
+				-- Checking Timer activation
+				if timers then
+					PRT.CheckTimerStartConditions(timers, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
+					PRT.CheckTimerStopConditions(timers, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
+					PRT.CheckTimerTimings(timers)
+				end
 
-					-- Checking Rotation activation
-					if rotations then
-						PRT.CheckRotationTriggerCondition(rotations, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
-					end
+				-- Checking Rotation activation
+				if rotations then
+					PRT.CheckRotationTriggerCondition(rotations, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
+				end
 
-					-- Checking Health Percentage activation
-					if healthPercentages then
-						PRT.CheckUnitHealthPercentages(healthPercentages)
-					end
+				-- Checking Health Percentage activation
+				if healthPercentages then
+					PRT.CheckUnitHealthPercentages(healthPercentages)
+				end
 
-					-- Checking Resource Percentage activation
-					if powerPercentages then
-						PRT.CheckUnitPowerPercentages(powerPercentages)
-					end
+				-- Checking Resource Percentage activation
+				if powerPercentages then
+					PRT.CheckUnitPowerPercentages(powerPercentages)
+				end
 
-					-- Process Message Queue after activations
-					if timers or rotations or healthPercentages or powerPercentages then
-						PRT.ProcessMessageQueue()
-					end
+				-- Process Message Queue after activations
+				if timers or rotations or healthPercentages or powerPercentages then
+					PRT.ProcessMessageQueue()
+				end
 			end
 		end
 	end
