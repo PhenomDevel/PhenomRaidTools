@@ -30,6 +30,7 @@ local defaults = {
 }
 
 function PRT:OnInitialize()	
+	table.insert(defaults.profile.encounters, PRT.ExampleEncounter())
 	self.db = LibStub("AceDB-3.0"):New("PhenomRaidToolsDB", defaults, true)
 	
 	-- We hold the main frame within the global addon variable 

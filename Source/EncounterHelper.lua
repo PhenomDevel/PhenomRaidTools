@@ -110,19 +110,168 @@ PRT.EmptyEncounter = function()
         id = "Encounter ID",
         name = "Encounter Name", 
         Timers = {
-            PRT.EmptyTimer()
         },
 
         Rotations = {
-            PRT.EmptyRotation()
         },
 
         HealthPercentages = {
-            PRT.EmptyPercentage()
         },
 
         PowerPercentages = {
-            PRT.EmptyPercentage()
+        }
+    }
+end
+
+PRT.ExampleEncounter = function()
+    return {
+        id = 9999,
+        name = "Example", 
+        Timers = {
+            {
+                startCondition = {
+                    event = "ENCOUNTER_START",
+                    spellID = nil,
+                    source = nil,
+                    target = nil,
+                },
+                stopCondition = {
+                    event = nil,
+                    spellID = nil,
+                    source = nil,
+                    target = nil,
+                },
+                name = "Timer Name",
+                timings = {
+                    {
+                        seconds = 5,
+                        messages = {
+                            {
+                                message = "Message 5 seconds into the Encounter",
+                                duration = 5,
+                                targets = {
+                                    "ALL"
+                                },
+                                delay = 0
+                            }
+                        }
+                    },
+                    {
+                        seconds = 15,
+                        messages = {
+                            {
+                                message = "Message 15 seconds into the Encounter",
+                                duration = 5,
+                                targets = {
+                                    "ALL"
+                                },
+                                delay = 0
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        Rotations = {
+            {
+                triggerCondition = {
+                    event = "SPELL_CAST_START",
+                    spellID = 123456,
+                    source = nil,
+                    target = nil,
+                },
+                name = "Heal CDs for Ability X",
+                entries = {
+                    {
+                        messages = {
+                            {
+                                message = "Please use your Heal cooldown",
+                                duration = 5,
+                                targets = {
+                                    "PlayerA"
+                                },
+                                delay = 0
+                            }
+                        }
+                    },
+                    {
+                        messages = {
+                            {
+                                message = "Please use your Heal cooldown",
+                                duration = 5,
+                                targets = {
+                                    "PlayerB"
+                                },
+                                delay = 0
+                            }
+                        }
+                    },
+                    {
+                        messages = {
+                            {
+                                message = "Please use your Heal cooldown",
+                                duration = 5,
+                                targets = {
+                                    "PlayerC"
+                                },
+                                delay = 0
+                            }
+                        }
+                    }
+                },
+                shouldRestart = true,
+                ignoreAfterActivation = false,
+                ignoreDuration = 0
+            }
+        },
+
+        HealthPercentages = {
+            {
+                name = "Phase 2",
+                unitID = "boss1",
+                values = {
+                    {
+                        value = 60,
+                        messages = {
+                            {
+                                message = "Phase 2 starting soon",
+                                duration = 5,
+                                targets = {
+                                    "ALL"
+                                },
+                                delay = 0
+                            }
+                        }
+                    }
+                },
+                ignoreAfterActivation = false,
+                ignoreDuration = nil
+            }
+        },
+
+        PowerPercentages = {
+            {
+                name = "Evil Ability",
+                unitID = "player",
+                values = {
+                    {
+                        value = 90,
+                        messages = {
+                            {
+                                message = "Evil Ability is coming soon",
+                                duration = 5,
+                                targets = {
+                                    "ALL"
+                                },
+                                delay = 0
+                            }
+                        }
+                    }
+                },
+                ignoreAfterActivation = true,
+                ignoreDuration = 10
+            }
         }
     }
 end
