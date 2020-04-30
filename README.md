@@ -12,5 +12,7 @@ To get started just type `/prt` into your chat and PhenomRaidTools will open up.
 ## Docs
 TODO
 
-## Issues
+## Help
 TODO
+
+Alternatively you can enter our [Discord](https://discord.gg/j5yGbK) and ask for help there.
