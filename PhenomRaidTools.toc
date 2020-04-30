@@ -1,6 +1,6 @@
 ## Interface: 80205
 ## Title: PhenomRaidTools
-## Version: 0.0.0.1
+## Version: 1.0.0.0-ALPHA
 ## Author: Phenom
 ## SavedVariables: PhenomRaidToolsDB
 
