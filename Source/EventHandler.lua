@@ -62,6 +62,8 @@ function PRT:ENCOUNTER_END(event)
 	if PRT.currentEncounter then
 		PRT.currentEncounter.inFight = false
 	end	
+
+	PRT.ClearMessageQueue()
 end
 
 function PRT:PLAYER_REGEN_DISABLED(event)
@@ -84,6 +86,7 @@ function PRT:PLAYER_REGEN_ENABLED(event)
 		PRT.currentEncounter.inFight = false
 	end
 
+	PRT.ClearMessageQueue()
 	PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 end
 

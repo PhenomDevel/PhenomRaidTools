@@ -24,7 +24,8 @@ PRT.EmptyMessage = function()
         targets = {
             "ALL"
         },
-        delay = 0
+        delay = 0,
+        withSound = true
     }
 end
 

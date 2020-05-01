@@ -86,6 +86,10 @@ PRT.MessageWidget = function (message)
 	durationEditBox:SetLabel("Duration (s)")
 	durationEditBox:SetCallback("OnTextChanged", function(widget) message.duration = tonumber(widget:GetText()) end)
 
+	local withSoundCheckbox = PRT.CheckBox("With Sound?", message.withSound)
+    withSoundCheckbox:SetCallback("OnValueChanged", function(widget) message.withSound = widget:GetValue() end)
+    withSoundCheckbox:SetFullWidth(true)
+
 	if message then
 		if message.targets then
 			targetsEditBox:SetText(PRT.TargetsToString(message.targets))
@@ -107,6 +111,7 @@ PRT.MessageWidget = function (message)
 	messageWidget:AddChild(messageLabel)
 	messageWidget:AddChild(delayEditBox)
 	messageWidget:AddChild(durationEditBox)
+	messageWidget:AddChild(withSoundCheckbox)
 
 	return messageWidget
 end

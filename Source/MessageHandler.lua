@@ -20,9 +20,10 @@ MessageHandler.MessageToReceiverMessage = function(message)
     local target = message.target or ""
     local spellID = message.spellID or ""
     local duration = message.duration or ""
+    local withSound = message.withSound or ""
     local message = message.message or ""
     
-    return target.."?"..spellID.."#"..duration.."&"..message
+    return target.."?"..spellID.."#"..duration.."&"..message.."~"..withSound
 end
 
 MessageHandler.ExecuteMessageAction = function(message)
@@ -31,7 +32,13 @@ MessageHandler.ExecuteMessageAction = function(message)
         targetMessage.target = target
         targetMessage.duration = message.duration
         targetMessage.message = message.message
-        
+
+        if message.withSound then 
+            targetMessage.withSound = "t"
+        else 
+            targetMessage.withSound = "f"
+        end
+
         local receiverMessage = MessageHandler.MessageToReceiverMessage(targetMessage)
         
         if (UnitExists(targetMessage.target) )
@@ -86,4 +93,8 @@ PRT.AddMessagesToQueue = function(messages)
             PRT.AddMessageToQueue(message)
         end
     end
+end
+
+PRT.ClearMessageQueue = function()
+    PRT.MessageQueue = {}
 end

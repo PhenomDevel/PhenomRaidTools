@@ -25,7 +25,7 @@ PRT.PrintTable = function(prefix, t)
         for k, v in pairs(t) do
             if type(v) == "table" then
                 print(prefix.." ".."["..k.."]")
-                self:PrintTable(prefix.."  ", v)
+                PRT.PrintTable(prefix.."  ", v)
             else
                 if v == true then
                     print(prefix.." ".."["..k.."]".." - ".."true")

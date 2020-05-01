@@ -37,13 +37,13 @@ PRT.MaximizeWidget = function(widget)
     PRT.mainFrameContent:DoLayout()
  end
 
- PRT.TabGroupSelected = function(container, t, key, itemFunction, emptyItemFunction, deleteButtonText)
-	container:ReleaseChildren()
+ PRT.TabGroupSelected = function(widget, t, key, itemFunction, emptyItemFunction, deleteButtonText)
+	widget:ReleaseChildren()
 
 	if key == "new" then
 		local emptyItem = emptyItemFunction() or {}
 
-		PRT.AddNewTab(container, t, emptyItem)
+		PRT.AddNewTab(widget, t, emptyItem)
     else	
 		local item = nil
 			        
@@ -53,16 +53,16 @@ PRT.MaximizeWidget = function(widget)
 		
         local actualItem = itemFunction(item)
 		if actualItem then
-			container:AddChild(actualItem)
+			widget:AddChild(actualItem)
 		end
  
 		local deleteButton = AceGUI:Create("Button")
 		deleteButton:SetText(deleteButtonText or "delete")
-		deleteButton:SetCallback("OnClick", function() PRT.RemoveTab(container, t, key) end)
+		deleteButton:SetCallback("OnClick", function() PRT.RemoveTab(widget, t, key) end)
 	
-		container:AddChild(deleteButton)
-    end
-    
+		widget:AddChild(deleteButton)
+	end
+	
     PRT.mainFrameContent:DoLayout()
 end
 
