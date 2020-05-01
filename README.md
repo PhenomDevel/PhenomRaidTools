@@ -1,6 +1,7 @@
 # PhenomRaidTools
 
 ## TODOs
+- Add import/export of encounters
 
 ## Features
 TODO
