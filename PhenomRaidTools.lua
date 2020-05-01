@@ -37,6 +37,7 @@ function PRT:OnInitialize()
 	-- because we sometimes have to do a re-layout of the complete content
 	PRT.mainFrame = nil
 	PRT.mainFrameContent = nil
+	-- PRT.CreateOverlay()
 end
 
 function PRT:OnEnable()
