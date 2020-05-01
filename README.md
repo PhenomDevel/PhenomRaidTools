@@ -2,6 +2,7 @@
 
 ## TODOs
 - Add import/export of encounters
+- Add placeholders for interpolating event information (%target = target of the spell cast as target for the message etc.)
 
 ## Features
 TODO
