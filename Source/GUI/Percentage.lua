@@ -10,14 +10,20 @@ local Percentage = {}
 Percentage.PercentageValueWidget = function(value)
     local percentageValueWidget = PRT.SimpleGroup() 
     
-    local valueEditBox = PRT.EditBox("HP Percentage", value.value)
-    valueEditBox:SetCallback("OnTextChanged", function(widget) value.value = tonumber(widget:GetText()) value.name = widget:GetText().." %" end)
+    local valueEditBox = PRT.EditBox("percentageEntryPercent", value.value)
+    valueEditBox:SetCallback("OnTextChanged", 
+        function(widget) 
+            value.value = tonumber(widget:GetText()) 
+            value.name = widget:GetText().." %" 
+        end)
 
-    -- Messages
-    local messagesHeading = PRT.Heading("Messages")
+    local messagesHeading = PRT.Heading("messageHeading")
     local messagesTabs = PRT.TableToTabs(value.messages, true)
 	local messagesTabGroup = PRT.TabGroup(nil, messagesTabs)
-    messagesTabGroup:SetCallback("OnGroupSelected", function(widget, event, key) PRT.TabGroupSelected(widget, value.messages, key, PRT.MessageWidget, PRT.EmptyMessage, "Delete Message") end)
+    messagesTabGroup:SetCallback("OnGroupSelected", 
+        function(widget, event, key) 
+            PRT.TabGroupSelected(widget, value.messages, key, PRT.MessageWidget, PRT.EmptyMessage, "messageDeleteButton") 
+        end)
 
     PRT.SelectFirstTab(messagesTabGroup, value.messages)    	
 
@@ -31,26 +37,39 @@ end
 Percentage.PercentageWidget = function(percentage)
     local percentageWidget = PRT:SimpleGroup()
 
-    local nameEditBox = PRT.EditBox("Name", percentage.name)
-    nameEditBox:SetCallback("OnTextChanged", function(widget) percentage.unitID = widget:GetText() end)
+    local nameEditBox = PRT.EditBox("percentageName", percentage.name)
+    nameEditBox:SetCallback("OnTextChanged", 
+        function(widget) 
+            percentage.unitID = widget:GetText() 
+        end)
 
-    local unitIDEditBox = PRT.EditBox("Unit-ID", percentage.unitID)
-    unitIDEditBox:SetCallback("OnTextChanged", function(widget) percentage.unitID = widget:GetText() end)
+    local unitIDEditBox = PRT.EditBox("percentageUnitID", percentage.unitID)
+    unitIDEditBox:SetCallback("OnTextChanged", 
+        function(widget) 
+            percentage.unitID = widget:GetText() 
+        end)
     
-    local ignoreAfterActivationCheckBox = PRT.CheckBox("Check again?", percentage.ignoreAfterActivation)
-    ignoreAfterActivationCheckBox:SetCallback("OnValueChanged", function(widget) percentage.ignoreAfterActivation = widget:GetValue() end)
-    ignoreAfterActivationCheckBox:SetFullWidth(true)
+    local ignoreAfterActivationCheckBox = PRT.CheckBox("percentageCheckAgain", percentage.ignoreAfterActivation)
+    ignoreAfterActivationCheckBox:SetCallback("OnValueChanged", 
+        function(widget) 
+            percentage.ignoreAfterActivation = widget:GetValue() 
+        end)
 
-    local ignoreDurationEditBox = PRT.EditBox("Delay for next check (s)", percentage.ignoreDuration)
-    ignoreDurationEditBox:SetCallback("OnTextChanged", function(widget) percentage.ignoreDuration = tonumber(widget:GetText()) end)
+    local ignoreDurationEditBox = PRT.EditBox("percentageCheckDelay", percentage.ignoreDuration)
+    ignoreDurationEditBox:SetCallback("OnTextChanged", 
+        function(widget) 
+            percentage.ignoreDuration = tonumber(widget:GetText()) 
+        end)
 
     local tabs = PRT.TableToTabs(percentage.values, true)
 	local valuesTabGroupWidget = PRT.TabGroup(nil, tabs)
-    valuesTabGroupWidget:SetCallback("OnGroupSelected", function(widget, event,key) PRT.TabGroupSelected(widget, percentage.values, key, Percentage.PercentageValueWidget, PRT.EmptyPercentageValue, "Delete Rotation Entry") end)    
+    valuesTabGroupWidget:SetCallback("OnGroupSelected", 
+        function(widget, event,key) 
+            PRT.TabGroupSelected(widget, percentage.values, key, Percentage.PercentageValueWidget, PRT.EmptyPercentageValue, "percentageEntryDeleteButton") 
+        end)    
 
     PRT.SelectFirstTab(valuesTabGroupWidget, percentage.values)
 
-    -- Setup Widget
     percentageWidget:AddChild(nameEditBox)
     percentageWidget:AddChild(unitIDEditBox)
     percentageWidget:AddChild(ignoreAfterActivationCheckBox)
@@ -69,7 +88,10 @@ PRT.HealthPercentageTabGroup = function(percentages)
 	local tabs = PRT.TableToTabs(percentages, true)
 	local percentagesTabGroupWidget = PRT.TabGroup(nil, tabs)
  
-    percentagesTabGroupWidget:SetCallback("OnGroupSelected", function(widget, event, key) PRT.TabGroupSelected(widget, percentages, key, Percentage.PercentageWidget, PRT.EmptyPercentage, "Delete Percentage") end)
+    percentagesTabGroupWidget:SetCallback("OnGroupSelected", 
+        function(widget, event, key) 
+            PRT.TabGroupSelected(widget, percentages, key, Percentage.PercentageWidget, PRT.EmptyPercentage, "percentageDeleteButton") 
+        end)
 
     PRT.SelectFirstTab(percentagesTabGroupWidget, percentages)  
 
@@ -80,7 +102,10 @@ PRT.PowerPercentageTabGroup = function(percentages)
 	local tabs = PRT.TableToTabs(percentages, true)
 	local powersTabGroupWidget = PRT.TabGroup(nil, tabs)
  
-    powersTabGroupWidget:SetCallback("OnGroupSelected", function(widget, event, key) PRT.TabGroupSelected(widget, percentages, key, Percentage.PercentageWidget, PRT.EmptyPercentage, "Delete Percentage") end)
+    powersTabGroupWidget:SetCallback("OnGroupSelected", 
+        function(widget, event, key) 
+            PRT.TabGroupSelected(widget, percentages, key, Percentage.PercentageWidget, PRT.EmptyPercentage, "percentageDeleteButton") 
+        end)
 
     PRT.SelectFirstTab(powersTabGroupWidget, percentages)  
 

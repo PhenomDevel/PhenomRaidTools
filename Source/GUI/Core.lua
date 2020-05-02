@@ -1,7 +1,7 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 local AceGUI = LibStub("AceGUI-3.0")
-
+local AceSerializer = LibStub("AceSerializer-3.0")
 
 -------------------------------------------------------------------------------
 -- Local Helper
@@ -22,7 +22,10 @@ PRT.CreateMainFrame = function(profile)
 	PRT.mainFrame:SetTitle("Phenom Raid Tools")
 	PRT.mainFrame:SetStatusText("Phenom Raid Tools - Encounter Configuration")
 	PRT.mainFrame:SetLayout("Fill")
-	PRT.mainFrame:SetCallback("OnClose",function(widget) AceGUI:Release(widget) end)
+	PRT.mainFrame:SetCallback("OnClose",
+		function(widget) 
+			AceGUI:Release(widget) 
+		end)
 	PRT.mainFrame:SetWidth(1400)
 	PRT.mainFrame:SetHeight(800)
 
@@ -31,22 +34,27 @@ PRT.CreateMainFrame = function(profile)
 	PRT.mainFrameContent:SetFullHeight(true)
 	PRT.mainFrameContent:SetAutoAdjustHeight(true)
 
-	-- Add options gui elements
-	local optionsHeading = PRT.Heading("Options")
-
-	-- Add testmode gui elements
-	local testModeCheckbox = PRT.CheckBox("Test mode?", profile.testMode)
-	testModeCheckbox:SetCallback("OnValueChanged", function(widget) profile.testMode = widget:GetValue() end)	
-
-	local testEncounterIDEditBox = PRT.EditBox("Test Encounter ID", profile.testEncounterID)	
-	testEncounterIDEditBox:SetCallback("OnTextChanged", function(widget) profile.testEncounterID = tonumber(widget:GetText()) end)
+	local optionsHeading = PRT.Heading("optionsHeading")
 	
-	-- Add debugmode gui elements
-	local debugModeCheckbox = PRT.CheckBox("Debug mode?", profile.debugMode)
-	debugModeCheckbox:SetCallback("OnValueChanged", function(widget) profile.debugMode = widget:GetValue() end)
-    debugModeCheckbox:SetFullWidth(true)
+	local testModeCheckbox = PRT.CheckBox("optionsTestMode", profile.testMode)
+	testModeCheckbox:SetCallback("OnValueChanged", 
+		function(widget) 
+			profile.testMode = widget:GetValue() 
+		end)	
 
-	local encounterHeading = PRT.Heading("Encounters")
+	local testEncounterIDEditBox = PRT.EditBox("optionsTestEncounterID", profile.testEncounterID, true)	
+	testEncounterIDEditBox:SetCallback("OnTextChanged", 
+		function(widget) 
+			profile.testEncounterID = tonumber(widget:GetText()) 
+		end)
+	
+	local debugModeCheckbox = PRT.CheckBox("optionsDebugMode", profile.debugMode)
+	debugModeCheckbox:SetCallback("OnValueChanged", 
+		function(widget) 
+			profile.debugMode = widget:GetValue() 
+		end)
+
+	local encounterHeading = PRT.Heading("encounterHeading")
 
 	PRT.mainFrameContent:AddChild(optionsHeading)
 	PRT.mainFrameContent:AddChild(testModeCheckbox)

@@ -12,10 +12,13 @@ Rotation.RotationEntryWidget = function(entry)
     local rotationEntryWidget = PRT:SimpleGroup() 
 
     -- Messages
-    local messagesHeading = PRT.Heading("Messages")
+    local messagesHeading = PRT.Heading("messageHeading")
     local messagesTabs = PRT.TableToTabs(entry.messages, true)
 	local messagesTabGroup = PRT.TabGroup(nil, messagesTabs)
-    messagesTabGroup:SetCallback("OnGroupSelected", function(widget, event, key) PRT.TabGroupSelected(widget, entry.messages, key, PRT.MessageWidget, PRT.EmptyMessage, "Delete Message") end)
+    messagesTabGroup:SetCallback("OnGroupSelected", 
+        function(widget, event, key) 
+            PRT.TabGroupSelected(widget, entry.messages, key, PRT.MessageWidget, PRT.EmptyMessage, "messageDeleteButton") 
+        end)
 
     PRT.SelectFirstTab(messagesTabGroup, entry.messages)    	
 
@@ -28,28 +31,41 @@ end
 Rotation.RotationWidget = function(rotation)
     local rotationWidget = PRT:SimpleGroup()
 
-    local nameEditBox = PRT.EditBox("Name", rotation.name)
+    local nameEditBox = PRT.EditBox("rotationName", rotation.name)    
+    nameEditBox:SetCallback("OnTextChanged", 
+        function(widget) 
+            rotation.name = widget:GetText() 
+        end)
+
+    local shouldRestartCheckBox =  PRT.CheckBox("rotationShouldRestart", rotation.shouldRestart)
+    shouldRestartCheckBox:SetCallback("OnValueChanged", 
+        function(widget) 
+            rotation.shouldRestart = widget:GetValue() 
+        end)
     
-    nameEditBox:SetCallback("OnTextChanged", function(widget) rotation.name = widget:GetText() end)
+    local ignoreAfterActivationCheckBox = PRT.CheckBox("rotationIgnoreAfterActivation", rotation.ignoreAfterActivation)
+    ignoreAfterActivationCheckBox:SetCallback("OnValueChanged", 
+        function(widget) 
+            rotation.ignoreAfterActivation = widget:GetValue() 
+        end)
 
-    local shouldRestartCheckBox =  PRT.CheckBox("Should rotation restart?", rotation.shouldRestart)
-    shouldRestartCheckBox:SetCallback("OnValueChanged", function(widget) rotation.shouldRestart = widget:GetValue() end)
-    shouldRestartCheckBox:SetFullWidth(true)
-    
-    local ignoreAfterActivationCheckBox = PRT.CheckBox("Ignore after activation?", rotation.ignoreAfterActivation)
-    ignoreAfterActivationCheckBox:SetCallback("OnValueChanged", function(widget) rotation.ignoreAfterActivation = widget:GetValue() end)
+    local ignoreDurationEditBox = PRT.EditBox("rotationIgnoreDuration", rotation.ignoreDuration)
+    ignoreDurationEditBox:SetCallback("OnTextChanged", 
+        function(widget) 
+            rotation.ignoreDuration = widget:GetText() 
+        end)
 
-    local ignoreDurationEditBox = PRT.EditBox("Ignore duration", rotation.ignoreDuration)
-    ignoreDurationEditBox:SetCallback("OnTextChanged", function(widget) rotation.ignoreDuration = widget:GetText() end)
-
-    local triggerConditionHeading = PRT.Heading("Trigger Condition")
+    local triggerConditionHeading = PRT.Heading("rotationTriggerConditionHeading")
     local triggerCondition = PRT.ConditionWidget(rotation.triggerCondition)
 
-    local rotationsHeading = PRT.Heading("Rotation Entries")
+    local rotationsHeading = PRT.Heading("rotationHeading")
 
     local tabs = PRT.TableToTabs(rotation.entries, true)
 	local entriesTabGroupWidget = PRT.TabGroup(nil, tabs)
-    entriesTabGroupWidget:SetCallback("OnGroupSelected", function(widget, event,key) PRT.TabGroupSelected(widget, rotation.entries, key, Rotation.RotationEntryWidget, PRT.EmptyRotationEntry, "Delete Rotation Entry") end)    
+    entriesTabGroupWidget:SetCallback("OnGroupSelected", 
+        function(widget, event,key) 
+            PRT.TabGroupSelected(widget, rotation.entries, key, Rotation.RotationEntryWidget, PRT.EmptyRotationEntry, "rotationEntryDeleteButton") 
+        end)    
 
     PRT.SelectFirstTab(entriesTabGroupWidget, rotation.entries)
 
@@ -74,7 +90,10 @@ PRT.RotationTabGroup = function(rotations)
 	local tabs = PRT.TableToTabs(rotations, true)
 	local rotationsTabGroupWidget = PRT.TabGroup(nil, tabs)
  
-    rotationsTabGroupWidget:SetCallback("OnGroupSelected", function(widget, event, key) PRT.TabGroupSelected(widget, rotations, key, Rotation.RotationWidget, PRT.EmptyRotation, "Delete Rotation") end)
+    rotationsTabGroupWidget:SetCallback("OnGroupSelected", 
+    function(widget, event, key) 
+        PRT.TabGroupSelected(widget, rotations, key, Rotation.RotationWidget, PRT.EmptyRotation, "rotationDeleteButton") 
+    end)
     
     PRT.SelectFirstTab(rotationsTabGroupWidget, rotations)
 

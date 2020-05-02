@@ -100,6 +100,10 @@ PRT.CopyTable = function(orig, copies)
     return copy
 end
 
+PRT.Error = function(...)
+    PRT:Print("|c"..PRT.db.profile.colors.error, ...)
+end
+
 PRT.Debug = function(...)
     if PRT.db.profile.debugMode then
         PRT:Print("|c"..PRT.db.profile.colors.general, ...)

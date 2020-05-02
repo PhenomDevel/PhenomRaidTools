@@ -59,7 +59,6 @@ PRT.CreateOverlay = function()
        end
   end)
   
-
    overlay:SetClampedToScreen(true)
    overlay:RegisterForDrag("LeftButton")
    overlay:SetScale(1)

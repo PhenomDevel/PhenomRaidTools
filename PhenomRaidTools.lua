@@ -24,6 +24,7 @@ local defaults = {
 			timers = "FFFFF569",
 			rotations = "FF9482C9",
 			percentages = "FFABD473",
+			error = "FFFF0000"
 
 		}
 	}

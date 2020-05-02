@@ -1,6 +1,7 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 local AceGUI = LibStub("AceGUI-3.0")
+local AceSerializer = LibStub("AceSerializer-3.0")
 
 local Encounter = {}
 
@@ -44,24 +45,29 @@ Encounter.EncounterWidget = function(encounter)
 	local encounterWidget = PRT.SimpleGroup()
 	encounterWidget:SetLayout("Flow")
 
-	local idEditBox = PRT.EditBox("ID", encounter.id)	
+	local idEditBox = PRT.EditBox("encounterID", encounter.id)	
 	idEditBox:SetCallback("OnTextChanged", function(widget) encounter.id = tonumber(widget:GetText()) end)
 
-	local nameEditBox = PRT.EditBox("Name", encounter.name)
+	local nameEditBox = PRT.EditBox("encounterName", encounter.name)
 	nameEditBox:SetCallback("OnTextChanged", function(widget) encounter.name = widget:GetText() end)
 
+	-- TODO: Translations
 	local tabs = {
 		{value = "timers", text = "Timers"},
 		{value = "rotations", text = "Rotations"},
 		{value = "healthPercentages", text = "Health Percentages"},
 		{value = "powerPercentages", text = "Power Percentages"}
 	}
+
 	local triggerTabGroup = PRT.TabGroup(nil, tabs)
-	triggerTabGroup:SetCallback("OnGroupSelected", function(widget, event, key) Encounter.TriggerTabGroupSelected(widget, encounter, key) end)	
+	triggerTabGroup:SetCallback("OnGroupSelected", 
+		function(widget, event, key) 
+			Encounter.TriggerTabGroupSelected(widget, encounter, key) 
+		end)	
 
 	triggerTabGroup:SelectTab("timers")
 
-	local triggerHeading = PRT.Heading("Trigger")
+	local triggerHeading = PRT.Heading("encounterTriggerHeading")
 	
 	encounterWidget:AddChild(idEditBox)
 	encounterWidget:AddChild(nameEditBox)
@@ -78,8 +84,11 @@ end
 PRT.EncounterTabGroup = function(encounters)
 	local tabs = PRT.TableToTabs(encounters, true)
 	local encountersTabGroupWidget = PRT.TabGroup(nil, tabs)
- 
-	encountersTabGroupWidget:SetCallback("OnGroupSelected", function(widget, event, key) PRT.TabGroupSelected(widget, encounters, key, Encounter.EncounterWidget, PRT.EmptyEncounter, "Delete Encounter") end)
+ 	
+	encountersTabGroupWidget:SetCallback("OnGroupSelected", 
+		function(widget, event, key) 
+			PRT.TabGroupSelected(widget, encounters, key, Encounter.EncounterWidget, PRT.EmptyEncounter, "encounterDeleteButton") 
+		end)
 
 	if encounters then
 		if table.getn(encounters) > 0 then

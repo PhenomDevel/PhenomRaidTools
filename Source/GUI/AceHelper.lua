@@ -2,17 +2,33 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 local AceGUI = LibStub("AceGUI-3.0")
 
+local AceHelper = {}
 
 -------------------------------------------------------------------------------
--- Public API
+-- Local Helper
 
-PRT.MaximizeWidget = function(widget)
+AceHelper.AddTooltip = function(widget, tooltip)
+	if tooltip and widget then
+		widget:SetCallback("OnEnter", function(widget) 
+			GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
+			GameTooltip:AddLine(tooltip)	
+			GameTooltip:Show()
+		end)
+
+		widget:SetCallback("OnLeave", 
+		function(widget) 
+			GameTooltip:FadeOut() 
+		end)
+	end	
+end
+
+AceHelper.MaximizeWidget = function(widget)
 	widget:SetFullWidth(true)
 	widget:SetFullHeight(true)
 	widget:SetAutoAdjustHeight(true)
- end
+end
 
- PRT.AddNewTab = function(widget, t, item)
+AceHelper.AddNewTab = function(widget, t, item)
     if not t then
         t = {}
     end
@@ -22,9 +38,9 @@ PRT.MaximizeWidget = function(widget)
     widget:SelectTab(table.getn(t))
     
     PRT.mainFrameContent:DoLayout()
- end
+end
 
- PRT.RemoveTab = function(widget, t, item)
+AceHelper.RemoveTab = function(widget, t, item)
 	table.remove(t, item)
 	widget:SetTabs(PRT.TableToTabs(t, true))
 	widget:DoLayout()
@@ -35,15 +51,19 @@ PRT.MaximizeWidget = function(widget)
     end
     
     PRT.mainFrameContent:DoLayout()
- end
+end
 
- PRT.TabGroupSelected = function(widget, t, key, itemFunction, emptyItemFunction, deleteButtonText)
+
+-------------------------------------------------------------------------------
+-- Public API
+
+PRT.TabGroupSelected = function(widget, t, key, itemFunction, emptyItemFunction, deleteTextID)
 	widget:ReleaseChildren()
 
 	if key == "new" then
 		local emptyItem = emptyItemFunction() or {}
 
-		PRT.AddNewTab(widget, t, emptyItem)
+		AceHelper.AddNewTab(widget, t, emptyItem)
     else	
 		local item = nil
 			        
@@ -56,9 +76,10 @@ PRT.MaximizeWidget = function(widget)
 			widget:AddChild(actualItem)
 		end
  
+		local deleteButtonText = PRT.Strings.GetText(deleteTextID)
 		local deleteButton = AceGUI:Create("Button")
-		deleteButton:SetText(deleteButtonText or "delete")
-		deleteButton:SetCallback("OnClick", function() PRT.RemoveTab(widget, t, key) end)
+		deleteButton:SetText(deleteButtonText)
+		deleteButton:SetCallback("OnClick", function() AceHelper.RemoveTab(widget, t, key) end)
 	
 		widget:AddChild(deleteButton)
 	end
@@ -66,66 +87,109 @@ PRT.MaximizeWidget = function(widget)
     PRT.mainFrameContent:DoLayout()
 end
 
-PRT.TabGroup = function(title, tabs)
+PRT.TabGroup = function(textID, tabs)
+	local text = PRT.Strings.GetText(textID)
 	local widget = AceGUI:Create("TabGroup")
-    if title then
-        widget:SetTitle(title)
-    end
+	
+	widget:SetTitle(text)
 	widget:SetTabs(tabs)
-    PRT.MaximizeWidget(widget)
+
+    AceHelper.MaximizeWidget(widget)
  
 	return widget
  end
 
- PRT.Heading = function(title)
+ PRT.Button = function(textID, addTooltip)
+	local text = PRT.Strings.GetText(textID)
+
+	local widget = AceGUI:Create("Button")
+
+	if addTooltip then 		
+		local tooltip = PRT.Strings.GetTooltip(textID)
+		AceHelper.AddTooltip(widget, tooltip)
+	end
+
+	widget:SetText(text)
+
+	return widget
+ end
+
+ PRT.Heading = function(textID)
+	local text = PRT.Strings.GetText(textID)
+
 	local widget = AceGUI:Create("Heading")
-	widget:SetText(title)
+
+	widget:SetText(text)
     widget:SetRelativeWidth(1)
 
 	return widget
  end
  
- PRT.Label = function(label)
+ PRT.Label = function(textID)
+	local text = PRT.Strings.GetText(textID)
+
 	local widget = AceGUI:Create("Label")
-	widget:SetText(label)
+
+	widget:SetText(text)
 
 	return widget
  end
 
- PRT.EditBox = function(label, value)
+ PRT.EditBox = function(textID, value, addTooltip)
+	local text = PRT.Strings.GetText(textID)
+
 	local widget = AceGUI:Create("EditBox")
-	widget:SetLabel(label)
+	
+	if addTooltip then 
+		local tooltip = PRT.Strings.GetTooltip(textID)
+		AceHelper.AddTooltip(widget, tooltip)
+	end
+
+	widget:SetLabel(text)
 	widget:SetText(value)
 	widget:SetWidth(200)
  
 	return widget
  end
 
- PRT.Dropdown = function(label, values, value)
+ PRT.Dropdown = function(textID, values, value)	
+	local text = PRT.Strings.GetText(textID)
+
 	local dropdownItems = {}
 	for i,v in ipairs(values) do
 		dropdownItems[v.id] = v.name
  	end
 
 	local widget = AceGUI:Create("Dropdown")
-	widget:SetLabel(label)
+
+	widget:SetLabel(text)
 	widget:SetText(value)
 	widget:SetWidth(200)
 	widget:SetList(dropdownItems)
+
 	return widget
  end
 
- PRT.CheckBox = function(label, value)
+ PRT.CheckBox = function(textID, value, addTooltip)	
+	local text = PRT.Strings.GetText(textID)	
+
 	local widget = AceGUI:Create("CheckBox")
-	widget:SetLabel(label)
+
+	if addTooltip then 
+		local tooltip = PRT.Strings.GetTooltip(textID)
+		AceHelper.AddTooltip(widget, tooltip)
+	end
+
+	widget:SetLabel(text)
 	widget:SetValue(value)
+	widget:SetRelativeWidth(1)
  
 	return widget
  end
 
  PRT.SimpleGroup = function()
     local widget = AceGUI:Create("SimpleGroup")    
-    PRT.MaximizeWidget(widget)
+    AceHelper.MaximizeWidget(widget)
     widget:SetLayout("Flow")
 
     return widget
