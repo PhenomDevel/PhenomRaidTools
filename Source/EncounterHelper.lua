@@ -145,10 +145,10 @@ PRT.ExampleEncounter = function()
                 name = "Timer Name",
                 timings = {
                     {
-                        seconds = 5,
+                        seconds = 1,
                         messages = {
                             {
-                                message = "Message 5 seconds into the Encounter",
+                                message = "Message 1 second into the Encounter - %s",
                                 duration = 5,
                                 targets = {
                                     "ALL"
@@ -158,10 +158,10 @@ PRT.ExampleEncounter = function()
                         }
                     },
                     {
-                        seconds = 15,
+                        seconds = 5,
                         messages = {
                             {
-                                message = "Message 15 seconds into the Encounter",
+                                message = "Message 5 seconds into the Encounter",
                                 duration = 5,
                                 targets = {
                                     "ALL"
@@ -253,7 +253,7 @@ PRT.ExampleEncounter = function()
 
         PowerPercentages = {
             {
-                name = "Evil Ability",
+                name = "Players power reaches 90",
                 unitID = "player",
                 values = {
                     {
