@@ -1,7 +1,6 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 local AceGUI = LibStub("AceGUI-3.0")
-local AceSerializer = LibStub("AceSerializer-3.0")
 
 local Encounter = {}
 
@@ -51,6 +50,12 @@ Encounter.EncounterWidget = function(encounter)
 	local nameEditBox = PRT.EditBox("encounterName", encounter.name)
 	nameEditBox:SetCallback("OnTextChanged", function(widget) encounter.name = widget:GetText() end)
 
+	local exportButton = PRT.Button("encounterExport")
+	exportButton:SetCallback("OnClick", 
+		function(widget) 
+			PRT.CreateExportEncounterFrame(encounter)
+		end)
+
 	-- TODO: Translations
 	local tabs = {
 		{value = "timers", text = "Timers"},
@@ -71,6 +76,7 @@ Encounter.EncounterWidget = function(encounter)
 	
 	encounterWidget:AddChild(idEditBox)
 	encounterWidget:AddChild(nameEditBox)
+	encounterWidget:AddChild(exportButton)
 	encounterWidget:AddChild(triggerHeading)
 	encounterWidget:AddChild(triggerTabGroup)
 

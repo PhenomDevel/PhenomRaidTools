@@ -1,36 +1,48 @@
-local importButton = PRT.Button("encounterImport")
-importButton:SetCallback("OnClick", 
-function(widget) 
-    PRT.Debug("Import") 
-    local frame = AceGUI:Create("Frame")
-    frame:SetTitle("Import Encounter")
-    frame:SetLayout("Fill")
+local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+
+local AceGUI = LibStub("AceGUI-3.0")
+local AceSerializer = LibStub("AceSerializer-3.0")
+
+
+-------------------------------------------------------------------------------
+-- Public API
+
+PRT.CreateImportEncounterFrame = function(encounters)
+    local importFrame = AceGUI:Create("Frame")
+    importFrame:SetTitle("Import Encounter")
+    importFrame:SetLayout("Fill")
     
-    local importBox = AceGUI:Create("MultiLineEditBox")
-    importBox:SetLabel("String")
+    local importDataBox = AceGUI:Create("MultiLineEditBox")
+    importDataBox:SetLabel("String")
 
-    frame:AddChild(importBox)
+    importFrame:AddChild(importDataBox)
 
-    frame:SetCallback("OnClose", function(widget)
-        local worked, t = AceSerializer:Deserialize(importBox:GetText())
-        PRT.PrintTable("", t)
-    end)
+    importFrame:SetCallback("OnClose", function(widget)
+        local worked, encounter = AceSerializer:Deserialize(importDataBox:GetText())        
+        if worked == true then
+            table.insert(encounters, encounter)
+            PRT.mainFrame:ReleaseChildren()
+            PRT.mainFrame:AddChild(PRT.CreateMainFrameContent(PRT.mainFrame, PRT.db.profile))            
+        else
+            if not (importDataBox:GetText() == "") then
+                PRT.Error("Import was not successfull.")
+            end
+        end
+    end)    
 
-    frame:Show()
-end)
+    importFrame:Show()
+end
 
-local exportButton = PRT.Button("encounterExport")
-exportButton:SetCallback("OnClick", 
-function() 
-    PRT.Debug("Export") 
-    local frame = AceGUI:Create("Frame")
-    frame:SetTitle("Import Encounter")
-    frame:SetLayout("Fill")
+PRT.CreateExportEncounterFrame = function(encounter)
+    local exportFrame = AceGUI:Create("Frame")
+    exportFrame:SetTitle("Export Encounter")
+    exportFrame:SetLayout("Fill")
     
-    local importBox = AceGUI:Create("MultiLineEditBox")
-    importBox:SetLabel("String")
-    importBox:SetText(AceSerializer:Serialize(encounter))
+    local exportDataBox = AceGUI:Create("MultiLineEditBox")
+    exportDataBox:SetLabel("String")
+    exportDataBox:SetText(AceSerializer:Serialize(encounter))
 
-    frame:AddChild(importBox)
-    frame:Show()
-end)
+    exportFrame:AddChild(exportDataBox)    
+    
+    exportFrame:Show()    
+end

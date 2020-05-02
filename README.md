@@ -1,7 +1,6 @@
 # PhenomRaidTools
 
 ## TODOs
-- Add import/export of encounters
 - Add placeholders for interpolating event information (%target = target of the spell cast as target for the message etc.)
 - Add condition met counter for timers (after X conditon mets it shoulkd trigger not ion first alwys)
 

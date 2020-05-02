@@ -14,6 +14,7 @@ Source/EncounterHelper.lua
 Source/EventHandler.lua
 Source/MessageHandler.lua
 Source/TriggerHandler.lua
+Source/ImportExport.lua
 
 Source/GUI/AceHelper.lua
 Source/GUI/Common.lua
