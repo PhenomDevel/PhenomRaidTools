@@ -59,6 +59,7 @@ PRT.MessageWidget = function (message)
 		function(widget) 
 			message.message = widget:GetText() 
 		end)
+	messageEditBox:SetRelativeWidth(1)
 
 	local delayEditBox = PRT.EditBox("messageDelay", message.delay, true)	
 	delayEditBox:SetCallback("OnTextChanged", 
@@ -79,9 +80,9 @@ PRT.MessageWidget = function (message)
 		end)
 
 	messageWidget:AddChild(targetsEditBox)
-	messageWidget:AddChild(messageEditBox)
 	messageWidget:AddChild(delayEditBox)
-	messageWidget:AddChild(durationEditBox)
+	messageWidget:AddChild(durationEditBox)	
+	messageWidget:AddChild(messageEditBox)
 	messageWidget:AddChild(withSoundCheckbox)
 
 	return messageWidget

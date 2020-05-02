@@ -7,8 +7,8 @@
 embeds.xml
 
 PhenomRaidTools.lua
-Strings.lua
 
+Source/Strings.lua
 Source/Utils.lua
 Source/EncounterHelper.lua
 Source/EventHandler.lua
