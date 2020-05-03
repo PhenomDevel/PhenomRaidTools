@@ -41,7 +41,7 @@ PRT.UnregisterEssentialEvents = function()
 	end
 end
 
-function PRT:ENCOUNTER_START(event, encounterID, encounterName)
+function PRT:ENCOUNTER_START(event, encounterID, encounterName)	
 	PRT.Debug("Encounter started - ", encounterID, encounterName)
 	if not self.db.profile.testMode then
 		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
@@ -56,7 +56,8 @@ function PRT:ENCOUNTER_START(event, encounterID, encounterName)
 	PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 end
 
-function PRT:ENCOUNTER_END(event)
+function PRT:ENCOUNTER_END(event)	
+	PRT.Debug("Encounter ended.")	
 	PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 	self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	if PRT.currentEncounter then
@@ -67,6 +68,7 @@ function PRT:ENCOUNTER_END(event)
 end
 
 function PRT:PLAYER_REGEN_DISABLED(event)
+	PRT.Debug("Combat started.")
 	if self.db.profile.testMode then
 		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 		PRT.currentEncounter = {}

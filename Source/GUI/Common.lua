@@ -14,25 +14,46 @@ PRT.ConditionWidget = function(condition)
 	local eventEditBox = PRT.EditBox("conditionEvent", condition.event, true)
 	eventEditBox:SetCallback("OnTextChanged", 
 		function(widget) 
-			condition.event = widget:GetText() 
+			local text = widget:GetText()
+			if text == "" then
+				condition.event = nil
+			else
+				condition.event = text
+			end	
 		end)
 	
 	local spellIDEditBox = PRT.EditBox("conditionSpellID", condition.spellID, true)
 	spellIDEditBox:SetCallback("OnTextChanged", 
 		function(widget) 
-			condition.spellID = tonumber(widget:GetText()) 
+			local text = tonumber(widget:GetText()) 
+			if text == "" then
+				condition.spellID = nil
+			else
+				condition.spellID = text
+			end	
 		end)
 
 	local targetEditBox = PRT.EditBox("conditionTarget", condition.target, true)
 	targetEditBox:SetCallback("OnTextChanged", 
-		function(widget) 
-			condition.target = widget:GetText() 
+		function(widget)
+			local text = widget:GetText()
+			if text == "" then
+				condition.target = nil
+			else
+				condition.target = text
+			end			
 		end)
 
 	local sourceEditBox = PRT.EditBox("conditionSource", condition.source, true)
 	sourceEditBox:SetCallback("OnTextChanged", 
 		function(widget) 
-			condition.source = widget:GetText() 
+			local text = widget:GetText()
+			print(text)
+			if text == "" then
+				condition.source = nil
+			else
+				condition.source = text
+			end	
 		end)
 
 	conditionGroupWidget:AddChild(eventEditBox)	
