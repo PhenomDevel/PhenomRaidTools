@@ -22,7 +22,7 @@ PRT.CreateMainFrameContent = function(container, profile)
 	PRT.mainFrameContent:SetFullHeight(true)
 	PRT.mainFrameContent:SetAutoAdjustHeight(true)
 
-	local optionsHeading = PRT.Heading("optionsHeading")
+	local optionsGroup = PRT.InlineGroup("optionsHeading")
 	
 	local testModeCheckbox = PRT.CheckBox("optionsTestMode", profile.testMode)
 	testModeCheckbox:SetCallback("OnValueChanged", 
@@ -42,7 +42,7 @@ PRT.CreateMainFrameContent = function(container, profile)
 			profile.debugMode = widget:GetValue() 
 		end)
 
-	local encounterHeading = PRT.Heading("encounterHeading")
+	local encounterGroup = PRT.InlineGroup("encounterHeading")
 
 	local importButton = PRT.Button("encounterImport")
 	importButton:SetCallback("OnClick", 
@@ -50,13 +50,15 @@ PRT.CreateMainFrameContent = function(container, profile)
 			PRT.CreateImportEncounterFrame(profile.encounters)
 		end)
 
-	PRT.mainFrameContent:AddChild(optionsHeading)
-	PRT.mainFrameContent:AddChild(testModeCheckbox)
-	PRT.mainFrameContent:AddChild(testEncounterIDEditBox)
-	PRT.mainFrameContent:AddChild(debugModeCheckbox)
-	PRT.mainFrameContent:AddChild(encounterHeading)
-	PRT.mainFrameContent:AddChild(importButton)
-	PRT.mainFrameContent:AddChild(PRT.EncounterTabGroup(profile.encounters))
+	optionsGroup:AddChild(testModeCheckbox)
+	optionsGroup:AddChild(testEncounterIDEditBox)
+	optionsGroup:AddChild(debugModeCheckbox)
+
+	encounterGroup:AddChild(importButton)
+	encounterGroup:AddChild(PRT.EncounterTabGroup(profile.encounters))
+
+	PRT.mainFrameContent:AddChild(optionsGroup)
+	PRT.mainFrameContent:AddChild(encounterGroup)
 
 	return PRT.mainFrameContent
 end

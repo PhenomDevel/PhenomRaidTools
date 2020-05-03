@@ -77,11 +77,9 @@ PRT.TabGroupSelected = function(widget, t, key, itemFunction, emptyItemFunction,
             item = t[key]
 		end
 		
-        local actualItem = itemFunction(item)
-		if actualItem then
-			widget:AddChild(actualItem)
-		end
- 
+		-- Has to add its childs to widget
+		itemFunction(item, widget) 
+		
 		local deleteButtonText = PRT.Strings.GetText(deleteTextID)
 		local deleteButton = AceGUI:Create("Button")
 		deleteButton:SetText(deleteButtonText)
@@ -197,6 +195,17 @@ PRT.TabGroup = function(textID, tabs)
     local widget = AceGUI:Create("SimpleGroup")    
     AceHelper.MaximizeWidget(widget)
     widget:SetLayout("Flow")
+
+    return widget
+ end
+
+ PRT.InlineGroup = function(textID)
+	local text = PRT.Strings.GetText(textID)
+	local widget = AceGUI:Create("InlineGroup")    
+	
+	widget:SetFullWidth(true)
+	widget:SetLayout("Flow")
+	widget:SetTitle(text)
 
     return widget
  end

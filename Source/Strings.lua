@@ -73,6 +73,12 @@ local Strings = {
     rotationTriggerConditionHeading = {
         text = "Rotation Trigger"
     },
+    rotationOptionsHeading = {
+        text = "Rotation"
+    },
+    rotationTriggerConditionHeading = {
+        text = "Condition"
+    },
     
 
     -- RotationEntries
@@ -100,6 +106,9 @@ local Strings = {
     percentageCheckDelay = {
         text = "Check again after (s)"
     },
+    percentageOptionsHeading = {
+        text = "Percentage"
+    },
 
     -- Percentage Entries
     percentageEntryDeleteButton = {
@@ -110,6 +119,9 @@ local Strings = {
     },
     percentageEntryOperatorDropdown = {
         text = "Operator"
+    },
+    percentageEntryOptionsHeading = {
+        text = "Rotation Entry"
     },
     
     -- Encounters
@@ -134,6 +146,9 @@ local Strings = {
     encounterDeleteButton = {
         text = "Delete Encounter"
     },
+    encounterOptionsHeading = {
+        text = "Encounter"
+    },
 
     -- Conditions
     conditionEvent = {
@@ -152,6 +167,9 @@ local Strings = {
         text = "Source",
         tooltip = "The combat source of the event/spell-id combination on which the condition should trigger (Can be empty)"
     },
+    conditionHeading = {
+        text = "Condition"
+    },
     
     -- Timers
     timerName = {
@@ -160,6 +178,9 @@ local Strings = {
     timerDeleteButton = {
         text = "Delete Timer"
     },
+    timerOptionsHeading = {
+        text = "Timer"
+    },
 
     -- Timings
     timingSeconds = {
@@ -167,6 +188,9 @@ local Strings = {
     },
     timingDeleteButton = {
         text = "Delete Timing"
+    },
+    timingOptionsHeading = {
+        text = "Timing"
     }
 }
 

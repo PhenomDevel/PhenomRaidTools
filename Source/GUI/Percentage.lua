@@ -7,8 +7,8 @@ local Percentage = {}
 -------------------------------------------------------------------------------
 -- Local Helper
 
-Percentage.PercentageEntryWidget = function(entry)
-    local percentageEntryWidget = PRT.SimpleGroup()     
+Percentage.PercentageEntryWidget = function(entry, container)
+    local percentageEntryOptionsGroup = PRT.InlineGroup("percentageEntryOptionsHeading")
 
     local operatorValues = {
         {
@@ -39,7 +39,8 @@ Percentage.PercentageEntryWidget = function(entry)
 
     local messagesHeading = PRT.Heading("messageHeading")
     local messagesTabs = PRT.TableToTabs(entry.messages, true)
-	local messagesTabGroup = PRT.TabGroup(nil, messagesTabs)
+    local messagesTabGroup = PRT.TabGroup(nil, messagesTabs)
+    messagesTabGroup:SetLayout("Flow")
     messagesTabGroup:SetCallback("OnGroupSelected", 
         function(widget, event, key) 
             PRT.TabGroupSelected(widget, entry.messages, key, PRT.MessageWidget, PRT.EmptyMessage, "messageDeleteButton") 
@@ -47,16 +48,15 @@ Percentage.PercentageEntryWidget = function(entry)
 
     PRT.SelectFirstTab(messagesTabGroup, entry.messages)    	
 
-    percentageEntryWidget:AddChild(operatorDropdown)
-    percentageEntryWidget:AddChild(valueEditBox)
-    percentageEntryWidget:AddChild(messagesHeading)
-    percentageEntryWidget:AddChild(messagesTabGroup)
+    percentageEntryOptionsGroup:AddChild(operatorDropdown)
+    percentageEntryOptionsGroup:AddChild(valueEditBox)
 
-	return percentageEntryWidget
+    container:AddChild(percentageEntryOptionsGroup)
+    container:AddChild(messagesTabGroup)
 end
 
-Percentage.PercentageWidget = function(percentage)
-    local percentageWidget = PRT:SimpleGroup()
+Percentage.PercentageWidget = function(percentage, container)
+    local percentageOptionsGroup = PRT.InlineGroup("percentageOptionsHeading")
 
     local nameEditBox = PRT.EditBox("percentageName", percentage.name)
     nameEditBox:SetCallback("OnTextChanged", 
@@ -91,14 +91,13 @@ Percentage.PercentageWidget = function(percentage)
 
     PRT.SelectFirstTab(valuesTabGroupWidget, percentage.values)
 
-    percentageWidget:AddChild(nameEditBox)
-    percentageWidget:AddChild(unitIDEditBox)
-    percentageWidget:AddChild(ignoreAfterActivationCheckBox)
-    percentageWidget:AddChild(ignoreDurationEditBox)
+    percentageOptionsGroup:AddChild(nameEditBox)
+    percentageOptionsGroup:AddChild(unitIDEditBox)
+    percentageOptionsGroup:AddChild(ignoreAfterActivationCheckBox)
+    percentageOptionsGroup:AddChild(ignoreDurationEditBox)
 
-    percentageWidget:AddChild(valuesTabGroupWidget)
-
-	return percentageWidget
+    container:AddChild(percentageOptionsGroup)
+    container:AddChild(valuesTabGroupWidget)
 end
 
 

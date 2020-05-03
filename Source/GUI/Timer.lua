@@ -7,8 +7,8 @@ local Timer = {}
 -------------------------------------------------------------------------------
 -- Local Helper
 
-Timer.TimingWidget = function(timing)
-    local timingWidget = PRT.SimpleGroup() 
+Timer.TimingWidget = function(timing, container)
+    local timingOptionsGroup = PRT.InlineGroup("timingOptionsHeading")
 
     local secondsEditBox = PRT.EditBox("timingSeconds", timing.seconds)    
     secondsEditBox:SetCallback("OnTextChanged", 
@@ -16,31 +16,31 @@ Timer.TimingWidget = function(timing)
             timing.seconds = tonumber(widget:GetText()) 
         end)
 
-    local messagesHeading = PRT.Heading("messageHeading")
-    local messagesTabs = PRT.TableToTabs(timing.messages, true)
-	local messagesTabGroup = PRT.TabGroup(nil, messagesTabs)
+    local messagesTabs = PRT.TableToTabs(timing.messages, true)    
+    local messagesTabGroup = PRT.TabGroup(nil, messagesTabs)
+    messagesTabGroup:SetLayout("Flow")
     messagesTabGroup:SetCallback("OnGroupSelected", 
         function(widget, event, key) 
             PRT.TabGroupSelected(widget, timing.messages, key, PRT.MessageWidget, PRT.EmptyMessage, "messageDeleteButton") 
         end)
+
     PRT.SelectFirstTab(messagesTabGroup, timing.messages)  
 
-    timingWidget:AddChild(secondsEditBox)
-    timingWidget:AddChild(messagesHeading)
-    timingWidget:AddChild(messagesTabGroup)
+    timingOptionsGroup:AddChild(secondsEditBox)
 
-	return timingWidget
+    container:AddChild(timingOptionsGroup)
+    container:AddChild(messagesTabGroup)
+
+	return container
 end
 
 Timer.TimerOptionsTabGroupSelected = function(container, timer, key)
 	container:ReleaseChildren()
 
 	if key == "startCondition" then
-		local widget = PRT.ConditionWidget(timer.startCondition)
-		container:AddChild(widget)
+		PRT.ConditionWidget(timer.startCondition, container)
     elseif key == "stopCondition" then
-        local widget = PRT.ConditionWidget(timer.stopCondition)
-		container:AddChild(widget)
+        PRT.ConditionWidget(timer.stopCondition, container)
     elseif key == "timings" then
         local timingsHeading = PRT.Heading("Timings")
         local timingsTabs = PRT.TableToTabs(timer.timings, true)
@@ -56,8 +56,8 @@ Timer.TimerOptionsTabGroupSelected = function(container, timer, key)
 	PRT.mainFrameContent:DoLayout()
 end
 
-Timer.TimerWidget = function(timer)
-    local timerWidget = PRT.SimpleGroup()
+Timer.TimerWidget = function(timer, container)
+    local timerOptionsGroup = PRT.InlineGroup("timerOptionsHeading")
 
     local nameEditBox = PRT.EditBox("timerName", timer.name)
     nameEditBox:SetCallback("OnTextChanged", 
@@ -72,17 +72,18 @@ Timer.TimerWidget = function(timer)
         {value = "timings", text = "Timings"}
     }
     
-	local timerOptionsTabGroup = PRT.TabGroup(nil, tabs)
+    local timerOptionsTabGroup = PRT.TabGroup(nil, tabs)
+    timerOptionsTabGroup:SetLayout("Flow")
     timerOptionsTabGroup:SetCallback("OnGroupSelected", 
         function(widget, event, key) 
             Timer.TimerOptionsTabGroupSelected(widget, timer, key) 
         end)
+
     timerOptionsTabGroup:SelectTab("startCondition")    
 
-    timerWidget:AddChild(nameEditBox)
-    timerWidget:AddChild(timerOptionsTabGroup)
-
-	return timerWidget
+    timerOptionsGroup:AddChild(nameEditBox)
+    container:AddChild(timerOptionsGroup)
+    container:AddChild(timerOptionsTabGroup)
 end
 
 

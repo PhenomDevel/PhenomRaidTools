@@ -8,13 +8,10 @@ local Rotation = {}
 -------------------------------------------------------------------------------
 -- Local Helper
 
-Rotation.RotationEntryWidget = function(entry)
-    local rotationEntryWidget = PRT:SimpleGroup() 
-
-    -- Messages
-    local messagesHeading = PRT.Heading("messageHeading")
+Rotation.RotationEntryWidget = function(entry, container)
     local messagesTabs = PRT.TableToTabs(entry.messages, true)
-	local messagesTabGroup = PRT.TabGroup(nil, messagesTabs)
+    local messagesTabGroup = PRT.TabGroup(nil, messagesTabs)
+    messagesTabGroup:SetLayout("Flow")
     messagesTabGroup:SetCallback("OnGroupSelected", 
         function(widget, event, key) 
             PRT.TabGroupSelected(widget, entry.messages, key, PRT.MessageWidget, PRT.EmptyMessage, "messageDeleteButton") 
@@ -22,14 +19,11 @@ Rotation.RotationEntryWidget = function(entry)
 
     PRT.SelectFirstTab(messagesTabGroup, entry.messages)    	
 
-    rotationEntryWidget:AddChild(messagesHeading)
-    rotationEntryWidget:AddChild(messagesTabGroup)
-
-	return rotationEntryWidget
+    container:AddChild(messagesTabGroup)
 end
 
-Rotation.RotationWidget = function(rotation)
-    local rotationWidget = PRT:SimpleGroup()
+Rotation.RotationWidget = function(rotation, container)
+    local rotationOptionsGroup = PRT.InlineGroup("rotationOptionsHeading")
 
     local nameEditBox = PRT.EditBox("rotationName", rotation.name)    
     nameEditBox:SetCallback("OnTextChanged", 
@@ -55,10 +49,8 @@ Rotation.RotationWidget = function(rotation)
             rotation.ignoreDuration = widget:GetText() 
         end)
 
-    local triggerConditionHeading = PRT.Heading("rotationTriggerConditionHeading")
-    local triggerCondition = PRT.ConditionWidget(rotation.triggerCondition)
-
-    local rotationsHeading = PRT.Heading("rotationHeading")
+    local triggerConditionGroup = PRT.InlineGroup("rotationTriggerConditionHeading")
+    PRT.ConditionWidget(rotation.triggerCondition, triggerConditionGroup)
 
     local tabs = PRT.TableToTabs(rotation.entries, true)
 	local entriesTabGroupWidget = PRT.TabGroup(nil, tabs)
@@ -69,17 +61,13 @@ Rotation.RotationWidget = function(rotation)
 
     PRT.SelectFirstTab(entriesTabGroupWidget, rotation.entries)
 
-    -- Setup Widget
-    rotationWidget:AddChild(nameEditBox)
-    rotationWidget:AddChild(shouldRestartCheckBox)
-    rotationWidget:AddChild(ignoreAfterActivationCheckBox)
-    rotationWidget:AddChild(ignoreDurationEditBox)
-    rotationWidget:AddChild(triggerConditionHeading)
-    rotationWidget:AddChild(triggerCondition)
-    rotationWidget:AddChild(rotationsHeading)   
-    rotationWidget:AddChild(entriesTabGroupWidget) 
-
-	return rotationWidget
+    rotationOptionsGroup:AddChild(nameEditBox)
+    rotationOptionsGroup:AddChild(shouldRestartCheckBox)
+    rotationOptionsGroup:AddChild(ignoreAfterActivationCheckBox)
+    rotationOptionsGroup:AddChild(ignoreDurationEditBox)    
+    container:AddChild(rotationOptionsGroup)
+    container:AddChild(triggerConditionGroup)    
+    container:AddChild(entriesTabGroupWidget) 
 end
 
 

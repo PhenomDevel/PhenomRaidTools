@@ -40,9 +40,8 @@ Encounter.TriggerTabGroupSelected = function(container, encounter, key)
 	PRT.mainFrameContent:DoLayout()
 end
 
-Encounter.EncounterWidget = function(encounter)
-	local encounterWidget = PRT.SimpleGroup()
-	encounterWidget:SetLayout("Flow")
+Encounter.EncounterWidget = function(encounter, container)
+	local encounterOptionsGroup = PRT.InlineGroup("encounterOptionsHeading")
 
 	local idEditBox = PRT.EditBox("encounterID", encounter.id)	
 	idEditBox:SetCallback("OnTextChanged", function(widget) encounter.id = tonumber(widget:GetText()) end)
@@ -74,13 +73,14 @@ Encounter.EncounterWidget = function(encounter)
 
 	local triggerHeading = PRT.Heading("encounterTriggerHeading")
 	
-	encounterWidget:AddChild(idEditBox)
-	encounterWidget:AddChild(nameEditBox)
-	encounterWidget:AddChild(exportButton)
-	encounterWidget:AddChild(triggerHeading)
-	encounterWidget:AddChild(triggerTabGroup)
+	encounterOptionsGroup:AddChild(idEditBox)
+	encounterOptionsGroup:AddChild(nameEditBox)
+	encounterOptionsGroup:AddChild(exportButton)
 
-	return encounterWidget
+	container:AddChild(encounterOptionsGroup)
+	container:AddChild(triggerTabGroup)
+
+	return container
 end
 
 

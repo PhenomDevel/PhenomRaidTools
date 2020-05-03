@@ -6,11 +6,7 @@ local AceGUI = LibStub("AceGUI-3.0")
 -------------------------------------------------------------------------------
 -- Public API
 
-PRT.ConditionWidget = function(condition)
-	local conditionGroupWidget = AceGUI:Create("SimpleGroup")
-	conditionGroupWidget:SetLayout("Flow")
-	conditionGroupWidget:SetFullWidth(true)
-
+PRT.ConditionWidget = function(condition, container)
 	local eventEditBox = PRT.EditBox("conditionEvent", condition.event, true)
 	eventEditBox:SetCallback("OnTextChanged", 
 		function(widget) 
@@ -56,19 +52,15 @@ PRT.ConditionWidget = function(condition)
 			end	
 		end)
 
-	conditionGroupWidget:AddChild(eventEditBox)	
-	conditionGroupWidget:AddChild(spellIDEditBox)
-	conditionGroupWidget:AddChild(targetEditBox)
-	conditionGroupWidget:AddChild(sourceEditBox)
+	container:AddChild(eventEditBox)	
+	container:AddChild(spellIDEditBox)
+	container:AddChild(targetEditBox)
+	container:AddChild(sourceEditBox)
 	
-	return conditionGroupWidget
+	return container
 end
 
-PRT.MessageWidget = function (message)
-	local messageWidget = AceGUI:Create("SimpleGroup")
-	messageWidget:SetLayout("Flow")
-	messageWidget:SetFullWidth(true)
-
+PRT.MessageWidget = function (message, container)
 	local targetsEditBox = PRT.EditBox("messageTargets", PRT.TargetsToString(message.targets), true)
 	targetsEditBox:SetCallback("OnTextChanged", 
 		function(widget) 
@@ -100,11 +92,11 @@ PRT.MessageWidget = function (message)
 			message.withSound = widget:GetValue() 
 		end)
 
-	messageWidget:AddChild(targetsEditBox)
-	messageWidget:AddChild(delayEditBox)
-	messageWidget:AddChild(durationEditBox)	
-	messageWidget:AddChild(messageEditBox)
-	messageWidget:AddChild(withSoundCheckbox)
+	container:AddChild(targetsEditBox)
+	container:AddChild(delayEditBox)
+	container:AddChild(durationEditBox)	
+	container:AddChild(messageEditBox)
+	container:AddChild(withSoundCheckbox)
 
-	return messageWidget
+	return container
 end
