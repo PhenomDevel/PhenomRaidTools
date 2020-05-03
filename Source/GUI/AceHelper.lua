@@ -11,7 +11,13 @@ AceHelper.AddTooltip = function(widget, tooltip)
 	if tooltip and widget then
 		widget:SetCallback("OnEnter", function(widget) 
 			GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
-			GameTooltip:AddLine(tooltip)	
+			if type(tooltip) == "table" then
+				for i, entry in ipairs(tooltip) do
+					GameTooltip:AddLine(entry)	
+				end
+			else
+				GameTooltip:AddLine(tooltip)	
+			end
 			GameTooltip:Show()
 		end)
 
@@ -162,8 +168,8 @@ PRT.TabGroup = function(textID, tabs)
 
 	local widget = AceGUI:Create("Dropdown")
 
-	widget:SetLabel(text)
-	widget:SetText(value)
+	widget:SetLabel(text)	
+	widget:SetText(dropdownItems[value])
 	widget:SetWidth(200)
 	widget:SetList(dropdownItems)
 

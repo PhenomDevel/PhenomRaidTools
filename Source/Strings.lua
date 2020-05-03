@@ -36,7 +36,11 @@ local Strings = {
     },
     messageMessage = {
         text = "Message",
-        tooltip = "This message can only be 255 characters long. Do not use reserved characters (#, ?, ~, %). Use `%s` to display the countdown."
+        tooltip = {
+            "This message can only be 255 characters long.", 
+            "Do not use reserved characters (#, ?, ~, %).", 
+            "Use `%s` to display the countdown."
+        }
     },
     messageDelay = {
         text = "Delay (s)",
@@ -103,6 +107,9 @@ local Strings = {
     },
     percentageEntryPercent = {
         text = "Percentage (%)"
+    },
+    percentageEntryOperatorDropdown = {
+        text = "Operator"
     },
     
     -- Encounters

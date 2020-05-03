@@ -39,9 +39,23 @@ TriggerHandler.FilterPercentagesTable = function(percentages, percent)
     local value
     if percentages then
         for i, v in ipairs(percentages) do
-            if v.value == percent then
-                if not value then
-                    value = v
+            if v.operator == "greater" then
+                if percent >= v.value then
+                    if not value then
+                        value = v
+                    end
+                end
+            elseif v.operator == "less" then
+                if percent <= v.value then
+                    if not value then
+                        value = v
+                    end
+                end
+            elseif v.operator == "equals" then
+                if v.value == percent then
+                    if not value then
+                        value = v
+                    end
                 end
             end
         end
@@ -211,7 +225,7 @@ PRT.CheckUnitHealthPercentages = function(percentages)
 
             TriggerHandler.CheckStopIgnoreRotationCondition(percentage)
 
-            if percentage.ignored ~= true then
+            if percentage.ignored ~= true and percentage.executed ~= true then
                 if UnitExists(percentage.unitID) then
                     local unitCurrentHP = UnitHealth(percentage.unitID)
                     local unitMaxHP = UnitHealthMax(percentage.unitID)
@@ -219,7 +233,7 @@ PRT.CheckUnitHealthPercentages = function(percentages)
                     local messagesByHP = TriggerHandler.FilterPercentagesTable(percentage.values, unitHPPercent)
 
                     if messagesByHP then
-                        if messagesByHP.messages ~= nil and not messagesByHP.executed == true then
+                        if messagesByHP.messages ~= nil then
                             TriggerHandler.SendMessagesAfterDelay(messagesByHP.messages)
                             
                             percentage.lastActivation = GetTime()
@@ -227,7 +241,7 @@ PRT.CheckUnitHealthPercentages = function(percentages)
                                 percentage.ignored = true
                                 PRT.DebugRotation("Started ignoring percentage", percentage.name, "for", percentage.ignoreDuration)
                             else
-                                messagesByHP.executed = true
+                                percentage.executed = true
                             end
                         end
                     end

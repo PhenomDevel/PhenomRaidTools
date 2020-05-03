@@ -7,31 +7,52 @@ local Percentage = {}
 -------------------------------------------------------------------------------
 -- Local Helper
 
-Percentage.PercentageValueWidget = function(value)
-    local percentageValueWidget = PRT.SimpleGroup()     
+Percentage.PercentageEntryWidget = function(entry)
+    local percentageEntryWidget = PRT.SimpleGroup()     
 
-    local valueEditBox = PRT.EditBox("percentageEntryPercent", value.value)
+    local operatorValues = {
+        {
+            id = "greater",
+            name = "greater than"
+        },
+        {
+            id = "less",
+            name = "less than"
+        },
+        {
+            id = "equals",
+            name = "equals"
+        },
+    }
+    local operatorDropdown = PRT.Dropdown("percentageEntryOperatorDropdown", operatorValues, entry.operator)
+    operatorDropdown:SetCallback("OnValueChanged", 
+        function(widget, event, key) 
+            entry.operator = key 
+        end)
+
+    local valueEditBox = PRT.EditBox("percentageEntryPercent", entry.value)
     valueEditBox:SetCallback("OnTextChanged", 
         function(widget) 
-            value.value = tonumber(widget:GetText()) 
-            value.name = widget:GetText().." %" 
+            entry.value = tonumber(widget:GetText()) 
+            entry.name = widget:GetText().." %" 
         end)
 
     local messagesHeading = PRT.Heading("messageHeading")
-    local messagesTabs = PRT.TableToTabs(value.messages, true)
+    local messagesTabs = PRT.TableToTabs(entry.messages, true)
 	local messagesTabGroup = PRT.TabGroup(nil, messagesTabs)
     messagesTabGroup:SetCallback("OnGroupSelected", 
         function(widget, event, key) 
-            PRT.TabGroupSelected(widget, value.messages, key, PRT.MessageWidget, PRT.EmptyMessage, "messageDeleteButton") 
+            PRT.TabGroupSelected(widget, entry.messages, key, PRT.MessageWidget, PRT.EmptyMessage, "messageDeleteButton") 
         end)
 
-    PRT.SelectFirstTab(messagesTabGroup, value.messages)    	
+    PRT.SelectFirstTab(messagesTabGroup, entry.messages)    	
 
-    percentageValueWidget:AddChild(valueEditBox)
-    percentageValueWidget:AddChild(messagesHeading)
-    percentageValueWidget:AddChild(messagesTabGroup)
+    percentageEntryWidget:AddChild(operatorDropdown)
+    percentageEntryWidget:AddChild(valueEditBox)
+    percentageEntryWidget:AddChild(messagesHeading)
+    percentageEntryWidget:AddChild(messagesTabGroup)
 
-	return percentageValueWidget
+	return percentageEntryWidget
 end
 
 Percentage.PercentageWidget = function(percentage)
@@ -65,7 +86,7 @@ Percentage.PercentageWidget = function(percentage)
 	local valuesTabGroupWidget = PRT.TabGroup(nil, tabs)
     valuesTabGroupWidget:SetCallback("OnGroupSelected", 
         function(widget, event,key) 
-            PRT.TabGroupSelected(widget, percentage.values, key, Percentage.PercentageValueWidget, PRT.EmptyPercentageValue, "percentageEntryDeleteButton") 
+            PRT.TabGroupSelected(widget, percentage.values, key, Percentage.PercentageEntryWidget, PRT.EmptyPercentageEntry, "percentageEntryDeleteButton") 
         end)    
 
     PRT.SelectFirstTab(valuesTabGroupWidget, percentage.values)

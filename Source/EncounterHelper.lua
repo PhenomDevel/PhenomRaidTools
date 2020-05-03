@@ -81,7 +81,8 @@ end
 
 -------------------------------------------------------------------------------
 -- Percentage
-PRT.EmptyPercentageValue = function()
+
+PRT.EmptyPercentageEntry = function()
     return {
         value = 50,
         messages = {
@@ -95,7 +96,7 @@ PRT.EmptyPercentage = function()
         name = "Percentage Name",
         unitID = "player",
         values = {
-            PRT.EmptyPercentageValue()
+            PRT.EmptyPercentageEntry()
         },
         ignoreAfterActivation = true,
         ignoreDuration = 10
