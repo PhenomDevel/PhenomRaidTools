@@ -1,4 +1,4 @@
-local PRT = LibStub("AceAddon-3.0"):NewAddon("PhenomRaidTools", "AceConsole-3.0", "AceEvent-3.0");
+local PRT = LibStub("AceAddon-3.0"):NewAddon("PhenomRaidTools", "AceConsole-3.0", "AceEvent-3.0", "AceTimer-3.0");
 
 local AceGUI = LibStub("AceGUI-3.0")
 

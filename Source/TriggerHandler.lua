@@ -110,6 +110,18 @@ TriggerHandler.CheckStopIgnoreRotationCondition = function(trigger)
     end 
 end
 
+TriggerHandler.SendMessagesAfterDelay = function(messages)
+    PRT.Debug("Creating message-timer for", table.getn(messages), "messages")
+    for i, message in ipairs(messages) do
+        PRT:ScheduleTimer(
+            function()
+                PRT.ExecuteMessage(message)
+            end,
+            message.delay or 0
+        )
+    end
+end
+
 
 -------------------------------------------------------------------------------
 -- Public API
@@ -158,10 +170,8 @@ PRT.CheckTimerTimings = function(timers)
                 
                 if timingByTime then
                     local messagesByTime = timingByTime.messages
-                    if messagesByTime ~= nil and messagesByTime.executed ~= true then
-                        PRT.AddMessagesToQueue(messagesByTime)
-                        PRT.DebugTimer("Timer trigger condition met")
-                        PRT.DebugTimer("Adding", table.getn(messagesByTime), "messages to message queue")                  
+                    if messagesByTime ~= nil and messagesByTime.executed ~= true then                        
+                        TriggerHandler.SendMessagesAfterDelay(messagesByTime)                 
                         messagesByTime.executed = true
                     end
                 end
@@ -180,11 +190,7 @@ PRT.CheckRotationTriggerCondition = function(rotations, event, combatEvent, spel
                 if rotation.ignored ~= true then
                     if TriggerHandler.CheckCondition(rotation.triggerCondition, event, combatEvent, spellID, targetGUID, sourceGUID) then                        
                         local messages = TriggerHandler.GetRotationMessages(rotation)
-                        PRT.AddMessagesToQueue(messages)
-
-                        PRT.DebugRotation("Rotation trigger condition met")
-                        PRT.DebugRotation("Adding", table.getn(messages), "messages to message queue")
-
+                        TriggerHandler.SendMessagesAfterDelay(messages)
                         TriggerHandler.UpdateRotationCounter(rotation)
                         rotation.lastActivation = GetTime()
                         if rotation.ignoreAfterActivation == true then
@@ -214,9 +220,7 @@ PRT.CheckUnitHealthPercentages = function(percentages)
 
                     if messagesByHP then
                         if messagesByHP.messages ~= nil and not messagesByHP.executed == true then
-                            PRT.DebugPercentage("Health Percentage trigger condition met")
-                            PRT.DebugPercentage("Adding", table.getn(messagesByHP.messages), "messages to message queue")
-                            PRT.AddMessagesToQueue(messagesByHP.messages)
+                            TriggerHandler.SendMessagesAfterDelay(messagesByHP.messages)
                             
                             percentage.lastActivation = GetTime()
                             if percentage.ignoreAfterActivation == true then
@@ -248,9 +252,7 @@ PRT.CheckUnitPowerPercentages = function(percentages)
 
                     if messagesByPower then
                         if messagesByPower.messages ~= nil and not messagesByPower.executed == true then
-                            PRT.DebugPercentage("Power Percentage trigger condition met")
-                            PRT.DebugPercentage("Adding", table.getn(messagesByPower.messages), "messages to message queue")
-                            PRT.AddMessagesToQueue(messagesByPower.messages)
+                            TriggerHandler.SendMessagesAfterDelay(messagesByPower.messages)
                             
                             percentage.lastActivation = GetTime()
                             if percentage.ignoreAfterActivation == true then

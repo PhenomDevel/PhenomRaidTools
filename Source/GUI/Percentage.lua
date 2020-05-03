@@ -8,8 +8,8 @@ local Percentage = {}
 -- Local Helper
 
 Percentage.PercentageValueWidget = function(value)
-    local percentageValueWidget = PRT.SimpleGroup() 
-    
+    local percentageValueWidget = PRT.SimpleGroup()     
+
     local valueEditBox = PRT.EditBox("percentageEntryPercent", value.value)
     valueEditBox:SetCallback("OnTextChanged", 
         function(widget) 
