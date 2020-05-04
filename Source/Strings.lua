@@ -36,7 +36,7 @@ local Strings = {
     },
     messageMessage = {
         text = "Message",
-        tooltip = {
+        tooltip = {  
             "This message can only be 255 characters long.", 
             "Do not use reserved characters (#, ?, ~, %).", 
             "Use `%s` to display the countdown."
