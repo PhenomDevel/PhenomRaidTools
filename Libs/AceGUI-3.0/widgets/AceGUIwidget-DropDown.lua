@@ -1,9 +1,9 @@
---[[ $Id: AceGUIWidget-DropDown.lua 997 2010-12-01 18:36:28Z nevcairiel $ ]]--
+--[[ $Id: AceGUIWidget-DropDown.lua 1209 2019-06-24 21:01:01Z nevcairiel $ ]]--
 local AceGUI = LibStub("AceGUI-3.0")
 
 -- Lua APIs
 local min, max, floor = math.min, math.max, math.floor
-local select, pairs, ipairs, type = select, pairs, ipairs, type
+local select, pairs, ipairs, type, tostring = select, pairs, ipairs, type, tostring
 local tsort = table.sort
 
 -- WoW APIs
@@ -356,17 +356,19 @@ end
 
 do
 	local widgetType = "Dropdown"
-	local widgetVersion = 24
+	local widgetVersion = 34
 
 	--[[ Static data ]]--
 
 	--[[ UI event handler ]]--
 
 	local function Control_OnEnter(this)
+		this.obj.button:LockHighlight()
 		this.obj:Fire("OnEnter")
 	end
 
 	local function Control_OnLeave(this)
+		this.obj.button:UnlockHighlight()
 		this.obj:Fire("OnLeave")
 	end
 
@@ -379,14 +381,14 @@ do
 
 	local function Dropdown_TogglePullout(this)
 		local self = this.obj
-		PlaySound("igMainMenuOptionCheckBoxOn") -- missleading name, but the Blizzard code uses this sound
+		PlaySound(856) -- SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON
 		if self.open then
 			self.open = nil
 			self.pullout:Close()
 			AceGUI:ClearFocus()
 		else
 			self.open = true
-			self.pullout:SetWidth(self.frame:GetWidth())
+			self.pullout:SetWidth(self.pulloutWidth or self.frame:GetWidth())
 			self.pullout:Open("TOPLEFT", self.frame, "BOTTOMLEFT", 0, self.label:IsShown() and -2 or 0)
 			AceGUI:SetFocus(self)
 		end
@@ -403,6 +405,7 @@ do
 		end
 
 		self.open = true
+		self:Fire("OnOpened")
 	end
 
 	local function OnPulloutClose(this)
@@ -460,6 +463,8 @@ do
 
 		self:SetHeight(44)
 		self:SetWidth(200)
+		self:SetLabel()
+		self:SetPulloutWidth(nil)
 	end
 
 	-- exported, AceGUI callback
@@ -471,7 +476,6 @@ do
 		self.pullout = nil
 
 		self:SetText("")
-		self:SetLabel("")
 		self:SetDisabled(false)
 		self:SetMultiselect(false)
 
@@ -490,9 +494,11 @@ do
 		if disabled then
 			self.text:SetTextColor(0.5,0.5,0.5)
 			self.button:Disable()
+			self.button_cover:Disable()
 			self.label:SetTextColor(0.5,0.5,0.5)
 		else
 			self.button:Enable()
+			self.button_cover:Enable()
 			self.label:SetTextColor(1,.82,0)
 			self.text:SetTextColor(1,1,1)
 		end
@@ -515,13 +521,15 @@ do
 		if text and text ~= "" then
 			self.label:SetText(text)
 			self.label:Show()
-			self.dropdown:SetPoint("TOPLEFT",self.frame,"TOPLEFT",-15,-18)
-			self.frame:SetHeight(44)
+			self.dropdown:SetPoint("TOPLEFT",self.frame,"TOPLEFT",-15,-14)
+			self:SetHeight(40)
+			self.alignoffset = 26
 		else
 			self.label:SetText("")
 			self.label:Hide()
 			self.dropdown:SetPoint("TOPLEFT",self.frame,"TOPLEFT",-15,0)
-			self.frame:SetHeight(26)
+			self:SetHeight(26)
+			self.alignoffset = 12
 		end
 	end
 
@@ -584,6 +592,14 @@ do
 
 	-- exported
 	local sortlist = {}
+	local function sortTbl(x,y)
+		local num1, num2 = tonumber(x), tonumber(y)
+		if num1 and num2 then -- numeric comparison, either two numbers or numeric strings
+			return num1 < num2
+		else -- compare everything else tostring'ed
+			return tostring(x) < tostring(y)
+		end
+	end
 	local function SetList(self, list, order, itemType)
 		self.list = list
 		self.pullout:Clear()
@@ -594,7 +610,7 @@ do
 			for v in pairs(list) do
 				sortlist[#sortlist + 1] = v
 			end
-			tsort(sortlist)
+			tsort(sortlist, sortTbl)
 
 			for i, key in ipairs(sortlist) do
 				AddListItem(self, key, list[key], itemType)
@@ -633,6 +649,10 @@ do
 		return self.multiselect
 	end
 
+	local function SetPulloutWidth(self, width)
+		self.pulloutWidth = width
+	end
+
 	--[[ Constructor ]]--
 
 	local function Constructor()
@@ -664,11 +684,10 @@ do
 		self.GetMultiselect = GetMultiselect
 		self.SetItemValue = SetItemValue
 		self.SetItemDisabled = SetItemDisabled
+		self.SetPulloutWidth = SetPulloutWidth
 
-		self.alignoffset = 31
+		self.alignoffset = 26
 
-		frame:SetHeight(44)
-		frame:SetWidth(200)
 		frame:SetScript("OnHide",Dropdown_OnHide)
 
 		dropdown:ClearAllPoints()
@@ -693,6 +712,15 @@ do
 		button:SetScript("OnEnter",Control_OnEnter)
 		button:SetScript("OnLeave",Control_OnLeave)
 		button:SetScript("OnClick",Dropdown_TogglePullout)
+
+		local button_cover = CreateFrame("BUTTON",nil,self.frame)
+		self.button_cover = button_cover
+		button_cover.obj = self
+		button_cover:SetPoint("TOPLEFT",self.frame,"BOTTOMLEFT",0,25)
+		button_cover:SetPoint("BOTTOMRIGHT",self.frame,"BOTTOMRIGHT")
+		button_cover:SetScript("OnEnter",Control_OnEnter)
+		button_cover:SetScript("OnLeave",Control_OnLeave)
+		button_cover:SetScript("OnClick",Dropdown_TogglePullout)
 
 		local text = _G[dropdown:GetName() .. "Text"]
 		self.text = text
