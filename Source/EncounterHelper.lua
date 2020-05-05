@@ -211,11 +211,11 @@ PRT.ExampleEncounter = function()
         HealthPercentages = {
             {
                 name = "Above 60 %",
-                unitID = "boss1",
+                unitID = "player",
                 values = {
                     {
                         value = 60,
-                        operator = "greater than",
+                        operator = "greater",
                         messages = {
                             {
                                 message = "You are above 60%% HP",
@@ -241,7 +241,7 @@ PRT.ExampleEncounter = function()
                 values = {
                     {
                         value = 90,
-                        operator = "greater than",
+                        operator = "greater",
                         messages = {
                             {
                                 message = "You are above 90%% Power",
