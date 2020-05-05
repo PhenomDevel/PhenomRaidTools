@@ -3,6 +3,7 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local AceGUI = LibStub("AceGUI-3.0")
 
 local Tree = {}
+PRT.Tree = Tree
 
 -------------------------------------------------------------------------------
 -- Local Helper
@@ -507,11 +508,7 @@ PRT.CreateMainFrame = function(profile)
 		function(widget) 
 			AceGUI:Release(widget) 
 		end)
-	PRT.mainFrame:SetWidth(1100)
-	PRT.mainFrame:SetHeight(800)
-	PRT.mainFrame.frame:SetResizable(true)
-	--PRT.mainFrame.frame:SetMinResize(1100, 800)
-	--PRT.mainFrame.frame:SetMaxResize(1100, 800)
+	PRT.mainFrame:SetWidth(800)
 	RegisterESCHandler("mainFrame", PRT.mainFrame)
 
 	PRT.mainFrame:AddChild(PRT.CreateMainFrameContent(PRT.mainFrame, profile))

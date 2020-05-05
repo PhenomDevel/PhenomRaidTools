@@ -12,7 +12,7 @@ Timer.TimingWidget = function(timing, container)
 
     table.sort(timing.seconds)
     local secondsEditBox = PRT.EditBox("timingSeconds", strjoin(", ", unpack(timing.seconds)))    
-    secondsEditBox:SetCallback("OnTextChanged", 
+    secondsEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
             local times = {strsplit(",", widget:GetText())}
             
@@ -20,6 +20,7 @@ Timer.TimingWidget = function(timing, container)
             for i, second in ipairs(times) do
                 table.insert(timing.seconds, tonumber(second))
             end
+			widget:ClearFocus()
         end)
 
     local messagesTabs = PRT.TableToTabs(timing.messages, true)    
@@ -44,9 +45,13 @@ PRT.TimerWidget = function(timer, container)
     local timerOptionsGroup = PRT.InlineGroup("timerOptionsHeading")
 
     local nameEditBox = PRT.EditBox("timerName", timer.name)
-    nameEditBox:SetCallback("OnTextChanged", 
+    nameEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
-            timer.name = widget:GetText() 
+            timer.name = widget:GetText()             
+            PRT.mainFrameContent:SetTree(PRT.Tree.GenerateTreeByProfile(PRT.db.profile))
+            PRT.mainFrameContent:DoLayout()
+    
+            PRT.mainFrameContent:SelectByValue(timer.name)
         end)
     
     local startConditionGroup = PRT.ConditionWidget(timer.startCondition, "Start Condition")

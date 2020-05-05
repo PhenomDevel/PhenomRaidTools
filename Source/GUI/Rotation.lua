@@ -30,9 +30,13 @@ PRT.RotationWidget = function(rotation, container)
     local rotationOptionsGroup = PRT.InlineGroup("rotationOptionsHeading")
 
     local nameEditBox = PRT.EditBox("rotationName", rotation.name)    
-    nameEditBox:SetCallback("OnTextChanged", 
+    nameEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
             rotation.name = widget:GetText() 
+            PRT.mainFrameContent:SetTree(PRT.Tree.GenerateTreeByProfile(PRT.db.profile))
+            PRT.mainFrameContent:DoLayout()
+    
+            PRT.mainFrameContent:SelectByValue(rotation.name)
         end)
 
     local shouldRestartCheckBox =  PRT.CheckBox("rotationShouldRestart", rotation.shouldRestart)
@@ -48,9 +52,10 @@ PRT.RotationWidget = function(rotation, container)
         end)
 
     local ignoreDurationEditBox = PRT.EditBox("rotationIgnoreDuration", rotation.ignoreDuration)
-    ignoreDurationEditBox:SetCallback("OnTextChanged", 
+    ignoreDurationEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
             rotation.ignoreDuration = widget:GetText() 
+			widget:ClearFocus()
         end)
 
     local triggerConditionGroup = PRT.ConditionWidget(rotation.triggerCondition, "Trigger Condition")

@@ -31,10 +31,11 @@ Percentage.PercentageEntryWidget = function(entry, container)
         end)
 
     local valueEditBox = PRT.EditBox("percentageEntryPercent", entry.value)
-    valueEditBox:SetCallback("OnTextChanged", 
+    valueEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
             entry.value = tonumber(widget:GetText()) 
             entry.name = widget:GetText().." %" 
+			widget:ClearFocus()
         end)
 
     local messagesHeading = PRT.Heading("messageHeading")
@@ -64,15 +65,20 @@ PRT.PercentageWidget = function(percentage, container)
     local percentageOptionsGroup = PRT.InlineGroup("percentageOptionsHeading")
 
     local nameEditBox = PRT.EditBox("percentageName", percentage.name)
-    nameEditBox:SetCallback("OnTextChanged", 
+    nameEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
-            percentage.unitID = widget:GetText() 
+            percentage.name = widget:GetText() 
+            PRT.mainFrameContent:SetTree(PRT.Tree.GenerateTreeByProfile(PRT.db.profile))
+            PRT.mainFrameContent:DoLayout()
+    
+            PRT.mainFrameContent:SelectByValue(percentage.name)
         end)
 
     local unitIDEditBox = PRT.EditBox("percentageUnitID", percentage.unitID)
-    unitIDEditBox:SetCallback("OnTextChanged", 
+    unitIDEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
             percentage.unitID = widget:GetText() 
+			widget:ClearFocus()
         end)
     
     local ignoreAfterActivationCheckBox = PRT.CheckBox("percentageCheckAgain", percentage.ignoreAfterActivation)
@@ -82,9 +88,10 @@ PRT.PercentageWidget = function(percentage, container)
         end)
 
     local ignoreDurationEditBox = PRT.EditBox("percentageCheckDelay", percentage.ignoreDuration)
-    ignoreDurationEditBox:SetCallback("OnTextChanged", 
+    ignoreDurationEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
             percentage.ignoreDuration = tonumber(widget:GetText()) 
+			widget:ClearFocus()
         end)
 
     local tabs = PRT.TableToTabs(percentage.values, true)
