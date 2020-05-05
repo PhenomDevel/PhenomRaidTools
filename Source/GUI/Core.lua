@@ -18,7 +18,7 @@ end
 
 PRT.CreateMainFrameContent = function(container, profile)
 	PRT.mainFrameContent = AceGUI:Create("ScrollFrame")
-	PRT.mainFrameContent:SetLayout("List")	
+	PRT.mainFrameContent:SetLayout("Flow")	
 	PRT.mainFrameContent:SetFullHeight(true)
 	PRT.mainFrameContent:SetAutoAdjustHeight(true)
 
@@ -72,10 +72,10 @@ PRT.CreateMainFrame = function(profile)
 		function(widget) 
 			AceGUI:Release(widget) 
 		end)
-	PRT.mainFrame:SetWidth(1400)
-	PRT.mainFrame:SetHeight(1000)
-	-- PRT.mainFrame.frame:SetResizable(true)
-	PRT.mainFrame.frame:SetMinResize(800, 800)
+	PRT.mainFrame:SetWidth(1100)
+	PRT.mainFrame:SetHeight(800)
+	PRT.mainFrame.frame:SetResizable(true)
+	PRT.mainFrame.frame:SetMinResize(1100, 800)
 	
 	RegisterESCHandler("mainFrame", PRT.mainFrame)
 

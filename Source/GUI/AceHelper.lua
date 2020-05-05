@@ -196,7 +196,7 @@ PRT.TabGroup = function(textID, tabs)
 	local widget = AceGUI:Create("InlineGroup")    
 	
 	widget:SetFullWidth(true)
-	widget:SetLayout("List")
+	widget:SetLayout("Flow")
 	widget:SetTitle(text)
 
     return widget
