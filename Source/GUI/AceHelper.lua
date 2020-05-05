@@ -97,6 +97,7 @@ PRT.TabGroup = function(textID, tabs)
 	
 	widget:SetTitle(text)
 	widget:SetTabs(tabs)
+	widget:SetLayout("List")
 
     AceHelper.MaximizeWidget(widget)
  
@@ -124,7 +125,7 @@ PRT.TabGroup = function(textID, tabs)
 	local widget = AceGUI:Create("Heading")
 
 	widget:SetText(text)
-    widget:SetRelativeWidth(1)
+	widget:SetFullWidth(true)
 
 	return widget
  end
@@ -186,7 +187,7 @@ PRT.TabGroup = function(textID, tabs)
 
 	widget:SetLabel(text)
 	widget:SetValue(value)
-	widget:SetRelativeWidth(1)
+	widget:SetFullWidth(true)
  
 	return widget
  end

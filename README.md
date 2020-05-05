@@ -6,6 +6,7 @@
 -- %source
 - Add condition met counter for timers (after X conditon mets it shoulkd trigger not ion first alwys)
 - Add trigger for DBM / BW
+- Add dropdown for events so you don't have to know each event (needs to be adjustable in the options)
 
 ## Features
 TODO

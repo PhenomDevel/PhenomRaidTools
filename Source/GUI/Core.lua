@@ -64,7 +64,7 @@ PRT.CreateMainFrameContent = function(container, profile)
 end
 
 PRT.CreateMainFrame = function(profile)
-	PRT.mainFrame = AceGUI:Create("Frame")
+	PRT.mainFrame = AceGUI:Create("Window")
 	PRT.mainFrame:SetTitle("PhenomRaidTools")
 	PRT.mainFrame:SetStatusText("PhenomRaidTools - Raid smarter not harder")
 	PRT.mainFrame:SetLayout("Fill")

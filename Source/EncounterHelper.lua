@@ -85,6 +85,7 @@ end
 PRT.EmptyPercentageEntry = function()
     return {
         value = 50,
+        operator = "equals",
         messages = {
             PRT.EmptyMessage()
         }
