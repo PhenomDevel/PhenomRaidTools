@@ -10,6 +10,7 @@
 -- * **race** Race-specific data. All of the players characters of the same race share this database.
 -- * **faction** Faction-specific data. All of the players characters of the same faction share this database.
 -- * **factionrealm** Faction and realm specific data. All of the players characters on the same realm and of the same faction share this database.
+-- * **locale** Locale specific data, based on the locale of the players game client.
 -- * **global** Global Data. All characters on the same account share this database.
 -- * **profile** Profile-specific data. All characters using the same profile share this database. The user can control which profile should be used.
 --
@@ -39,8 +40,8 @@
 -- end
 -- @class file
 -- @name AceDB-3.0.lua
--- @release $Id: AceDB-3.0.lua 940 2010-06-19 08:01:47Z nevcairiel $
-local ACEDB_MAJOR, ACEDB_MINOR = "AceDB-3.0", 21
+-- @release $Id: AceDB-3.0.lua 1142 2016-07-11 08:36:19Z nevcairiel $
+local ACEDB_MAJOR, ACEDB_MINOR = "AceDB-3.0", 26
 local AceDB, oldminor = LibStub:NewLibrary(ACEDB_MAJOR, ACEDB_MINOR)
 
 if not AceDB then return end -- No upgrade needed
@@ -260,6 +261,12 @@ local _, classKey = UnitClass("player")
 local _, raceKey = UnitRace("player")
 local factionKey = UnitFactionGroup("player")
 local factionrealmKey = factionKey .. " - " .. realmKey
+local localeKey = GetLocale():lower()
+
+local regionTable = { "US", "KR", "EU", "TW", "CN" }
+local regionKey = regionTable[GetCurrentRegion()]
+local factionrealmregionKey = factionrealmKey .. " - " .. regionKey
+
 -- Actual database initialization function
 local function initdb(sv, defaults, defaultProfile, olddb, parent)
 	-- Generate the database keys for each section
@@ -295,7 +302,9 @@ local function initdb(sv, defaults, defaultProfile, olddb, parent)
 		["race"] = raceKey,
 		["faction"] = factionKey,
 		["factionrealm"] = factionrealmKey,
+		["factionrealmregion"] = factionrealmregionKey,
 		["profile"] = profileKey,
+		["locale"] = localeKey,
 		["global"] = true,
 		["profiles"] = true,
 	}
@@ -517,6 +526,15 @@ function DBObjectLib:DeleteProfile(name, silent)
 	if self.children then
 		for _, db in pairs(self.children) do
 			DBObjectLib.DeleteProfile(db, name, true)
+		end
+	end
+
+	-- switch all characters that use this profile back to the default
+	if self.sv.profileKeys then
+		for key, profile in pairs(self.sv.profileKeys) do
+			if profile == name then
+				self.sv.profileKeys[key] = nil
+			end
 		end
 	end
 

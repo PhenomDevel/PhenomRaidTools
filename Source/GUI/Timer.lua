@@ -18,7 +18,6 @@ Timer.TimingWidget = function(timing, container)
 
     local messagesTabs = PRT.TableToTabs(timing.messages, true)    
     local messagesTabGroup = PRT.TabGroup(nil, messagesTabs)
-    messagesTabGroup:SetLayout("Flow")
     messagesTabGroup:SetCallback("OnGroupSelected", 
         function(widget, event, key) 
             PRT.TabGroupSelected(widget, timing.messages, key, PRT.MessageWidget, PRT.EmptyMessage, "messageDeleteButton") 
@@ -73,7 +72,6 @@ Timer.TimerWidget = function(timer, container)
     }
     
     local timerOptionsTabGroup = PRT.TabGroup(nil, tabs)
-    timerOptionsTabGroup:SetLayout("Flow")
     timerOptionsTabGroup:SetCallback("OnGroupSelected", 
         function(widget, event, key) 
             Timer.TimerOptionsTabGroupSelected(widget, timer, key) 

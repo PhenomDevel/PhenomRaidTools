@@ -40,7 +40,6 @@ Percentage.PercentageEntryWidget = function(entry, container)
     local messagesHeading = PRT.Heading("messageHeading")
     local messagesTabs = PRT.TableToTabs(entry.messages, true)
     local messagesTabGroup = PRT.TabGroup(nil, messagesTabs)
-    messagesTabGroup:SetLayout("Flow")
     messagesTabGroup:SetCallback("OnGroupSelected", 
         function(widget, event, key) 
             PRT.TabGroupSelected(widget, entry.messages, key, PRT.MessageWidget, PRT.EmptyMessage, "messageDeleteButton") 

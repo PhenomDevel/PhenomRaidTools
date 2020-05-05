@@ -191,20 +191,12 @@ PRT.TabGroup = function(textID, tabs)
 	return widget
  end
 
- PRT.SimpleGroup = function()
-    local widget = AceGUI:Create("SimpleGroup")    
-    AceHelper.MaximizeWidget(widget)
-    widget:SetLayout("Flow")
-
-    return widget
- end
-
  PRT.InlineGroup = function(textID)
 	local text = PRT.Strings.GetText(textID)
 	local widget = AceGUI:Create("InlineGroup")    
 	
 	widget:SetFullWidth(true)
-	widget:SetLayout("Flow")
+	widget:SetLayout("List")
 	widget:SetTitle(text)
 
     return widget

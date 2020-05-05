@@ -18,7 +18,7 @@ end
 
 PRT.CreateMainFrameContent = function(container, profile)
 	PRT.mainFrameContent = AceGUI:Create("ScrollFrame")
-	PRT.mainFrameContent:SetLayout("Flow")	
+	PRT.mainFrameContent:SetLayout("List")	
 	PRT.mainFrameContent:SetFullHeight(true)
 	PRT.mainFrameContent:SetAutoAdjustHeight(true)
 
@@ -65,15 +65,17 @@ end
 
 PRT.CreateMainFrame = function(profile)
 	PRT.mainFrame = AceGUI:Create("Frame")
-	PRT.mainFrame:SetTitle("Phenom Raid Tools")
-	PRT.mainFrame:SetStatusText("Phenom Raid Tools - Encounter Configuration")
+	PRT.mainFrame:SetTitle("PhenomRaidTools")
+	PRT.mainFrame:SetStatusText("PhenomRaidTools - Raid smarter not harder")
 	PRT.mainFrame:SetLayout("Fill")
 	PRT.mainFrame:SetCallback("OnClose",
 		function(widget) 
 			AceGUI:Release(widget) 
 		end)
 	PRT.mainFrame:SetWidth(1400)
-	PRT.mainFrame:SetHeight(800)
+	PRT.mainFrame:SetHeight(1000)
+	-- PRT.mainFrame.frame:SetResizable(true)
+	PRT.mainFrame.frame:SetMinResize(800, 800)
 	
 	RegisterESCHandler("mainFrame", PRT.mainFrame)
 

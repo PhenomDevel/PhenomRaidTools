@@ -5,6 +5,7 @@
 -- %target
 -- %source
 - Add condition met counter for timers (after X conditon mets it shoulkd trigger not ion first alwys)
+- Add trigger for DBM / BW
 
 ## Features
 TODO
