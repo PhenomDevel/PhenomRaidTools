@@ -133,7 +133,7 @@ PRT.ExampleEncounter = function()
         Timers = {
             {
                 startCondition = {
-                    event = "ENCOUNTER_START",
+                    event = "PLAYER_REGEN_DISABLED",
                     spellID = nil,
                     source = nil,
                     target = nil,
@@ -147,10 +147,10 @@ PRT.ExampleEncounter = function()
                 name = "Timer Name",
                 timings = {
                     {
-                        seconds = {1, 2, 3},
+                        seconds = {1, 7},
                         messages = {
                             {
-                                message = "Message 1 second into the Encounter - %s",
+                                message = "Message 1 and 7 seconds into Encounter",
                                 duration = 5,
                                 targets = {
                                     "ALL"
@@ -180,43 +180,19 @@ PRT.ExampleEncounter = function()
             {
                 triggerCondition = {
                     event = "SPELL_CAST_START",
-                    spellID = 123456,
+                    spellID = 188196,
                     source = nil,
                     target = nil,
                 },
-                name = "Heal CDs for Ability X",
+                name = "Lightning Bolt Cast started",
                 entries = {
                     {
                         messages = {
                             {
-                                message = "Please use your Heal cooldown",
+                                message = "You started casting Lightning Bolt",
                                 duration = 5,
                                 targets = {
-                                    "PlayerA"
-                                },
-                                delay = 0
-                            }
-                        }
-                    },
-                    {
-                        messages = {
-                            {
-                                message = "Please use your Heal cooldown",
-                                duration = 5,
-                                targets = {
-                                    "PlayerB"
-                                },
-                                delay = 0
-                            }
-                        }
-                    },
-                    {
-                        messages = {
-                            {
-                                message = "Please use your Heal cooldown",
-                                duration = 5,
-                                targets = {
-                                    "PlayerC"
+                                    "ALL"
                                 },
                                 delay = 0
                             }
@@ -231,15 +207,15 @@ PRT.ExampleEncounter = function()
 
         HealthPercentages = {
             {
-                name = "Phase 2",
+                name = "Above 60 %",
                 unitID = "boss1",
                 values = {
                     {
                         value = 60,
-                        operator = "equals",
+                        operator = "greater than",
                         messages = {
                             {
-                                message = "Phase 2 starting soon",
+                                message = "You are above 60%% HP",
                                 duration = 5,
                                 targets = {
                                     "ALL"
@@ -256,15 +232,15 @@ PRT.ExampleEncounter = function()
 
         PowerPercentages = {
             {
-                name = "Players power reaches 90",
+                name = "Above 90% Power",
                 unitID = "player",
                 values = {
                     {
                         value = 90,
-                        operator = "equals",
+                        operator = "greater than",
                         messages = {
                             {
-                                message = "Evil Ability is coming soon",
+                                message = "You are above 90%% Power",
                                 duration = 5,
                                 targets = {
                                     "ALL"
@@ -274,8 +250,8 @@ PRT.ExampleEncounter = function()
                         }
                     }
                 },
-                ignoreAfterActivation = true,
-                ignoreDuration = 10
+                ignoreAfterActivation = false,
+                ignoreDuration = nil
             }
         }
     }
