@@ -10,53 +10,37 @@ local Timer = {}
 Timer.TimingWidget = function(timing, container)
     local timingOptionsGroup = PRT.InlineGroup("timingOptionsHeading")
 
-    local secondsEditBox = PRT.EditBox("timingSeconds", timing.seconds)    
+    table.sort(timing.seconds)
+    local secondsEditBox = PRT.EditBox("timingSeconds", strjoin(", ", unpack(timing.seconds)))    
     secondsEditBox:SetCallback("OnTextChanged", 
         function(widget) 
-            timing.seconds = tonumber(widget:GetText()) 
+            local times = {strsplit(",", widget:GetText())}
+            
+            timing.seconds = {}
+            for i, second in ipairs(times) do
+                table.insert(timing.seconds, tonumber(second))
+            end
         end)
 
     local messagesTabs = PRT.TableToTabs(timing.messages, true)    
-    local messagesTabGroup = PRT.TabGroup(nil, messagesTabs)
-    messagesTabGroup:SetLayout("Flow")
+    local messagesTabGroup = PRT.TabGroup("Messages", messagesTabs)
+    messagesTabGroup:SetLayout("List")
     messagesTabGroup:SetCallback("OnGroupSelected", 
         function(widget, event, key) 
             PRT.TabGroupSelected(widget, timing.messages, key, PRT.MessageWidget, PRT.EmptyMessage, "messageDeleteButton") 
         end)
 
     PRT.SelectFirstTab(messagesTabGroup, timing.messages)  
-
     timingOptionsGroup:AddChild(secondsEditBox)
-
     container:AddChild(timingOptionsGroup)
     container:AddChild(messagesTabGroup)
-
-	return container
 end
 
-Timer.TimerOptionsTabGroupSelected = function(container, timer, key)
-	container:ReleaseChildren()
 
-	if key == "startCondition" then
-		PRT.ConditionWidget(timer.startCondition, container)
-    elseif key == "stopCondition" then
-        PRT.ConditionWidget(timer.stopCondition, container)
-    elseif key == "timings" then
-        local timingsHeading = PRT.Heading("Timings")
-        local timingsTabs = PRT.TableToTabs(timer.timings, true)
-        local timingsTabGroup = PRT.TabGroup(nil, timingsTabs)
-        timingsTabGroup:SetCallback("OnGroupSelected", 
-        function(widget, event, key) 
-            PRT.TabGroupSelected(widget, timer.timings, key, Timer.TimingWidget, PRT.EmptyTiming, "timingDeleteButton") 
-        end)        
-        PRT.SelectFirstTab(timingsTabGroup, timer.timings)  
-        container:AddChild(timingsTabGroup)
-	end
+-------------------------------------------------------------------------------
+-- Public API
 
-	PRT.mainFrameContent:DoLayout()
-end
-
-Timer.TimerWidget = function(timer, container)
+PRT.TimerWidget = function(timer, container)    
     local timerOptionsGroup = PRT.InlineGroup("timerOptionsHeading")
 
     local nameEditBox = PRT.EditBox("timerName", timer.name)
@@ -64,42 +48,25 @@ Timer.TimerWidget = function(timer, container)
         function(widget) 
             timer.name = widget:GetText() 
         end)
-
-    -- TODO: Übersetzen
-    local tabs = {
-		{value = "startCondition", text = "Start Condition"},
-        {value = "stopCondition", text = "Stop Condition"},
-        {value = "timings", text = "Timings"}
-    }
     
-    local timerOptionsTabGroup = PRT.TabGroup(nil, tabs)
-    timerOptionsTabGroup:SetLayout("Flow")
-    timerOptionsTabGroup:SetCallback("OnGroupSelected", 
-        function(widget, event, key) 
-            Timer.TimerOptionsTabGroupSelected(widget, timer, key) 
-        end)
+    local startConditionGroup = PRT.ConditionWidget(timer.startCondition, "Start Condition")
+    startConditionGroup:SetLayout("Flow")
 
-    timerOptionsTabGroup:SelectTab("startCondition")    
+    local stopConditionGroup = PRT.ConditionWidget(timer.stopCondition, "Stop Condition")
+    stopConditionGroup:SetLayout("Flow")
+
+    local timingsHeading = PRT.Heading("Timings")
+        local timingsTabs = PRT.TableToTabs(timer.timings, true)
+        local timingsTabGroup = PRT.TabGroup("Timings", timingsTabs)
+        timingsTabGroup:SetCallback("OnGroupSelected", 
+        function(widget, event, key) 
+            PRT.TabGroupSelected(widget, timer.timings, key, Timer.TimingWidget, PRT.EmptyTiming, "timingDeleteButton") 
+        end)        
+        PRT.SelectFirstTab(timingsTabGroup, timer.timings)  
 
     timerOptionsGroup:AddChild(nameEditBox)
     container:AddChild(timerOptionsGroup)
-    container:AddChild(timerOptionsTabGroup)
-end
-
-
--------------------------------------------------------------------------------
--- Public API
-
-PRT.TimerTabGroup = function(timers)
-	local tabs = PRT.TableToTabs(timers, true)
-	local timersTabGroupWidget = PRT.TabGroup(nil, tabs)
- 
-    timersTabGroupWidget:SetCallback("OnGroupSelected", 
-    function(widget, event, key) 
-        PRT.TabGroupSelected(widget, timers, key, Timer.TimerWidget, PRT.EmptyTimer, "timerDeleteButton") 
-    end)
-
-    PRT.SelectFirstTab(timersTabGroupWidget, timers)  
-
-    return timersTabGroupWidget
+    container:AddChild(startConditionGroup)
+    container:AddChild(stopConditionGroup)
+    container:AddChild(timingsTabGroup)
 end

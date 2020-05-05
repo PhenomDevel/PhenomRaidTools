@@ -28,9 +28,7 @@ Source/ImportExport.lua
 
 Source/GUI/AceHelper.lua
 Source/GUI/Common.lua
-Source/GUI/Encounter.lua
 Source/GUI/Timer.lua
 Source/GUI/Rotation.lua
 Source/GUI/Percentage.lua
 Source/GUI/Core.lua
-Source/GUI/Overlay.lua

@@ -127,3 +127,13 @@ PRT.DebugPercentage = function(...)
         PRT:Print("|c"..PRT.db.profile.colors.percentages, "[Percentage] - ", ...)
     end
 end
+
+PRT.TableContains = function(table, value)
+    for i, tableValue in pairs(table) do
+        if tableValue == value then
+            return true
+        end
+    end
+    
+    return false
+end

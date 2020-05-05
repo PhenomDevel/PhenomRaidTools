@@ -39,8 +39,8 @@ Percentage.PercentageEntryWidget = function(entry, container)
 
     local messagesHeading = PRT.Heading("messageHeading")
     local messagesTabs = PRT.TableToTabs(entry.messages, true)
-    local messagesTabGroup = PRT.TabGroup(nil, messagesTabs)
-    messagesTabGroup:SetLayout("Flow")
+    local messagesTabGroup = PRT.TabGroup("Messages", messagesTabs)
+    messagesTabGroup:SetLayout("List")
     messagesTabGroup:SetCallback("OnGroupSelected", 
         function(widget, event, key) 
             PRT.TabGroupSelected(widget, entry.messages, key, PRT.MessageWidget, PRT.EmptyMessage, "messageDeleteButton") 
@@ -48,6 +48,7 @@ Percentage.PercentageEntryWidget = function(entry, container)
 
     PRT.SelectFirstTab(messagesTabGroup, entry.messages)    	
 
+    percentageEntryOptionsGroup:SetLayout("Flow")
     percentageEntryOptionsGroup:AddChild(operatorDropdown)
     percentageEntryOptionsGroup:AddChild(valueEditBox)
 
@@ -55,7 +56,11 @@ Percentage.PercentageEntryWidget = function(entry, container)
     container:AddChild(messagesTabGroup)
 end
 
-Percentage.PercentageWidget = function(percentage, container)
+
+-------------------------------------------------------------------------------
+-- Public API
+
+PRT.PercentageWidget = function(percentage, container)
     local percentageOptionsGroup = PRT.InlineGroup("percentageOptionsHeading")
 
     local nameEditBox = PRT.EditBox("percentageName", percentage.name)
@@ -91,6 +96,8 @@ Percentage.PercentageWidget = function(percentage, container)
 
     PRT.SelectFirstTab(valuesTabGroupWidget, percentage.values)
 
+    percentageOptionsGroup:SetLayout("Flow")
+
     percentageOptionsGroup:AddChild(nameEditBox)
     percentageOptionsGroup:AddChild(unitIDEditBox)
     percentageOptionsGroup:AddChild(ignoreAfterActivationCheckBox)
@@ -98,36 +105,4 @@ Percentage.PercentageWidget = function(percentage, container)
 
     container:AddChild(percentageOptionsGroup)
     container:AddChild(valuesTabGroupWidget)
-end
-
-
--------------------------------------------------------------------------------
--- Public API
-
-PRT.HealthPercentageTabGroup = function(percentages)
-	local tabs = PRT.TableToTabs(percentages, true)
-	local percentagesTabGroupWidget = PRT.TabGroup(nil, tabs)
- 
-    percentagesTabGroupWidget:SetCallback("OnGroupSelected", 
-        function(widget, event, key) 
-            PRT.TabGroupSelected(widget, percentages, key, Percentage.PercentageWidget, PRT.EmptyPercentage, "percentageDeleteButton") 
-        end)
-
-    PRT.SelectFirstTab(percentagesTabGroupWidget, percentages)  
-
-    return percentagesTabGroupWidget
-end
-
-PRT.PowerPercentageTabGroup = function(percentages)
-	local tabs = PRT.TableToTabs(percentages, true)
-	local powersTabGroupWidget = PRT.TabGroup(nil, tabs)
- 
-    powersTabGroupWidget:SetCallback("OnGroupSelected", 
-        function(widget, event, key) 
-            PRT.TabGroupSelected(widget, percentages, key, Percentage.PercentageWidget, PRT.EmptyPercentage, "percentageDeleteButton") 
-        end)
-
-    PRT.SelectFirstTab(powersTabGroupWidget, percentages)  
-
-    return powersTabGroupWidget
 end

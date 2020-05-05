@@ -87,8 +87,6 @@ PRT.TabGroupSelected = function(widget, t, key, itemFunction, emptyItemFunction,
 	
 		widget:AddChild(deleteButton)
 	end
-	
-    PRT.mainFrameContent:DoLayout()
 end
 
 PRT.TabGroup = function(textID, tabs)
@@ -179,7 +177,6 @@ PRT.TabGroup = function(textID, tabs)
 	local text = PRT.Strings.GetText(textID)	
 
 	local widget = AceGUI:Create("CheckBox")
-
 	if addTooltip then 
 		local tooltip = PRT.Strings.GetTooltip(textID)
 		AceHelper.AddTooltip(widget, tooltip)
@@ -197,7 +194,7 @@ PRT.TabGroup = function(textID, tabs)
 	local widget = AceGUI:Create("InlineGroup")    
 	
 	widget:SetFullWidth(true)
-	widget:SetLayout("Flow")
+	widget:SetLayout("List")
 	widget:SetTitle(text)
 
     return widget

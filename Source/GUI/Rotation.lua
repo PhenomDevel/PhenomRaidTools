@@ -10,8 +10,8 @@ local Rotation = {}
 
 Rotation.RotationEntryWidget = function(entry, container)
     local messagesTabs = PRT.TableToTabs(entry.messages, true)
-    local messagesTabGroup = PRT.TabGroup(nil, messagesTabs)    
-    messagesTabGroup:SetLayout("Flow")
+    local messagesTabGroup = PRT.TabGroup("Messages", messagesTabs)    
+    messagesTabGroup:SetLayout("List")
     messagesTabGroup:SetCallback("OnGroupSelected", 
         function(widget, event, key) 
             PRT.TabGroupSelected(widget, entry.messages, key, PRT.MessageWidget, PRT.EmptyMessage, "messageDeleteButton") 
@@ -22,7 +22,11 @@ Rotation.RotationEntryWidget = function(entry, container)
     container:AddChild(messagesTabGroup)
 end
 
-Rotation.RotationWidget = function(rotation, container)
+
+-------------------------------------------------------------------------------
+-- Public API
+
+PRT.RotationWidget = function(rotation, container)
     local rotationOptionsGroup = PRT.InlineGroup("rotationOptionsHeading")
 
     local nameEditBox = PRT.EditBox("rotationName", rotation.name)    
@@ -49,11 +53,11 @@ Rotation.RotationWidget = function(rotation, container)
             rotation.ignoreDuration = widget:GetText() 
         end)
 
-    local triggerConditionGroup = PRT.InlineGroup("rotationTriggerConditionHeading")
-    PRT.ConditionWidget(rotation.triggerCondition, triggerConditionGroup)
+    local triggerConditionGroup = PRT.ConditionWidget(rotation.triggerCondition, "Trigger Condition")
+    triggerConditionGroup:SetLayout("Flow")
 
     local tabs = PRT.TableToTabs(rotation.entries, true)
-	local entriesTabGroupWidget = PRT.TabGroup(nil, tabs)
+	local entriesTabGroupWidget = PRT.TabGroup("Rotation Entries", tabs)
     entriesTabGroupWidget:SetCallback("OnGroupSelected", 
         function(widget, event,key) 
             PRT.TabGroupSelected(widget, rotation.entries, key, Rotation.RotationEntryWidget, PRT.EmptyRotationEntry, "rotationEntryDeleteButton") 
@@ -68,22 +72,4 @@ Rotation.RotationWidget = function(rotation, container)
     container:AddChild(rotationOptionsGroup)
     container:AddChild(triggerConditionGroup)    
     container:AddChild(entriesTabGroupWidget) 
-end
-
-
--------------------------------------------------------------------------------
--- Public API
-
-PRT.RotationTabGroup = function(rotations)
-	local tabs = PRT.TableToTabs(rotations, true)
-	local rotationsTabGroupWidget = PRT.TabGroup(nil, tabs)
- 
-    rotationsTabGroupWidget:SetCallback("OnGroupSelected", 
-    function(widget, event, key) 
-        PRT.TabGroupSelected(widget, rotations, key, Rotation.RotationWidget, PRT.EmptyRotation, "rotationDeleteButton") 
-    end)
-    
-    PRT.SelectFirstTab(rotationsTabGroupWidget, rotations)
-
-    return rotationsTabGroupWidget
 end

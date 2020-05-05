@@ -74,7 +74,7 @@ local Strings = {
         text = "Rotation Trigger"
     },
     rotationOptionsHeading = {
-        text = "Rotation"
+        text = "Rotation Options"
     },
     rotationTriggerConditionHeading = {
         text = "Condition"
@@ -107,7 +107,7 @@ local Strings = {
         text = "Check again after (s)"
     },
     percentageOptionsHeading = {
-        text = "Percentage"
+        text = "Percentage Options"
     },
 
     -- Percentage Entries
@@ -121,12 +121,12 @@ local Strings = {
         text = "Operator"
     },
     percentageEntryOptionsHeading = {
-        text = "Rotation Entry"
+        text = "Rotation Entry Options"
     },
     
     -- Encounters
     encounterHeading = {
-        text = "Encounters"
+        text = "Encounter Options"
     },
     encounterTriggerHeading = {
         text = "Trigger"
@@ -147,7 +147,7 @@ local Strings = {
         text = "Delete Encounter"
     },
     encounterOptionsHeading = {
-        text = "Encounter"
+        text = "Encounter Options"
     },
 
     -- Conditions
@@ -179,18 +179,19 @@ local Strings = {
         text = "Delete Timer"
     },
     timerOptionsHeading = {
-        text = "Timer"
+        text = "Timer Options"
     },
 
     -- Timings
     timingSeconds = {
-        text = "Trigger Time"
+        text = "Trigger Times",
+        tooltip = "Times at which this trigger should be executed (comma separated list of seconds e.g. 1, 5, 20)"
     },
     timingDeleteButton = {
         text = "Delete Timing"
     },
     timingOptionsHeading = {
-        text = "Timing"
+        text = "Timing Options"
     }
 }
 
@@ -203,9 +204,11 @@ Strings.GetText = function(s)
         if Strings[s].text then
             return Strings[s].text
         else
-            PRT.Error("No String found for:", s)
+            PRT.Debug("No String found for:", s)
             return s
         end
+    else
+        return s
     end
 end
 
@@ -214,10 +217,12 @@ Strings.GetTooltip = function(s)
         if Strings[s].tooltip then
             return Strings[s].tooltip
         else
-            PRT.Error("No Tooltip found for:", s)
+            PRT.Debug("No Tooltip found for:", s)
             return s
         end
-    end  
+    else
+        return s
+    end
 end
 
 PRT.Strings = Strings

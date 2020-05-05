@@ -6,7 +6,7 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 PRT.EmptyCondition = function()
     return {
-        event = "ENCOUNTER_START",
+        event = "PLAYER_REGEN_DISABLED",
         spellID = nil,
         source = nil,
         target = nil,
@@ -35,7 +35,7 @@ end
 
 PRT.EmptyTiming = function()
     return {
-        seconds = 1,
+        seconds = {1},
         messages = {
             PRT.EmptyMessage()
         }
@@ -46,7 +46,7 @@ PRT.EmptyTimer = function()
     return {
         startCondition = PRT.EmptyCondition(),
         stopCondition = PRT.EmptyCondition(),
-        name = "Timer Name",
+        name = "Timer Name"..random(0,100000),
         timings = {
             PRT.EmptyTiming()
         }
@@ -68,7 +68,7 @@ end
 PRT.EmptyRotation = function()
     return {
         triggerCondition = PRT.EmptyCondition(),
-        name = "Rotation Name",
+        name = "Rotation Name"..random(0,100000),
         entries = {
             PRT.EmptyRotationEntry()
         },
@@ -94,7 +94,7 @@ end
 
 PRT.EmptyPercentage = function()
     return {
-        name = "Percentage Name",
+        name = "Percentage Name"..random(0,100000),
         unitID = "player",
         values = {
             PRT.EmptyPercentageEntry()
@@ -110,8 +110,8 @@ end
 
 PRT.EmptyEncounter = function()
     return {
-        id = "Encounter ID",
-        name = "Encounter Name", 
+        id = random(0,100000),
+        name = "Encounter Name"..random(0,100000), 
         Timers = {
         },
 
@@ -147,7 +147,7 @@ PRT.ExampleEncounter = function()
                 name = "Timer Name",
                 timings = {
                     {
-                        seconds = 1,
+                        seconds = {1, 2, 3},
                         messages = {
                             {
                                 message = "Message 1 second into the Encounter - %s",
@@ -160,7 +160,7 @@ PRT.ExampleEncounter = function()
                         }
                     },
                     {
-                        seconds = 5,
+                        seconds = {5},
                         messages = {
                             {
                                 message = "Message 5 seconds into the Encounter",
@@ -236,6 +236,7 @@ PRT.ExampleEncounter = function()
                 values = {
                     {
                         value = 60,
+                        operator = "equals",
                         messages = {
                             {
                                 message = "Phase 2 starting soon",
@@ -260,6 +261,7 @@ PRT.ExampleEncounter = function()
                 values = {
                     {
                         value = 90,
+                        operator = "equals",
                         messages = {
                             {
                                 message = "Evil Ability is coming soon",
