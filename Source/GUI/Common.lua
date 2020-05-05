@@ -95,10 +95,9 @@ PRT.MessageWidget = function (message, container)
 		end)
 
 	local withSoundCheckbox = PRT.CheckBox("messageWithSound", message.withSound)
-	withSoundCheckbox:SetCallback("OnEnterPressed", 
+	withSoundCheckbox:SetCallback("OnValueChanged", 
 		function(widget) 
 			message.withSound = widget:GetValue() 
-			widget:ClearFocus()
 		end)
 
 	container:AddChild(targetsEditBox)

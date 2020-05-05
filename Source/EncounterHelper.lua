@@ -155,7 +155,8 @@ PRT.ExampleEncounter = function()
                                 targets = {
                                     "ALL"
                                 },
-                                delay = 0
+                                delay = 0,
+                                withSound = true
                             }
                         }
                     },
@@ -168,7 +169,8 @@ PRT.ExampleEncounter = function()
                                 targets = {
                                     "ALL"
                                 },
-                                delay = 0
+                                delay = 0,
+                                withSound = true
                             }
                         }
                     }
@@ -194,7 +196,8 @@ PRT.ExampleEncounter = function()
                                 targets = {
                                     "ALL"
                                 },
-                                delay = 0
+                                delay = 0,
+                                withSound = true
                             }
                         }
                     }
@@ -220,7 +223,8 @@ PRT.ExampleEncounter = function()
                                 targets = {
                                     "ALL"
                                 },
-                                delay = 0
+                                delay = 0,
+                                withSound = true
                             }
                         }
                     }
@@ -245,7 +249,8 @@ PRT.ExampleEncounter = function()
                                 targets = {
                                     "ALL"
                                 },
-                                delay = 0
+                                delay = 0,
+                                withSound = true
                             }
                         }
                     }
