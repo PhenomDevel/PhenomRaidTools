@@ -76,7 +76,7 @@ PRT.CreateMainFrame = function(profile)
 	PRT.mainFrame:SetHeight(800)
 	PRT.mainFrame.frame:SetResizable(true)
 	PRT.mainFrame.frame:SetMinResize(1100, 800)
-	
+	PRT.mainFrame.frame:SetMaxResize(1100, 800)
 	RegisterESCHandler("mainFrame", PRT.mainFrame)
 
 	PRT.mainFrame:AddChild(PRT.CreateMainFrameContent(PRT.mainFrame, profile))

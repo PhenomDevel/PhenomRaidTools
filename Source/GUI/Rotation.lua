@@ -11,7 +11,7 @@ local Rotation = {}
 Rotation.RotationEntryWidget = function(entry, container)
     local messagesTabs = PRT.TableToTabs(entry.messages, true)
     local messagesTabGroup = PRT.TabGroup(nil, messagesTabs)    
-    --messagesTabGroup:SetLayout("Flow")
+    messagesTabGroup:SetLayout("Flow")
     messagesTabGroup:SetCallback("OnGroupSelected", 
         function(widget, event, key) 
             PRT.TabGroupSelected(widget, entry.messages, key, PRT.MessageWidget, PRT.EmptyMessage, "messageDeleteButton") 
