@@ -24,7 +24,7 @@ PRT.CreateImportEncounterFrame = function(encounters)
         if worked == true then
             table.insert(encounters, encounter)
             PRT.mainFrame:ReleaseChildren()
-            PRT.mainFrame:AddChild(PRT.CreateMainFrameContent(PRT.mainFrame, PRT.db.profile))            
+            PRT.mainFrame:AddChild(PRT.Core.CreateMainFrameContent(PRT.mainFrame, PRT.db.profile))            
         else
             if not (importDataBox:GetText() == "") then
                 PRT.Error("Import was not successfull.")
