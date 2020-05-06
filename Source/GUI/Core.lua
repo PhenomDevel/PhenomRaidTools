@@ -10,8 +10,6 @@ PRT.Core = Core
 
 local RegisterESCHandler = function(name, container)
 	_G[name] = container.frame
-    -- Register the global variable `MyGlobalFrameName` as a "special frame"
-    -- so that it is closed when the escape key is pressed.
     tinsert(UISpecialFrames, name)
 end
 
@@ -31,10 +29,10 @@ Core.GeneratePercentagesTree = function(percentages)
         text = "Percentages",
     }
 
-    if table.getn(percentages) > 0 then
+    if getn(percentages) > 0 then
         t.children = children
         for i, percentage in ipairs(percentages) do
-            table.insert(children, Core.GeneratePercentageTree(percentage))
+            tinsert(children, Core.GeneratePercentageTree(percentage))
         end
     end
     
@@ -73,10 +71,10 @@ Core.GenerateRotationsTree = function(rotations)
         text = "Rotations",
     }
 
-    if table.getn(rotations) > 0 then
+    if getn(rotations) > 0 then
         t.children = children
         for i, rotation in ipairs(rotations) do
-            table.insert(children, Core.GenerateRotationTree(rotation))
+            tinsert(children, Core.GenerateRotationTree(rotation))
         end
     end
     
@@ -99,10 +97,10 @@ Core.GenerateTimersTree = function(timers)
         text = "Timers",
     }
 
-    if table.getn(timers) > 0 then
+    if getn(timers) > 0 then
         t.children = children
         for i, timer in ipairs(timers) do
-            table.insert(children, Core.GenerateTimerTree(timer))
+            tinsert(children, Core.GenerateTimerTree(timer))
         end
     end
     
@@ -136,7 +134,7 @@ Core.GenerateEncountersTree = function(encounters)
     }    
 
     for i, encounter in ipairs(encounters) do
-        table.insert(children, Core.GenerateEncounterTree(encounter))
+        tinsert(children, Core.GenerateEncounterTree(encounter))
     end
 
     return t

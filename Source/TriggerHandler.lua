@@ -25,7 +25,7 @@ TriggerHandler.FilterTimingsTable = function(timings, timeOffset)
     local value
     if timings then
         for i, v in ipairs(timings) do
-            if PRT.TableContains(v.seconds, timeOffset) then
+            if tContains(v.seconds, timeOffset) then
                 if not value then
                     value = v
                 end
@@ -125,7 +125,6 @@ TriggerHandler.CheckStopIgnoreRotationCondition = function(trigger)
 end
 
 TriggerHandler.SendMessagesAfterDelay = function(messages)
-    PRT.Debug("Creating message-timer for", table.getn(messages), "messages")
     for i, message in ipairs(messages) do
         PRT:ScheduleTimer(
             function()

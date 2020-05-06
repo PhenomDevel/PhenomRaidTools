@@ -4,22 +4,6 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 -------------------------------------------------------------------------------
 -- Public API
 
-PRT.StringSplit = function(s, delimiter)
-    result = {};
-    for match in (s..delimiter):gmatch("(.-)"..delimiter) do
-        local trimmed, n = string.gsub(match, " ", "")
-        table.insert(result, trimmed);
-    end
-    return result;
-end
-
-PRT.Texture = function(spellID, size)
-    if spellID ~= nil then
-        local _, _, spellTexture = GetSpellInfo(spellID)
-        return "|T"..(spellTexture or "Interface\\Icons\\INV_MISC_QUESTIONMARK")..":"..(size or "18").."|t"
-    end
-end
-
 PRT.PrintTable = function(prefix, t)
     if t ~= nil then
         for k, v in pairs(t) do
@@ -39,22 +23,6 @@ PRT.PrintTable = function(prefix, t)
     end
 end
 
-PRT.TargetsToString = function(targets)
-    if targets then
-        local s = ""    
-        for i, target in ipairs(targets) do
-            s = s..target..","
-        end	
-        return s
-    end    
-end
-
-PRT.StringToTargets = function(s)
-    local targets = PRT.StringSplit(s, ",")
-
-    return targets
-end
-
 PRT.TableToTabs = function(t, withNewTab, newTabText)
 	local tabs = {}
 	
@@ -72,7 +40,7 @@ PRT.TableToTabs = function(t, withNewTab, newTabText)
 	end
  
 	return tabs
- end
+end
 
 PRT.Round = function (num, numDecimalPlaces)
     local mult = 10^(numDecimalPlaces or 0)
@@ -126,16 +94,6 @@ PRT.DebugPercentage = function(...)
     if PRT.db.profile.debugMode then
         PRT:Print("|c"..PRT.db.profile.colors.percentages, "[Percentage] - ", ...)
     end
-end
-
-PRT.TableContains = function(table, value)
-    for i, tableValue in pairs(table) do
-        if tableValue == value then
-            return true
-        end
-    end
-    
-    return false
 end
 
 PRT.FilterEncounterTable = function(encounters, id)

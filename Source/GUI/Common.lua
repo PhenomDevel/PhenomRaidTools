@@ -68,7 +68,7 @@ PRT.MessageWidget = function (message, container)
 	local targetsEditBox = PRT.EditBox("messageTargets", strjoin(", ", unpack(message.targets)), true)
 	targetsEditBox:SetCallback("OnEnterPressed", 
 		function(widget) 
-			message.targets = PRT.StringToTargets(widget:GetText()) 
+			message.targets = { strsplit(",", widget:GetText()) }
 			widget:ClearFocus()
 		end) 
 
@@ -113,7 +113,7 @@ PRT.NewTriggerDeleteButton = function(container, t, idx, textID)
     deleteButton:SetRelativeWidth(1)
     deleteButton:SetCallback("OnClick", 
         function() 
-            table.remove(t, idx) 
+            tremove(t, idx) 
             PRT.mainFrameContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
             PRT.mainFrameContent:DoLayout()
             container:ReleaseChildren()

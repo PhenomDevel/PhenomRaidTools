@@ -38,21 +38,21 @@ AceHelper.AddNewTab = function(widget, t, item)
     if not t then
         t = {}
     end
-	table.insert(t, item)
+	tinsert(t, item)
 	widget:SetTabs(PRT.TableToTabs(t, true))
 	widget:DoLayout()
-    widget:SelectTab(table.getn(t))
+    widget:SelectTab(getn(t))
     
     PRT.mainFrameContent:DoLayout()
 end
 
 AceHelper.RemoveTab = function(widget, t, item)
-	table.remove(t, item)
+	tremove(t, item)
 	widget:SetTabs(PRT.TableToTabs(t, true))
 	widget:DoLayout()
 	widget:SelectTab(1)
 
-	if table.getn(t) == 0 then
+	if getn(t) == 0 then
 		widget:ReleaseChildren()
     end
     
@@ -202,7 +202,7 @@ PRT.TabGroup = function(textID, tabs)
  PRT.SelectFirstTab = function(container, t)
 	container:SelectTab(nil)
     if t then
-		if table.getn(t) > 0 then
+		if getn(t) > 0 then
 			container:SelectTab(1)
 		end
 	end

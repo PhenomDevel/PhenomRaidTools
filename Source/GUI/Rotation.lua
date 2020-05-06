@@ -90,7 +90,7 @@ PRT.AddRotationOptions = function(container, profile, encounterID)
     addButton:SetCallback("OnClick", 
         function(widget, event, key)
             local newRotation = PRT.EmptyRotation()
-            table.insert(rotations, newRotation)
+            tinsert(rotations, newRotation)
             PRT.mainFrameContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
             PRT.mainFrameContent:DoLayout()
             PRT.mainFrameContent:SelectByPath("encounters", encounterID, "rotations", newRotation.name)

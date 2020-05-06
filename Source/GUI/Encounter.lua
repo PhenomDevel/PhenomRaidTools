@@ -8,7 +8,6 @@ local AceGUI = LibStub("AceGUI-3.0")
 
 PRT.AddEncountersWidgets = function(container, profile)
     local encounterOptionsGroup = PRT.InlineGroup("encounterHeading")
-    local encounterHeading = PRT.Heading("encounterHeading")
 
     local addButton = PRT.Button("NEW ENCOUNTER")
     addButton:SetHeight(40)
@@ -16,7 +15,7 @@ PRT.AddEncountersWidgets = function(container, profile)
     addButton:SetCallback("OnClick", 
     function(widget) 
         local newEncounter = PRT.EmptyEncounter()
-        table.insert(profile.encounters, newEncounter)
+        tinsert(profile.encounters, newEncounter)
         PRT.mainFrameContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
         PRT.mainFrameContent:DoLayout()
 

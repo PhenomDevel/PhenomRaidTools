@@ -10,7 +10,7 @@ local Timer = {}
 Timer.TimingWidget = function(timing, container)
     local timingOptionsGroup = PRT.InlineGroup("timingOptionsHeading")
 
-    table.sort(timing.seconds)
+    sort(timing.seconds)
     local secondsEditBox = PRT.EditBox("timingSeconds", strjoin(", ", unpack(timing.seconds)))    
     secondsEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
@@ -18,7 +18,7 @@ Timer.TimingWidget = function(timing, container)
             
             timing.seconds = {}
             for i, second in ipairs(times) do
-                table.insert(timing.seconds, tonumber(second))
+                tinsert(timing.seconds, tonumber(second))
             end
 			widget:ClearFocus()
         end)
@@ -87,7 +87,7 @@ PRT.AddTimerOptionsWidgets = function(container, profile, encounterID)
     addButton:SetCallback("OnClick", 
         function(widget, event, key)
             local newTimer = PRT.EmptyTimer()
-            table.insert(timers, newTimer)
+            tinsert(timers, newTimer)
             PRT.mainFrameContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
             PRT.mainFrameContent:DoLayout()
             PRT.mainFrameContent:SelectByPath("encounters", encounterID, "timers", newTimer.name)

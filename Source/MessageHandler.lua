@@ -47,7 +47,8 @@ MessageHandler.ExecuteMessageAction = function(message)
         or targetMessage.target == "ALL" 
         or targetMessage.target == "HEALER" 
         or targetMessage.target == "TANK" 
-        or targetMessage.target == "DAMAGER" then
+        or targetMessage.target == "DAMAGER" then            
+            PRT.Debug("Sending new message", receiverMessage)
             MessageHandler.SendMessageToSlave(receiverMessage)
         else
             PRT.Debug("Skipped message due to missing / not existing target")
