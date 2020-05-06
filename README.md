@@ -1,3 +1,4 @@
+[![PhenomRaidTools on Discord](https://img.shields.io/badge/discord-PhenomRaidTools-738bd7.svg)](https://discord.gg/j5yGbK)
 # PhenomRaidTools
 
 ## Setup
