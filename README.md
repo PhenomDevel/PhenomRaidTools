@@ -1,5 +1,12 @@
 # PhenomRaidTools
 
+## Setup
+1. Download the latest release of the addon: [Releases](https://github.com/PhenomDevel/PhenomRaidTools/releases)
+2. Unpack the zip folder and place it into your normal addon folder
+3. You will have to install WeakAuras2 if you haven't yet
+- Either through the twitch desktop app or from [WeakAuras2](https://github.com/WeakAuras/WeakAuras2/releases)
+4. Install the receiver weakaura which is used to receive messages that PhenomRaidTools will send to the given players [PhenomRaidTools: Receiver](https://wago.io/HyieicnAz)
+
 ## TODOs
 - Add placeholders for interpolating event information (%target = target of the spell cast as target for the message etc.)
 -- %target
