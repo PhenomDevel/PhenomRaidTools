@@ -49,9 +49,7 @@ PRT.TimerWidget = function(timer, container)
         function(widget) 
             timer.name = widget:GetText()             
             PRT.mainFrameContent:SetTree(PRT.Tree.GenerateTreeByProfile(PRT.db.profile))
-            PRT.mainFrameContent:DoLayout()
-    
-            PRT.mainFrameContent:SelectByValue(timer.name)
+            PRT.mainFrameContent:DoLayout()    
         end)
     
     local startConditionGroup = PRT.ConditionWidget(timer.startCondition, "Start Condition")

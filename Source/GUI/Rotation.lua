@@ -35,8 +35,6 @@ PRT.RotationWidget = function(rotation, container)
             rotation.name = widget:GetText() 
             PRT.mainFrameContent:SetTree(PRT.Tree.GenerateTreeByProfile(PRT.db.profile))
             PRT.mainFrameContent:DoLayout()
-    
-            PRT.mainFrameContent:SelectByValue(rotation.name)
         end)
 
     local shouldRestartCheckBox =  PRT.CheckBox("rotationShouldRestart", rotation.shouldRestart)
