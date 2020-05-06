@@ -2,8 +2,8 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 local AceGUI = LibStub("AceGUI-3.0")
 
-local Tree = {}
-PRT.Tree = Tree
+local Core = {}
+PRT.Core = Core
 
 -------------------------------------------------------------------------------
 -- Local Helper
@@ -15,33 +15,7 @@ local RegisterESCHandler = function(name, container)
     tinsert(UISpecialFrames, name)
 end
 
-local FilterEncounterTable = function(encounters, id)
-    local value
-    if encounters then
-        for i, v in ipairs(encounters) do
-            if v.id == id then
-                if not value then
-                    return i, v
-                end
-            end
-        end
-    end
-end
-
-local FilterTableByName = function(t, name)
-    local value
-    if t then
-        for i, v in ipairs(t) do
-            if v.name == name then
-                if not value then                    
-                    return i, v
-                end
-            end
-        end
-    end
-end
-
-Tree.GeneratePercentageTree = function(percentage)
+Core.GeneratePercentageTree = function(percentage)
     local t = {
         value = percentage.name,
         text = percentage.name
@@ -50,7 +24,7 @@ Tree.GeneratePercentageTree = function(percentage)
     return t
 end
 
-Tree.GeneratePercentagesTree = function(percentages)
+Core.GeneratePercentagesTree = function(percentages)
     local children = {}
     local t = {
         value = "percentages",
@@ -60,30 +34,30 @@ Tree.GeneratePercentagesTree = function(percentages)
     if table.getn(percentages) > 0 then
         t.children = children
         for i, percentage in ipairs(percentages) do
-            table.insert(children, Tree.GeneratePercentageTree(percentage))
+            table.insert(children, Core.GeneratePercentageTree(percentage))
         end
     end
     
     return t
 end
 
-Tree.GeneratePowerPercentagesTree = function(percentages)
-    local tree = Tree.GeneratePercentagesTree(percentages)
+Core.GeneratePowerPercentagesTree = function(percentages)
+    local tree = Core.GeneratePercentagesTree(percentages)
     tree.value = "powerPercentages"
     tree.text = "Power Percentages"
 
     return tree
 end
 
-Tree.GenerateHealthPercentagesTree = function(percentages)
-    local tree = Tree.GeneratePercentagesTree(percentages)
+Core.GenerateHealthPercentagesTree = function(percentages)
+    local tree = Core.GeneratePercentagesTree(percentages)
     tree.value = "healthPercentages"
     tree.text = "Health Percentages"
 
     return tree
 end
 
-Tree.GenerateRotationTree = function(rotation)
+Core.GenerateRotationTree = function(rotation)
     local t = {
         value = rotation.name,
         text = rotation.name
@@ -92,7 +66,7 @@ Tree.GenerateRotationTree = function(rotation)
     return t
 end
 
-Tree.GenerateRotationsTree = function(rotations)
+Core.GenerateRotationsTree = function(rotations)
     local children = {}
     local t = {
         value = "rotations",
@@ -102,14 +76,14 @@ Tree.GenerateRotationsTree = function(rotations)
     if table.getn(rotations) > 0 then
         t.children = children
         for i, rotation in ipairs(rotations) do
-            table.insert(children, Tree.GenerateRotationTree(rotation))
+            table.insert(children, Core.GenerateRotationTree(rotation))
         end
     end
     
     return t
 end
 
-Tree.GenerateTimerTree = function(timer)
+Core.GenerateTimerTree = function(timer)
     local t = {
         value = timer.name,
         text = timer.name
@@ -118,7 +92,7 @@ Tree.GenerateTimerTree = function(timer)
     return t
 end
 
-Tree.GenerateTimersTree = function(timers)
+Core.GenerateTimersTree = function(timers)
     local children = {}
     local t = {
         value = "timers",
@@ -128,7 +102,7 @@ Tree.GenerateTimersTree = function(timers)
     if table.getn(timers) > 0 then
         t.children = children
         for i, timer in ipairs(timers) do
-            table.insert(children, Tree.GenerateTimerTree(timer))
+            table.insert(children, Core.GenerateTimerTree(timer))
         end
     end
     
@@ -136,23 +110,23 @@ Tree.GenerateTimersTree = function(timers)
     return t
 end
 
-Tree.GenerateEncounterTree = function(encounter)
+Core.GenerateEncounterTree = function(encounter)
     local children = {}
     local t = {
         value = encounter.id,
         text = encounter.name,
         children = {
-            Tree.GenerateTimersTree(encounter.Timers),
-            Tree.GenerateRotationsTree(encounter.Rotations),
-            Tree.GenerateHealthPercentagesTree(encounter.HealthPercentages),
-            Tree.GeneratePowerPercentagesTree(encounter.PowerPercentages)
+            Core.GenerateTimersTree(encounter.Timers),
+            Core.GenerateRotationsTree(encounter.Rotations),
+            Core.GenerateHealthPercentagesTree(encounter.HealthPercentages),
+            Core.GeneratePowerPercentagesTree(encounter.PowerPercentages)
         }
     }
 
     return t
 end
 
-Tree.GenerateEncountersTree = function(encounters)
+Core.GenerateEncountersTree = function(encounters)
     local children = {}
 
     local t = {
@@ -162,13 +136,13 @@ Tree.GenerateEncountersTree = function(encounters)
     }    
 
     for i, encounter in ipairs(encounters) do
-        table.insert(children, Tree.GenerateEncounterTree(encounter))
+        table.insert(children, Core.GenerateEncounterTree(encounter))
     end
 
     return t
 end
 
-Tree.GenerateOptionsTree = function()
+Core.GenerateOptionsTree = function()
     local t = {
         value = "options",
         text = "Options"
@@ -176,338 +150,66 @@ Tree.GenerateOptionsTree = function()
     return t
 end
 
-Tree.GenerateTreeByProfile = function(profile)
+Core.GenerateTreeByProfile = function(profile)
     local t = {
-        Tree.GenerateOptionsTree(),
-        Tree.GenerateEncountersTree(profile.encounters)
+        Core.GenerateOptionsTree(),
+        Core.GenerateEncountersTree(profile.encounters)
     }
 
     return t
 end
 
-Tree.NewTriggerDeleteButton = function(container, t, idx, textID)
-    local deleteButtonText = PRT.Strings.GetText(textID)
-    local deleteButton = AceGUI:Create("Button")
-    deleteButton:SetText(deleteButtonText)
-    deleteButton:SetHeight(40)
-    deleteButton:SetRelativeWidth(1)
-    deleteButton:SetCallback("OnClick", 
-        function() 
-            table.remove(t, idx) 
-            PRT.mainFrameContent:SetTree(Tree.GenerateTreeByProfile(PRT.db.profile))
-            PRT.mainFrameContent:DoLayout()
-            container:ReleaseChildren()
-        end)
-
-    return deleteButton
-end
-
-
--------------------------------------------------------------------------------
--- Options
-
-Tree.AddOptionWidgets = function(container, profile)	
-    local optionsGroup = PRT.InlineGroup("optionsHeading")   
-    optionsGroup:SetLayout("Flow")
-
-    local debugModeCheckbox = PRT.CheckBox("optionsDebugMode", profile.debugMode)
-	debugModeCheckbox:SetCallback("OnValueChanged", 
-		function(widget) 
-			profile.debugMode = widget:GetValue() 
-        end)
-
-    local testModeCheckbox = PRT.CheckBox("optionsTestMode", profile.testMode)
-	testModeCheckbox:SetCallback("OnValueChanged", 
-		function(widget) 
-			profile.testMode = widget:GetValue() 
-		end)	
-
-    local textEncounterIDDropdown = PRT.Dropdown("optionsTestEncounterID", profile.encounters, profile.testEncounterID)
-        
-    textEncounterIDDropdown:SetCallback("OnValueChanged", 
-    function(widget) 
-        profile.testEncounterID = tonumber(widget:GetValue()) 
-    end)        
-        
-    optionsGroup:AddChild(debugModeCheckbox)
-    optionsGroup:AddChild(testModeCheckbox)    
-    optionsGroup:AddChild(textEncounterIDDropdown)
-
-    container:AddChild(optionsGroup)
-end
-
-
--------------------------------------------------------------------------------
--- PowerPercentage
-
-Tree.AddPowerPercentageOptions = function(container, profile, encounterID)
-    local idx, encounter = FilterEncounterTable(profile.encounters, tonumber(encounterID))
-    local percentages = encounter.PowerPercentages
-
-    local percentageOptionsGroup = PRT.InlineGroup("Options")
-    percentageOptionsGroup:SetLayout("Flow")
-
-    local addButton = PRT.Button("NEW POWER-PERCENTAGE")
-    addButton:SetHeight(40)
-    addButton:SetRelativeWidth(1)
-    addButton:SetCallback("OnClick", 
-        function(widget, event, key)
-            local newPercentage = PRT.EmptyPercentage()
-            table.insert(percentages, newPercentage)
-            PRT.mainFrameContent:SetTree(Tree.GenerateTreeByProfile(PRT.db.profile))
-            PRT.mainFrameContent:DoLayout()
-            PRT.mainFrameContent:SelectByPath("encounters", encounterID, "powerPercentages", newPercentage.name)
-        end)
-
-    percentageOptionsGroup:AddChild(addButton)
-    container:AddChild(percentageOptionsGroup)
-end
-
-Tree.AddPowerPercentageWidget = function(container, profile, encounterID, triggerName)
-    local _, encounter = FilterEncounterTable(profile.encounters, encounterID)    
-    local percentages = encounter.PowerPercentages
-    local percentageIndex, percentage = FilterTableByName(percentages, triggerName)
-    local deleteButton = Tree.NewTriggerDeleteButton(container, percentages, percentageIndex, "DELETE POWER-PERCENTAGE")
-
-    PRT.PercentageWidget(percentage, container)
-    container:AddChild(deleteButton)
-end
-
--------------------------------------------------------------------------------
--- HealthPercentage
-
-Tree.AddHealthPercentageOptions = function(container, profile, encounterID)
-    local idx, encounter = FilterEncounterTable(profile.encounters, tonumber(encounterID))
-    local percentages = encounter.HealthPercentages
-    
-    local percentageOptionsGroup = PRT.InlineGroup("Options")
-    percentageOptionsGroup:SetLayout("Flow")
-
-    local addButton = PRT.Button("NEW HEALTH-PERCENTAGE")
-    addButton:SetHeight(40)
-    addButton:SetRelativeWidth(1)
-    addButton:SetCallback("OnClick", 
-        function(widget, event, key)
-            local newPercentage = PRT.EmptyPercentage()
-            table.insert(percentages, newPercentage)
-            PRT.mainFrameContent:SetTree(Tree.GenerateTreeByProfile(PRT.db.profile))
-            PRT.mainFrameContent:DoLayout()
-            PRT.mainFrameContent:SelectByPath("encounters", encounterID, "healthPercentages", newPercentage.name)
-        end)
-
-    percentageOptionsGroup:AddChild(addButton)
-    container:AddChild(percentageOptionsGroup)
-end
-
-Tree.AddHealthPercentageWidget = function(container, profile, encounterID, triggerName)
-    local _, encounter = FilterEncounterTable(profile.encounters, encounterID)    
-    local percentages = encounter.HealthPercentages
-    local percentageIndex, percentage = FilterTableByName(percentages, triggerName)
-    local deleteButton = Tree.NewTriggerDeleteButton(container, percentages, percentageIndex, "DELETE HEALTH-PERCENTAGE")
-
-    PRT.PercentageWidget(percentage, container)
-    container:AddChild(deleteButton)
-end
-
-
--------------------------------------------------------------------------------
--- Timer
-
-Tree.AddTimerOptions = function(container, profile, encounterID)
-    local idx, encounter = FilterEncounterTable(profile.encounters, tonumber(encounterID))
-    local timers = encounter.Timers
-
-    local timerOptionsGroup = PRT.InlineGroup("Options")
-    timerOptionsGroup:SetLayout("Flow")
-
-    local addButton = PRT.Button("NEW TIMER")
-    addButton:SetHeight(40)
-    addButton:SetRelativeWidth(1)
-    addButton:SetCallback("OnClick", 
-        function(widget, event, key)
-            local newTimer = PRT.EmptyTimer()
-            table.insert(timers, newTimer)
-            PRT.mainFrameContent:SetTree(Tree.GenerateTreeByProfile(PRT.db.profile))
-            PRT.mainFrameContent:DoLayout()
-            PRT.mainFrameContent:SelectByPath("encounters", encounterID, "timers", newTimer.name)
-        end)
-    timerOptionsGroup:AddChild(addButton)
-    container:AddChild(timerOptionsGroup)
-end
-
-Tree.AddTimerWidget = function(container, profile, encounterID, triggerName)
-    local idx, encounter = FilterEncounterTable(profile.encounters, encounterID)    
-    local timers = encounter.Timers
-    local timerIndex, timer = FilterTableByName(timers, triggerName)
-    local deleteButton = Tree.NewTriggerDeleteButton(container, timers, timerIndex, "DELETE TIMER")
-
-    PRT.TimerWidget(timer, container)    
-    container:AddChild(deleteButton)
-end
-
-
--------------------------------------------------------------------------------
--- Rotations
-
-Tree.AddRotationOptions = function(container, profile, encounterID)
-    local idx, encounter = FilterEncounterTable(profile.encounters, tonumber(encounterID))
-    local rotations = encounter.Rotations
-
-    local rotationOptionsGroup = PRT.InlineGroup("Options")
-    rotationOptionsGroup:SetLayout("Flow")
-
-    local addButton = PRT.Button("NEW ROTATION")
-    addButton:SetHeight(40)
-    addButton:SetRelativeWidth(1)
-    addButton:SetCallback("OnClick", 
-        function(widget, event, key)
-            local newRotation = PRT.EmptyRotation()
-            table.insert(rotations, newRotation)
-            PRT.mainFrameContent:SetTree(Tree.GenerateTreeByProfile(PRT.db.profile))
-            PRT.mainFrameContent:DoLayout()
-            PRT.mainFrameContent:SelectByPath("encounters", encounterID, "rotations", newRotation.name)
-        end)
-
-    rotationOptionsGroup:AddChild(addButton)
-    container:AddChild(rotationOptionsGroup)
-end
-
-Tree.AddRotationWidget = function(container, profile, encounterID, triggerName)    
-    local idx, encounter = FilterEncounterTable(profile.encounters, encounterID)    
-    local rotations = encounter.Rotations
-    local rotationIndex, rotation = FilterTableByName(rotations, triggerName)
-    local deleteButton = Tree.NewTriggerDeleteButton(container, rotations, rotationIndex, "DELETE ROTATION")
-
-    PRT.RotationWidget(rotation, container)
-    container:AddChild(deleteButton)
-end
-
-
--------------------------------------------------------------------------------
--- Encounter
-
-Tree.AddEncountersWidgets = function(container, profile)
-    local encounterOptionsGroup = PRT.InlineGroup("encounterHeading")
-    local encounterHeading = PRT.Heading("encounterHeading")
-
-    local addButton = PRT.Button("NEW ENCOUNTER")
-    addButton:SetHeight(40)
-    addButton:SetRelativeWidth(1)
-    addButton:SetCallback("OnClick", 
-    function(widget) 
-        local newEncounter = PRT.EmptyEncounter()
-        table.insert(profile.encounters, newEncounter)
-        PRT.mainFrameContent:SetTree(Tree.GenerateTreeByProfile(PRT.db.profile))
-        PRT.mainFrameContent:DoLayout()
-
-        PRT.mainFrameContent:SelectByPath("encounters", newEncounter.id)
-    end)
-
-    local importButton = PRT.Button("IMPORT ENCOUNTER")
-    importButton:SetHeight(40)
-    importButton:SetRelativeWidth(1)
-	importButton:SetCallback("OnClick", 
-		function(widget) 
-			PRT.CreateImportEncounterFrame(profile.encounters)
-        end)
-        
-    encounterOptionsGroup:SetLayout("Flow")
-    encounterOptionsGroup:AddChild(importButton)
-    encounterOptionsGroup:AddChild(addButton)
-
-    container:AddChild(encounterOptionsGroup)
-end
-
-Tree.AddEncounterOptions = function(container, profile, encounterID)
-    local encounterIndex, encounter = FilterEncounterTable(profile.encounters, tonumber(encounterID))
-
-    local encounterOptionsGroup = PRT.InlineGroup("encounterHeading")
-    encounterOptionsGroup:SetLayout("Flow")
-
-	local encounterIDEditBox = PRT.EditBox("encounterID", encounter.id, true)	
-	encounterIDEditBox:SetCallback("OnTextChanged", 
-		function(widget) 
-			encounter.id = tonumber(widget:GetText()) 
-		end)		
-        
-    local encounterNameEditBox = PRT.EditBox("encounterName", encounter.name)	
-    encounterNameEditBox:SetCallback("OnEnterPressed", 
-        function(widget) 
-            encounter.name = widget:GetText()
-            PRT.mainFrameContent:SetTree(PRT.Tree.GenerateTreeByProfile(PRT.db.profile))
-            PRT.mainFrameContent:DoLayout()
-    
-            PRT.mainFrameContent:SelectByValue(encounter.name)
-        end)
-
-    local exportButton = PRT.Button("EXPORT ENCOUNTER")
-    exportButton:SetHeight(40)
-    exportButton:SetRelativeWidth(1)
-    exportButton:SetCallback("OnClick", 
-        function(widget) 
-            PRT.CreateExportEncounterFrame(encounter)
-        end)
-
-    local deleteButton = Tree.NewTriggerDeleteButton(container, profile.encounters, encounterIndex, "DELETE ENCOUNTER")
-
-    encounterOptionsGroup:AddChild(encounterIDEditBox)
-    encounterOptionsGroup:AddChild(encounterNameEditBox)
-    container:AddChild(encounterOptionsGroup)  
-    container:AddChild(exportButton)
-    container:AddChild(deleteButton)
-end
-
-Tree.OnGroupSelected = function(container, key, profile)
+Core.OnGroupSelected = function(container, key, profile)
     container:ReleaseChildren()
     
     local mainKey, encounterID, triggerType, triggerName = strsplit("\001", key)
     
     -- options selected
     if mainKey == "options" then        
-        Tree.AddOptionWidgets(container, profile)
+        PRT.AddOptionWidgets(container, profile)
 
     -- encounters selected
     elseif mainKey == "encounters" and not triggerType and not triggerName and not encounterID then
-        Tree.AddEncountersWidgets(container, profile)
+        PRT.AddEncountersWidgets(container, profile)
 
     -- single encounter selected
     elseif encounterID and not triggerType and not triggerName then
-        Tree.AddEncounterOptions(container, profile, encounterID)
+        PRT.AddEncounterOptions(container, profile, encounterID)
 
     -- encounter trigger type selected
     elseif triggerType and not triggerName then
         if triggerType == "timers" then
-            Tree.AddTimerOptions(container, profile, encounterID)
+            PRT.AddTimerOptionsWidgets(container, profile, encounterID)
         elseif triggerType == "rotations" then
-            Tree.AddRotationOptions(container, profile, encounterID)
+            PRT.AddRotationOptions(container, profile, encounterID)
         elseif triggerType == "healthPercentages" then
-            Tree.AddHealthPercentageOptions(container, profile, encounterID)
+            PRT.AddHealthPercentageOptions(container, profile, encounterID)
         elseif triggerType == "powerPercentages" then
-            Tree.AddPowerPercentageOptions(container, profile, encounterID)
+            PRT.AddPowerPercentageOptions(container, profile, encounterID)
         end
     
     -- single timer selected
     elseif triggerType == "timers" and triggerName then
-        Tree.AddTimerWidget(container, profile, tonumber(encounterID), triggerName)
+        PRT.AddTimerWidget(container, profile, tonumber(encounterID), triggerName)
 
     -- single rotaion selected
     elseif triggerType == "rotations" and triggerName then
-        Tree.AddRotationWidget(container, profile, tonumber(encounterID), triggerName)
+        PRT.AddRotationWidget(container, profile, tonumber(encounterID), triggerName)
 
     -- single healthPercentages selected        
     elseif triggerType == "healthPercentages" and triggerName then
-        Tree.AddHealthPercentageWidget(container, profile, tonumber(encounterID), triggerName)
+        PRT.AddHealthPercentageWidget(container, profile, tonumber(encounterID), triggerName)
 
     -- single powerPercentages selected        
     elseif triggerType == "powerPercentages" and triggerName then
-        Tree.AddPowerPercentageWidget(container, profile, tonumber(encounterID), triggerName)
+        PRT.AddPowerPercentageWidget(container, profile, tonumber(encounterID), triggerName)
     end
 
     container:DoLayout()
     PRT.mainFrameContent:RefreshTree()
 end
 
-PRT.CreateMainFrameContent = function(container, profile)
+Core.CreateMainFrameContent = function(container, profile)
     local scrollFrame = AceGUI:Create("ScrollFrame")
 	scrollFrame:SetLayout("List")	
 	scrollFrame:SetFullHeight(true)
@@ -515,10 +217,10 @@ PRT.CreateMainFrameContent = function(container, profile)
     
     local treeGroup = AceGUI:Create("TreeGroup")
     treeGroup:SetLayout("Fill")
-    treeGroup:SetTree(Tree.GenerateTreeByProfile(profile))
+    treeGroup:SetTree(Core.GenerateTreeByProfile(profile))
     treeGroup:SetCallback("OnGroupSelected", 
         function(widget, event, key) 
-            Tree.OnGroupSelected(scrollFrame, key, profile) 
+            Core.OnGroupSelected(scrollFrame, key, profile) 
         end)	
     PRT.mainFrameContent   = treeGroup        
     treeGroup:AddChild(scrollFrame)
@@ -545,10 +247,10 @@ PRT.CreateMainFrame = function(profile)
 		function(widget) 
 			AceGUI:Release(widget) 
 		end)
-    PRT.mainFrame:SetWidth(800)
+    PRT.mainFrame:SetWidth(850)
     PRT.mainFrame:SetHeight(600)
     PRT.mainFrame.frame:SetMinResize(400, 400)
 	RegisterESCHandler("mainFrame", PRT.mainFrame)
 
-	PRT.mainFrame:AddChild(PRT.CreateMainFrameContent(PRT.mainFrame, profile))
+	PRT.mainFrame:AddChild(Core.CreateMainFrameContent(PRT.mainFrame, profile))
 end	

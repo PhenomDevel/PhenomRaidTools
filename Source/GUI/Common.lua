@@ -106,3 +106,18 @@ PRT.MessageWidget = function (message, container)
 	container:AddChild(messageEditBox)
 	container:AddChild(withSoundCheckbox)
 end
+
+PRT.NewTriggerDeleteButton = function(container, t, idx, textID)
+    local deleteButton = PRT.Button(textID)
+    deleteButton:SetHeight(40)
+    deleteButton:SetRelativeWidth(1)
+    deleteButton:SetCallback("OnClick", 
+        function() 
+            table.remove(t, idx) 
+            PRT.mainFrameContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
+            PRT.mainFrameContent:DoLayout()
+            container:ReleaseChildren()
+        end)
+
+    return deleteButton
+end

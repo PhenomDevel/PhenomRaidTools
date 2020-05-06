@@ -11,20 +11,6 @@ local essentialEvents = {
 	"ENCOUNTER_END"
 }
 
-local FilterEncounterTable = function(encounters, id)
-    local value
-    if encounters then
-        for i, v in ipairs(encounters) do
-            if v.id == id then
-                if not value then
-                    value = v
-                end
-            end
-        end
-    end
-    return value
-end
-
 
 -------------------------------------------------------------------------------
 -- Public API
@@ -44,13 +30,19 @@ end
 function PRT:ENCOUNTER_START(event, encounterID, encounterName)	
 	PRT.Debug("Encounter started - ", encounterID, encounterName)
 	if not self.db.profile.testMode then
-		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-		PRT.currentEncounter = {}
-		PRT.currentEncounter.inFight = true
-		PRT.currentEncounter.lastCheck = GetTime()	
+		local _, encounter = PRT.FilterEncounterTable(self.db.profile.encounters, encounterID)
 
-		local encounter = FilterEncounterTable(self.db.profile.encounters, encounterID)
-		PRT.currentEncounter.encounter = PRT.CopyTable(encounter)
+		if encounter then
+			if encounter.enabled then
+				self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+				PRT.currentEncounter = {}
+				PRT.currentEncounter.inFight = true
+						
+				PRT.currentEncounter.encounter = PRT.CopyTable(encounter)
+			else
+				PRT.Debug("Found encounter but it is disabled. Skipping encounter.")
+			end
+		end
 	end
 
 	PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
@@ -70,13 +62,19 @@ end
 function PRT:PLAYER_REGEN_DISABLED(event)
 	PRT.Debug("Combat started.")
 	if self.db.profile.testMode then
-		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-		PRT.currentEncounter = {}
-		PRT.currentEncounter.inFight = true
-		PRT.currentEncounter.lastCheck = GetTime()	
+		local _, encounter = PRT.FilterEncounterTable(self.db.profile.encounters, self.db.profile.testEncounterID)
 
-		local encounter = FilterEncounterTable(self.db.profile.encounters, self.db.profile.testEncounterID)
-		PRT.currentEncounter.encounter = PRT.CopyTable(encounter)		
+		if encounter then
+			if encounter.enabled then
+				self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+				PRT.currentEncounter = {}
+				PRT.currentEncounter.inFight = true
+
+				PRT.currentEncounter.encounter = PRT.CopyTable(encounter)		
+			else
+				PRT.Debug("Found encounter but it is disabled. Skipping encounter.")
+			end
+		end
 	end	
 	PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 end
@@ -95,6 +93,7 @@ end
 function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 	if PRT.currentEncounter then
 		local timestamp, combatEvent, _, sourceGUID, sourceName, _, _, targetGUID, targetName, _, _, eventSpellID,_,_, eventExtraSpellID = CombatLogGetCurrentEventInfo()
+		
 		if PRT.currentEncounter.inFight then
 			if PRT.currentEncounter.encounter then
 				local timers = PRT.currentEncounter.encounter.Timers

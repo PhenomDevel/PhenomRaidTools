@@ -14,7 +14,18 @@ local defaults = {
 		debugMode = false,
 		showOverlay = true,
 		hideOverlayAfterCombat = false,
-		encounters = {						
+
+		enabledDifficulties = {
+			dungeonNormal = true,
+			dungeonHeroic = true,
+			dungeonMythic = true,
+			raidNormal = true,
+			raidHeroic = true,
+			raidMythic = true
+		},
+
+		encounters = {		
+			-- encounters go in here				
 		},
 		currentEncounter = {
 			inFight = false
@@ -25,7 +36,6 @@ local defaults = {
 			rotations = "FF9482C9",
 			percentages = "FFABD473",
 			error = "FFFF0000"
-
 		}
 	}
 }

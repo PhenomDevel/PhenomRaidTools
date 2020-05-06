@@ -137,3 +137,29 @@ PRT.TableContains = function(table, value)
     
     return false
 end
+
+PRT.FilterEncounterTable = function(encounters, id)
+    local value
+    if encounters then
+        for i, v in ipairs(encounters) do
+            if v.id == id then
+                if not value then
+                    return i, v
+                end
+            end
+        end
+    end
+end
+
+PRT.FilterTableByName = function(t, name)
+    local value
+    if t then
+        for i, v in ipairs(t) do
+            if v.name == name then
+                if not value then                    
+                    return i, v
+                end
+            end
+        end
+    end
+end

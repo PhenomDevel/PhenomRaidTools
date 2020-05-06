@@ -110,6 +110,7 @@ end
 
 PRT.EmptyEncounter = function()
     return {
+        enabled = true,
         id = random(0,100000),
         name = "Encounter Name"..random(0,100000), 
         Timers = {
@@ -128,6 +129,7 @@ end
 
 PRT.ExampleEncounter = function()
     return {
+        enabled = true,
         id = 9999,
         name = "Example", 
         Timers = {

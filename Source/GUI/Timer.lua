@@ -37,18 +37,14 @@ Timer.TimingWidget = function(timing, container)
     container:AddChild(messagesTabGroup)
 end
 
-
--------------------------------------------------------------------------------
--- Public API
-
-PRT.TimerWidget = function(timer, container)    
+Timer.TimerWidget = function(timer, container)    
     local timerOptionsGroup = PRT.InlineGroup("timerOptionsHeading")
 
     local nameEditBox = PRT.EditBox("timerName", timer.name)
     nameEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
             timer.name = widget:GetText()             
-            PRT.mainFrameContent:SetTree(PRT.Tree.GenerateTreeByProfile(PRT.db.profile))
+            PRT.mainFrameContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
             PRT.mainFrameContent:DoLayout()    
         end)
     
@@ -72,4 +68,40 @@ PRT.TimerWidget = function(timer, container)
     container:AddChild(startConditionGroup)
     container:AddChild(stopConditionGroup)
     container:AddChild(timingsTabGroup)
+end
+
+
+-------------------------------------------------------------------------------
+-- Public API
+
+PRT.AddTimerOptionsWidgets = function(container, profile, encounterID)
+    local idx, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
+    local timers = encounter.Timers
+
+    local timerOptionsGroup = PRT.InlineGroup("Options")
+    timerOptionsGroup:SetLayout("Flow")
+
+    local addButton = PRT.Button("NEW TIMER")
+    addButton:SetHeight(40)
+    addButton:SetRelativeWidth(1)
+    addButton:SetCallback("OnClick", 
+        function(widget, event, key)
+            local newTimer = PRT.EmptyTimer()
+            table.insert(timers, newTimer)
+            PRT.mainFrameContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
+            PRT.mainFrameContent:DoLayout()
+            PRT.mainFrameContent:SelectByPath("encounters", encounterID, "timers", newTimer.name)
+        end)
+    timerOptionsGroup:AddChild(addButton)
+    container:AddChild(timerOptionsGroup)
+end
+
+PRT.AddTimerWidget = function(container, profile, encounterID, triggerName)
+    local idx, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)    
+    local timers = encounter.Timers
+    local timerIndex, timer = PRT.FilterTableByName(timers, triggerName)
+    local deleteButton = PRT.NewTriggerDeleteButton(container, timers, timerIndex, "DELETE TIMER")
+
+    Timer.TimerWidget(timer, container)    
+    container:AddChild(deleteButton)
 end

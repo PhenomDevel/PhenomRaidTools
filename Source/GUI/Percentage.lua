@@ -4,6 +4,7 @@ local AceGUI = LibStub("AceGUI-3.0")
 
 local Percentage = {}
 
+
 -------------------------------------------------------------------------------
 -- Local Helper
 
@@ -11,18 +12,9 @@ Percentage.PercentageEntryWidget = function(entry, container)
     local percentageEntryOptionsGroup = PRT.InlineGroup("percentageEntryOptionsHeading")
 
     local operatorValues = {
-        {
-            id = "greater",
-            name = "greater than"
-        },
-        {
-            id = "less",
-            name = "less than"
-        },
-        {
-            id = "equals",
-            name = "equals"
-        },
+        { id = "greater", name = "greater than" },
+        { id = "less",    name = "less than" },
+        { id = "equals",  name = "equals" }
     }
     local operatorDropdown = PRT.Dropdown("percentageEntryOperatorDropdown", operatorValues, entry.operator)
     operatorDropdown:SetCallback("OnValueChanged", 
@@ -57,18 +49,14 @@ Percentage.PercentageEntryWidget = function(entry, container)
     container:AddChild(messagesTabGroup)
 end
 
-
--------------------------------------------------------------------------------
--- Public API
-
-PRT.PercentageWidget = function(percentage, container)
+Percentage.PercentageWidget = function(percentage, container)
     local percentageOptionsGroup = PRT.InlineGroup("percentageOptionsHeading")
 
     local nameEditBox = PRT.EditBox("percentageName", percentage.name)
     nameEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
             percentage.name = widget:GetText() 
-            PRT.mainFrameContent:SetTree(PRT.Tree.GenerateTreeByProfile(PRT.db.profile))
+            PRT.mainFrameContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
             PRT.mainFrameContent:DoLayout()
         end)
 
@@ -110,4 +98,78 @@ PRT.PercentageWidget = function(percentage, container)
 
     container:AddChild(percentageOptionsGroup)
     container:AddChild(valuesTabGroupWidget)
+end
+
+
+-------------------------------------------------------------------------------
+-- Public API Power Percentage
+
+PRT.AddPowerPercentageOptions = function(container, profile, encounterID)
+    local idx, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
+    local percentages = encounter.PowerPercentages
+
+    local percentageOptionsGroup = PRT.InlineGroup("Options")
+    percentageOptionsGroup:SetLayout("Flow")
+
+    local addButton = PRT.Button("NEW POWER-PERCENTAGE")
+    addButton:SetHeight(40)
+    addButton:SetRelativeWidth(1)
+    addButton:SetCallback("OnClick", 
+        function(widget, event, key)
+            local newPercentage = PRT.EmptyPercentage()
+            table.insert(percentages, newPercentage)
+            PRT.mainFrameContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
+            PRT.mainFrameContent:DoLayout()
+            PRT.mainFrameContent:SelectByPath("encounters", encounterID, "powerPercentages", newPercentage.name)
+        end)
+
+    percentageOptionsGroup:AddChild(addButton)
+    container:AddChild(percentageOptionsGroup)
+end
+
+PRT.AddPowerPercentageWidget = function(container, profile, encounterID, triggerName)
+    local _, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)    
+    local percentages = encounter.PowerPercentages
+    local percentageIndex, percentage = PRT.FilterTableByName(percentages, triggerName)
+    local deleteButton = PRT.NewTriggerDeleteButton(container, percentages, percentageIndex, "DELETE POWER-PERCENTAGE")
+
+    Percentage.PercentageWidget(percentage, container)
+    container:AddChild(deleteButton)
+end
+
+
+-------------------------------------------------------------------------------
+-- Public API Health Percentage
+
+PRT.AddHealthPercentageOptions = function(container, profile, encounterID)
+    local idx, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
+    local percentages = encounter.HealthPercentages
+    
+    local percentageOptionsGroup = PRT.InlineGroup("Options")
+    percentageOptionsGroup:SetLayout("Flow")
+
+    local addButton = PRT.Button("NEW HEALTH-PERCENTAGE")
+    addButton:SetHeight(40)
+    addButton:SetRelativeWidth(1)
+    addButton:SetCallback("OnClick", 
+        function(widget, event, key)
+            local newPercentage = PRT.EmptyPercentage()
+            table.insert(percentages, newPercentage)
+            PRT.mainFrameContent:SetTree(PRT.Tree.GenerateTreeByProfile(PRT.db.profile))
+            PRT.mainFrameContent:DoLayout()
+            PRT.mainFrameContent:SelectByPath("encounters", encounterID, "healthPercentages", newPercentage.name)
+        end)
+
+    percentageOptionsGroup:AddChild(addButton)
+    container:AddChild(percentageOptionsGroup)
+end
+
+PRT.AddHealthPercentageWidget = function(container, profile, encounterID, triggerName)
+    local _, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)    
+    local percentages = encounter.HealthPercentages
+    local percentageIndex, percentage = PRT.FilterTableByName(percentages, triggerName)
+    local deleteButton = PRT.NewTriggerDeleteButton(container, percentages, percentageIndex, "DELETE HEALTH-PERCENTAGE")
+
+    Percentage.PercentageWidget(percentage, container)
+    container:AddChild(deleteButton)
 end

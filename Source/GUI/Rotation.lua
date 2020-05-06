@@ -22,18 +22,14 @@ Rotation.RotationEntryWidget = function(entry, container)
     container:AddChild(messagesTabGroup)
 end
 
-
--------------------------------------------------------------------------------
--- Public API
-
-PRT.RotationWidget = function(rotation, container)
+Rotation.RotationWidget = function(rotation, container)
     local rotationOptionsGroup = PRT.InlineGroup("rotationOptionsHeading")
 
     local nameEditBox = PRT.EditBox("rotationName", rotation.name)    
     nameEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
             rotation.name = widget:GetText() 
-            PRT.mainFrameContent:SetTree(PRT.Tree.GenerateTreeByProfile(PRT.db.profile))
+            PRT.mainFrameContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
             PRT.mainFrameContent:DoLayout()
         end)
 
@@ -75,4 +71,41 @@ PRT.RotationWidget = function(rotation, container)
     container:AddChild(rotationOptionsGroup)
     container:AddChild(triggerConditionGroup)    
     container:AddChild(entriesTabGroupWidget) 
+end
+
+
+-------------------------------------------------------------------------------
+-- Public API
+
+PRT.AddRotationOptions = function(container, profile, encounterID)
+    local idx, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
+    local rotations = encounter.Rotations
+
+    local rotationOptionsGroup = PRT.InlineGroup("Options")
+    rotationOptionsGroup:SetLayout("Flow")
+
+    local addButton = PRT.Button("NEW ROTATION")
+    addButton:SetHeight(40)
+    addButton:SetRelativeWidth(1)
+    addButton:SetCallback("OnClick", 
+        function(widget, event, key)
+            local newRotation = PRT.EmptyRotation()
+            table.insert(rotations, newRotation)
+            PRT.mainFrameContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
+            PRT.mainFrameContent:DoLayout()
+            PRT.mainFrameContent:SelectByPath("encounters", encounterID, "rotations", newRotation.name)
+        end)
+
+    rotationOptionsGroup:AddChild(addButton)
+    container:AddChild(rotationOptionsGroup)
+end
+
+PRT.AddRotationWidget = function(container, profile, encounterID, triggerName)    
+    local idx, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)    
+    local rotations = encounter.Rotations
+    local rotationIndex, rotation = PRT.FilterTableByName(rotations, triggerName)
+    local deleteButton = PRT.NewTriggerDeleteButton(container, rotations, rotationIndex, "DELETE ROTATION")
+
+    Rotation.RotationWidget(rotation, container)
+    container:AddChild(deleteButton)
 end

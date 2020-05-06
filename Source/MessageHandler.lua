@@ -9,8 +9,11 @@ local MessageHandler = {}
 
 MessageHandler.SendMessageToSlave = function(message)
     if PRT.db.profile.testMode then
-        C_ChatInfo.SendAddonMessage("PRT_MSG", message, "WHISPER", UnitName("player")) 
-        C_ChatInfo.SendAddonMessage("PRT_MSG", message, "RAID") 
+        if UnitInRaid("player") then
+            C_ChatInfo.SendAddonMessage("PRT_MSG", message, "RAID") 
+        else
+            C_ChatInfo.SendAddonMessage("PRT_MSG", message, "WHISPER", UnitName("player")) 
+        end       
     else
         C_ChatInfo.SendAddonMessage("PRT_MSG", message, "RAID")    
     end
@@ -40,21 +43,11 @@ MessageHandler.ExecuteMessageAction = function(message)
         end
 
         local receiverMessage = MessageHandler.MessageToReceiverMessage(targetMessage)
-        
-        if (UnitExists(targetMessage.target) )
-        -- and (UnitInRaid(targetMessage.target))) 
+        if (UnitExists(targetMessage.target))
         or targetMessage.target == "ALL" 
         or targetMessage.target == "HEALER" 
         or targetMessage.target == "TANK" 
         or targetMessage.target == "DAMAGER" then
-            if targetMessage.target ~= "ALL"
-            and targetMessage.target ~= "HEALER" 
-            and targetMessage.target ~= "TANK" 
-            and targetMessage.target ~= "DAMAGER" then
-                PRT.Debug("Sending new message to `"..targetMessage.target.."` - "..receiverMessage)
-            else
-                PRT.Debug("Sending new message to `"..(targetMessage.target or "NO TARGET").."` - "..receiverMessage)
-            end 
             MessageHandler.SendMessageToSlave(receiverMessage)
         else
             PRT.Debug("Skipped message due to missing / not existing target")

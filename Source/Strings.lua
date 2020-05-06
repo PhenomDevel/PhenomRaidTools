@@ -32,7 +32,7 @@ local Strings = {
     },    
     messageTargets = {
         text = "Targets",
-        tooltip = "Comma separated list of targets"
+        tooltip = "Comma separated list of targets. (e.g. ALL, HEALER, TANK, DAMAGER, $playerName)"
     },
     messageMessage = {
         text = "Message",
@@ -163,6 +163,9 @@ local Strings = {
     },
     encounterOptionsHeading = {
         text = "Encounter Options"
+    },
+    encounterEnabled = {
+        text = "Enabled"
     },
 
     -- Conditions
