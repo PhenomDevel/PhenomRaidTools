@@ -184,7 +184,6 @@ PRT.TabGroup = function(textID, tabs)
 
 	widget:SetLabel(text)
 	widget:SetValue(value)
-	widget:SetFullWidth(true)
  
 	return widget
  end

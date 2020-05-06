@@ -13,7 +13,9 @@ PRT.CreateImportEncounterFrame = function(encounters)
     importFrame:SetLayout("Fill")
     
     local importDataBox = AceGUI:Create("MultiLineEditBox")
-    importDataBox:SetLabel("String")
+    importDataBox:SetLabel("Encounter String")
+    importDataBox:SetFocus()
+    importDataBox:DisableButton(true)
 
     importFrame:AddChild(importDataBox)
 
@@ -41,7 +43,9 @@ PRT.CreateExportEncounterFrame = function(encounter)
     local exportDataBox = AceGUI:Create("MultiLineEditBox")
     exportDataBox:SetLabel("String")
     exportDataBox:SetText(AceSerializer:Serialize(encounter))
-
+    exportDataBox:SetFocus()
+    exportDataBox:DisableButton(true)
+    exportDataBox:HighlightText()
     exportFrame:AddChild(exportDataBox)    
     
     exportFrame:Show()    

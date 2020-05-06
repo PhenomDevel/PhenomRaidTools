@@ -16,8 +16,8 @@ local Strings = {
         text = "Debug mode?"
     },
     optionsTestEncounterID = {
-        text = "Test Encounter-ID",
-        tooltip = "Specify the ID of the encounter you want to test"
+        text = "Test Encounter",
+        tooltip = "Choose the encounter you want to test"
     },
 
     -- Messages
@@ -138,7 +138,22 @@ local Strings = {
         text = "Export Encounter"
     },
     encounterID = {
-        text = "Encounter-ID"
+        text = "Encounter-ID",
+        tooltip = {
+            "Ny'alotha, the Waking City",
+            "2329 - Wrathion",
+            "2327 - Maut",
+            "2334 - The Prophet Skitra",
+            "2328 - Dark Inquisitor Xanesh",
+            "2333 - The Hivemind",
+            "2335 - Shad'har the Insatiable",
+            "2343 - Drest'agath",
+            "2345 - Il'gynoth, Corruption Reborn",
+            "2336 - Vexiona",
+            "2331 - Ra-den the Despoiled",
+            "2337 - Carapace of N'Zoth",
+            "2344 - N'Zoth the Corruptor"
+        }
     },
     encounterName = {
         text = "Name"
