@@ -7,18 +7,74 @@ local Strings = {
 
     -- Options
     optionsHeading = {
-        text = "Options"
+        text = "Global Options"
     },
     optionsTestMode = {
-        text = "Test mode?"
+        text = "Test mode"
     },
     optionsDebugMode = {
-        text = "Debug mode?"
+        text = "Debug mode"
     },
     optionsTestEncounterID = {
-        text = "Test Encounter",
+        text = "Test encounter",
         tooltip = "Choose the encounter you want to test"
     },
+    optionsEnabledDifficulties = {
+        text = "Enabled difficulties"
+    },
+    dungeonHeading = {
+        text = "Dungeon"
+    },
+    dungeonDifficultyNormal = {
+        text = "Normal"
+    },
+    dungeonDifficultyHeroic = {
+        text = "Heroic"
+    },
+    dungeonDifficultyMythic = {
+        text = "Mythic"
+    },
+    raidHeading = {
+        text = "Raid"
+    },
+    raidDifficultyNormal = {
+        text = "Normal"
+    },
+    raidDifficultyHeroic = {
+        text = "Heroic"
+    },
+    raidDifficultyMythic = {
+        text = "Mythic"
+    },
+
+    triggerDefaults = {
+        text = "Trigger Defaults"
+    },
+    rotationDefaults = {
+        text = "Rotation"
+    },
+    percentageDefaults = {
+        text = "Percentages"
+    },
+    messageDefaults = {
+        text = "Message"
+    },
+    defaultIgnoreAfterActivation = {
+        text = "Ignore after activation"
+    },
+    defaultShouldRestart = {
+        text = "Should restart"
+    },
+    defaultIgnoreDuration = {
+        text = "Ignore duration"
+    },
+    defaultWithSound = {
+        text = "Activate sound on receiver"
+    },
+    defaultEvent = {
+        text = "Event"
+    },
+
 
     -- Messages
     messageHeading = {
@@ -28,11 +84,14 @@ local Strings = {
         text = "Delete Message"
     },
     messageWithSound = {
-        text = "Play sound for receiver?"
+        text = "Activate sound on receiver"
     },    
     messageTargets = {
         text = "Targets",
-        tooltip = "Comma separated list of targets. (e.g. ALL, HEALER, TANK, DAMAGER, $playerName)"
+        tooltip = {
+            "Comma separated list of targets",
+            "(e.g. ALL, HEALER, TANK, DAMAGER, $playerName)"
+        }
     },
     messageMessage = {
         text = "Message",
@@ -44,7 +103,7 @@ local Strings = {
     },
     messageDelay = {
         text = "Delay (s)",
-        tooltip = "After how many seconds the message should be send to the receiver"
+        tooltip = "After how many seconds the message should be send to the receiver?"
     },
     messageDuration = {
         text = "Duration (s)",

@@ -16,13 +16,37 @@ local defaults = {
 		hideOverlayAfterCombat = false,
 
 		enabledDifficulties = {
-			dungeonNormal = true,
-			dungeonHeroic = true,
-			dungeonMythic = true,
-			raidNormal = true,
-			raidHeroic = true,
-			raidMythic = true
+			dungeon = {
+				Normal = true,
+				Heroic = true,
+				Mythic = true
+			},
+			raid = {
+				Normal = true,
+				Heroic = true,
+				Mythic = true
+			}
 		},
+
+		-- TODO: Add all the defaults
+		triggerDefaults = {
+			messageDefaults = {
+				defaultWithSound = true
+			},
+			rotationDefaults = {
+				defaultShouldRestart = true,
+				defaultIgnoreAfterActivation = true,
+				defaultIgnoreDuration = 10
+			},
+			percentageDefaults = {
+				defaultIgnoreAfterActivation = true,
+				defaultIgnoreDuration = 5
+			},
+			conditionDefaults = {
+				additionalEvents = {},
+				defaultEvent = "PLAYER_REGEN_DISABLED"
+			}
+		}, 
 
 		encounters = {		
 			-- encounters go in here				
@@ -48,7 +72,6 @@ function PRT:OnInitialize()
 	-- because we sometimes have to do a re-layout of the complete content
 	PRT.mainFrame = nil
 	PRT.mainFrameContent = nil
-	-- PRT.CreateOverlay()
 end
 
 function PRT:OnEnable()

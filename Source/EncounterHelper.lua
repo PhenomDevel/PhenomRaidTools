@@ -25,7 +25,7 @@ PRT.EmptyMessage = function()
             "ALL"
         },
         delay = 0,
-        withSound = true
+        withSound = PRT.db.profile.triggerDefaults.messageDefaults.defaultWithSound
     }
 end
 
@@ -72,9 +72,9 @@ PRT.EmptyRotation = function()
         entries = {
             PRT.EmptyRotationEntry()
         },
-        shouldRestart = true,
-        ignoreAfterActivation = false,
-        ignoreDuration = 0
+        shouldRestart = PRT.db.profile.triggerDefaults.rotationDefaults.defaultShouldRestart,
+        ignoreAfterActivation = PRT.db.profile.triggerDefaults.rotationDefaults.defaultIgnoreAfterActivation,
+        ignoreDuration = PRT.db.profile.triggerDefaults.rotationDefaults.defaultIgnoreDuration
     }
 end
 
@@ -99,8 +99,8 @@ PRT.EmptyPercentage = function()
         values = {
             PRT.EmptyPercentageEntry()
         },
-        ignoreAfterActivation = true,
-        ignoreDuration = 10
+        ignoreAfterActivation = PRT.db.profile.triggerDefaults.percentageDefaults.defaultIgnoreAfterActivation,
+        ignoreDuration = PRT.db.profile.triggerDefaults.percentageDefaults.defaultIgnoreDuration
     }
 end
 
@@ -185,6 +185,8 @@ PRT.ExampleEncounter = function()
                 triggerCondition = {
                     event = "SPELL_CAST_START",
                     spellID = 188196,
+                    spellIcon = 136048,
+                    spellName = "Lightning Bolt",
                     source = nil,
                     target = nil,
                 },

@@ -159,10 +159,15 @@ PRT.TabGroup = function(textID, tabs)
 	local text = PRT.Strings.GetText(textID)
 
 	local dropdownItems = {}
+	dropdownItems[999] = ""
 	for i,v in ipairs(values) do
-		dropdownItems[v.id] = v.name
- 	end
-
+		if type(v) == "string" then
+			dropdownItems[v] = v
+		else
+			dropdownItems[v.id] = v.name
+		end
+	end
+	 
 	local widget = AceGUI:Create("Dropdown")
 
 	widget:SetLabel(text)	
@@ -188,6 +193,13 @@ PRT.TabGroup = function(textID, tabs)
 	return widget
  end
 
+ PRT.Icon = function(value)	
+	local widget = AceGUI:Create("Icon")
+	widget:SetImage(value)
+ 
+	return widget
+ end
+
  PRT.InlineGroup = function(textID)
 	local text = PRT.Strings.GetText(textID)
 	local widget = AceGUI:Create("InlineGroup")    
@@ -195,6 +207,15 @@ PRT.TabGroup = function(textID, tabs)
 	widget:SetFullWidth(true)
 	widget:SetLayout("List")
 	widget:SetTitle(text)
+
+    return widget
+ end
+
+ PRT.SimpleGroup = function()
+	local widget = AceGUI:Create("SimpleGroup")    
+	
+	widget:SetFullWidth(true)
+	widget:SetLayout("List")
 
     return widget
  end

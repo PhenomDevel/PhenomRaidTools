@@ -1,38 +1,94 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
-local AceGUI = LibStub("AceGUI-3.0")
 
+-------------------------------------------------------------------------------
+-- Local Helper
+
+local conditionEvents = {
+	"SPELL_CAST_SUCCESS",
+	"SPELL_CAST_START",
+	"SPELL_CAST_FAILED",
+	"SPELL_AURA_REMOVED",
+	"SPELL_AURA_APPLIED",
+	"SPELL_CAST_INTERRUPT",
+	"ENCOUNTER_START",
+	"ENCOUNTER_END",
+	"PLAYER_REGEN_DISABLED",
+	"PLAYER_REGEN_ENABLED",
+	"UNIT_DIED",
+	"PARTY_KILL"
+}
 
 -------------------------------------------------------------------------------
 -- Public API
 
 PRT.ConditionWidget = function(condition, textID)
 	local widget = PRT.InlineGroup(textID)
+
 	local eventEditBox = PRT.EditBox("conditionEvent", condition.event, true)
-	eventEditBox:SetCallback("OnEnterPressed", 
+
+	local conditionEventsFull = table.merge(conditionEvents, PRT.db.profile.triggerDefaults.conditionDefaults.additionalEvents)
+
+	local eventDropDown = PRT.Dropdown("conditionEvent", conditionEvents, condition.event)
+	local targetEditBox = PRT.EditBox("conditionTarget", condition.target, true)
+	local sourceEditBox = PRT.EditBox("conditionSource", condition.source, true)
+
+	local spellGroup = PRT.SimpleGroup()
+	spellGroup:SetLayout("Flow")
+	spellGroup:SetRelativeWidth(1)
+
+	local spellIDEditBox = PRT.EditBox("conditionSpellID", condition.spellID, true)
+	local spellNameLabel = PRT.Label(condition.spellName)
+
+	local spellIcon = PRT.Icon(condition.spellIcon)
+	spellIcon:SetWidth(40)
+	spellIcon:SetHeight(20)
+	spellIcon:SetImageSize(20,20)
+
+	eventDropDown:SetCallback("OnValueChanged", 
 		function(widget) 
-			local text = widget:GetText()
+			local text = widget:GetValue()
+
 			if text == "" then
 				condition.event = nil
 			else
 				condition.event = text
 			end	
+
 			widget:ClearFocus()
-		end)
+		end)	
 	
-	local spellIDEditBox = PRT.EditBox("conditionSpellID", condition.spellID, true)
 	spellIDEditBox:SetCallback("OnEnterPressed", 
 		function(widget) 
 			local text = tonumber(widget:GetText()) 
-			if text == "" then
-				condition.spellID = nil
-			else
-				condition.spellID = text
-			end				
+
+			local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(text)
+			
+			if name then
+				condition.spellName = name								
+			end
+
+			if spellId then
+				condition.spellID = spellId				
+			end
+
+			if icon then
+				condition.spellIcon = icon				
+			end
+
+			if not (name and spellId and icon) then
+				condition.spellName = nil
+				condition.spellIcon = nil
+				condition.spellID = nil		
+			end
+
+			spellIcon:SetImage(condition.spellIcon)
+			spellNameLabel:SetText(condition.spellName)
+			spellIDEditBox:SetText(condition.spellID)
+
 			widget:ClearFocus()
 		end)
-
-	local targetEditBox = PRT.EditBox("conditionTarget", condition.target, true)
+			
 	targetEditBox:SetCallback("OnEnterPressed", 
 		function(widget)
 			local text = widget:GetText()
@@ -43,8 +99,7 @@ PRT.ConditionWidget = function(condition, textID)
 			end		
 			widget:ClearFocus()	
 		end)
-
-	local sourceEditBox = PRT.EditBox("conditionSource", condition.source, true)
+	
 	sourceEditBox:SetCallback("OnEnterPressed", 
 		function(widget) 
 			local text = widget:GetText()
@@ -56,8 +111,12 @@ PRT.ConditionWidget = function(condition, textID)
 			widget:ClearFocus()
 		end)
 
-	widget:AddChild(eventEditBox)	
-	widget:AddChild(spellIDEditBox)
+	spellGroup:AddChild(spellIDEditBox)
+	spellGroup:AddChild(spellIcon)
+	spellGroup:AddChild(spellNameLabel)
+
+	widget:AddChild(eventDropDown)	
+	widget:AddChild(spellGroup)
 	widget:AddChild(targetEditBox)
 	widget:AddChild(sourceEditBox)
 

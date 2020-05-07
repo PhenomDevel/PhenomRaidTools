@@ -8,9 +8,12 @@ local essentialEvents = {
 	"PLAYER_REGEN_DISABLED", 
 	"PLAYER_REGEN_ENABLED",
 	"ENCOUNTER_START",
-	"ENCOUNTER_END"
+	"ENCOUNTER_END",
+	"PLAYER_ENTERING_WORLD"
 }
 
+--party / raid
+--local name, type, _, difficulty = GetInstanceInfo())
 
 -------------------------------------------------------------------------------
 -- Public API
@@ -27,40 +30,82 @@ PRT.UnregisterEssentialEvents = function()
 	end
 end
 
-function PRT:ENCOUNTER_START(event, encounterID, encounterName)	
-	PRT.Debug("Encounter started - ", encounterID, encounterName)
-	if not self.db.profile.testMode then
-		local _, encounter = PRT.FilterEncounterTable(self.db.profile.encounters, encounterID)
 
-		if encounter then
-			if encounter.enabled then
-				self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-				PRT.currentEncounter = {}
-				PRT.currentEncounter.inFight = true
-						
-				PRT.currentEncounter.encounter = PRT.CopyTable(encounter)
-			else
-				PRT.Debug("Found encounter but it is disabled. Skipping encounter.")
+function PRT:PLAYER_ENTERING_WORLD(event)
+	local name, type, _, difficulty = GetInstanceInfo()
+
+	PRT.Debug("Zone entered.")
+	
+	if type == "party" then
+		PRT.Debug("Player entered dungeon - checking difficulty")
+		PRT.Debug("Current difficulty is", difficulty)
+		
+		if self.db.profile.enabledDifficulties["dungeon"][difficulty] then
+			PRT.Debug("Enabling PhenomRaidTools for", name, "on difficulty", difficulty)
+			PRT.enabled = true
+		else
+			PRT.Debug("Difficulty not configured. PhenomRaidTools disabled.")
+			PRT.enabled = false
+		end
+	elseif type == "raid" then
+		PRT.Debug("Player entered raid - checking difficulty")
+		PRT.Debug("Current difficulty is"..difficulty)
+		
+		if self.db.profile.enabledDifficulties["dungeon"][difficulty] then
+			PRT.Debug("Enabling PhenomRaidTools for", name, "on difficulty", difficulty)
+			PRT.enabled = true
+		else
+			PRT.Debug("Difficulty not configured. PhenomRaidTools disabled.")
+			PRT.enabled = false
+		end
+	elseif type == "none" then
+		PRT.Debug("Player is not in a raid nor in a dungeon. PhenomRaidTools disabled.")
+	end
+end
+
+function PRT:ENCOUNTER_START(event, encounterID, encounterName)	
+	if PRT.enabled then
+		PRT.Debug("Encounter started - ", encounterID, encounterName)
+
+		if not self.db.profile.testMode then
+			local _, encounter = PRT.FilterEncounterTable(self.db.profile.encounters, encounterID)
+
+			if encounter then
+				if encounter.enabled then
+					self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+					PRT.currentEncounter = {}
+					PRT.currentEncounter.inFight = true
+							
+					PRT.currentEncounter.encounter = PRT.CopyTable(encounter)
+				else
+					PRT.Debug("Found encounter but it is disabled. Skipping encounter.")
+				end
 			end
 		end
-	end
 
-	PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
+		PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
+	end
 end
 
 function PRT:ENCOUNTER_END(event)	
-	PRT.Debug("Encounter ended.")	
-	PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
-	self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-	if PRT.currentEncounter then
-		PRT.currentEncounter.inFight = false
-	end	
+	if PRT.enabled then
+		PRT.Debug("Encounter ended.")	
+		PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
+		self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
-	PRT.ClearMessageQueue()
+		if PRT.currentEncounter then
+			PRT.currentEncounter.inFight = false
+		end	
+
+		PRT.ClearMessageQueue()
+	end
 end
 
-function PRT:PLAYER_REGEN_DISABLED(event)
-	PRT.Debug("Combat started.")
+function PRT:PLAYER_REGEN_DISABLED(event)	
+	if PRT.enabled then	
+		PRT.Debug("Combat started.")
+	end
+
 	if self.db.profile.testMode then
 		local _, encounter = PRT.FilterEncounterTable(self.db.profile.encounters, self.db.profile.testEncounterID)
 
@@ -76,18 +121,22 @@ function PRT:PLAYER_REGEN_DISABLED(event)
 			end
 		end
 	end	
+
 	PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 end
 
 function PRT:PLAYER_REGEN_ENABLED(event)
-	PRT.Debug("Combat stopped. Resetting encounter.")
-	self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+	if PRT.enabled then	
+		PRT.Debug("Combat stopped. Resetting encounter.")
+		PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
+		self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+	end
+	
 	if PRT.currentEncounter then
 		PRT.currentEncounter.inFight = false
 	end
 
 	PRT.ClearMessageQueue()
-	PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 end
 
 function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
