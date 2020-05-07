@@ -6,6 +6,7 @@ local Options = {}
 
 local difficulties = {"Normal", "Heroic", "Mythic"}
 
+
 -------------------------------------------------------------------------------
 -- Local Helper
 
@@ -22,11 +23,19 @@ Options.AddDefaultsWidgets = function(container, t)
                 widget:SetCallback("OnEnterPressed", function(widget) t[k] = widget:GetText() end)
             elseif type(v) == "number" then
                 widget = PRT.EditBox(k, v)
+                widget:SetWidth(100)
                 widget:SetCallback("OnEnterPressed", function(widget) t[k] = tonumber(widget:GetText()) end)
             elseif type(v) == "table" then
-                print("yay")
-                widget = PRT.EditBox(k, strjoin(", ", unpack(v)))
-                widget:SetCallback("OnEnterPressed", function(widget) t[k] = { strsplit(",", widget:GetText()) } end)
+                widget = PRT.EditBox(k, strjoin(", ", unpack(v)), true)
+                widget:SetWidth(300)
+                widget:SetCallback("OnEnterPressed", 
+                    function(widget) 
+                        if widget:GetText() == "" then
+                            t[k] = {}
+                        else
+                            t[k] = { strsplit(",", widget:GetText()) }                         
+                        end
+                    end)
             end
     
             if widget then
@@ -42,6 +51,7 @@ Options.AddDefaultsGroups = function(container)
     if PRT.db.profile.triggerDefaults then
         for k, v in pairs(PRT.db.profile.triggerDefaults) do
             local groupWidget = PRT.InlineGroup(k)
+            groupWidget:SetLayout("Flow")
             Options.AddDefaultsWidgets(groupWidget, v)
             defaultsGroup:AddChild(groupWidget)
         end

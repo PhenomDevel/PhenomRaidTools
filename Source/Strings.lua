@@ -48,7 +48,7 @@ local Strings = {
     },
 
     triggerDefaults = {
-        text = "Trigger Defaults"
+        text = "Configuration (Default values)"
     },
     rotationDefaults = {
         text = "Rotation"
@@ -74,7 +74,13 @@ local Strings = {
     defaultEvent = {
         text = "Event"
     },
-
+    additionalEvents = {
+        text = "Additional events",
+        tooltip = "Comma separated list of events you want to use within the conditions (e.g. SPELL_CAST_FAILED)"
+    },
+    conditionDefaults = {
+        text = "Condition"
+    },
 
     -- Messages
     messageHeading = {

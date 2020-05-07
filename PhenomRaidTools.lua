@@ -43,8 +43,7 @@ local defaults = {
 				defaultIgnoreDuration = 5
 			},
 			conditionDefaults = {
-				additionalEvents = {},
-				defaultEvent = "PLAYER_REGEN_DISABLED"
+				additionalEvents = {}
 			}
 		}, 
 

@@ -27,9 +27,9 @@ PRT.ConditionWidget = function(condition, textID)
 
 	local eventEditBox = PRT.EditBox("conditionEvent", condition.event, true)
 
-	local conditionEventsFull = table.merge(conditionEvents, PRT.db.profile.triggerDefaults.conditionDefaults.additionalEvents)
+	local conditionEventsFull = table.mergecopy(conditionEvents, PRT.db.profile.triggerDefaults.conditionDefaults.additionalEvents)
 
-	local eventDropDown = PRT.Dropdown("conditionEvent", conditionEvents, condition.event)
+	local eventDropDown = PRT.Dropdown("conditionEvent", conditionEventsFull, condition.event)
 	local targetEditBox = PRT.EditBox("conditionTarget", condition.target, true)
 	local sourceEditBox = PRT.EditBox("conditionSource", condition.source, true)
 

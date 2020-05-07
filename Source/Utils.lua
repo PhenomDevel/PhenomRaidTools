@@ -122,10 +122,14 @@ PRT.FilterTableByName = function(t, name)
     end
 end
 
-function table.merge(t1, t2)
+function table.mergecopy(t1, t2)
+    local t3 = {}
+    for k,v in ipairs(t1) do
+        table.insert(t3, v)
+     end 
     for k,v in ipairs(t2) do
-       table.insert(t1, v)
+       table.insert(t3, v)
     end 
   
-    return t1
+    return t3
  end
