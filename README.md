@@ -19,3 +19,6 @@ I have setup a discord server up and running for every kind of question. Feel fr
   %source
 - Add condition met counter for timers (after X conditon mets it shoulkd trigger not ion first alwys)
 - Add trigger for DBM / BW - On hold
+- Be able to configure multiple conditions for each trigger
+  Like trigger on ENCOUNTER_START *or* SPELL_CAST_SUCCESS/123
+  Each conditon 
