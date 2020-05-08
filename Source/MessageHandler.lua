@@ -66,29 +66,6 @@ PRT.ExecuteMessage = function(message)
     end
 end
 
-PRT.ExecuteMessages = function(messages)  
-    if messages then
-        for i, message in pairs(messages) do
-            MessageHandler.ExecuteMessage(message)
-        end
-    end
-end
-
-PRT.AddMessageToQueue = function(message)
-    if message ~= nil then
-        message.executionTime = GetTime() + message.delay
-        table.insert(PRT.MessageQueue, message)
-    end
-end
-
-PRT.AddMessagesToQueue = function(messages)
-    if messages ~= nil then
-        for i, message in ipairs(messages) do
-            PRT.AddMessageToQueue(message)
-        end
-    end
-end
-
 PRT.ClearMessageQueue = function()
     PRT.MessageQueue = {}
 end

@@ -77,7 +77,6 @@ PRT.TabGroupSelected = function(widget, t, key, itemFunction, emptyItemFunction,
             item = t[key]
 		end
 		
-		-- Has to add its childs to widget
 		itemFunction(item, widget) 
 		
 		local deleteButtonText = PRT.Strings.GetText(deleteTextID)

@@ -186,7 +186,7 @@ local Strings = {
         text = "Operator"
     },
     percentageEntryOptionsHeading = {
-        text = "Rotation Entry Options"
+        text = "Percentage Entry Options"
     },
     
     -- Encounters

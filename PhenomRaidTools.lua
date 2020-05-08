@@ -28,7 +28,6 @@ local defaults = {
 			}
 		},
 
-		-- TODO: Add all the defaults
 		triggerDefaults = {
 			messageDefaults = {
 				defaultWithSound = true
@@ -74,8 +73,6 @@ function PRT:OnInitialize()
 end
 
 function PRT:OnEnable()
-	-- NOTE:
-	-- Register all events we need to start or stop the condition checks
 	PRT.RegisterEssentialEvents()
 end
 

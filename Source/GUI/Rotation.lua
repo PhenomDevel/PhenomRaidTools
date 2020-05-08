@@ -24,6 +24,7 @@ end
 
 Rotation.RotationWidget = function(rotation, container)
     local rotationOptionsGroup = PRT.InlineGroup("rotationOptionsHeading")
+    rotationOptionsGroup:SetLayout("Flow")
 
     local nameEditBox = PRT.EditBox("rotationName", rotation.name)    
     nameEditBox:SetCallback("OnEnterPressed", 

@@ -4,6 +4,7 @@ local AceGUI = LibStub("AceGUI-3.0")
 
 local Timer = {}
 
+
 -------------------------------------------------------------------------------
 -- Local Helper
 
@@ -55,13 +56,13 @@ Timer.TimerWidget = function(timer, container)
     stopConditionGroup:SetLayout("Flow")
 
     local timingsHeading = PRT.Heading("Timings")
-        local timingsTabs = PRT.TableToTabs(timer.timings, true)
-        local timingsTabGroup = PRT.TabGroup("Timings", timingsTabs)
-        timingsTabGroup:SetCallback("OnGroupSelected", 
-        function(widget, event, key) 
-            PRT.TabGroupSelected(widget, timer.timings, key, Timer.TimingWidget, PRT.EmptyTiming, "timingDeleteButton") 
-        end)        
-        PRT.SelectFirstTab(timingsTabGroup, timer.timings)  
+    local timingsTabs = PRT.TableToTabs(timer.timings, true)
+    local timingsTabGroup = PRT.TabGroup("Timings", timingsTabs)
+    timingsTabGroup:SetCallback("OnGroupSelected", 
+    function(widget, event, key) 
+        PRT.TabGroupSelected(widget, timer.timings, key, Timer.TimingWidget, PRT.EmptyTiming, "timingDeleteButton") 
+    end)        
+    PRT.SelectFirstTab(timingsTabGroup, timer.timings)  
 
     timerOptionsGroup:AddChild(nameEditBox)
     container:AddChild(timerOptionsGroup)
@@ -75,7 +76,7 @@ end
 -- Public API
 
 PRT.AddTimerOptionsWidgets = function(container, profile, encounterID)
-    local idx, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
+    local _, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
     local timers = encounter.Timers
 
     local timerOptionsGroup = PRT.InlineGroup("Options")
@@ -97,7 +98,7 @@ PRT.AddTimerOptionsWidgets = function(container, profile, encounterID)
 end
 
 PRT.AddTimerWidget = function(container, profile, encounterID, triggerName)
-    local idx, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)    
+    local _, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)    
     local timers = encounter.Timers
     local timerIndex, timer = PRT.FilterTableByName(timers, triggerName)
     local deleteButton = PRT.NewTriggerDeleteButton(container, timers, timerIndex, "DELETE TIMER")

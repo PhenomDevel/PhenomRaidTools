@@ -12,8 +12,6 @@ local essentialEvents = {
 	"PLAYER_ENTERING_WORLD"
 }
 
---party / raid
---local name, type, _, difficulty = GetInstanceInfo())
 
 -------------------------------------------------------------------------------
 -- Public API
@@ -29,7 +27,6 @@ PRT.UnregisterEssentialEvents = function()
 		PRT:UnregisterEvent(event)
 	end
 end
-
 
 function PRT:PLAYER_ENTERING_WORLD(event)
 	local name, type, _, difficulty = GetInstanceInfo()
