@@ -13,7 +13,10 @@ local Strings = {
         text = "Test mode"
     },
     optionsDebugMode = {
-        text = "Debug mode"
+        text = "Debug mode",
+        tooltip = {
+            "If enabled the addon will print a whole lot of information in the default chat frame."
+        }
     },
     optionsTestEncounterID = {
         text = "Test encounter",

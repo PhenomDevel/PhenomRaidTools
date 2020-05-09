@@ -94,7 +94,7 @@ PRT.AddOptionWidgets = function(container, profile)
     local optionsGroup = PRT.InlineGroup("optionsHeading")   
     optionsGroup:SetLayout("Flow")
 
-    local debugModeCheckbox = PRT.CheckBox("optionsDebugMode", profile.debugMode)
+    local debugModeCheckbox = PRT.CheckBox("optionsDebugMode", profile.debugMode, true)
 	debugModeCheckbox:SetCallback("OnValueChanged", function(widget) profile.debugMode = widget:GetValue() end)
 
     local testModeCheckbox = PRT.CheckBox("optionsTestMode", profile.testMode)
