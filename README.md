@@ -1,4 +1,5 @@
 [![PhenomRaidTools on Discord](https://img.shields.io/badge/discord-PhenomRaidTools-738bd7.svg)](https://discord.gg/j5yGbK)
+
 # PhenomRaidTools
 ## Quick Start
 To get started just type `/prt` into your chat and PhenomRaidTools will open up. If you need any help setting up an encounter please see [#Help](https://github.com/PhenomDevel/PhenomRaidTools#help)
@@ -39,10 +40,8 @@ Same as health percentage but with the power values of the given unit.
 I have setup a discord server up and running for every kind of question. Feel free to enter and ask what you have trouble with. [Discord](https://discord.gg/j5yGbK)
 ## TODOs
 - Add placeholders for interpolating event information (%target = target of the spell cast as target for the message etc.)
-  %target
-  %source
-- Add condition met counter for timers (after X conditon mets it shoulkd trigger not ion first alwys)
+	- %target
+	- %source
+- Add condition counter for timer ( timer only starts after the conditon was met x times)
 - Add trigger for DBM / BW - On hold
-- Be able to configure multiple conditions for each trigger
-  Like trigger on ENCOUNTER_START *or* SPELL_CAST_SUCCESS/123
-  Each conditon 
+- Be able to configure multiple conditions for each trigger. Like trigger on ENCOUNTER_START *or* SPELL_CAST_SUCCESS/123
