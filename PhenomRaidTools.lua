@@ -2,6 +2,25 @@ local PRT = LibStub("AceAddon-3.0"):NewAddon("PhenomRaidTools", "AceConsole-3.0"
 
 local AceGUI = LibStub("AceGUI-3.0")
 
+local PhenomRaidToolsLDB = LibStub("LibDataBroker-1.1"):NewDataObject("PhenomRaidTools", {
+	type = "data source",
+	text = "PhenomRaidTools",
+	icon = "615103",
+	OnClick = function() 
+		PRT:OpenPRT()
+	end,
+
+	OnEnter = function()
+		GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
+		GameTooltip:AddLine("PhenomRaidTools") 
+		GameTooltip:Show() 
+	end,
+
+	OnLeave = function()
+		GameTooltip:Hide()
+	end})
+
+local LibDBIcon = LibStub("LibDBIcon-1.0")
 
 -------------------------------------------------------------------------------
 -- Ace standard functions
@@ -14,6 +33,10 @@ local defaults = {
 		debugMode = false,
 		showOverlay = true,
 		hideOverlayAfterCombat = false,
+
+		minimap = {
+			hide = false
+		},
 
 		enabledDifficulties = {
 			dungeon = {
@@ -66,6 +89,8 @@ function PRT:OnInitialize()
 	table.insert(defaults.profile.encounters, PRT.ExampleEncounter())
 	self.db = LibStub("AceDB-3.0"):New("PhenomRaidToolsDB", defaults, true)
 	
+	LibDBIcon:Register("PhenomRaidTools", PhenomRaidToolsLDB, self.db.profile.minimap)
+
 	-- We hold the main frame within the global addon variable 
 	-- because we sometimes have to do a re-layout of the complete content
 	PRT.mainFrame = nil
