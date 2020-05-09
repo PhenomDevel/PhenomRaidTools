@@ -34,6 +34,11 @@ local defaults = {
 		showOverlay = true,
 		hideOverlayAfterCombat = false,
 
+		overlay = {
+			bottom = nil,
+			left = nil
+		},
+
 		minimap = {
 			hide = false
 		},
@@ -116,6 +121,7 @@ function PRT:OpenPRT(input)
 		PRT:Print("Can't open during combat")
 	else
 		PRT:Open()	
+		-- <PRT.Overlay.Open()
 	end
 end
 

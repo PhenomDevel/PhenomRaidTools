@@ -27,6 +27,7 @@ Source/EventHandler.lua
 Source/MessageHandler.lua
 Source/TriggerHandler.lua
 Source/ImportExport.lua
+Source/Overlay.lua
 
 Source/GUI/AceHelper.lua
 Source/GUI/Common.lua
