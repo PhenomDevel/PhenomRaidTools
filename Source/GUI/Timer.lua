@@ -15,12 +15,14 @@ Timer.TimingWidget = function(timing, container)
     local secondsEditBox = PRT.EditBox("timingSeconds", strjoin(", ", unpack(timing.seconds)))    
     secondsEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
-            local times = {strsplit(",", widget:GetText())}
+            local text = widget:GetText()
+            local times = {strsplit(",", text)}
             
             timing.seconds = {}
             for i, second in ipairs(times) do
                 tinsert(timing.seconds, tonumber(second))
             end
+            timing.name = strjoin(", ", strsplit(",", text))
 			widget:ClearFocus()
         end)
 
