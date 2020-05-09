@@ -29,35 +29,40 @@ PRT.UnregisterEssentialEvents = function()
 end
 
 function PRT:PLAYER_ENTERING_WORLD(event)
-	local name, type, _, difficulty = GetInstanceInfo()
+	PRT:ScheduleTimer(
+		function()
+			local name, type, _, difficulty = GetInstanceInfo()
 
-	PRT.Debug("Zone entered.")
-	
-	if type == "party" then
-		PRT.Debug("Player entered dungeon - checking difficulty")
-		PRT.Debug("Current difficulty is", difficulty)
-		
-		if self.db.profile.enabledDifficulties["dungeon"][difficulty] then
-			PRT.Debug("Enabling PhenomRaidTools for", name, "on difficulty", difficulty)
-			PRT.enabled = true
-		else
-			PRT.Debug("Difficulty not configured. PhenomRaidTools disabled.")
-			PRT.enabled = false
-		end
-	elseif type == "raid" then
-		PRT.Debug("Player entered raid - checking difficulty")
-		PRT.Debug("Current difficulty is"..difficulty)
-		
-		if self.db.profile.enabledDifficulties["dungeon"][difficulty] then
-			PRT.Debug("Enabling PhenomRaidTools for", name, "on difficulty", difficulty)
-			PRT.enabled = true
-		else
-			PRT.Debug("Difficulty not configured. PhenomRaidTools disabled.")
-			PRT.enabled = false
-		end
-	elseif type == "none" then
-		PRT.Debug("Player is not in a raid nor in a dungeon. PhenomRaidTools disabled.")
-	end
+			PRT.Debug("Zone entered.")
+			
+			if type == "party" then
+				PRT.Debug("Player entered dungeon - checking difficulty")
+				PRT.Debug("Current difficulty is", difficulty)
+				
+				if self.db.profile.enabledDifficulties["dungeon"][difficulty] then
+					PRT.Debug("Enabling PhenomRaidTools for", name, "on difficulty", difficulty)
+					PRT.enabled = true
+				else
+					PRT.Debug("Difficulty not configured. PhenomRaidTools disabled.")
+					PRT.enabled = false
+				end
+			elseif type == "raid" then
+				PRT.Debug("Player entered raid - checking difficulty")
+				PRT.Debug("Current difficulty is"..difficulty)
+				
+				if self.db.profile.enabledDifficulties["dungeon"][difficulty] then
+					PRT.Debug("Enabling PhenomRaidTools for", name, "on difficulty", difficulty)
+					PRT.enabled = true
+				else
+					PRT.Debug("Difficulty not configured. PhenomRaidTools disabled.")
+					PRT.enabled = false
+				end
+			elseif type == "none" then
+				PRT.Debug("Player is not in a raid nor in a dungeon. PhenomRaidTools disabled.")
+			end
+		end,
+		2
+	)	
 end
 
 function PRT:ENCOUNTER_START(event, encounterID, encounterName)	
