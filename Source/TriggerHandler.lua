@@ -147,7 +147,9 @@ TriggerHandler.SendMessagesAfterDelayWithEventInfo = function(messages, event, c
                 if sourceName then
                     message.message = message.message:gsub("$source", sourceName)
                 end
-
+                if tContains(message.targets, "$target") then
+                    message.eventTarget = targetName
+                end
                 PRT.ExecuteMessage(message)
             end,
             message.delay or 0

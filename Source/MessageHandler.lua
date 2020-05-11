@@ -30,29 +30,39 @@ MessageHandler.MessageToReceiverMessage = function(message)
 end
 
 MessageHandler.ExecuteMessageAction = function(message)
+    PRT.PrintTable("", message.targets)
     for i, target in ipairs(message.targets) do
         local targetMessage = {}
-        targetMessage.target = target
+        targetMessage.target = strtrim(target, " ")
         targetMessage.duration = message.duration
         targetMessage.message = message.message
+        targetMessage.eventTarget = message.eventTarget
 
         if message.withSound then 
             targetMessage.withSound = "t"
         else 
             targetMessage.withSound = "f"
         end
+        
+        local receiverMessage = nil
 
-        local receiverMessage = MessageHandler.MessageToReceiverMessage(targetMessage)
         if (UnitExists(targetMessage.target))
         or targetMessage.target == "ALL" 
         or targetMessage.target == "HEALER" 
         or targetMessage.target == "TANK" 
-        or targetMessage.target == "DAMAGER" then            
+        or targetMessage.target == "DAMAGER" then     
+            -- Send "normal" message       
+            receiverMessage = MessageHandler.MessageToReceiverMessage(targetMessage)
+        elseif targetMessage.target == "$target" then
+            -- Set event target as message target
+            targetMessage.target = message.eventTarget
+            receiverMessage = MessageHandler.MessageToReceiverMessage(targetMessage)    
+        end
+        
+        if receiverMessage then
             PRT.Debug("Sending new message", receiverMessage)
-            MessageHandler.SendMessageToSlave(receiverMessage)
-        else
-            PRT.Debug("Skipped message due to missing / not existing target")
-        end                     
+            MessageHandler.SendMessageToSlave(receiverMessage) 
+        end
     end    
 end
 
