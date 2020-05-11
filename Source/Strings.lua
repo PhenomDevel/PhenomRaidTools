@@ -106,7 +106,7 @@ local Strings = {
         text = "Message",
         tooltip = {              
             "- Use |cFFFFFFFF%s|r to display the countdown",
-            "- Use |cFFFFFFFF$source|r or |cFFFFFFFF$target|r to display the source/target of the event",
+            "- Use |cFFFFFFFF$source|r or |cFFFFFFFF$target|r to display the source/target of the event (only works for rotations)",
             "- Do not use reserved characters (#, ?, ~, %)"
         }
     },
