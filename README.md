@@ -31,6 +31,16 @@ You can configure a lot of different things for a health rotation:
 - Health percentages - interger values of the unit health on which the messages should be send to the raidteam
 ### Power percentage
 Same as health percentage but with the power values of the given unit.
+### Messages
+For each trigger type you can send multiple messages. You have the ability to define more than one target.
+Messages consists of the following:
+- targets: A comma separated list of tagets e.g. "ALL, HEALER, Phenom"
+- delay: The delay after which the message should be send once the trigger condition is met
+- duration: The duration for how long a message should be shown
+- message: The message which will be displayed for the targets
+  - %s will be interpolated to the remaining time of the display e.g. "Big dmg inc in %s"
+  - $source will be interpolated with the source of the occuring event e.g. "$source has just casted XY"
+  - $target will be interpolated with the target of the occuring event e.g. "XY cast on $target"
 ## Setup
 1. Download the latest release of the addon: [Releases](https://github.com/PhenomDevel/PhenomRaidTools/releases)
 2. Unpack the zip folder and place it into your normal addon folder
@@ -40,9 +50,6 @@ Same as health percentage but with the power values of the given unit.
 ## Help
 I have setup a discord server up and running for every kind of question. Feel free to enter and ask what you have trouble with. [Discord](https://discord.gg/j5yGbK)
 ## TODOs
-- Add placeholders for interpolating event information (%target = target of the spell cast as target for the message etc.)
-	- %target
-	- %source
 - Add condition counter for timer ( timer only starts after the conditon was met x times)
 - Add trigger for DBM / BW - On hold
 - Be able to configure multiple conditions for each trigger. Like trigger on ENCOUNTER_START *or* SPELL_CAST_SUCCESS/123
