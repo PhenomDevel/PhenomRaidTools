@@ -1,5 +1,7 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
+local AceTimer = LibStub("AceTimer-3.0")
+
 
 -------------------------------------------------------------------------------
 -- Local Helper
@@ -29,7 +31,7 @@ PRT.UnregisterEssentialEvents = function()
 end
 
 function PRT:PLAYER_ENTERING_WORLD(event)
-	PRT:ScheduleTimer(
+	AceTimer:ScheduleTimer(
 		function()
 			local name, type, _, difficulty = GetInstanceInfo()
 
@@ -104,10 +106,8 @@ function PRT:ENCOUNTER_END(event)
 end
 
 function PRT:PLAYER_REGEN_DISABLED(event)	
-	if PRT.enabled then	
-		PRT.Debug("Combat started.")
-	end
-
+	PRT.Debug("Combat started.")
+	
 	if self.db.profile.testMode then
 		local _, encounter = PRT.FilterEncounterTable(self.db.profile.encounters, self.db.profile.testEncounterID)
 
@@ -128,8 +128,9 @@ function PRT:PLAYER_REGEN_DISABLED(event)
 end
 
 function PRT:PLAYER_REGEN_ENABLED(event)
-	if PRT.enabled then	
-		PRT.Debug("Combat stopped. Resetting encounter.")
+	PRT.Debug("Combat stopped. Resetting encounter.")
+
+	if PRT.enabled then		
 		PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 		self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	end
@@ -161,7 +162,7 @@ function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 
 				-- Checking Rotation activation
 				if rotations then
-					PRT.CheckRotationTriggerCondition(rotations, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
+					PRT.CheckRotationTriggerCondition(rotations, event, combatEvent, eventSpellID, targetGUID, targetName, sourceGUID, sourceName)
 				end
 
 				-- Checking Health Percentage activation

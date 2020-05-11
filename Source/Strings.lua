@@ -104,10 +104,10 @@ local Strings = {
     },
     messageMessage = {
         text = "Message",
-        tooltip = {  
-            "This message can only be 255 characters long.", 
-            "Do not use reserved characters (#, ?, ~, %).", 
-            "Use `%s` to display the countdown."
+        tooltip = {              
+            "- Use |cFFFFFFFF%s|r to display the countdown",
+            "- Use |cFFFFFFFF$source|r or |cFFFFFFFF$target|r to display the source/target of the event",
+            "- Do not use reserved characters (#, ?, ~, %)"
         }
     },
     messageDelay = {

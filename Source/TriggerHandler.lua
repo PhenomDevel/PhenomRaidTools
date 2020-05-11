@@ -1,5 +1,7 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
+local AceTimer = LibStub("AceTimer-3.0")
+
 local TriggerHandler = {}
 
 
@@ -8,10 +10,10 @@ local TriggerHandler = {}
 
 TriggerHandler.CheckCondition = function(condition, event, combatEvent, spellID, targetGUID, sourceGUID)
     if condition ~= nil then
-        if condition.event ~= nil and (condition.event == event or condition.event == combatEvent) then            
+        if condition.event ~= nil and (condition.event == event or condition.event == combatEvent) then   
             if condition.spellID == nil or condition.spellID == spellID then
-                if condition.source == nil or UnitGUID(condition.source or "") == sourceGUID then
-                    if condition.target == nil or UnitGUID(condition.target or "") == targetGUID then
+                if condition.source == nil or UnitGUID(condition.source or "") == sourceGUID then     
+                    if condition.target == nil or UnitGUID(condition.target or "") == targetGUID then      
                         return true
                     end
                 end
@@ -126,8 +128,26 @@ end
 
 TriggerHandler.SendMessagesAfterDelay = function(messages)
     for i, message in ipairs(messages) do
-        PRT:ScheduleTimer(
+        AceTimer:ScheduleTimer(
             function()
+                PRT.ExecuteMessage(message)
+            end,
+            message.delay or 0
+        )
+    end
+end
+
+TriggerHandler.SendMessagesAfterDelayWithEventInfo = function(messages, event, combatEvent, eventSpellID, targetName, sourceName)
+    for i, message in ipairs(messages) do
+        AceTimer:ScheduleTimer(
+            function()     
+                if targetName then       
+                    message.message = message.message:gsub("$target", targetName)
+                end
+                if sourceName then
+                    message.message = message.message:gsub("$source", sourceName)
+                end
+
                 PRT.ExecuteMessage(message)
             end,
             message.delay or 0
@@ -198,16 +218,17 @@ PRT.CheckTimerTimings = function(timers)
 end
 
 -- Rotations
-PRT.CheckRotationTriggerCondition = function(rotations, event, combatEvent, spellID, targetGUID, sourceGUID)  
+PRT.CheckRotationTriggerCondition = function(rotations, event, combatEvent, eventSpellID, targetGUID, targetName, sourceGUID, sourceName)  
     if rotations ~= nil then
         for i, rotation in ipairs(rotations) do
             if rotation.triggerCondition ~= nil then
                 TriggerHandler.CheckStopIgnoreRotationCondition(rotation)
                 
                 if rotation.ignored ~= true then
-                    if TriggerHandler.CheckCondition(rotation.triggerCondition, event, combatEvent, spellID, targetGUID, sourceGUID) then                        
+                    if TriggerHandler.CheckCondition(rotation.triggerCondition, event, combatEvent, eventSpellID, targetGUID, sourceGUID) then                        
                         local messages = TriggerHandler.GetRotationMessages(rotation)
-                        TriggerHandler.SendMessagesAfterDelay(messages)
+                        					    
+                        TriggerHandler.SendMessagesAfterDelayWithEventInfo(messages, event, combatEvent, eventSpellID, targetName, sourceName)
                         TriggerHandler.UpdateRotationCounter(rotation)
                         rotation.lastActivation = GetTime()
                         if rotation.ignoreAfterActivation == true then
