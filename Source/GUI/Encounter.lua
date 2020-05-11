@@ -71,7 +71,6 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
     enabledCheckBox:SetRelativeWidth(1)
     enabledCheckBox:SetCallback("OnValueChanged", 
         function(widget) 
-            print(widget:GetValue())
             encounter.enabled = widget:GetValue()
         end)
 
