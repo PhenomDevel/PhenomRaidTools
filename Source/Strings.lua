@@ -99,7 +99,8 @@ local Strings = {
         text = "Targets",
         tooltip = {
             "Comma separated list of targets",
-            "(e.g. ALL, HEALER, TANK, DAMAGER, $playerName)"
+            "(e.g. ALL, HEALER, TANK, DAMAGER, $playerName)",
+            "Use |cFFFFFFFF$target|r to send the message to the spell target (only works for rotations)"
         }
     },
     messageMessage = {
