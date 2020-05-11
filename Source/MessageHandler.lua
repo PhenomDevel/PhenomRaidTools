@@ -1,8 +1,6 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
-
-PRT.MessageQueue = {}
-
 local MessageHandler = {}
+
 
 -------------------------------------------------------------------------------
 -- Local Helper
@@ -30,13 +28,9 @@ MessageHandler.MessageToReceiverMessage = function(message)
 end
 
 MessageHandler.ExecuteMessageAction = function(message)
-    PRT.PrintTable("", message.targets)
     for i, target in ipairs(message.targets) do
-        local targetMessage = {}
+        local targetMessage = PRT.CopyTable(message)
         targetMessage.target = strtrim(target, " ")
-        targetMessage.duration = message.duration
-        targetMessage.message = message.message
-        targetMessage.eventTarget = message.eventTarget
 
         if message.withSound then 
             targetMessage.withSound = "t"
@@ -74,8 +68,4 @@ PRT.ExecuteMessage = function(message)
     if message then
         MessageHandler.ExecuteMessageAction(message)    
     end
-end
-
-PRT.ClearMessageQueue = function()
-    PRT.MessageQueue = {}
 end
