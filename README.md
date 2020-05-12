@@ -48,7 +48,7 @@ Message consists of the following:
 5. Install the receiver weakaura which is used to receive messages that PhenomRaidTools will send to the given players [PhenomRaidTools: Receiver](https://wago.io/HyieicnAz)
 ## Help
 I have set up a discord server up and running for every kind of question. Feel free to enter and ask what you have trouble with. [Discord](https://discord.gg/j5yGbK)
-## TODOs
+## Feature Requests
 - Add condition counter for timer (timer only starts after the condition was met x times)
 - Add trigger for DBM / BW - On hold
 - Be able to configure multiple conditions for each trigger. Like trigger on ENCOUNTER_START *or* SPELL_CAST_SUCCESS/123
