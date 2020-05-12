@@ -5,6 +5,7 @@ local Overlay = {}
 local padding = 15
 
 local headerColor = "AABBCCFF"
+local subHeaderColor = "FFCCBBAA"
 local textColor = "FFFFFFFF"
 
 
@@ -12,14 +13,18 @@ local textColor = "FFFFFFFF"
 -- Local Helper
 
 Overlay.SavePosition = function(widget)
-    local left, bottom = widget:GetLeft(), widget:GetBottom()
+    local left, top = widget:GetLeft(), widget:GetTop()
 
-    PRT.db.profile.overlay.bottom = bottom
+    PRT.db.profile.overlay.top = UIParent:GetHeight() - top
     PRT.db.profile.overlay.left = left
 end
 
 Overlay.AddHeading = function(s, text)
     return s.."|c"..headerColor..text.."|r\n"
+end
+
+Overlay.AddSubHeading = function(s, text)
+    return s.."|c"..subHeaderColor..text.."|r\n"
 end
 
 Overlay.AddText = function(s, text)
@@ -30,12 +35,76 @@ Overlay.AddTimersText = function(s, timers)
     
 end
 
+Overlay.GenerateTimerString = function(timer)
+    local timerString = ""
+    
+    if timer.started then
+        local duration = PRT.Round(GetTime() - timer.startedAt, 0)
+        timerString = Overlay.AddText(timerString, timer.name.." - "..duration.."s") 
+    else
+        timerString = Overlay.AddText(timerString, timer.name.." - inactive")  
+    end
 
--------------------------------------------------------------------------------
--- Public API
+    return timerString
+end
 
-Overlay.Open = function()
-    local overlayFrame = CreateFrame("Frame",nil,UIParent)
+Overlay.GenerateRotationString = function(rotation)
+    local rotationString = ""
+    
+    if rotation.counter then
+        local counter = rotation.counter
+        rotationString = Overlay.AddText(rotationString, rotation.name.." - "..counter) 
+    else
+        rotationString = Overlay.AddText(rotationString, rotation.name.." - 1") 
+    end
+
+    return rotationString
+end
+
+Overlay.UpdateSize = function()
+    local headerWidth = Overlay.overlayFrame.header:GetStringWidth()
+    local width = Overlay.overlayFrame.text:GetStringWidth()
+    Overlay.overlayFrame:SetWidth(math.max(width, headerWidth) + (2 * padding))
+
+    local headerHeight = Overlay.overlayFrame.header:GetStringHeight()
+    local height = Overlay.overlayFrame.text:GetStringHeight()
+    Overlay.overlayFrame:SetHeight(height + headerHeight + (2 * padding))
+end
+
+Overlay.UpdateFrame = function()
+    if PRT.currentEncounter then
+        -- Timer
+        local timerString = ""
+        for i, timer in ipairs(PRT.currentEncounter.encounter.Timers) do
+            timerString = timerString..Overlay.GenerateTimerString(timer)
+        end
+
+        -- Rotation
+        local rotationString = ""
+        for i, rotation in ipairs(PRT.currentEncounter.encounter.Rotations) do
+            rotationString = Overlay.AddText(rotationString, Overlay.GenerateRotationString(rotation))
+        end
+
+        local overlayText = ""
+
+        -- Add Timer String
+        overlayText = Overlay.AddSubHeading(overlayText, "Timers (s)")
+        overlayText = overlayText..timerString
+        overlayText = overlayText.."\n"
+
+        -- Add Rotation String
+        overlayText = Overlay.AddSubHeading(overlayText, "Rotations (counter)")
+        overlayText = overlayText..rotationString
+
+        Overlay.overlayFrame.text:SetText(overlayText)
+    end    
+
+    Overlay.UpdateSize()
+end
+
+Overlay.CreateOverlay = function()
+    PRT.Debug("Creating overlay")
+    local overlayFrame = CreateFrame("Frame", nil, UIParent)
     overlayFrame:EnableMouse(true)
     overlayFrame:SetMovable(true)
     overlayFrame:SetClampedToScreen(true)
@@ -61,22 +130,58 @@ Overlay.Open = function()
 
     overlayFrame:SetBackdropColor(0, 0, 0, 0.7);
     overlayFrame:SetFrameStrata("MEDIUM")
-    overlayFrame:SetWidth(100) 
-    overlayFrame:SetHeight(100) 
-    overlayFrame:SetPoint("BOTTOMLEFT", "UIParent", "BOTTOMLEFT", PRT.db.profile.overlay.left or 50, PRT.db.profile.overlay.bottom or 50)
-
-    local text = ""
-    text = Overlay.AddHeading(text, "PhenomRaidTools - Overlay")
-    text = Overlay.AddText(text, "Timer")
+    overlayFrame:SetPoint("TOPLEFT", "UIParent", "TOPLEFT", PRT.db.profile.overlay.left, -PRT.db.profile.overlay.top)
 
     overlayFrame.text = overlayFrame:CreateFontString(nil, "ARTWORK") 
     overlayFrame.text:SetJustifyH("LEFT")
     overlayFrame.text:SetFont("Fonts\\ARIALN.ttf", 14, "OUTLINE")
-    overlayFrame.text:SetPoint("TOPLEFT", padding, -padding)
+    overlayFrame.text:SetPoint("TOPLEFT", padding, 2 * -padding)
     overlayFrame.text:SetText(text)
 
-    local width = overlayFrame.text:GetStringWidth()
-    overlayFrame:SetWidth(width + (2 * padding))
+    local header = "PhenomRaidTools"
+    overlayFrame.header = overlayFrame:CreateFontString(nil, "ARTWORK") 
+    overlayFrame.header:SetJustifyH("LEFT")
+    overlayFrame.header:SetFont("Fonts\\ARIALN.ttf", 16, "OUTLINE")
+    overlayFrame.header:SetPoint("TOPLEFT", padding, -padding)
+    overlayFrame.header:SetText(header)
+
+    Overlay.overlayFrame = overlayFrame
 end
+
+Overlay.ClearText = function()
+    if Overlay.overlayFrame then
+        PRT.Debug("Clearing overlay text")
+        Overlay.overlayFrame.text:SetText("")
+
+        Overlay.UpdateSize()
+    end
+end
+
+Overlay.Hide = function()
+    if Overlay.overlayFrame then    
+        PRT.Debug("Hide overlay")        
+		Overlay.ClearText()
+        Overlay.overlayFrame:Hide()
+    end
+end
+
+Overlay.Show = function()
+    if Overlay.overlayFrame then        
+        PRT.Debug("Show overlay")        
+        Overlay.ClearText()
+        Overlay.UpdateFrame()
+        Overlay.UpdateSize()
+        Overlay.overlayFrame:Show()
+    end
+end
+
+Overlay.Initialize = function()
+    Overlay.CreateOverlay()		
+    Overlay.UpdateFrame()
+    Overlay.Show()
+end
+
+-------------------------------------------------------------------------------
+-- Public API
 
 PRT.Overlay = Overlay

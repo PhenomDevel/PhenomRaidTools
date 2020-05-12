@@ -25,6 +25,14 @@ local Strings = {
     optionsEnabledDifficulties = {
         text = "Enabled difficulties"
     },
+    optionsShowOverlay = {
+        text = "Show overlay"
+    },
+    optionsHideOverlayAfterCombat = {
+        text = "Hide overlay after combat"
+    },
+
+    -- dungeon
     dungeonHeading = {
         text = "Dungeon"
     },

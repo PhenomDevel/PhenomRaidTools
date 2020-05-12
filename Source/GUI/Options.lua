@@ -101,12 +101,32 @@ PRT.AddOptionWidgets = function(container, profile)
 	testModeCheckbox:SetCallback("OnValueChanged", function(widget)	profile.testMode = widget:GetValue() end)	
 
     local textEncounterIDDropdown = PRT.Dropdown("optionsTestEncounterID", profile.encounters, profile.testEncounterID)        
-    textEncounterIDDropdown:SetCallback("OnValueChanged", function(widget) profile.testEncounterID = tonumber(widget:GetValue()) end)        
+    textEncounterIDDropdown:SetCallback("OnValueChanged", function(widget) profile.testEncounterID = tonumber(widget:GetValue()) end)    
+    
+    local showOverlayCheckbox = PRT.CheckBox("optionsShowOverlay", profile.showOverlay)
+    showOverlayCheckbox:SetRelativeWidth(1)
+    showOverlayCheckbox:SetCallback("OnValueChanged", 
+        function(widget) 
+            local value = widget:GetValue() 
+            profile.showOverlay = value
+            if value then
+                PRT.Overlay.Initialize()
+            else
+                PRT.Overlay.Hide()
+            end
+        end)
+    
+    local hideOverlayAfterCombatCheckbox = PRT.CheckBox("optionsHideOverlayAfterCombat", profile.hideOverlayAfterCombat)
+    hideOverlayAfterCombatCheckbox:SetRelativeWidth(1)
+	hideOverlayAfterCombatCheckbox:SetCallback("OnValueChanged", function(widget)	profile.hideOverlayAfterCombat = widget:GetValue() end)
 
     optionsGroup:AddChild(debugModeCheckbox)
     optionsGroup:AddChild(testModeCheckbox)    
     optionsGroup:AddChild(textEncounterIDDropdown)
-    Options.AddDifficultyWidgets(optionsGroup)
-    Options.AddDefaultsGroups(optionsGroup)
+    optionsGroup:AddChild(showOverlayCheckbox) 
+    optionsGroup:AddChild(hideOverlayAfterCombatCheckbox) 
     container:AddChild(optionsGroup)
+    Options.AddDifficultyWidgets(container)
+    Options.AddDefaultsGroups(container)
+    
 end

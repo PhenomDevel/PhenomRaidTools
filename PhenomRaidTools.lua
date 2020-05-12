@@ -22,6 +22,7 @@ local PhenomRaidToolsLDB = LibStub("LibDataBroker-1.1"):NewDataObject("PhenomRai
 
 local LibDBIcon = LibStub("LibDBIcon-1.0")
 
+
 -------------------------------------------------------------------------------
 -- Ace standard functions
 
@@ -31,11 +32,11 @@ local defaults = {
 		testEncounterID = 9999,
 		testEncounterName = "Example Encounter",
 		debugMode = false,
-		showOverlay = true,
+		showOverlay = false,
 		hideOverlayAfterCombat = false,
 
 		overlay = {
-			bottom = nil,
+			top = nil,
 			left = nil
 		},
 
@@ -104,6 +105,10 @@ end
 
 function PRT:OnEnable()
 	PRT.RegisterEssentialEvents()
+
+	if self.db.profile.showOverlay then
+		PRT.Overlay.Initialize()
+	end
 end
 
 function PRT:OnDisable()
