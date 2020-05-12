@@ -43,7 +43,7 @@ Message consists of the following:
 ## Setup
 1. Download the latest release of the addon: [Releases](https://github.com/PhenomDevel/PhenomRaidTools/releases)
 2. Unpack the zip folder and place it into your normal addon folder
-3. Rename the copied folder to PhenomRaidTools - otherwise WoW will not recognize it in game
+3. Copy the folder `PhenomRaidTools` to your World of Warcraft addon folder `path\to\World of Warcraft\_retail_\Interface\AddOns`
 4. You will have to install [WeakAuras2](https://github.com/WeakAuras/WeakAuras2/releases) if you haven't yet
 5. Install the receiver weakaura which is used to receive messages that PhenomRaidTools will send to the given players [PhenomRaidTools: Receiver](https://wago.io/HyieicnAz)
 ## Help
