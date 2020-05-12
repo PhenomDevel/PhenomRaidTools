@@ -33,13 +33,13 @@ Same as health percentage but with the power values of the given unit.
 ### Messages
 For each trigger type you can send multiple messages. You have the ability to define more than one target.
 Message consists of the following:
-- targets: A comma separated list of targets e.g. "ALL, HEALER, Phenom"
+- targets: A comma separated list of targets e.g. `ALL, HEALER, Phenom`
 - delay: The delay after which the message should be sent once the trigger condition is met
 - duration: The duration for how long a message should be shown
 - message: The message which will be displayed for the targets
- - %s will be interpolated to the remaining time of the display e.g. "Big DMG inc in %s"
- - source will be interpolated with the source of the occurring event e.g. "source has just cast XY"
- - $target will be interpolated with the target of the occurring event e.g. "XY cast on $target"
+ - `%s` will be interpolated to the remaining time of the display e.g. `Big DMG inc in %s`
+ - `$source` will be interpolated with the source of the occurring event e.g. `source has just cast XY`
+ - `$target` will be interpolated with the target of the occurring event e.g. `XY cast on $target`
 ## Setup
 1. Download the latest release of the addon: [Releases](https://github.com/PhenomDevel/PhenomRaidTools/releases)
 2. Unpack the zip folder
@@ -50,9 +50,9 @@ Message consists of the following:
 I have set up a discord server up and running for every kind of question. Feel free to enter and ask what you have trouble with. [Discord](https://discord.gg/j5yGbK)
 ## Feature Requests
 - Add condition counter for timer (timer only starts after the condition was met x times)
-- Add trigger for DBM / BW - On hold
-- Be able to configure multiple conditions for each trigger. Like trigger on ENCOUNTER_START *or* SPELL_CAST_SUCCESS/123
+- Add trigger for `DBM` / `BW` - On hold
+- Be able to configure multiple conditions for each trigger. Like trigger on `ENCOUNTER_START` *or* `SPELL_CAST_SUCCESS/123`
 ## TODOs
 - Refactor `TriggerHandler.lua` for better performance and better readability
 - Refactor `GUI/*` for better readability and generalize some widget generation functions
-- Add full support for `Phenom Raid Tools: Receiver` without using WeakAuras
+- Add full support for `Phenom Raid Tools: Receiver` without using [WeakAuras2](https://github.com/WeakAuras/WeakAuras2/releases)
