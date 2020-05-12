@@ -133,3 +133,11 @@ function table.mergecopy(t1, t2)
   
     return t3
 end
+
+function table.empty(t)
+    if table.getn(t) == 0 then
+        return true
+    end
+
+    return false
+end

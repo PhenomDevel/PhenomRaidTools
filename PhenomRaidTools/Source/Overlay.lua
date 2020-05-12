@@ -4,8 +4,8 @@ local Overlay = {}
 
 local padding = 15
 
-local headerColor = "AABBCCFF"
-local subHeaderColor = "FFCCBBAA"
+local headerColor = "FFFFF569"
+local subHeaderColor = "FFFF7D0A"
 local textColor = "FFFFFFFF"
 
 
@@ -20,7 +20,7 @@ Overlay.SavePosition = function(widget)
 end
 
 Overlay.AddHeading = function(s, text)
-    return s.."|c"..headerColor..text.."|r\n"
+    return s.."|c"..headerColor..text.."|r"
 end
 
 Overlay.AddSubHeading = function(s, text)
@@ -72,29 +72,30 @@ Overlay.UpdateSize = function()
 end
 
 Overlay.UpdateFrame = function()
-    if PRT.currentEncounter then
+    if PRT.currentEncounter then        
+        local overlayText = ""
+
         -- Timer
-        local timerString = ""
-        for i, timer in ipairs(PRT.currentEncounter.encounter.Timers) do
-            timerString = timerString..Overlay.GenerateTimerString(timer)
+        if not table.empty(PRT.currentEncounter.encounter.Timers) then
+            local timerString = ""
+            for i, timer in ipairs(PRT.currentEncounter.encounter.Timers) do
+                timerString = timerString..Overlay.GenerateTimerString(timer)
+            end
+
+            overlayText = Overlay.AddSubHeading(overlayText, "Timers (s)")
+            overlayText = overlayText..timerString            
         end
 
         -- Rotation
-        local rotationString = ""
-        for i, rotation in ipairs(PRT.currentEncounter.encounter.Rotations) do
-            rotationString = Overlay.AddText(rotationString, Overlay.GenerateRotationString(rotation))
+        if not table.empty(PRT.currentEncounter.encounter.Rotations) then
+            local rotationString = ""
+            for i, rotation in ipairs(PRT.currentEncounter.encounter.Rotations) do
+                rotationString = rotationString..Overlay.GenerateRotationString(rotation)
+            end
+
+            overlayText = Overlay.AddSubHeading(overlayText, "Rotations (counter)")
+            overlayText = overlayText..rotationString
         end
-
-        local overlayText = ""
-
-        -- Add Timer String
-        overlayText = Overlay.AddSubHeading(overlayText, "Timers (s)")
-        overlayText = overlayText..timerString
-        overlayText = overlayText.."\n"
-
-        -- Add Rotation String
-        overlayText = Overlay.AddSubHeading(overlayText, "Rotations (counter)")
-        overlayText = overlayText..rotationString
 
         Overlay.overlayFrame.text:SetText(overlayText)
     end    
@@ -138,7 +139,7 @@ Overlay.CreateOverlay = function()
     overlayFrame.text:SetPoint("TOPLEFT", padding, 2 * -padding)
     overlayFrame.text:SetText(text)
 
-    local header = "PhenomRaidTools"
+    local header = Overlay.AddHeading("", "PhenomRaidTools")
     overlayFrame.header = overlayFrame:CreateFontString(nil, "ARTWORK") 
     overlayFrame.header:SetJustifyH("LEFT")
     overlayFrame.header:SetFont("Fonts\\ARIALN.ttf", 16, "OUTLINE")
