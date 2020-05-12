@@ -75,12 +75,13 @@ local defaults = {
 			}
 		}, 
 
-		encounters = {		
-			-- encounters go in here				
+		encounters = {						
 		},
+
 		currentEncounter = {
 			inFight = false
 		},
+		
 		colors = {
 			general = "FFB5FFEB",
 			timers = "FFFFF569",
