@@ -127,7 +127,6 @@ function PRT:OpenPRT(input)
 		PRT:Print("Can't open during combat")
 	else
 		PRT:Open()	
-		-- <PRT.Overlay.Open()
 	end
 end
 
