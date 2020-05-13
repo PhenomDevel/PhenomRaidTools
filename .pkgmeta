@@ -21,5 +21,6 @@ manual-changelog:
 
 ignore:
   - README.md
+  
 move-folders:
   PhenomRaidTools/PhenomRaidTools: PhenomRaidTools

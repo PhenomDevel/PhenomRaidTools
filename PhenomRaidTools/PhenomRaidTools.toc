@@ -1,6 +1,6 @@
 ## Interface: 80300
 ## Title: PhenomRaidTools
-## Version: 1.0.11.0-ALPHA
+## Version: @project-version@
 ## Author: Phenom
 ## SavedVariables: PhenomRaidToolsDB
 

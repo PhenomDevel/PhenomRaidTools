@@ -1,7 +1,7 @@
 [![PhenomRaidTools on Discord](https://img.shields.io/badge/discord-PhenomRaidTools-738bd7.svg)](https://discord.gg/j5yGbK)
 # PhenomRaidTools
 ## Quick Start
-To get started just type `/prt` into your chat and PhenomRaidTools will open up. If you need any help to set up an encounter please see [#Help](https://github.com/PhenomDevel/PhenomRaidTools#help)
+To get started just type `/prt` into your chat or click the minimap icon and PhenomRaidTools will open. If you need any help to set up an encounter please see [#Help](https://github.com/PhenomDevel/PhenomRaidTools#help)
 ## About
 Send messages to everyone in the raid team based on four different trigger types:
 - Timer
