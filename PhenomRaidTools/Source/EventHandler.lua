@@ -95,7 +95,11 @@ function PRT:PLAYER_REGEN_DISABLED(event)
 
 		local _, encounter = PRT.FilterEncounterTable(self.db.profile.encounters, self.db.profile.testEncounterID)
 
-		EventHandler.StartEncounter(event, encounter.id, encounter.name)
+		if encounter then
+			EventHandler.StartEncounter(event, encounter.id, encounter.name)
+		else
+			PRT.Error("You are in test mode and have no encounter selected.")
+		end
 	end
 end
 

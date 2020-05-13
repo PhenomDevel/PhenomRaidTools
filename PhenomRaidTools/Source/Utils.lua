@@ -141,3 +141,11 @@ function table.empty(t)
 
     return false
 end
+
+PRT.CompareByName = function(a, b)
+    return a.name < b.name
+end
+
+PRT.SortTableByName = function(t)
+    table.sort(t, PRT.CompareByName)
+end

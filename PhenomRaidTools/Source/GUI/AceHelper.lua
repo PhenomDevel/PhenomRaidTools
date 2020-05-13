@@ -159,6 +159,7 @@ PRT.TabGroup = function(textID, tabs)
 
 	local dropdownItems = {}
 	dropdownItems[999] = ""
+
 	for i,v in ipairs(values) do
 		if type(v) == "string" then
 			dropdownItems[v] = v
@@ -166,7 +167,7 @@ PRT.TabGroup = function(textID, tabs)
 			dropdownItems[v.id] = v.name
 		end
 	end
-	 
+
 	local widget = AceGUI:Create("Dropdown")
 
 	widget:SetLabel(text)	

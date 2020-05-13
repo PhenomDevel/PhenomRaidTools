@@ -8,14 +8,6 @@ PRT.Core = Core
 -------------------------------------------------------------------------------
 -- Local Helper
 
-Core.CompareByName = function(a, b)
-    return a.name < b.name
-end
-
-Core.SortTableByName = function(t)
-    table.sort(t, Core.CompareByName)
-end
-
 local RegisterESCHandler = function(name, container)
 	_G[name] = container.frame
     tinsert(UISpecialFrames, name)
@@ -38,7 +30,7 @@ Core.GeneratePercentagesTree = function(percentages)
     }
 
     if getn(percentages) > 0 then
-        Core.SortTableByName(percentages)
+        PRT.SortTableByName(percentages)
         t.children = children
         for i, percentage in ipairs(percentages) do
             tinsert(children, Core.GeneratePercentageTree(percentage))
@@ -81,7 +73,7 @@ Core.GenerateRotationsTree = function(rotations)
     }
 
     if getn(rotations) > 0 then
-        Core.SortTableByName(rotations)
+        PRT.SortTableByName(rotations)
         t.children = children
         for i, rotation in ipairs(rotations) do
             tinsert(children, Core.GenerateRotationTree(rotation))
@@ -108,7 +100,7 @@ Core.GenerateTimersTree = function(timers)
     }
 
     if getn(timers) > 0 then
-        Core.SortTableByName(timers)
+        PRT.SortTableByName(timers)
         t.children = children
         for i, timer in ipairs(timers) do
             tinsert(children, Core.GenerateTimerTree(timer))
@@ -143,7 +135,7 @@ Core.GenerateEncountersTree = function(encounters)
         text = "Encounters",
         children = children
     }    
-    Core.SortTableByName(encounters)
+    PRT.SortTableByName(encounters)
     for i, encounter in ipairs(encounters) do
         tinsert(children, Core.GenerateEncounterTree(encounter))
     end
