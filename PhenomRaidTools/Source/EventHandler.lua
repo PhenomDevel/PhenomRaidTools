@@ -180,6 +180,6 @@ function PRT:PLAYER_ENTERING_WORLD(event)
 				PRT.Debug("Player is not in a raid nor in a dungeon. PhenomRaidTools disabled.")
 			end
 		end,
-		1
+		3
 	)	
 end
