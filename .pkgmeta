@@ -1,0 +1,25 @@
+package-as: PhenomRaidTools
+
+externals:
+  PhenomRaidTools/Libs/LibStub: https://repos.wowace.com/wow/libstub/trunk
+  PhenomRaidTools/Libs/CallbackHandler-1.0: https://repos.wowace.com/wow/callbackhandler/trunk/CallbackHandler-1.0
+  PhenomRaidTools/Libs/AceConfig-3.0: https://repos.wowace.com/wow/ace3/trunk/AceConfig-3.0
+  PhenomRaidTools/Libs/AceConsole-3.0: https://repos.wowace.com/wow/ace3/trunk/AceConsole-3.0
+  PhenomRaidTools/Libs/AceGUI-3.0: https://repos.wowace.com/wow/ace3/trunk/AceGUI-3.0
+  PhenomRaidTools/Libs/AceEvent-3.0: https://repos.wowace.com/wow/ace3/trunk/AceEvent-3.0
+  PhenomRaidTools/Libs/AceTimer-3.0: https://repos.wowace.com/wow/ace3/trunk/AceTimer-3.0
+  PhenomRaidTools/Libs/AceSerializer-3.0: https://repos.wowace.com/wow/ace3/trunk/AceSerializer-3.0
+  PhenomRaidTools/Libs/LibDataBroker-1.1: https://github.com/tekkub/libdatabroker-1-1
+  PhenomRaidTools/Libs/LibCompress: https://repos.wowace.com/wow/libcompress/trunk
+  PhenomRaidTools/Libs/LibDBIcon-1.0: https://repos.wowace.com/wow/libdbicon-1-0/trunk/LibDBIcon-1.0
+
+enable-nolib-creation: no
+
+manual-changelog:
+  filename: CHANGELOG.md
+  markup-type: markdown
+
+ignore:
+  - README.md
+move-folders:
+  PhenomRaidTools/PhenomRaidTools: PhenomRaidTools
