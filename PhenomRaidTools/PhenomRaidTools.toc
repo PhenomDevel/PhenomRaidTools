@@ -1,11 +1,14 @@
 ## Interface: 80300
 ## Title: PhenomRaidTools
 ## Version: @project-version@
-## Author: Phenom
+## Author: @project-author@
+## Notes: Easy to use encounter configuration to send messages to your raid team on certain events.
 ## SavedVariables: PhenomRaidToolsDB
+## DefaultState: Enabled
+## OptionalDeps: Ace3, LibCompress
 
+# Init
 embeds.xml
-
 PhenomRaidTools.lua
 
 # Source
