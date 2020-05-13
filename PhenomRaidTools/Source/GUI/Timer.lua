@@ -12,7 +12,7 @@ Timer.TimingWidget = function(timing, container)
     local timingOptionsGroup = PRT.InlineGroup("timingOptionsHeading")
 
     sort(timing.seconds)
-    local secondsEditBox = PRT.EditBox("timingSeconds", strjoin(", ", unpack(timing.seconds)))    
+    local secondsEditBox = PRT.EditBox("timingSeconds", strjoin(", ", unpack(timing.seconds)), true)    
     secondsEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
             local text = widget:GetText()
