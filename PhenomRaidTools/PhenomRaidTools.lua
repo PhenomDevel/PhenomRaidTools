@@ -26,7 +26,7 @@ local LibDBIcon = LibStub("LibDBIcon-1.0")
 -------------------------------------------------------------------------------
 -- Ace standard functions
 
-local defaults = {
+local defaults =  {
 	profile = {
 		testMode = false,
 		testEncounterID = 9999,
@@ -75,7 +75,7 @@ local defaults = {
 			}
 		}, 
 
-		encounters = {						
+		encounters = {					
 		},
 
 		currentEncounter = {
@@ -92,11 +92,15 @@ local defaults = {
 	}
 }
 
-function PRT:OnInitialize()	
-	table.insert(defaults.profile.encounters, PRT.ExampleEncounter())
+function PRT:OnInitialize()		
 	self.db = LibStub("AceDB-3.0"):New("PhenomRaidToolsDB", defaults, true)
-	
 	LibDBIcon:Register("PhenomRaidTools", PhenomRaidToolsLDB, self.db.profile.minimap)
+
+	local encounterIdx, encounter = PRT.FilterEncounterTable(self.db.profile.encounters, 9999)
+
+	if not encounterIdx then
+		table.insert(self.db.profile.encounters, PRT.ExampleEncounter())
+	end
 
 	-- We hold the main frame within the global addon variable 
 	-- because we sometimes have to do a re-layout of the complete content
