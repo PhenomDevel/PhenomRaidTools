@@ -140,17 +140,24 @@ end
 TriggerHandler.SendMessagesAfterDelayWithEventInfo = function(messages, event, combatEvent, eventSpellID, targetName, sourceName)
     for i, message in ipairs(messages) do
         AceTimer:ScheduleTimer(
-            function()     
+            function()  
+                -- Make sure we are not changing the configured message itself
+                local messageForReceiver = PRT.CopyTable(message)
+                
                 if targetName then       
-                    message.message = message.message:gsub("$target", targetName)
+                    messageForReceiver.message = messageForReceiver.message:gsub("$target", targetName)
+                else
+                    messageForReceiver.message = messageForReceiver.message:gsub("$target", "N/A")
                 end
                 if sourceName then
-                    message.message = message.message:gsub("$source", sourceName)
+                    messageForReceiver.message = messageForReceiver.message:gsub("$source", sourceName)
+                else
+                    messageForReceiver.message = messageForReceiver.message:gsub("$source", "N/A")
                 end
-                if tContains(message.targets, "$target") then
-                    message.eventTarget = targetName
+                if tContains(messageForReceiver.targets, "$target") then
+                    messageForReceiver.eventTarget = targetName
                 end
-                PRT.ExecuteMessage(message)
+                PRT.ExecuteMessage(messageForReceiver)
             end,
             message.delay or 0
         )
