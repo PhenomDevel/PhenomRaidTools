@@ -105,3 +105,7 @@ I have set up a discord server up and running for every kind of question. Feel f
 - Refactor `GUI/*` for better readability and generalize some widget generation functions
 
 - Add full support for `Phenom Raid Tools: Receiver` without using [WeakAuras2](https://github.com/WeakAuras/WeakAuras2/releases)
+
+- Add configuration of raid roster 
+
+- Add dropdown to `targets` of messages which holds the configured raid roster entries

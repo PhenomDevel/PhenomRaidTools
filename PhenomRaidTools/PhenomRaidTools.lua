@@ -88,6 +88,10 @@ local defaults =  {
 			rotations = "FF9482C9",
 			percentages = "FFABD473",
 			error = "FFFF0000"
+		},
+
+		raidRoster = {
+			
 		}
 	}
 }

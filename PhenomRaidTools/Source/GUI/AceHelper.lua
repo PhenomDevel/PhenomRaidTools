@@ -163,7 +163,7 @@ PRT.TabGroup = function(textID, tabs)
 	for i,v in ipairs(values) do
 		if type(v) == "string" then
 			dropdownItems[v] = v
-		else
+		else			
 			dropdownItems[v.id] = v.name
 		end
 	end
@@ -220,7 +220,7 @@ PRT.TabGroup = function(textID, tabs)
     return widget
  end
 
- PRT.SelectFirstTab = function(container, t)
+ PRT.SelectFirstTab = function(container, t)		
 	container:SelectTab(nil)
     if t then
 		if getn(t) > 0 then

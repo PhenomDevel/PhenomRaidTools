@@ -31,6 +31,15 @@ local Strings = {
     optionsHideOverlayAfterCombat = {
         text = "Hide overlay after combat"
     },
+    optionsDifficultyExplanation = {
+        text = "Set the difficulties on which the addon should start tracking combat events"
+    },
+    optionsDefaultsExplanation = {
+        text = "Set some default values for all new messages, timers, percentages and so on."
+    },
+    optionsRaidRosterExplanation = {
+        text = "Here you can define player names and reference them as `targets` in message with e.g. `$tank1`, `$heal3` etc."
+    },
 
     -- dungeon
     dungeonHeading = {

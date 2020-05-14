@@ -1,6 +1,12 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local MessageHandler = {}
 
+local validTargets = {
+    "ALL", 
+    "HEALER",
+    "TANK",
+    "DAMAGER"
+}
 
 -------------------------------------------------------------------------------
 -- Local Helper
@@ -40,22 +46,27 @@ MessageHandler.ExecuteMessageAction = function(message)
         
         local receiverMessage = nil
 
-        if (UnitExists(targetMessage.target))
-        or targetMessage.target == "ALL" 
-        or targetMessage.target == "HEALER" 
-        or targetMessage.target == "TANK" 
-        or targetMessage.target == "DAMAGER" then     
+        if (UnitExists(targetMessage.target)) or tContains(validTargets, targetMessage.target) then     
             -- Send "normal" message       
             receiverMessage = MessageHandler.MessageToReceiverMessage(targetMessage)
         elseif targetMessage.target == "$target" then
             -- Set event target as message target
             targetMessage.target = message.eventTarget
             receiverMessage = MessageHandler.MessageToReceiverMessage(targetMessage)    
+        elseif string.match(targetMessage.target, "$tank") or string.match(targetMessage.target, "$heal") then
+            -- Get raid roster player name as target
+            local id = string.gsub(targetMessage.target, "[$]+", "")  
+            targetMessage.target = PRT.db.profile.raidRoster[id]            
+            receiverMessage = MessageHandler.MessageToReceiverMessage(targetMessage) 
         end
         
         if receiverMessage then
-            PRT.Debug("Sending new message", receiverMessage)
-            MessageHandler.SendMessageToSlave(receiverMessage) 
+            if UnitExists(targetMessage.target) or tContains(validTargets, targetMessage.target) then
+                PRT.Debug("Sending new message", receiverMessage)
+                MessageHandler.SendMessageToSlave(receiverMessage) 
+            else
+                PRT.Error("Target does not exist. Skipping message.")
+            end
         end
     end    
 end

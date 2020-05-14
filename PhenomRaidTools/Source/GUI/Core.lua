@@ -223,8 +223,9 @@ Core.CreateMainFrameContent = function(container, profile)
         function(widget, event, key) 
             Core.OnGroupSelected(scrollFrame, key, profile) 
         end)	
-    PRT.mainFrameContent   = treeGroup        
+    PRT.mainFrameContent = treeGroup            
     treeGroup:AddChild(scrollFrame)
+    PRT.mainFrameContent.scrollFrame = scrollFrame
 
     -- Expand encounters by default
     local treeGroupStatus = { groups = {} }
@@ -248,7 +249,7 @@ PRT.CreateMainFrame = function(profile)
 		function(widget) 
 			AceGUI:Release(widget) 
 		end)
-    PRT.mainFrame:SetWidth(850)
+    PRT.mainFrame:SetWidth(950)
     PRT.mainFrame:SetHeight(600)
     PRT.mainFrame.frame:SetMinResize(400, 400)
 	RegisterESCHandler("mainFrame", PRT.mainFrame)

@@ -69,30 +69,30 @@ PRT.CopyTable = function(orig, copies)
 end
 
 PRT.Error = function(...)
-    PRT:Print("|c"..PRT.db.profile.colors.error, ...)
+    PRT:Print("[Error]|c"..PRT.db.profile.colors.error, ...)
 end
 
 PRT.Debug = function(...)
     if PRT.db.profile.debugMode then
-        PRT:Print("|c"..PRT.db.profile.colors.general, ...)
+        PRT:Print("[Debug]|c"..PRT.db.profile.colors.general, ...)
     end
 end
 
 PRT.DebugTimer = function(...)
     if PRT.db.profile.debugMode then
-        PRT:Print("|c"..PRT.db.profile.colors.timers, "[Timer] - ", ...)
+        PRT:Print("[Debug]|c"..PRT.db.profile.colors.timers, "[Timer] - ", ...)
     end
 end
 
 PRT.DebugRotation = function(...)
     if PRT.db.profile.debugMode then
-        PRT:Print("|c"..PRT.db.profile.colors.rotations, "[Rotation] - ", ...)
+        PRT:Print("[Debug]|c"..PRT.db.profile.colors.rotations, "[Rotation] - ", ...)
     end
 end
 
 PRT.DebugPercentage = function(...)
     if PRT.db.profile.debugMode then
-        PRT:Print("|c"..PRT.db.profile.colors.percentages, "[Percentage] - ", ...)
+        PRT:Print("[Debug]|c"..PRT.db.profile.colors.percentages, "[Percentage] - ", ...)
     end
 end
 
