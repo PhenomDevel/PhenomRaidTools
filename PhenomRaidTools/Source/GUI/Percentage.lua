@@ -57,7 +57,7 @@ Percentage.PercentageWidget = function(percentage, container)
         function(widget) 
             percentage.name = widget:GetText() 
             PRT.mainFrameContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
-            PRT.mainFrameContent:SelectByValue(timer.name)
+            PRT.mainFrameContent:SelectByValue(percentage.name)
         end)
 
     local unitIDEditBox = PRT.EditBox("percentageUnitID", percentage.unitID)
