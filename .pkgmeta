@@ -17,6 +17,7 @@ enable-nolib-creation: no
 
 ignore:
   - README.md
+  - CHANGELOG_TEMPLATE.md
   
 move-folders:
   PhenomRaidTools/PhenomRaidTools: PhenomRaidTools
