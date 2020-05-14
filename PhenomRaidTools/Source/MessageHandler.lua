@@ -65,7 +65,7 @@ MessageHandler.ExecuteMessageAction = function(message)
                 PRT.Debug("Sending new message", receiverMessage)
                 MessageHandler.SendMessageToSlave(receiverMessage) 
             else
-                PRT.Error("Target does not exist. Skipping message.")
+                PRT.Error("Target", targetMessage.target, "does not exist. Skipping message.")
             end
         end
     end    
