@@ -49,6 +49,9 @@ MessageHandler.ExecuteMessageAction = function(message)
         if (UnitExists(targetMessage.target)) or tContains(validTargets, targetMessage.target) then     
             -- Send "normal" message       
             receiverMessage = MessageHandler.MessageToReceiverMessage(targetMessage)
+        elseif targetMessage.target == "$me" then
+            targetMessage.target = UnitName("player")
+            receiverMessage = MessageHandler.MessageToReceiverMessage(targetMessage)   
         elseif targetMessage.target == "$target" then
             -- Set event target as message target
             targetMessage.target = message.eventTarget

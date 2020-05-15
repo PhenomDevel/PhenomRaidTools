@@ -149,3 +149,11 @@ end
 PRT.SortTableByName = function(t)
     table.sort(t, PRT.CompareByName)
 end
+
+PRT.ColorString = function(s, color)
+    return "|c"..color..s.."|r"
+end
+
+PRT.HighlightString = function(s)
+    return PRT.ColorString(s, PRT.db.profile.colors.highlight)
+end

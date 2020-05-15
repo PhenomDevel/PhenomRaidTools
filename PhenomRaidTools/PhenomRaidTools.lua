@@ -87,7 +87,23 @@ local defaults =  {
 			timers = "FFFFF569",
 			rotations = "FF9482C9",
 			percentages = "FFABD473",
-			error = "FFFF0000"
+			error = "FFFF0000",
+			highlight = "FF69CCF0",
+			classes = {
+				[0] = nil,
+				[1] = "C79C6E",
+				[2] = "F58CBA",
+				[3] = "ABD473",
+				[4] = "FFF569",
+				[5] = "FFFFFF",
+				[6] = "C41F3B",
+				[7] = "0070DE",
+				[8] = "69CCF0",
+				[9] = "9482C9",
+				[10] = "00FF96",
+				[11] = "FF7D0A",
+				[12] = "A330C9",
+			}
 		},
 
 		raidRoster = {
@@ -110,6 +126,7 @@ function PRT:OnInitialize()
 	-- because we sometimes have to do a re-layout of the complete content
 	PRT.mainFrame = nil
 	PRT.mainFrameContent = nil
+	PRT.InitializeStrings()
 end
 
 function PRT:OnEnable()

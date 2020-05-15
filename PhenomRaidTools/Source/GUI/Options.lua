@@ -1,7 +1,5 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
-local AceGUI = LibStub("AceGUI-3.0")
-
 local Options = {}
 
 local difficulties = {"Normal", "Heroic", "Mythic"}

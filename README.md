@@ -1,4 +1,4 @@
-[![PhenomRaidTools on Discord](https://img.shields.io/badge/discord-PhenomRaidTools-738bd7.svg)](https://discord.gg/j5yGbK)
+[![PhenomRaidTools on Discord](https://img.shields.io/badge/discord-PhenomRaidTools-738bd7.svg)](https://discord.gg/s5HEuMQ)
 # PhenomRaidTools
 ## Quick Start
 To get started just type `/prt` into your chat or click the minimap icon and PhenomRaidTools will open. If you need any help to set up an encounter please see [#Help](https://github.com/PhenomDevel/PhenomRaidTools#help)
@@ -88,7 +88,7 @@ Message consists of the following:
 
 
 ## Help
-I have set up a discord server up and running for every kind of question. Feel free to enter and ask what you have trouble with. [Discord](https://discord.gg/j5yGbK)
+I have set up a discord server up and running for every kind of question. Feel free to enter and ask what you have trouble with. [Discord](https://discord.gg/s5HEuMQ)
 
 
 ## Feature Requests
@@ -106,6 +106,4 @@ I have set up a discord server up and running for every kind of question. Feel f
 
 - Add full support for `Phenom Raid Tools: Receiver` without using [WeakAuras2](https://github.com/WeakAuras/WeakAuras2/releases)
 
-- Add configuration of raid roster 
-
-- Add dropdown to `targets` of messages which holds the configured raid roster entries
+- Rename `check again` etc. for percentages to match rotation options

@@ -133,6 +133,8 @@ PRT.TabGroup = function(textID, tabs)
 	local widget = AceGUI:Create("Label")
 
 	widget:SetText(text)
+	widget:SetFont(GameFontHighlightSmall:GetFont(), 12, "OUTLINE")
+	widget:SetWidth(500)
 
 	return widget
  end
@@ -154,11 +156,13 @@ PRT.TabGroup = function(textID, tabs)
 	return widget
  end
 
- PRT.Dropdown = function(textID, values, value)	
+ PRT.Dropdown = function(textID, values, value, withEmpty)	
 	local text = PRT.Strings.GetText(textID)
 
 	local dropdownItems = {}
-	dropdownItems[999] = ""
+	if withEmpty then
+		dropdownItems[999] = ""
+	end
 
 	for i,v in ipairs(values) do
 		if type(v) == "string" then
@@ -216,6 +220,17 @@ PRT.TabGroup = function(textID, tabs)
 	
 	widget:SetFullWidth(true)
 	widget:SetLayout("List")
+
+    return widget
+ end
+
+ PRT.Slider = function(textID, value)
+	local text = PRT.Strings.GetText(textID)
+	local widget = AceGUI:Create("Slider")    
+	
+	widget:SetSliderValues(0, 60, 1)
+	widget:SetLabel(text)
+	widget:SetValue(value)
 
     return widget
  end

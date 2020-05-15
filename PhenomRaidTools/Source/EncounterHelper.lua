@@ -95,7 +95,7 @@ end
 PRT.EmptyPercentage = function()
     return {
         name = "Percentage Name"..random(0,100000),
-        unitID = "player",
+        unitID = "boss1",
         values = {
             PRT.EmptyPercentageEntry()
         },
