@@ -107,3 +107,5 @@ I have set up a discord server up and running for every kind of question. Feel f
 - Add full support for `Phenom Raid Tools: Receiver` without using [WeakAuras2](https://github.com/WeakAuras/WeakAuras2/releases)
 
 - Rename `check again` etc. for percentages to match rotation options
+
+- Find a good way of referencing raid roster entries within `targets` *and* `message`

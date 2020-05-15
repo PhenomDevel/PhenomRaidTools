@@ -235,16 +235,20 @@ PRT.MessageWidget = function (message, container)
 
 	targetsEditBox:SetCallback("OnEnterPressed", 
 		function(widget) 
-			message.targets = { strsplit(",", widget:GetText()) }
+			local text = widget:GetText()
+			if not text == "" then
+				message.targets = { strsplit(",", text) }				
+			else
+				message.targets = {}
+			end
 			targetsPreviewLabel:SetText("Preview: "..TargetsPreviewString(message.targets))
 			widget:ClearFocus()
 		end) 
 				
 	raidRosterDropdown:SetCallback("OnValueChanged", 
-		function(widget) 
-			local text = targetsEditBox:GetText()..", "..widget:GetValue()
-			targetsEditBox:SetText(text)
-			message.targets = { strsplit(",", targetsEditBox:GetText()) }
+		function(widget) 	
+			table.insert(message.targets, widget:GetValue())	
+			targetsEditBox:SetText(strjoin(", ", unpack(message.targets)))
 			targetsPreviewLabel:SetText("Preview: "..TargetsPreviewString(message.targets))
 			widget:SetValue(nil)
 		end)    

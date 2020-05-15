@@ -1,7 +1,7 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local MessageHandler = {}
 
-local validTargets = {
+local validTargets = {    
     "ALL", 
     "HEALER",
     "TANK",
@@ -33,10 +33,30 @@ MessageHandler.MessageToReceiverMessage = function(message)
     return target.."?"..spellID.."#"..duration.."&"..message.."~"..withSound
 end
 
+MessageHandler.ReplaceToken = function(token)
+    token = strtrim(token, " ")
+    local playerName = token
+    
+    if token == "me" then
+        playerName = UnitName("player")
+    elseif PRT.db.profile.raidRoster[token] then
+        playerName = PRT.db.profile.raidRoster[token]
+    else
+        playerName = "N/A"
+    end
+
+    return playerName
+end
+
+MessageHandler.ReplaceTokens = function(s)
+    return string.gsub(s, "[$]+([^$, ]*)", MessageHandler.ReplaceToken)
+end
+
 MessageHandler.ExecuteMessageAction = function(message)
     for i, target in ipairs(message.targets) do
         local targetMessage = PRT.CopyTable(message)
         targetMessage.target = strtrim(target, " ")
+        targetMessage.message = MessageHandler.ReplaceTokens(targetMessage.message)
 
         if message.withSound then 
             targetMessage.withSound = "t"
@@ -49,23 +69,19 @@ MessageHandler.ExecuteMessageAction = function(message)
         if (UnitExists(targetMessage.target)) or tContains(validTargets, targetMessage.target) then     
             -- Send "normal" message       
             receiverMessage = MessageHandler.MessageToReceiverMessage(targetMessage)
-        elseif targetMessage.target == "$me" then
-            targetMessage.target = UnitName("player")
-            receiverMessage = MessageHandler.MessageToReceiverMessage(targetMessage)   
         elseif targetMessage.target == "$target" then
             -- Set event target as message target
             targetMessage.target = message.eventTarget
             receiverMessage = MessageHandler.MessageToReceiverMessage(targetMessage)    
-        elseif string.match(targetMessage.target, "$tank") or string.match(targetMessage.target, "$heal") then
-            -- Get raid roster player name as target
-            local id = string.gsub(targetMessage.target, "[$]+", "")  
-            targetMessage.target = PRT.db.profile.raidRoster[id]            
+        elseif targetMessage.target == "$me" or string.match(targetMessage.target, "$tank") or string.match(targetMessage.target, "$heal") then      
+            -- send message to token target  
+            targetMessage.target = MessageHandler.ReplaceTokens(targetMessage.target)
             receiverMessage = MessageHandler.MessageToReceiverMessage(targetMessage) 
         end
         
         if receiverMessage then
             if UnitExists(targetMessage.target) or tContains(validTargets, targetMessage.target) then
-                PRT.Debug("Sending new message", receiverMessage)
+                PRT.Debug("Sending new message", receiverMessage)                
                 MessageHandler.SendMessageToSlave(receiverMessage) 
             else
                 PRT.Error("Target", targetMessage.target, "does not exist. Skipping message.")

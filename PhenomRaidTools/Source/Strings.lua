@@ -130,7 +130,7 @@ PRT.InitializeStrings = function()
             text = "Message",
             tooltip = {              
                 "- Use "..PRT.HighlightString("%s").." to display the countdown",
-                "- Use "..PRT.HighlightString("$source").." or "..PRT.HighlightString("$target").." to display the source/target of the event (only works for rotations)",
+                "- You can use tokens which will be replaced within the message e.g. "..PRT.HighlightString("$source")..", "..PRT.HighlightString("$target")..", "..PRT.HighlightString("$heal1")..", "..PRT.HighlightString("$me"),
                 "- Do not use reserved characters ("..PRT.HighlightString("#")..", "..PRT.HighlightString("?")..", "..PRT.HighlightString("~")..", "..PRT.HighlightString("%")..")"
             }
         },
