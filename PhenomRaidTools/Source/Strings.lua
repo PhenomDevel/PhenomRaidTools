@@ -143,7 +143,7 @@ PRT.InitializeStrings = function()
             tooltip = "For how long should the message be displayed?"
         },
         messageRaidRosterAddDropdown = {
-            text = "Add player from raid roster",
+            text = "Select additional target entry",
             tooltip = "You can add a reference of your configured raid roster. It will always add the reference *not* the player name in the targets."
         },
     
