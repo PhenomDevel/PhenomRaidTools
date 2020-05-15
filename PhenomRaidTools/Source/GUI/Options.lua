@@ -19,7 +19,16 @@ Options.AddRaidRosterWidget = function(container)
         local id = "tank"..i
         local value = PRT.db.profile.raidRoster[id]
         local tankEditBox = PRT.EditBox(id, value)
-        tankEditBox:SetCallback("OnEnterPressed", function(widget) PRT.db.profile.raidRoster[id] = widget:GetText() end)
+        tankEditBox:SetCallback("OnEnterPressed", 
+            function(widget) 
+                local text = widget:GetText()
+                if not text == "" then
+                    PRT.db.profile.raidRoster[id] = widget:GetText() 
+                else
+                    PRT.db.profile.raidRoster[id] = nil
+                end
+                widget:ClearFocus()
+            end)
         tankGroup:AddChild(tankEditBox)
     end 
 
@@ -30,7 +39,16 @@ Options.AddRaidRosterWidget = function(container)
         local id = "heal"..i
         local value = PRT.db.profile.raidRoster[id]
         local healEditBox = PRT.EditBox(id, value)
-        healEditBox:SetCallback("OnEnterPressed", function(widget) PRT.db.profile.raidRoster[id] = widget:GetText() end)
+        healEditBox:SetCallback("OnEnterPressed", function(widget) 
+            local text = widget:GetText()
+            if not text == "" then
+                PRT.db.profile.raidRoster[id] = widget:GetText() 
+            else
+                PRT.db.profile.raidRoster[id] = nil
+            end
+            widget:ClearFocus()
+        end)
+        
         healGroup:AddChild(healEditBox)
     end 
 
@@ -41,7 +59,15 @@ Options.AddRaidRosterWidget = function(container)
         local id = "dd"..i
         local value = PRT.db.profile.raidRoster[id]
         local healEditBox = PRT.EditBox(id, value)
-        healEditBox:SetCallback("OnEnterPressed", function(widget) PRT.db.profile.raidRoster[id] = widget:GetText() end)
+        healEditBox:SetCallback("OnEnterPressed", function(widget) 
+            local text = widget:GetText()
+            if not text == "" then
+                PRT.db.profile.raidRoster[id] = widget:GetText() 
+            else
+                PRT.db.profile.raidRoster[id] = nil
+            end
+            widget:ClearFocus()
+        end)
         ddGroup:AddChild(healEditBox)
     end 
 
