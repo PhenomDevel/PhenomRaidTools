@@ -92,7 +92,7 @@ ReceiverOverlay.AddMessage = function(msg)
     local parsedMessage = ReceiverOverlay.ParseMessage(msg)
 
     if ReceiverOverlay.IsMessageForMe(parsedMessage) then
-        if parsedMessage.withSound then
+        if parsedMessage.withSound and PRT.db.profile.overlay.receiver.enableSound then
             PlaySoundFile("Interface\\AddOns\\PhenomRaidTools\\Media\\Sounds\\ReceiveMessage.ogg", "Master")
         end
         local index = #messageStack+1

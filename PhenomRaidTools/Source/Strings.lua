@@ -112,8 +112,8 @@ PRT.InitializeStrings = function()
         },
         conditionDefaults = {
             text = "Condition"
-        },
-    
+        },        
+
         -- Messages
         messageHeading = {
             text = "Messages"
@@ -342,7 +342,10 @@ PRT.InitializeStrings = function()
         },
         overlayLocked = {
             text = "Locked"
-        }
+        },
+        overlayEnableSound = {
+            text = "Enable sounds"
+        },
     }
 end
 

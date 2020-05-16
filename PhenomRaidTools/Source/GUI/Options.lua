@@ -273,6 +273,10 @@ Options.AddReceiverOverlayWidget = function(container, options)
             end
         end)
 
+    local enableSoundCheckbox = PRT.CheckBox("overlayEnableSound", options.enableSound)
+    enableSoundCheckbox:SetCallback("OnValueChanged", function(widget) options.enableSound = enableSoundCheckbox:GetValue() end)     
+
+    container:AddChild(enableSoundCheckbox)
     container:AddChild(lockedCheckBox)
     container:AddChild(fontSizeSlider)
     container:AddChild(fontColor)
