@@ -394,8 +394,11 @@ PRT.InitializeStrings = function()
         newRotation = {
             text = "New Rotation"
         },
-        newPercentage = {
-            text = "New Percentage"
+        newHealthPercentage = {
+            text = "New Health Percentage"
+        },
+        newPowerPercentage = {
+            text = "New Power Percentage"
         },
     }
 end

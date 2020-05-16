@@ -87,7 +87,7 @@ PRT.AddRotationOptions = function(container, profile, encounterID)
     local rotationOptionsGroup = PRT.InlineGroup("Options")
     rotationOptionsGroup:SetLayout("Flow")
 
-    local addButton = PRT.Button("NEW ROTATION")
+    local addButton = PRT.Button("newRotation")
     addButton:SetHeight(40)
     addButton:SetRelativeWidth(1)
     addButton:SetCallback("OnClick", 

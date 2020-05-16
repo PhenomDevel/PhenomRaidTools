@@ -103,7 +103,7 @@ PRT.AddTimerOptionsWidgets = function(container, profile, encounterID)
     local timerOptionsGroup = PRT.InlineGroup("Options")
     timerOptionsGroup:SetLayout("Flow")
 
-    local addButton = PRT.Button("NEW TIMER")
+    local addButton = PRT.Button("newTimer")
     addButton:SetHeight(40)
     addButton:SetRelativeWidth(1)
     addButton:SetCallback("OnClick", 
@@ -123,7 +123,7 @@ PRT.AddTimerWidget = function(container, profile, encounterID, triggerName)
     local timers = encounter.Timers
     local timerIndex, timer = PRT.FilterTableByName(timers, triggerName)
     local deleteButton = PRT.NewTriggerDeleteButton(container, timers, timerIndex, "deleteTimer")
-    
+
     Timer.TimerWidget(timer, container)    
     container:AddChild(deleteButton)
 end
