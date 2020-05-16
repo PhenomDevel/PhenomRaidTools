@@ -181,7 +181,7 @@ end
 
 PRT.CheckTimerStartConditions = function(timers, event, combatEvent, spellID, targetGUID, sourceGUID)   
     if timers ~= nil then
-        for i, timer in ipairs(timers) do                     
+        for i, timer in ipairs(timers) do                           
             if timer.startCondition ~= nil and timer.started ~= true then     
                 if TriggerHandler.CheckCondition(timer.startCondition, event, combatEvent, spellID, targetGUID, sourceGUID) then
                     PRT.DebugTimer("Started timer `"..(timer.name or "NO NAME").."` at "..GetTime())
@@ -200,6 +200,7 @@ PRT.CheckTimerStopConditions = function(timers, event, combatEvent, spellID, tar
                 if TriggerHandler.CheckCondition(timer.stopCondition, event, combatEvent, spellID, sourceGUID, targetGUID) then
                     PRT.DebugTimer("Stopped timer `"..(timer.name or "NO NAME").."` at "..GetTime())
                     timer.started = false
+                    timer.startedAt = nil
                     
                     for i, timing in pairs(timer.timings) do
                         timing.executed = false  

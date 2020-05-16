@@ -275,8 +275,8 @@ PRT.CreateMainWindow = function(profile)
     PRT.SenderOverlay.Initialize(profile.overlay.sender)
 
     -- When the gui is open also show sender and receiver overlays
-    PRT.ReceiverOverlay.Show()
-    PRT.SenderOverlay.Show()
+    PRT.ReceiverOverlay.Show()    
+    PRT.SenderOverlay.ShowPlaceholder()
 
     mainWindow:AddChild(mainWindowContent)
     

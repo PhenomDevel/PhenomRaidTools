@@ -22,18 +22,15 @@ Overlay.SavePosition = function(widget, options)
 end
 
 Overlay.UpdateSize = function(container)
-    local headerWidth = container.header:GetStringWidth()
     local width = container.text:GetStringWidth()
-    container:SetWidth(math.max(width, headerWidth) + (2 * padding))
+    container:SetWidth(width + (2 * padding))
 
-    local headerHeight = container.header:GetStringHeight()
     local height = container.text:GetStringHeight()
-    container:SetHeight(height + headerHeight + (2 * padding))
+    container:SetHeight(height + (2 * padding))
 end
 
 Overlay.UpdateFont = function(container, fontSize)
     container.text:SetFont(GameFontHighlightSmall:GetFont(), fontSize, "OUTLINE")
-    container.header:SetFont(GameFontHighlightSmall:GetFont(), fontSize, "OUTLINE")
 end
 
 Overlay.UpdateBackdrop = function(container, r, g, b, a)
@@ -92,14 +89,8 @@ Overlay.CreateOverlay = function(options, withBackdrop)
     overlayFrame.text = overlayFrame:CreateFontString(nil, "ARTWORK") 
     overlayFrame.text:SetJustifyH("CENTER")
     overlayFrame.text:SetFont(GameFontHighlightSmall:GetFont(), options.fontSize, "OUTLINE")
-    overlayFrame.text:SetPoint("TOPLEFT", padding, 2 * -padding)
+    overlayFrame.text:SetPoint("TOPLEFT", padding, -padding)
     overlayFrame.text:SetText("")
-
-    overlayFrame.header = overlayFrame:CreateFontString(nil, "ARTWORK") 
-    overlayFrame.header:SetJustifyH("CENTER")
-    overlayFrame.header:SetFont(GameFontHighlightSmall:GetFont(), options.fontSize, "OUTLINE")
-    overlayFrame.header:SetPoint("TOPLEFT", padding, -padding)
-    overlayFrame.header:SetText("")
 
     return overlayFrame
 end
