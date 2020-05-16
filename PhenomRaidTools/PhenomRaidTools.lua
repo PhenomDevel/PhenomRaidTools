@@ -64,7 +64,7 @@ local defaults =  {
 
 			sender = {
 				top = 50,
-				left = 50,
+				left = 615,
 				fontSize = 14,
 				backdropColor = {
 					r = 0,
