@@ -92,6 +92,9 @@ ReceiverOverlay.AddMessage = function(msg)
     local parsedMessage = ReceiverOverlay.ParseMessage(msg)
 
     if ReceiverOverlay.IsMessageForMe(parsedMessage) then
+        if parsedMessage.withSound then
+            PlaySoundFile("Interface\\AddOns\\PhenomRaidTools\\Media\\Sounds\\ReceiveMessage.ogg", "Master")
+        end
         local index = #messageStack+1
         messageStack[index] = parsedMessage
         AceTimer:ScheduleTimer(
