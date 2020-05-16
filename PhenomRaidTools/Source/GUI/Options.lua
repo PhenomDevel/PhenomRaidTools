@@ -3,12 +3,13 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local Options = {}
 
 local difficulties = {"Normal", "Heroic", "Mythic"}
-
+local senderModeEntries = {"sender", "sender+receiver"}
+local receiverModeEntries = {"receiver", "sender+receiver"}
 
 -------------------------------------------------------------------------------
 -- Local Helper
 
-Options.AddRaidRosterWidget = function(container)
+Options.AddRaidRosterWidget = function(container, options)
     local explanationLabel = PRT.Label("optionsRaidRosterExplanation")
     explanationLabel:SetRelativeWidth(1)
 
@@ -17,15 +18,15 @@ Options.AddRaidRosterWidget = function(container)
 
     for i=1,3 do 
         local id = "tank"..i
-        local value = PRT.db.profile.raidRoster[id]
+        local value = options[id]
         local tankEditBox = PRT.EditBox(id, value)
         tankEditBox:SetCallback("OnEnterPressed", 
             function(widget) 
                 local text = widget:GetText()
-                if not text == "" then
-                    PRT.db.profile.raidRoster[id] = widget:GetText() 
+                if text ~= "" then
+                    options[id] = widget:GetText() 
                 else
-                    PRT.db.profile.raidRoster[id] = nil
+                    options[id] = nil
                 end
                 widget:ClearFocus()
             end)
@@ -37,14 +38,14 @@ Options.AddRaidRosterWidget = function(container)
 
     for i=1,6 do 
         local id = "heal"..i
-        local value = PRT.db.profile.raidRoster[id]
+        local value = options[id]
         local healEditBox = PRT.EditBox(id, value)
         healEditBox:SetCallback("OnEnterPressed", function(widget) 
             local text = widget:GetText()
-            if not text == "" then
-                PRT.db.profile.raidRoster[id] = widget:GetText() 
+            if not text ~= "" then
+                options[id] = widget:GetText() 
             else
-                PRT.db.profile.raidRoster[id] = nil
+                options[id] = nil
             end
             widget:ClearFocus()
         end)
@@ -55,16 +56,16 @@ Options.AddRaidRosterWidget = function(container)
     local ddGroup = PRT.InlineGroup("Damage Dealer")
     ddGroup:SetLayout("Flow")
 
-    for i=1,21 do 
+    for i=1,9 do 
         local id = "dd"..i
-        local value = PRT.db.profile.raidRoster[id]
+        local value = options[id]
         local healEditBox = PRT.EditBox(id, value)
         healEditBox:SetCallback("OnEnterPressed", function(widget) 
             local text = widget:GetText()
-            if not text == "" then
-                PRT.db.profile.raidRoster[id] = widget:GetText() 
+            if not text ~= "" then
+                options[id] = widget:GetText() 
             else
-                PRT.db.profile.raidRoster[id] = nil
+                options[id] = nil
             end
             widget:ClearFocus()
         end)
@@ -89,9 +90,8 @@ Options.AddDefaultsWidgets = function(container, t)
                 widget = PRT.EditBox(k, v)
                 widget:SetCallback("OnEnterPressed", function(widget) t[k] = widget:GetText() end)
             elseif type(v) == "number" then
-                widget = PRT.EditBox(k, v)
-                widget:SetWidth(100)
-                widget:SetCallback("OnEnterPressed", function(widget) t[k] = tonumber(widget:GetText()) end)
+                widget = PRT.Slider(k, v)
+                widget:SetCallback("OnValueChanged", function(widget) t[k] = widget:GetValue() end)
             elseif type(v) == "table" then
                 widget = PRT.EditBox(k, strjoin(", ", unpack(v)), true)
                 widget:SetWidth(300)
@@ -112,23 +112,22 @@ Options.AddDefaultsWidgets = function(container, t)
     end
 end
 
-Options.AddDefaultsGroups = function(container)
+Options.AddDefaultsGroups = function(container, options)
     local explanationLabel = PRT.Label("optionsDefaultsExplanation")
     explanationLabel:SetRelativeWidth(1)
     container:AddChild(explanationLabel)
     
-    if PRT.db.profile.triggerDefaults then
-        for k, v in pairs(PRT.db.profile.triggerDefaults) do
+    if options then
+        for k, v in pairs(options) do
             local groupWidget = PRT.InlineGroup(k)
             groupWidget:SetLayout("Flow")
             Options.AddDefaultsWidgets(groupWidget, v)
             container:AddChild(groupWidget)
         end
-    end
-    
+    end    
 end
 
-Options.AddDifficultyWidgets = function(container)
+Options.AddDifficultyWidgets = function(container, options)
     local explanationLabel = PRT.Label("optionsDifficultyExplanation")
     explanationLabel:SetRelativeWidth(1)
 
@@ -136,8 +135,8 @@ Options.AddDifficultyWidgets = function(container)
     dungeonGroup:SetLayout("Flow")
     
     for i, difficulty in ipairs(difficulties) do
-        local widget = PRT.CheckBox("dungeonDifficulty"..difficulty, PRT.db.profile.enabledDifficulties["dungeon"][difficulty])
-        widget:SetCallback("OnValueChanged", function(widget, event, key) PRT.db.profile.enabledDifficulties["dungeon"][difficulty] = widget:GetValue() end)
+        local widget = PRT.CheckBox("dungeonDifficulty"..difficulty, options["dungeon"][difficulty])
+        widget:SetCallback("OnValueChanged", function(widget, event, key) options["dungeon"][difficulty] = widget:GetValue() end)
         widget:SetWidth(100)                
         dungeonGroup:AddChild(widget)
     end
@@ -146,8 +145,8 @@ Options.AddDifficultyWidgets = function(container)
     raidGroup:SetLayout("Flow")
 
     for i, difficulty in ipairs(difficulties) do
-        local widget = PRT.CheckBox("raidDifficulty"..difficulty, PRT.db.profile.enabledDifficulties["raid"][difficulty])
-        widget:SetCallback("OnValueChanged", function(widget, event, key) PRT.db.profile.enabledDifficulties["raid"][difficulty] = widget:GetValue() end)
+        local widget = PRT.CheckBox("raidDifficulty"..difficulty, options["raid"][difficulty])
+        widget:SetCallback("OnValueChanged", function(widget, event, key) options["raid"][difficulty] = widget:GetValue() end)
         widget:SetWidth(100)
         raidGroup:AddChild(widget)
     end
@@ -157,38 +156,140 @@ Options.AddDifficultyWidgets = function(container)
     container:AddChild(raidGroup)
 end
 
-Options.AddVariousWidgets = function(container)
-    local debugModeCheckbox = PRT.CheckBox("optionsDebugMode", PRT.db.profile.debugMode, true)
-	debugModeCheckbox:SetCallback("OnValueChanged", function(widget) PRT.db.profile.debugMode = widget:GetValue() end)
+Options.AddVariousWidgets = function(container, options)
+    local debugModeCheckbox = PRT.CheckBox("optionsDebugMode", options.debugMode, true)
+	debugModeCheckbox:SetCallback("OnValueChanged", function(widget) options.debugMode = widget:GetValue() end)
+    debugModeCheckbox:SetRelativeWidth(1)
 
-    local testModeCheckbox = PRT.CheckBox("optionsTestMode", PRT.db.profile.testMode)
-	testModeCheckbox:SetCallback("OnValueChanged", function(widget)	PRT.db.profile.testMode = widget:GetValue() end)	
+    local testModeCheckbox = PRT.CheckBox("optionsTestMode", options.testMode)
+	testModeCheckbox:SetCallback("OnValueChanged", function(widget)	options.testMode = widget:GetValue() end)	
+    testModeCheckbox:SetRelativeWidth(1)
 
-    local textEncounterIDDropdown = PRT.Dropdown("optionsTestEncounterID", PRT.db.profile.encounters, PRT.db.profile.testEncounterID)        
-    textEncounterIDDropdown:SetCallback("OnValueChanged", function(widget) PRT.db.profile.testEncounterID = tonumber(widget:GetValue()) end)    
+    local textEncounterIDDropdown = PRT.Dropdown("optionsTestEncounterID", options.encounters, options.testEncounterID)        
+    textEncounterIDDropdown:SetCallback("OnValueChanged", function(widget) options.testEncounterID = tonumber(widget:GetValue()) end)  
     
-    local showOverlayCheckbox = PRT.CheckBox("optionsShowOverlay", PRT.db.profile.showOverlay)
+    local executionModes = {{ id = "receiver", name = "Receiver" }, { id = "sender", name = "Sender" }, { id = "sender+receiver", name = "Sender & Receiver"}}
+    local executionModeDropdown = PRT.Dropdown("executionModeDropdown", executionModes, options.executionMode)        
+    executionModeDropdown:SetCallback("OnValueChanged", 
+        function(widget) 
+            local text = widget:GetValue()
+            options.senderMode = tContains(senderModeEntries, text)
+            options.receiverMode = tContains(receiverModeEntries, text)
+            options.executionMode = text
+
+            if options.senderMode then
+                PRT.SenderOverlay.Initialize(PRT.db.profile.overlay.sender)
+            end
+            if options.receiverMode then
+                PRT.ReceiverOverlay.Initialize(PRT.db.profile.overlay.receiver)
+            end
+        end)     
+    
+    container:AddChild(executionModeDropdown)
+    container:AddChild(debugModeCheckbox)
+    container:AddChild(testModeCheckbox)    
+    container:AddChild(textEncounterIDDropdown)
+end
+
+Options.AddSenderOverlayWidget = function(container, options)
+    local showOverlayCheckbox = PRT.CheckBox("optionsShowOverlay", options.enabled)
     showOverlayCheckbox:SetRelativeWidth(1)
     showOverlayCheckbox:SetCallback("OnValueChanged", 
         function(widget) 
             local value = widget:GetValue() 
-            PRT.db.profile.showOverlay = value
+            options.enabled = value
             if value then
-                PRT.Overlay.Initialize()
+                PRT.SenderOverlay.Initialize(options)
+                PRT.SenderOverlay.Show()
             else
-                PRT.Overlay.Hide()
+                PRT.SenderOverlay.Hide()
             end
         end)
     
-    local hideOverlayAfterCombatCheckbox = PRT.CheckBox("optionsHideOverlayAfterCombat", PRT.db.profile.hideOverlayAfterCombat)
+    local hideOverlayAfterCombatCheckbox = PRT.CheckBox("optionsHideOverlayAfterCombat", options.hideAfterCombat)
     hideOverlayAfterCombatCheckbox:SetRelativeWidth(1)
-    hideOverlayAfterCombatCheckbox:SetCallback("OnValueChanged", function(widget) PRT.db.profile.hideOverlayAfterCombat = widget:GetValue() end)
+    hideOverlayAfterCombatCheckbox:SetCallback("OnValueChanged", function(widget) options.hideAfterCombat = widget:GetValue() end)
+
+    local fontSizeSlider = PRT.Slider("overlayFontSize", options.fontSize)
+    fontSizeSlider:SetSliderValues(6, 72, 1)
+    fontSizeSlider:SetCallback("OnValueChanged", 
+        function(widget) 
+            local fontSize = widget:GetValue() 
+            options.fontSize = fontSize            
+            PRT.Overlay.UpdateFont(PRT.SenderOverlay.overlayFrame, fontSize)
+            PRT.Overlay.UpdateSize(PRT.SenderOverlay.overlayFrame)
+        end)
+
+    local backdropColor =  PRT.ColorPicker("overlayBackdropColor", options.backdropColor)
+    backdropColor:SetHasAlpha(true)
+    backdropColor:SetCallback("OnValueConfirmed", 
+        function(widget, event, r, g, b, a) 
+            options.backdropColor.a = a
+            options.backdropColor.r = r
+            options.backdropColor.g = g
+            options.backdropColor.b = b
+            PRT.Overlay.UpdateBackdrop(PRT.SenderOverlay.overlayFrame, r, g, b, a)
+        end)   
+
+    container:AddChild(showOverlayCheckbox)
+    container:AddChild(hideOverlayAfterCombatCheckbox)
+    container:AddChild(fontSizeSlider)
+    container:AddChild(backdropColor)
+end
+
+Options.AddReceiverOverlayWidget = function(container, options)
+    local fontSizeSlider = PRT.Slider("overlayFontSize", options.fontSize)
+    fontSizeSlider:SetSliderValues(6, 72, 1)
+    fontSizeSlider:SetCallback("OnValueChanged", 
+    function(widget) 
+        local fontSize = widget:GetValue() 
+        options.fontSize = fontSize            
+        PRT.Overlay.UpdateFont(PRT.ReceiverOverlay.overlayFrame, fontSize)
+    end)
+
+    local fontColor =  PRT.ColorPicker("overlayFontColor", options.fontColor)
+    fontColor:SetCallback("OnValueConfirmed", 
+        function(widget, event, r, g, b, a) 
+            options.fontColor.hex = format("%2x%2x%2x", r * 255, g * 255, b * 255)  
+            options.fontColor.r = r
+            options.fontColor.g = g
+            options.fontColor.b = b
+            options.fontColor.a = a
+        end)
+
+    local lockedCheckBox = PRT.CheckBox("overlayLocked", options.locked)
+    lockedCheckBox:SetCallback("OnValueChanged",
+        function(widget)
+            local v = widget:GetValue()
+            options.locked = v
+            if not v then                
+                PRT.Overlay.UpdateBackdrop(PRT.ReceiverOverlay.overlayFrame, 0, 0, 0, 0.7)
+                PRT.Overlay.SetMoveable(PRT.ReceiverOverlay.overlayFrame, true)
+                PRT.ReceiverOverlay.ShowPlaceholder()
+            else
+                PRT.Overlay.UpdateBackdrop(PRT.ReceiverOverlay.overlayFrame, 0, 0, 0, 0)
+                PRT.Overlay.SetMoveable(PRT.ReceiverOverlay.overlayFrame, false)
+                PRT.Overlay.ClearText(PRT.ReceiverOverlay.overlayFrame)
+            end
+        end)
+
+    container:AddChild(lockedCheckBox)
+    container:AddChild(fontSizeSlider)
+    container:AddChild(fontColor)
     
-    container:AddChild(debugModeCheckbox)
-    container:AddChild(testModeCheckbox)    
-    container:AddChild(textEncounterIDDropdown)
-    container:AddChild(showOverlayCheckbox) 
-    container:AddChild(hideOverlayAfterCombatCheckbox) 
+end
+
+Options.AddOverlayWidget = function(container, options)
+    local senderGroup = PRT.InlineGroup("senderGroup")
+    senderGroup:SetLayout("Flow")
+    Options.AddSenderOverlayWidget(senderGroup, options.sender)
+
+    local receiverGroup = PRT.InlineGroup("receiverGroup") 
+    receiverGroup:SetLayout("Flow")   
+    Options.AddReceiverOverlayWidget(receiverGroup, options.receiver)
+        
+    container:AddChild(senderGroup)
+    container:AddChild(receiverGroup)
 end
 
 
@@ -200,7 +301,8 @@ PRT.AddOptionWidgets = function(container, profile)
         { value = "various", text = "Various Settings" },
         { value = "difficulties", text = "Difficulty Settings" },
         { value = "defaults", text = "Trigger Defaults" },
-        { value = "raidRoster", text = "Raid Roster" }
+        { value = "raidRoster", text = "Raid Roster" },
+        { value = "overlay", text = "Overlay Settings" }
     }
 
     local optionsTabsGroup = PRT.TabGroup(nil, optionsTabs)
@@ -210,13 +312,15 @@ PRT.AddOptionWidgets = function(container, profile)
             widget:ReleaseChildren()
                          
             if key ==  "various" then
-                Options.AddVariousWidgets(widget)
+                Options.AddVariousWidgets(widget, PRT.db.profile)
             elseif key == "difficulties" then
-                Options.AddDifficultyWidgets(widget)
+                Options.AddDifficultyWidgets(widget, PRT.db.profile.enabledDifficulties)
             elseif key == "defaults" then
-                Options.AddDefaultsGroups(widget) 
+                Options.AddDefaultsGroups(widget, PRT.db.profile.triggerDefaults) 
             elseif key == "raidRoster" then
-                Options.AddRaidRosterWidget(widget) 
+                Options.AddRaidRosterWidget(widget, PRT.db.profile.raidRoster) 
+            elseif key == "overlay" then
+                Options.AddOverlayWidget(widget, PRT.db.profile.overlay)
             end
 
             PRT.mainFrameContent.scrollFrame:DoLayout()

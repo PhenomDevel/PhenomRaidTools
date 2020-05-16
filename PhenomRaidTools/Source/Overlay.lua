@@ -1,22 +1,43 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 local Overlay = {}
-
-local padding = 15
-
 local headerColor = "FFFFF569"
 local subHeaderColor = "FFFF7D0A"
 local textColor = "FFFFFFFF"
+local padding = 15
 
 
 -------------------------------------------------------------------------------
 -- Local Helper
 
-Overlay.SavePosition = function(widget)
+
+-------------------------------------------------------------------------------
+-- Public API
+
+Overlay.SavePosition = function(widget, options)
     local left, top = widget:GetLeft(), widget:GetTop()
 
-    PRT.db.profile.overlay.top = UIParent:GetHeight() - top
-    PRT.db.profile.overlay.left = left
+    options.top = UIParent:GetHeight() - top
+    options.left = left
+end
+
+Overlay.UpdateSize = function(container)
+    local headerWidth = container.header:GetStringWidth()
+    local width = container.text:GetStringWidth()
+    container:SetWidth(math.max(width, headerWidth) + (2 * padding))
+
+    local headerHeight = container.header:GetStringHeight()
+    local height = container.text:GetStringHeight()
+    container:SetHeight(height + headerHeight + (2 * padding))
+end
+
+Overlay.UpdateFont = function(container, fontSize)
+    container.text:SetFont(GameFontHighlightSmall:GetFont(), fontSize, "OUTLINE")
+    container.header:SetFont(GameFontHighlightSmall:GetFont(), fontSize, "OUTLINE")
+end
+
+Overlay.UpdateBackdrop = function(container, r, g, b, a)
+    container:SetBackdropColor(r, g, b, a);
 end
 
 Overlay.AddHeading = function(s, text)
@@ -31,79 +52,12 @@ Overlay.AddText = function(s, text)
     return s.."|c"..textColor..text.."|r\n"
 end
 
-Overlay.AddTimersText = function(s, timers)
-    
+Overlay.SetMoveable = function(widget, v)
+    widget:EnableMouse(v)
+    widget:SetMovable(v)
 end
 
-Overlay.GenerateTimerString = function(timer)
-    local timerString = ""
-    
-    if timer.started then
-        local duration = PRT.Round(GetTime() - timer.startedAt, 0)
-        timerString = Overlay.AddText(timerString, timer.name.." - "..duration.."s") 
-    else
-        timerString = Overlay.AddText(timerString, timer.name.." - inactive")  
-    end
-
-    return timerString
-end
-
-Overlay.GenerateRotationString = function(rotation)
-    local rotationString = ""
-    
-    if rotation.counter then
-        local counter = rotation.counter
-        rotationString = Overlay.AddText(rotationString, rotation.name.." - "..counter) 
-    else
-        rotationString = Overlay.AddText(rotationString, rotation.name.." - 1") 
-    end
-
-    return rotationString
-end
-
-Overlay.UpdateSize = function()
-    local headerWidth = Overlay.overlayFrame.header:GetStringWidth()
-    local width = Overlay.overlayFrame.text:GetStringWidth()
-    Overlay.overlayFrame:SetWidth(math.max(width, headerWidth) + (2 * padding))
-
-    local headerHeight = Overlay.overlayFrame.header:GetStringHeight()
-    local height = Overlay.overlayFrame.text:GetStringHeight()
-    Overlay.overlayFrame:SetHeight(height + headerHeight + (2 * padding))
-end
-
-Overlay.UpdateFrame = function()
-    if PRT.currentEncounter then        
-        local overlayText = ""
-
-        -- Timer
-        if not table.empty(PRT.currentEncounter.encounter.Timers) then
-            local timerString = ""
-            for i, timer in ipairs(PRT.currentEncounter.encounter.Timers) do
-                timerString = timerString..Overlay.GenerateTimerString(timer)
-            end
-
-            overlayText = Overlay.AddSubHeading(overlayText, "Timers (s)")
-            overlayText = overlayText..timerString            
-        end
-
-        -- Rotation
-        if not table.empty(PRT.currentEncounter.encounter.Rotations) then
-            local rotationString = ""
-            for i, rotation in ipairs(PRT.currentEncounter.encounter.Rotations) do
-                rotationString = rotationString..Overlay.GenerateRotationString(rotation)
-            end
-
-            overlayText = Overlay.AddSubHeading(overlayText, "Rotations (counter)")
-            overlayText = overlayText..rotationString
-        end
-
-        Overlay.overlayFrame.text:SetText(overlayText)
-    end    
-
-    Overlay.UpdateSize()
-end
-
-Overlay.CreateOverlay = function()
+Overlay.CreateOverlay = function(options, withBackdrop)
     PRT.Debug("Creating overlay")
     local overlayFrame = CreateFrame("Frame", nil, UIParent)
     overlayFrame:EnableMouse(true)
@@ -113,76 +67,65 @@ Overlay.CreateOverlay = function()
     overlayFrame:SetScript("OnDragStart", overlayFrame.StartMoving)
     overlayFrame:SetScript("OnDragStop", 
         function(widget) 
-            Overlay.SavePosition(widget) 
+            Overlay.SavePosition(widget, options) 
             overlayFrame:StopMovingOrSizing() 
         end)
 
-    overlayFrame:SetBackdrop(
-        {
-            bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
-            edgeFile = nil, 
-            tile = true, tileSize = 16, edgeSize = 16, 
-            insets = { 
-                left = 4, 
-                right = 4, 
-                top = 4, 
-                bottom = 4 
-        }});
+    if withBackdrop then
+        overlayFrame:SetBackdrop(
+            {
+                bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
+                edgeFile = nil, 
+                tile = true, tileSize = 16, edgeSize = 16, 
+                insets = { 
+                    left = 4, 
+                    right = 4, 
+                    top = 4, 
+                    bottom = 4 
+            }});
 
-    overlayFrame:SetBackdropColor(0, 0, 0, 0.7);
+        overlayFrame:SetBackdropColor((options.backdropColor.r or 0), (options.backdropColor.g or 0), (options.backdropColor.b or 0), (options.backdropColor.a or 0));
+    end
+
     overlayFrame:SetFrameStrata("MEDIUM")
-    overlayFrame:SetPoint("TOPLEFT", "UIParent", "TOPLEFT", PRT.db.profile.overlay.left, -PRT.db.profile.overlay.top)
+    overlayFrame:SetPoint("TOPLEFT", "UIParent", "TOPLEFT", options.left, -options.top)
 
     overlayFrame.text = overlayFrame:CreateFontString(nil, "ARTWORK") 
-    overlayFrame.text:SetJustifyH("LEFT")
-    overlayFrame.text:SetFont("Fonts\\ARIALN.ttf", 14, "OUTLINE")
+    overlayFrame.text:SetJustifyH("CENTER")
+    overlayFrame.text:SetFont(GameFontHighlightSmall:GetFont(), options.fontSize, "OUTLINE")
     overlayFrame.text:SetPoint("TOPLEFT", padding, 2 * -padding)
-    overlayFrame.text:SetText(text)
+    overlayFrame.text:SetText("")
 
-    local header = Overlay.AddHeading("", "PhenomRaidTools")
     overlayFrame.header = overlayFrame:CreateFontString(nil, "ARTWORK") 
-    overlayFrame.header:SetJustifyH("LEFT")
-    overlayFrame.header:SetFont("Fonts\\ARIALN.ttf", 16, "OUTLINE")
+    overlayFrame.header:SetJustifyH("CENTER")
+    overlayFrame.header:SetFont(GameFontHighlightSmall:GetFont(), options.fontSize, "OUTLINE")
     overlayFrame.header:SetPoint("TOPLEFT", padding, -padding)
-    overlayFrame.header:SetText(header)
+    overlayFrame.header:SetText("")
 
-    Overlay.overlayFrame = overlayFrame
+    return overlayFrame
 end
 
-Overlay.ClearText = function()
-    if Overlay.overlayFrame then
+Overlay.ClearText = function(widget)
+    if widget then
         PRT.Debug("Clearing overlay text")
-        Overlay.overlayFrame.text:SetText("")
-
-        Overlay.UpdateSize()
+        widget.text:SetText("")
     end
 end
 
-Overlay.Hide = function()
-    if Overlay.overlayFrame then    
+Overlay.Hide = function(widget)
+    if widget then    
         PRT.Debug("Hide overlay")        
-		Overlay.ClearText()
-        Overlay.overlayFrame:Hide()
+		Overlay.ClearText(widget)
+        widget:Hide()
     end
 end
 
-Overlay.Show = function()
-    if Overlay.overlayFrame then        
+Overlay.Show = function(widget)
+    if widget then        
         PRT.Debug("Show overlay")        
-        Overlay.ClearText()
-        Overlay.UpdateFrame()
-        Overlay.UpdateSize()
-        Overlay.overlayFrame:Show()
+        Overlay.ClearText(widget)
+        widget:Show()
     end
 end
-
-Overlay.Initialize = function()
-    Overlay.CreateOverlay()		
-    Overlay.UpdateFrame()
-    Overlay.Show()
-end
-
--------------------------------------------------------------------------------
--- Public API
 
 PRT.Overlay = Overlay

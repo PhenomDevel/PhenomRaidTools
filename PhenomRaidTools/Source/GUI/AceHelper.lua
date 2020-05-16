@@ -156,6 +156,19 @@ PRT.TabGroup = function(textID, tabs)
 	return widget
  end
 
+ PRT.ColorPicker = function(textID, value)
+	local text = PRT.Strings.GetText(textID)
+
+	local widget = AceGUI:Create("ColorPicker")
+
+	widget:SetLabel(text)
+	widget:SetColor((value.r or 0), (value.g or 0), (value.b or 0), (value.a or 0))	
+	widget:SetHasAlpha(false)
+	widget:SetRelativeWidth(1)
+
+	return widget
+ end
+
  PRT.Dropdown = function(textID, values, value, withEmpty)	
 	local text = PRT.Strings.GetText(textID)
 

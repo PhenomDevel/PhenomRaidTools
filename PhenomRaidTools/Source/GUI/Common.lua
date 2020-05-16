@@ -236,7 +236,7 @@ PRT.MessageWidget = function (message, container)
 	targetsEditBox:SetCallback("OnEnterPressed", 
 		function(widget) 
 			local text = widget:GetText()
-			if not text == "" then
+			if text ~= "" then
 				message.targets = { strsplit(",", text) }				
 			else
 				message.targets = {}

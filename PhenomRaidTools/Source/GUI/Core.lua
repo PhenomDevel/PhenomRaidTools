@@ -247,12 +247,19 @@ PRT.CreateMainFrame = function(profile)
 	PRT.mainFrame:SetLayout("Fill")
 	PRT.mainFrame:SetCallback("OnClose",
 		function(widget) 
-			AceGUI:Release(widget) 
+            AceGUI:Release(widget) 
+            PRT.ReceiverOverlay.Hide()
+            PRT.SenderOverlay.Hide()
 		end)
     PRT.mainFrame:SetWidth(950)
     PRT.mainFrame:SetHeight(600)
     PRT.mainFrame.frame:SetMinResize(400, 400)
-	RegisterESCHandler("mainFrame", PRT.mainFrame)
+    RegisterESCHandler("mainFrame", PRT.mainFrame)
+
+    PRT.ReceiverOverlay.Initialize(profile.overlay.receiver)
+    PRT.SenderOverlay.Initialize(profile.overlay.sender)
+    PRT.ReceiverOverlay.Show()
+    PRT.SenderOverlay.Show()
 
 	PRT.mainFrame:AddChild(Core.CreateMainFrameContent(PRT.mainFrame, profile))
 end	

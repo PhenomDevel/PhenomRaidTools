@@ -99,8 +99,8 @@ PRT.EmptyPercentage = function()
         values = {
             PRT.EmptyPercentageEntry()
         },
-        ignoreAfterActivation = PRT.db.profile.triggerDefaults.percentageDefaults.defaultIgnoreAfterActivation,
-        ignoreDuration = PRT.db.profile.triggerDefaults.percentageDefaults.defaultIgnoreDuration
+        checkAgain = PRT.db.profile.triggerDefaults.percentageDefaults.defaultCheckAgain,
+        checkAgainAfter = PRT.db.profile.triggerDefaults.percentageDefaults.defaultCheckAgainAfter
     }
 end
 

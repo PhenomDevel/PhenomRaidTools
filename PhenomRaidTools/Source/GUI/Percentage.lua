@@ -67,16 +67,16 @@ Percentage.PercentageWidget = function(percentage, container)
 			widget:ClearFocus()
         end)
     
-    local ignoreAfterActivationCheckBox = PRT.CheckBox("percentageCheckAgain", percentage.ignoreAfterActivation)
-    ignoreAfterActivationCheckBox:SetCallback("OnValueChanged", 
+    local percentageCheckAgainCheckBox = PRT.CheckBox("percentageCheckAgain", percentage.checkAgain)
+    percentageCheckAgainCheckBox:SetCallback("OnValueChanged", 
         function(widget) 
-            percentage.ignoreAfterActivation = widget:GetValue() 
+            percentage.checkAgain = widget:GetValue() 
         end)
 
-    local ignoreDurationEditBox = PRT.EditBox("percentageCheckDelay", percentage.ignoreDuration)
-    ignoreDurationEditBox:SetCallback("OnEnterPressed", 
+    local checkAgainAfterEditBox = PRT.EditBox("percentageCheckAgainAfter", percentage.checkAgainAfter)
+    checkAgainAfterEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
-            percentage.ignoreDuration = tonumber(widget:GetText()) 
+            percentage.checkAgainAfter = tonumber(widget:GetText()) 
 			widget:ClearFocus()
         end)
 
@@ -93,8 +93,8 @@ Percentage.PercentageWidget = function(percentage, container)
 
     percentageOptionsGroup:AddChild(nameEditBox)
     percentageOptionsGroup:AddChild(unitIDEditBox)
-    percentageOptionsGroup:AddChild(ignoreAfterActivationCheckBox)
-    percentageOptionsGroup:AddChild(ignoreDurationEditBox)
+    percentageOptionsGroup:AddChild(percentageCheckAgainCheckBox)
+    percentageOptionsGroup:AddChild(checkAgainAfterEditBox)
 
     container:AddChild(percentageOptionsGroup)
     container:AddChild(valuesTabGroupWidget)

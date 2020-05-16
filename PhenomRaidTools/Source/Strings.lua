@@ -9,6 +9,9 @@ PRT.InitializeStrings = function()
     Strings = {
 
         -- Options
+        executionModeDropdown = {
+            text = "Execution mode"
+        },
         optionsHeading = {
             text = "Global Options"
         },
@@ -96,6 +99,12 @@ PRT.InitializeStrings = function()
         },
         defaultEvent = {
             text = "Event"
+        },
+        defaultCheckAgain = {
+            text = "Check multiple times"
+        },
+        defaultCheckAgainAfter = {
+            text = "Check again after (s)"
         },
         additionalEvents = {
             text = "Additional events",
@@ -205,6 +214,12 @@ PRT.InitializeStrings = function()
         percentageOptionsHeading = {
             text = "Percentage Options"
         },
+        percentageCheckAgainAfter = {
+            text = "Check again after (s)"
+        },
+        percentageCheckAgain = {
+            text = "Check multiple times"
+        },
     
         -- Percentage Entries
         percentageEntryDeleteButton = {
@@ -306,6 +321,27 @@ PRT.InitializeStrings = function()
         },
         timingOptionsHeading = {
             text = "Timing Options"
+        },
+
+
+        -- Overlay
+        senderGroup = {
+            text = "Sender"
+        },
+        receiverGroup = {
+            text = "Receiver"
+        },
+        overlayFontColor = {
+            text = "Font color"
+        },
+        overlayFontSize = {
+            text = "Font size"
+        },
+        overlayBackdropColor = {
+            text = "Backdrop color"
+        },
+        overlayLocked = {
+            text = "Locked"
         }
     }
 end

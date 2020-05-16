@@ -28,6 +28,7 @@ local LibDBIcon = LibStub("LibDBIcon-1.0")
 
 local defaults =  {
 	profile = {
+		addonMessagePrefix = "PRT_MSG",
 		testMode = false,
 		testEncounterID = 9999,
 		testEncounterName = "Example Encounter",
@@ -35,9 +36,45 @@ local defaults =  {
 		showOverlay = false,
 		hideOverlayAfterCombat = false,
 
+		executionMode = "receiver",
+		senderMode = false,
+		receiverMode = true,
+
 		overlay = {
-			top = nil,
-			left = nil
+			receiver = {
+				locked = true,
+				top = 450,
+				left = 615,
+				fontSize = 14,
+				fontColor = {
+					hex = "FFFFFF",
+					r = 0,
+					g = 0,
+					b = 0,
+					a = 0
+				},
+				enableSound = true,
+				backdropColor = {
+					r = 0,
+					g = 0,
+					b = 0,
+					a = 0
+				}
+			},
+
+			sender = {
+				top = 50,
+				left = 50,
+				fontSize = 14,
+				backdropColor = {
+					r = 0,
+					g = 0,
+					b = 0,
+					a = 0.7
+				},
+				enabled = true,
+				hideAfterCombat = false
+			}
 		},
 
 		minimap = {
@@ -67,8 +104,8 @@ local defaults =  {
 				defaultIgnoreDuration = 10
 			},
 			percentageDefaults = {
-				defaultIgnoreAfterActivation = true,
-				defaultIgnoreDuration = 5
+				defaultCheckAgain = true,
+				defaultCheckAgainAfter = 5
 			},
 			conditionDefaults = {
 				additionalEvents = {}
@@ -127,14 +164,20 @@ function PRT:OnInitialize()
 	PRT.mainFrame = nil
 	PRT.mainFrameContent = nil
 	PRT.InitializeStrings()
+
+	if self.db.profile.overlay.sender.enabled and not self.db.profile.overlay.sender.hideAfterCombat then
+		PRT.SenderOverlay.Initialize(PRT.db.profile.overlay.sender)
+	end
+
+	if self.db.profile.receiverMode then
+		PRT.ReceiverOverlay.Initialize(PRT.db.profile.overlay.receiver)
+	end
 end
 
 function PRT:OnEnable()
 	PRT.RegisterEssentialEvents()
 
-	if self.db.profile.showOverlay then
-		PRT.Overlay.Initialize()
-	end
+	C_ChatInfo.RegisterAddonMessagePrefix(PRT.db.profile.addonMessagePrefix)
 end
 
 function PRT:OnDisable()

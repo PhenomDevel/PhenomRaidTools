@@ -126,6 +126,15 @@ TriggerHandler.CheckStopIgnoreRotationCondition = function(trigger)
     end 
 end
 
+TriggerHandler.CheckStopIgnorePercentageCondition = function(trigger)
+    if trigger.checkAgain and trigger.ignored == true then
+        if ((trigger.lastActivation or 0) + (trigger.checkAgainAfter or 5)) < GetTime() then
+            trigger.ignored = false
+            PRT.Debug("Stopped ignoring trigger", trigger.name)
+        end 
+    end 
+end
+
 TriggerHandler.SendMessagesAfterDelay = function(messages)
     for i, message in ipairs(messages) do
         AceTimer:ScheduleTimer(
@@ -270,9 +279,9 @@ PRT.CheckUnitHealthPercentages = function(percentages)
                             TriggerHandler.SendMessagesAfterDelay(messagesByHP.messages)
                             
                             percentage.lastActivation = GetTime()
-                            if percentage.ignoreAfterActivation == true then
+                            if percentage.checkAgain ~= true then
                                 percentage.ignored = true
-                                PRT.DebugRotation("Started ignoring percentage", percentage.name, "for", percentage.ignoreDuration)
+                                PRT.DebugRotation("Started ignoring percentage", percentage.name, "for", percentage.checkAgainAfter)
                             else
                                 percentage.executed = true
                             end
@@ -288,7 +297,7 @@ PRT.CheckUnitPowerPercentages = function(percentages)
     if percentages ~= nil then
         for i, percentage in ipairs(percentages) do
 
-            TriggerHandler.CheckStopIgnoreRotationCondition(percentage)
+            TriggerHandler.CheckStopIgnorePercentageCondition(percentage)
 
             if percentage.ignored ~= true then
                 if UnitExists(percentage.unitID) then
