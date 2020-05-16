@@ -57,8 +57,7 @@ Overlay.SetMoveable = function(widget, v)
     widget:SetMovable(v)
 end
 
-Overlay.CreateOverlay = function(options, withBackdrop)
-    PRT.Debug("Creating overlay")
+Overlay.CreateOverlay = function(options, withBackdrop)    
     local overlayFrame = CreateFrame("Frame", nil, UIParent)
     overlayFrame:EnableMouse(true)
     overlayFrame:SetMovable(true)
@@ -107,22 +106,19 @@ end
 
 Overlay.ClearText = function(widget)
     if widget then
-        PRT.Debug("Clearing overlay text")
         widget.text:SetText("")
     end
 end
 
 Overlay.Hide = function(widget)
-    if widget then    
-        PRT.Debug("Hide overlay")        
+    if widget then           
 		Overlay.ClearText(widget)
         widget:Hide()
     end
 end
 
 Overlay.Show = function(widget)
-    if widget then        
-        PRT.Debug("Show overlay")        
+    if widget then              
         Overlay.ClearText(widget)
         widget:Show()
     end

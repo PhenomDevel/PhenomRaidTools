@@ -2,19 +2,12 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 local AceTimer = LibStub("AceTimer-3.0")
 
-local ReceiverOverlay = {}
-
-local padding = 15
-
-local headerColor = "FFFFF569"
-local subHeaderColor = "FFFF7D0A"
-local textColor = "FFFFFFFF"
-
-local messageStack = {}
-
-local validTargets = {
-    "ALL",
-    UnitName("player")
+local ReceiverOverlay = {
+    messageStack = {},
+    validTargets = {
+        "ALL", 
+        UnitName("player")
+    }
 }
 
 -------------------------------------------------------------------------------
@@ -24,7 +17,7 @@ ReceiverOverlay.IsMessageForMe = function(message)
     local target = message.target
     local messageForMe = false
     
-    if tContains(validTargets, target) or target == UnitGroupRolesAssigned("player")
+    if tContains(ReceiverOverlay.validTargets, target) or target == UnitGroupRolesAssigned("player")
     then        
         messageForMe = true
     end        
@@ -85,7 +78,7 @@ ReceiverOverlay.ParseMessage = function(msg)
 end 
 
 ReceiverOverlay.ClearMessageStack = function()
-    messageStack = {}
+    ReceiverOverlay.messageStack = {}
 end
 
 ReceiverOverlay.AddMessage = function(msg)
@@ -95,11 +88,11 @@ ReceiverOverlay.AddMessage = function(msg)
         if parsedMessage.withSound and PRT.db.profile.overlay.receiver.enableSound then
             PlaySoundFile("Interface\\AddOns\\PhenomRaidTools\\Media\\Sounds\\ReceiveMessage.ogg", "Master")
         end
-        local index = #messageStack+1
-        messageStack[index] = parsedMessage
+        local index = #ReceiverOverlay.messageStack+1
+        ReceiverOverlay.messageStack[index] = parsedMessage
         AceTimer:ScheduleTimer(
             function() 
-                messageStack[index] = ""
+                ReceiverOverlay.messageStack[index] = ""
                 ReceiverOverlay.UpdateFrame()
             end, 
             5)
@@ -115,7 +108,7 @@ end
 ReceiverOverlay.UpdateFrame = function()  
     local text = ""
 
-    for i, message in pairs(messageStack) do
+    for i, message in pairs(ReceiverOverlay.messageStack) do
         if message ~= "" then
             if message.expirationTime > GetTime() then                        
                 local timeLeftRaw = message.expirationTime - GetTime()
@@ -131,7 +124,6 @@ ReceiverOverlay.UpdateFrame = function()
     end
     
     ReceiverOverlay.overlayFrame.text:SetText(text.."|r")
-    --PRT.Overlay.UpdateSize(ReceiverOverlay.overlayFrame)
 end
 
 ReceiverOverlay.CreateOverlay = function(options)
@@ -155,13 +147,13 @@ end
 
 ReceiverOverlay.Initialize = function(options)
     if not ReceiverOverlay.overlayFrame then
+        PRT.Debug("Initializing receiver overlay")
         ReceiverOverlay.CreateOverlay(options)	
 
         if not options.locked then
             PRT.Overlay.UpdateBackdrop(ReceiverOverlay.overlayFrame, 0, 0, 0, 0.7)
             PRT.Overlay.SetMoveable(ReceiverOverlay.overlayFrame, true)
             ReceiverOverlay.overlayFrame.text:SetText("Placeholder")
-            --PRT.Overlay.UpdateSize(ReceiverOverlay.overlayFrame)
         end
     end
 end

@@ -1,7 +1,5 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
-local AceGUI = LibStub("AceGUI-3.0")
-
 local Percentage = {}
 
 
@@ -56,8 +54,8 @@ Percentage.PercentageWidget = function(percentage, container)
     nameEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
             percentage.name = widget:GetText() 
-            PRT.mainFrameContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
-            PRT.mainFrameContent:SelectByValue(percentage.name)
+            PRT.mainWindowContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
+            PRT.Core.ReselectExchangeLast(percentage.name)
         end)
 
     local unitIDEditBox = PRT.EditBox("percentageUnitID", percentage.unitID)
@@ -118,9 +116,9 @@ PRT.AddPowerPercentageOptions = function(container, profile, encounterID)
         function(widget, event, key)
             local newPercentage = PRT.EmptyPercentage()
             tinsert(percentages, newPercentage)
-            PRT.mainFrameContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
-            PRT.mainFrameContent:DoLayout()
-            PRT.mainFrameContent:SelectByPath("encounters", encounterID, "powerPercentages", newPercentage.name)
+            PRT.mainWindowContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
+            PRT.mainWindowContent:DoLayout()
+            PRT.mainWindowContent:SelectByPath("encounters", encounterID, "powerPercentages", newPercentage.name)
         end)
 
     percentageOptionsGroup:AddChild(addButton)
@@ -131,7 +129,7 @@ PRT.AddPowerPercentageWidget = function(container, profile, encounterID, trigger
     local _, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)    
     local percentages = encounter.PowerPercentages
     local percentageIndex, percentage = PRT.FilterTableByName(percentages, triggerName)
-    local deleteButton = PRT.NewTriggerDeleteButton(container, percentages, percentageIndex, "DELETE POWER-PERCENTAGE")
+    local deleteButton = PRT.NewTriggerDeleteButton(container, percentages, percentageIndex, "deletePercentage")
 
     Percentage.PercentageWidget(percentage, container)
     container:AddChild(deleteButton)
@@ -155,9 +153,9 @@ PRT.AddHealthPercentageOptions = function(container, profile, encounterID)
         function(widget, event, key)
             local newPercentage = PRT.EmptyPercentage()
             tinsert(percentages, newPercentage)
-            PRT.mainFrameContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
-            PRT.mainFrameContent:DoLayout()
-            PRT.mainFrameContent:SelectByPath("encounters", encounterID, "healthPercentages", newPercentage.name)
+            PRT.mainWindowContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
+            PRT.mainWindowContent:DoLayout()
+            PRT.mainWindowContent:SelectByPath("encounters", encounterID, "healthPercentages", newPercentage.name)
         end)
 
     percentageOptionsGroup:AddChild(addButton)
@@ -168,7 +166,7 @@ PRT.AddHealthPercentageWidget = function(container, profile, encounterID, trigge
     local _, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)    
     local percentages = encounter.HealthPercentages
     local percentageIndex, percentage = PRT.FilterTableByName(percentages, triggerName)
-    local deleteButton = PRT.NewTriggerDeleteButton(container, percentages, percentageIndex, "DELETE HEALTH-PERCENTAGE")
+    local deleteButton = PRT.NewTriggerDeleteButton(container, percentages, percentageIndex, "deletePercentage")
 
     Percentage.PercentageWidget(percentage, container)
     container:AddChild(deleteButton)

@@ -1,9 +1,5 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
-
-local AceGUI = LibStub("AceGUI-3.0")
-
 local Core = {}
-PRT.Core = Core
 
 -------------------------------------------------------------------------------
 -- Local Helper
@@ -207,32 +203,50 @@ Core.OnGroupSelected = function(container, key, profile)
     end
 
     container:DoLayout()
-    PRT.mainFrameContent:RefreshTree()
+    PRT.mainWindowContent:RefreshTree()
 end
 
-Core.CreateMainFrameContent = function(container, profile)
-    local scrollFrame = AceGUI:Create("ScrollFrame")
-	scrollFrame:SetLayout("List")	
-	scrollFrame:SetFullHeight(true)
-	scrollFrame:SetAutoAdjustHeight(true)
+Core.ReselectCurrentValue = function()
+    if PRT.mainWindowContent.selectedValue then
+        PRT.mainWindowContent:SelectByValue(PRT.mainWindowContent.selectedValue)
+    end
+end
+
+Core.ReselectExchangeLast = function(last)   
+    if PRT.mainWindowContent.selectedValue then
+        local xs = { strsplit("\001", PRT.mainWindowContent.selectedValue) }        
+        tremove(xs, #xs)
+        tinsert(xs, last)
+        local selectValue = strjoin("\001", unpack(xs))
+        PRT.mainWindowContent:SelectByValue(selectValue)
+        PRT.mainWindowContent.selectedValue = selectValue
+    end
+end
+
+Core.CreateMainWindowContent = function(profile)
+    -- Create a sroll frame for the tree group content
+    local treeContentScrollFrame = PRT.ScrollFrame()
     
-    local treeGroup = AceGUI:Create("TreeGroup")
-    treeGroup:SetLayout("Fill")
-    treeGroup:SetTree(Core.GenerateTreeByProfile(profile))
+    -- Generate tree group for the main menue structure
+    local tree = Core.GenerateTreeByProfile(profile)
+    local treeGroup = PRT.TreeGroup(tree)
+    PRT.mainWindowContent = treeGroup 
     treeGroup:SetCallback("OnGroupSelected", 
         function(widget, event, key) 
-            Core.OnGroupSelected(scrollFrame, key, profile) 
-        end)	
-    PRT.mainFrameContent = treeGroup            
-    treeGroup:AddChild(scrollFrame)
-    PRT.mainFrameContent.scrollFrame = scrollFrame
-
+            treeGroup.selectedValue = key
+            Core.OnGroupSelected(treeContentScrollFrame, key, profile) 
+        end)	    
+        
     -- Expand encounters by default
     local treeGroupStatus = { groups = {} }
     treeGroup:SetStatusTable(treeGroupStatus)
     treeGroupStatus.groups["encounters"] = true    
     treeGroup:SelectByValue("options")
     treeGroup:RefreshTree()
+         
+    PRT.mainWindowContent.scrollFrame = treeContentScrollFrame
+
+    treeGroup:AddChild(treeContentScrollFrame)
 
 	return treeGroup
 end
@@ -240,26 +254,36 @@ end
 -------------------------------------------------------------------------------
 -- Public API
 
-PRT.CreateMainFrame = function(profile)
-	PRT.mainFrame = AceGUI:Create("Window")
-	PRT.mainFrame:SetTitle("PhenomRaidTools")
-	PRT.mainFrame:SetStatusText("PhenomRaidTools - Raid smarter not harder")
-	PRT.mainFrame:SetLayout("Fill")
-	PRT.mainFrame:SetCallback("OnClose",
+PRT.CreateMainWindow = function(profile)
+    local mainWindow = PRT.Window("mainWindowTitle")
+    local mainWindowContent = Core.CreateMainWindowContent(profile)
+
+	mainWindow:SetCallback("OnClose",
 		function(widget) 
-            AceGUI:Release(widget) 
+            PRT.Release(widget)
             PRT.ReceiverOverlay.Hide()
             PRT.SenderOverlay.Hide()
-		end)
-    PRT.mainFrame:SetWidth(950)
-    PRT.mainFrame:SetHeight(600)
-    PRT.mainFrame.frame:SetMinResize(400, 400)
-    RegisterESCHandler("mainFrame", PRT.mainFrame)
+        end)
+        
+    mainWindow:SetWidth(950)
+    mainWindow:SetHeight(600)
+    mainWindow.frame:SetMinResize(400, 400)
+    RegisterESCHandler("mainFrame", mainWindow)
 
+    -- Initialite sender and receiver frames
     PRT.ReceiverOverlay.Initialize(profile.overlay.receiver)
     PRT.SenderOverlay.Initialize(profile.overlay.sender)
+
+    -- When the gui is open also show sender and receiver overlays
     PRT.ReceiverOverlay.Show()
     PRT.SenderOverlay.Show()
 
-	PRT.mainFrame:AddChild(Core.CreateMainFrameContent(PRT.mainFrame, profile))
+    mainWindow:AddChild(mainWindowContent)
+    
+    -- We hold the frame reference for some hacky rerendering usages :(
+    PRT.mainWindow = mainWindow
+    PRT.mainWindowContent = mainWindowContent
 end	
+
+-- Make functions publicly available
+PRT.Core = Core

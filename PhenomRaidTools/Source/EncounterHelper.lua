@@ -45,7 +45,8 @@ end
 PRT.EmptyTimer = function()
     return {
         startCondition = PRT.EmptyCondition(),
-        stopCondition = PRT.EmptyCondition(),
+        stopCondition = {},
+        hasStopCondition = false,
         name = "Timer Name"..random(0,100000),
         timings = {
             PRT.EmptyTiming()

@@ -1,6 +1,4 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
-
-local AceGUI = LibStub("AceGUI-3.0")
 local AceSerializer = LibStub("AceSerializer-3.0")
 local LibDeflate = LibStub("LibDeflate")
 
@@ -19,10 +17,21 @@ end
 
 ImportExport.StringToTable = function(s)
     local decoded = LibDeflate:DecodeForPrint(s)
-    local decompressed = LibDeflate:DecompressDeflate(decoded)
-    local worked, t = AceSerializer:Deserialize(decompressed)
+    if decoeded then
+        local decompressed = LibDeflate:DecompressDeflate(decoded)
 
-    return worked, t
+        if decompressed then
+            local worked, t = AceSerializer:Deserialize(decompressed)
+            
+            return worked, t    
+        else
+            PRT.Error("String could not be decompressed. Aborting import.")
+        end
+    else
+        PRT.Error("String could not be decoded. Aborting import.")
+    end
+
+    return nil
 end
 
 
@@ -30,12 +39,10 @@ end
 -- Public API
 
 PRT.CreateImportEncounterFrame = function(encounters)
-    local importFrame = AceGUI:Create("Frame")
-    importFrame:SetTitle("Import Encounter")
+    local importFrame = PRT.Frame("importEncounter")
     importFrame:SetLayout("Fill")
     
-    local importDataBox = AceGUI:Create("MultiLineEditBox")
-    importDataBox:SetLabel("Encounter String")
+    local importDataBox = PRT.MultiLineEditBox()
     importDataBox:SetFocus()
     importDataBox:DisableButton(true)
 
@@ -46,7 +53,7 @@ PRT.CreateImportEncounterFrame = function(encounters)
         local worked, encounter = ImportExport.StringToTable(text)     
          
         if worked == true then
-            table.insert(encounters, encounter)
+            tinsert(encounters, encounter)
             PRT.mainFrame:ReleaseChildren()
             PRT.mainFrame:AddChild(PRT.Core.CreateMainFrameContent(PRT.mainFrame, PRT.db.profile))            
         else
@@ -60,17 +67,15 @@ PRT.CreateImportEncounterFrame = function(encounters)
 end
 
 PRT.CreateExportEncounterFrame = function(encounter)
-    local exportFrame = AceGUI:Create("Frame")
-    exportFrame:SetTitle("Export Encounter")
+    local exportFrame = PRT.Frame("exportEncounter")  
     exportFrame:SetLayout("Fill")
-    
-    local exportDataBox = AceGUI:Create("MultiLineEditBox")
+
+    local exportDataBox = PRT.MultiLineEditBox(nil, ImportExport.TableToString(encounter))
     exportDataBox:SetLabel("String")
-    exportDataBox:SetText(ImportExport.TableToString(encounter))
     exportDataBox:SetFocus()
     exportDataBox:DisableButton(true)
     exportDataBox:HighlightText()
-    exportFrame:AddChild(exportDataBox)    
-    
+
+    exportFrame:AddChild(exportDataBox)        
     exportFrame:Show()    
 end

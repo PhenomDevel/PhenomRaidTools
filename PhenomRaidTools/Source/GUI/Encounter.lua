@@ -1,6 +1,84 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
-local AceGUI = LibStub("AceGUI-3.0")
+local Encounter = {}
+
+-------------------------------------------------------------------------------
+-- Local Helper
+
+Encounter.OverviewWidget = function(encounter)
+    local overviewGroup = PRT.InlineGroup("encounterOverview")
+
+    -- Timers
+    if not table.empty(encounter.Timers) then
+        local group = PRT.InlineGroup("timerOverview")
+        for i, v in ipairs(encounter.Timers) do
+            local s = "- "..v.name.."\n"
+            local s = "- "..v.name.."\n"
+            if v.startCondition.event then
+                s = s.."  - Event: "..v.startCondition.event.."\n"
+            end
+
+            if v.startCondition.spellName and v.startCondition.spellID then
+                s = s.."  - Spell: "..v.startCondition.spellID.." / "..v.startCondition.spellName.."\n"  
+            end
+           
+            local label = PRT.Label(s)
+            label:SetRelativeWidth(1)
+            group:AddChild(label)
+        end
+        overviewGroup:AddChild(group)
+    end
+
+    -- Rotations
+    if not table.empty(encounter.Rotations) then
+        local group = PRT.InlineGroup("rotationOverview")
+        for i, v in ipairs(encounter.Rotations) do
+            local s = "- "..v.name.."\n"
+            if v.triggerCondition.event then
+                s = s.."  - Event: "..v.triggerCondition.event.."\n"
+            end
+
+            if v.triggerCondition.spellName and v.triggerCondition.spellID then
+                s = s.."  - Spell: "..v.triggerCondition.spellID.." / "..v.triggerCondition.spellName.."\n"  
+            end
+           
+            local label = PRT.Label(s)
+            label:SetRelativeWidth(1)
+            group:AddChild(label)
+        end
+        overviewGroup:AddChild(group)
+    end
+
+    -- Health Percentages
+    if not table.empty(encounter.HealthPercentages) then
+        local group = PRT.InlineGroup("healthPercentageOverview")
+        for i, v in ipairs(encounter.HealthPercentages) do
+            local s = "- "..v.name.."\n"
+            s = s.."  - UnitID: "..v.unitID.."\n"
+
+            local label = PRT.Label(s)
+            label:SetRelativeWidth(1)
+            group:AddChild(label)
+        end
+        overviewGroup:AddChild(group)
+    end
+
+    -- Power Percentages
+    if not table.empty(encounter.PowerPercentages) then
+        local group = PRT.InlineGroup("powerPercentageOverview")
+        for i, v in ipairs(encounter.PowerPercentages) do
+            local s = "- "..v.name.."\n"
+            s = s.."  - UnitID: "..v.unitID.."\n"
+            
+            local label = PRT.Label(s)
+            label:SetRelativeWidth(1)
+            group:AddChild(label)
+        end
+        overviewGroup:AddChild(group)
+    end
+    
+    return overviewGroup
+end
 
 
 -------------------------------------------------------------------------------
@@ -9,20 +87,18 @@ local AceGUI = LibStub("AceGUI-3.0")
 PRT.AddEncountersWidgets = function(container, profile)
     local encounterOptionsGroup = PRT.InlineGroup("encounterHeading")
 
-    local addButton = PRT.Button("NEW ENCOUNTER")
+    local addButton = PRT.Button("newEncounter")
     addButton:SetHeight(40)
     addButton:SetRelativeWidth(1)
     addButton:SetCallback("OnClick", 
     function(widget) 
         local newEncounter = PRT.EmptyEncounter()
         tinsert(profile.encounters, newEncounter)
-        PRT.mainFrameContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
-        PRT.mainFrameContent:DoLayout()
-
-        PRT.mainFrameContent:SelectByPath("encounters", newEncounter.id)
+        PRT.mainWindowContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
+        PRT.mainWindowContent:SelectByPath("encounters", newEncounter.id)
     end)
 
-    local importButton = PRT.Button("IMPORT ENCOUNTER")
+    local importButton = PRT.Button("importEncounter")
     importButton:SetHeight(40)
     importButton:SetRelativeWidth(1)
 	importButton:SetCallback("OnClick", 
@@ -53,13 +129,12 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
     encounterNameEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
             encounter.name = widget:GetText()
-            PRT.mainFrameContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
-            PRT.mainFrameContent:DoLayout()
-    
-            PRT.mainFrameContent:SelectByValue(encounter.name)
+            PRT.mainWindowContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
+            PRT.mainWindowContent:DoLayout()    
+            PRT.Core.ReselectExchangeLast(encounter.id)
         end)
 
-    local exportButton = PRT.Button("EXPORT ENCOUNTER")
+    local exportButton = PRT.Button("exportEncounter")
     exportButton:SetHeight(40)
     exportButton:SetRelativeWidth(1)
     exportButton:SetCallback("OnClick", 
@@ -74,12 +149,16 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
             encounter.enabled = widget:GetValue()
         end)
 
-    local deleteButton = PRT.NewTriggerDeleteButton(container, profile.encounters, encounterIndex, "DELETE ENCOUNTER")
+    local deleteButton = PRT.NewTriggerDeleteButton(container, profile.encounters, encounterIndex, "deleteEncounter")
 
     encounterOptionsGroup:AddChild(enabledCheckBox)
     encounterOptionsGroup:AddChild(encounterIDEditBox)
     encounterOptionsGroup:AddChild(encounterNameEditBox)
+
+    local overviewGroup = Encounter.OverviewWidget(encounter)
+
     container:AddChild(encounterOptionsGroup)  
+    container:AddChild(overviewGroup)
     container:AddChild(exportButton)
     container:AddChild(deleteButton)
 end

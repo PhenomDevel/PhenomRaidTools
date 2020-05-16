@@ -1,16 +1,21 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
--------------------------------------------------------------------------------
--- Strings
-
 local Strings = {}
+PRT.Strings = Strings
+
+-------------------------------------------------------------------------------
+-- Public API
 
 PRT.InitializeStrings = function()
     Strings = {
 
+        mainWindowTitle = {
+            text = "PhenomRaidTools - Raid smarter not harder"
+        },
+
         -- Options
-        executionModeDropdown = {
-            text = "Execution mode"
+        runModeDropdown = {
+            text = "Run mode"
         },
         optionsHeading = {
             text = "Global Options"
@@ -278,6 +283,21 @@ PRT.InitializeStrings = function()
         encounterEnabled = {
             text = "Enabled"
         },
+        encounterOverview = {
+            text = "Trigger Overview"
+        },
+        timerOverview = {
+            text = "Timers"
+        },
+        rotationOverview = {
+            text = "Rotations"
+        },
+        healthPercentageOverview = {
+            text = "Health Percentages"
+        },
+        powerPercentageOverview = {
+            text = "Power Percentages"
+        },
     
         -- Conditions
         conditionEvent = {
@@ -346,37 +366,66 @@ PRT.InitializeStrings = function()
         overlayEnableSound = {
             text = "Enable sounds"
         },
+
+        deleteTimer = {
+            text = "Delete Timer"
+        },
+        deleteRotation = {
+            text = "Delete Rotation"
+        },
+        deletePercentage = {
+            text = "Delete Percentage"
+        },
+        deleteEncounter = {
+            text = "Delete Encounter"
+        },
+        exportEncounter = {
+            text = "Export Encounter"
+        },
+        importEncounter = {
+            text = "Import Encounter"
+        },
+        newEncounter = {
+            text = "New Encounter"
+        },
+        newTimer = {
+            text = "New Timer"
+        },
+        newRotation = {
+            text = "New Rotation"
+        },
+        newPercentage = {
+            text = "New Percentage"
+        },
     }
 end
 
-
--------------------------------------------------------------------------------
--- Public API
-
-PRT.Strings = {}
-
 PRT.Strings.GetText = function(s)
-    if Strings[s] then
-        if Strings[s].text then
-            return Strings[s].text
+    if s then
+        if Strings[s] then
+            if Strings[s].text then
+                return Strings[s].text
+            else
+                PRT.Error("String entry found but no text specified for:", s)
+                return s
+            end
         else
-            PRT.Debug("No String found for:", s)
             return s
         end
-    else
-        return s
     end
 end
 
 PRT.Strings.GetTooltip = function(s)
-    if Strings[s] then
-        if Strings[s].tooltip then
-            return Strings[s].tooltip
+    if s then
+        if Strings[s] then
+            if Strings[s].tooltip then
+                return Strings[s].tooltip
+            else
+                PRT.Error("String entry found but no tooltip specified for:", s)
+                return s
+            end
         else
-            PRT.Debug("No Tooltip found for:", s)
             return s
         end
-    else
-        return s
     end
 end

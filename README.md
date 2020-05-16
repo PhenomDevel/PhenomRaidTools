@@ -100,6 +100,8 @@ I have set up a discord server up and running for every kind of question. Feel f
 
 - Be able to configure multiple conditions for each trigger. Like trigger on `ENCOUNTER_START` *or* `SPELL_CAST_SUCCESS/123`
 
+- Sync function to sync all encounters with someone else at once
+
 
 ## TODOs
 - Refactor `TriggerHandler.lua` for better performance and better readability

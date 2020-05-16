@@ -1,7 +1,5 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
-local AceGUI = LibStub("AceGUI-3.0")
-
 local Timer = {}
 
 
@@ -47,15 +45,12 @@ Timer.TimerWidget = function(timer, container)
     nameEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
             timer.name = widget:GetText()             
-            PRT.mainFrameContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
-            PRT.mainFrameContent:SelectByValue(timer.name)
+            PRT.mainWindowContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
+            PRT.Core.ReselectExchangeLast(timer.name)            
         end)
     
     local startConditionGroup = PRT.ConditionWidget(timer.startCondition, "Start Condition")
     startConditionGroup:SetLayout("Flow")
-
-    local stopConditionGroup = PRT.ConditionWidget(timer.stopCondition, "Stop Condition")
-    stopConditionGroup:SetLayout("Flow")
 
     local timingsHeading = PRT.Heading("Timings")
     local timingsTabs = PRT.TableToTabs(timer.timings, true)
@@ -69,7 +64,31 @@ Timer.TimerWidget = function(timer, container)
     timerOptionsGroup:AddChild(nameEditBox)
     container:AddChild(timerOptionsGroup)
     container:AddChild(startConditionGroup)
-    container:AddChild(stopConditionGroup)
+
+    if timer.hasStopCondition then
+        local stopConditionGroup = PRT.ConditionWidget(timer.stopCondition, "Stop Condition")
+        stopConditionGroup:SetLayout("Flow")
+
+        local removeStopConditionButton = PRT.Button("Remove Stop Condition")
+        removeStopConditionButton:SetCallback("OnClick",
+            function()
+                timer.hasStopCondition = false
+                timer.stopCondition = {}
+                PRT.Core.ReselectCurrentValue()
+            end)
+        stopConditionGroup:AddChild(removeStopConditionButton)
+        container:AddChild(stopConditionGroup)
+    else
+        local addStopConditionButton = PRT.Button("Add Stop Condition")
+        addStopConditionButton:SetCallback("OnClick",
+            function()
+                timer.hasStopCondition = true
+                timer.stopCondition = PRT.EmptyCondition()      
+                PRT.Core.ReselectCurrentValue()
+            end)
+        container:AddChild(addStopConditionButton)        
+    end
+
     container:AddChild(timingsTabGroup)
 end
 
@@ -91,9 +110,9 @@ PRT.AddTimerOptionsWidgets = function(container, profile, encounterID)
         function(widget, event, key)
             local newTimer = PRT.EmptyTimer()
             tinsert(timers, newTimer)
-            PRT.mainFrameContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
-            PRT.mainFrameContent:DoLayout()
-            PRT.mainFrameContent:SelectByPath("encounters", encounterID, "timers", newTimer.name)
+            PRT.mainWindowContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
+            PRT.mainWindowContent:DoLayout()
+            PRT.mainWindowContent:SelectByPath("encounters", encounterID, "timers", newTimer.name)
         end)
     timerOptionsGroup:AddChild(addButton)
     container:AddChild(timerOptionsGroup)
@@ -103,8 +122,8 @@ PRT.AddTimerWidget = function(container, profile, encounterID, triggerName)
     local _, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)    
     local timers = encounter.Timers
     local timerIndex, timer = PRT.FilterTableByName(timers, triggerName)
-    local deleteButton = PRT.NewTriggerDeleteButton(container, timers, timerIndex, "DELETE TIMER")
-
+    local deleteButton = PRT.NewTriggerDeleteButton(container, timers, timerIndex, "deleteTimer")
+    
     Timer.TimerWidget(timer, container)    
     container:AddChild(deleteButton)
 end

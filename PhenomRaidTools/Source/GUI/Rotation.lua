@@ -1,7 +1,5 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
-local AceGUI = LibStub("AceGUI-3.0")
-
 local Rotation = {}
 
 
@@ -30,8 +28,8 @@ Rotation.RotationWidget = function(rotation, container)
     nameEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
             rotation.name = widget:GetText() 
-            PRT.mainFrameContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
-            PRT.mainFrameContent:SelectByValue(rotation.name)
+            PRT.mainWindowContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
+            PRT.Core.ReselectExchangeLast(rotation.name)
         end)
 
     local shouldRestartCheckBox =  PRT.CheckBox("rotationShouldRestart", rotation.shouldRestart)
@@ -92,9 +90,9 @@ PRT.AddRotationOptions = function(container, profile, encounterID)
         function(widget, event, key)
             local newRotation = PRT.EmptyRotation()
             tinsert(rotations, newRotation)
-            PRT.mainFrameContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
-            PRT.mainFrameContent:DoLayout()
-            PRT.mainFrameContent:SelectByPath("encounters", encounterID, "rotations", newRotation.name)
+            PRT.mainWindowContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
+            PRT.mainWindowContent:DoLayout()
+            PRT.mainWindowContent:SelectByPath("encounters", encounterID, "rotations", newRotation.name)
         end)
 
     rotationOptionsGroup:AddChild(addButton)
@@ -105,7 +103,7 @@ PRT.AddRotationWidget = function(container, profile, encounterID, triggerName)
     local idx, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)    
     local rotations = encounter.Rotations
     local rotationIndex, rotation = PRT.FilterTableByName(rotations, triggerName)
-    local deleteButton = PRT.NewTriggerDeleteButton(container, rotations, rotationIndex, "DELETE ROTATION")
+    local deleteButton = PRT.NewTriggerDeleteButton(container, rotations, rotationIndex, "deleteRotation")
 
     Rotation.RotationWidget(rotation, container)
     container:AddChild(deleteButton)

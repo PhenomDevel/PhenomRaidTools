@@ -3,9 +3,10 @@
 ## Version: @project-version@
 ## Author: @project-author@
 ## Notes: Easy to use encounter configuration to send messages to your raid team on certain events.
-## SavedVariables: PhenomRaidToolsDB
-## DefaultState: Enabled
+## Notes-deDE: Einfach zu konfigurierender Boss Helfer. Nutze Countdowns, Rotationen und andere Auslöser, um Nachrichten anzuzeigen während eines Bosses.
 ## OptionalDeps: Ace3, LibCompress
+## SavedVariables: PhenomRaidToolsDB
+## X-Category: Raid
 
 # Init
 embeds.xml
@@ -23,8 +24,11 @@ Source/Overlay.lua
 Source/SenderOverlay.lua
 Source/ReceiverOverlay.lua
 
+# GUI Source
 Source/GUI/AceHelper.lua
-Source/GUI/Common.lua
+Source/GUI/Condition.lua
+Source/GUI/Message.lua
+Source/GUI/Shared.lua
 Source/GUI/Timer.lua
 Source/GUI/Rotation.lua
 Source/GUI/Percentage.lua

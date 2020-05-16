@@ -2,12 +2,6 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 local SenderOverlay = {}
 
-local padding = 15
-
-local headerColor = "FFFFF569"
-local subHeaderColor = "FFFF7D0A"
-local textColor = "FFFFFFFF"
-
 
 -------------------------------------------------------------------------------
 -- Local Helper
@@ -87,6 +81,7 @@ end
 
 SenderOverlay.Initialize = function(options)
     if not SenderOverlay.overlayFrame and options.enabled then
+        PRT.Debug("Initializing sender overlay")
         SenderOverlay.CreateOverlay(options)		
         SenderOverlay.UpdateFrame()
     end

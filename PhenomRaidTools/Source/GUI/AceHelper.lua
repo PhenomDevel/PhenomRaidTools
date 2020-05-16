@@ -1,7 +1,5 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
-
 local AceGUI = LibStub("AceGUI-3.0")
-
 local AceHelper = {}
 
 -------------------------------------------------------------------------------
@@ -28,12 +26,6 @@ AceHelper.AddTooltip = function(widget, tooltip)
 	end	
 end
 
-AceHelper.MaximizeWidget = function(widget)
-	widget:SetFullWidth(true)
-	widget:SetFullHeight(true)
-	widget:SetAutoAdjustHeight(true)
-end
-
 AceHelper.AddNewTab = function(widget, t, item)
     if not t then
         t = {}
@@ -43,7 +35,7 @@ AceHelper.AddNewTab = function(widget, t, item)
 	widget:DoLayout()
     widget:SelectTab(getn(t))
     
-    PRT.mainFrameContent:DoLayout()
+    PRT.mainWindowContent.scrollFrame:DoLayout()
 end
 
 AceHelper.RemoveTab = function(widget, t, item)
@@ -56,12 +48,41 @@ AceHelper.RemoveTab = function(widget, t, item)
 		widget:ReleaseChildren()
     end
     
-    PRT.mainFrameContent:DoLayout()
+    PRT.mainWindowContent.scrollFrame:DoLayout()
 end
 
 
 -------------------------------------------------------------------------------
 -- Public API
+
+PRT.SelectFirstTab = function(container, t)		
+	container:SelectTab(nil)
+    if t then
+		if getn(t) > 0 then
+			container:SelectTab(1)
+		end
+	end
+end
+
+PRT.TableToTabs = function(t, withNewTab, newTabText)
+	local tabs = {}
+	
+	if t then
+        for i, v in ipairs(t) do
+            if v.name then
+                tinsert(tabs, {value = i, text = v.name})
+            else
+                tinsert(tabs, {value = i, text = i})
+            end
+		end
+    end
+    
+    if withNewTab then
+		tinsert(tabs, {value = "new", text = (newTabText or "+")})
+	end
+ 
+	return tabs
+end
 
 PRT.TabGroupSelected = function(widget, t, key, itemFunction, emptyItemFunction, deleteTextID)
 	widget:ReleaseChildren()
@@ -88,20 +109,92 @@ PRT.TabGroupSelected = function(widget, t, key, itemFunction, emptyItemFunction,
 	end
 end
 
+PRT.Release = function(widget)
+	widget:ReleaseChildren()
+	widget:Release()
+end
+
+-------------------------------------------------------------------------------
+-- Container
+
 PRT.TabGroup = function(textID, tabs)
 	local text = PRT.Strings.GetText(textID)
-	local widget = AceGUI:Create("TabGroup")
+	local container = AceGUI:Create("TabGroup")
 	
-	widget:SetTitle(text)
-	widget:SetTabs(tabs)
-	widget:SetLayout("List")
-
-    AceHelper.MaximizeWidget(widget)
+	container:SetTitle(text)
+	container:SetTabs(tabs)
+	container:SetLayout("List")
+	container:SetFullWidth(true)
+	container:SetFullHeight(true)
+	container:SetAutoAdjustHeight(true)
  
-	return widget
- end
+	return container
+end
 
- PRT.Button = function(textID, addTooltip)
+PRT.InlineGroup = function(textID)
+	local text = PRT.Strings.GetText(textID)
+	local container = AceGUI:Create("InlineGroup")    
+	
+	container:SetFullWidth(true)
+	container:SetLayout("List")
+	container:SetTitle(text)
+
+    return container
+end
+
+PRT.SimpleGroup = function()
+	local container = AceGUI:Create("SimpleGroup")    
+	
+	container:SetFullWidth(true)
+	container:SetLayout("List")
+
+    return container
+end
+
+PRT.ScrollFrame = function()
+	local container = AceGUI:Create("ScrollFrame")    
+	
+	container:SetLayout("List")	
+	container:SetFullHeight(true)
+	container:SetAutoAdjustHeight(true)
+
+    return container
+end
+
+PRT.Frame = function()
+	local container = AceGUI:Create("Frame")    
+	
+	container:SetLayout("List")	
+	container:SetFullHeight(true)
+	container:SetAutoAdjustHeight(true)
+
+    return container
+end
+
+PRT.TreeGroup = function(tree)
+	local container = AceGUI:Create("TreeGroup")    
+	
+	container:SetLayout("Fill")
+    container:SetTree(tree)
+
+    return container
+end
+
+PRT.Window = function(titleID)
+	local titleText = PRT.Strings.GetText(titleID)
+	local container = AceGUI:Create("Window")    
+	
+	container:SetTitle(titleText)
+	container:SetLayout("Fill")
+
+    return container
+end
+
+
+-------------------------------------------------------------------------------
+-- Widgets
+
+PRT.Button = function(textID, addTooltip)
 	local text = PRT.Strings.GetText(textID)
 
 	local widget = AceGUI:Create("Button")
@@ -114,9 +207,9 @@ PRT.TabGroup = function(textID, tabs)
 	widget:SetText(text)
 
 	return widget
- end
+end
 
- PRT.Heading = function(textID)
+PRT.Heading = function(textID)
 	local text = PRT.Strings.GetText(textID)
 
 	local widget = AceGUI:Create("Heading")
@@ -125,9 +218,9 @@ PRT.TabGroup = function(textID, tabs)
 	widget:SetFullWidth(true)
 
 	return widget
- end
+end
  
- PRT.Label = function(textID)
+PRT.Label = function(textID)
 	local text = PRT.Strings.GetText(textID)
 
 	local widget = AceGUI:Create("Label")
@@ -137,9 +230,9 @@ PRT.TabGroup = function(textID, tabs)
 	widget:SetWidth(500)
 
 	return widget
- end
+end
 
- PRT.EditBox = function(textID, value, addTooltip)
+PRT.EditBox = function(textID, value, addTooltip)
 	local text = PRT.Strings.GetText(textID)
 
 	local widget = AceGUI:Create("EditBox")
@@ -154,9 +247,26 @@ PRT.TabGroup = function(textID, tabs)
 	widget:SetWidth(200)
  
 	return widget
- end
+end
 
- PRT.ColorPicker = function(textID, value)
+PRT.MultiLineEditBox = function(textID, value, addTooltip)
+	local text = PRT.Strings.GetText(textID)
+	local widget = AceGUI:Create("MultiLineEditBox")
+	
+	if addTooltip then 
+		local tooltip = PRT.Strings.GetTooltip(textID)
+		AceHelper.AddTooltip(widget, tooltip)
+	end
+
+	widget:SetLabel(text)
+	if value then
+		widget:SetText(value)
+	end
+ 
+	return widget
+end
+
+PRT.ColorPicker = function(textID, value)
 	local text = PRT.Strings.GetText(textID)
 
 	local widget = AceGUI:Create("ColorPicker")
@@ -167,9 +277,9 @@ PRT.TabGroup = function(textID, tabs)
 	widget:SetRelativeWidth(1)
 
 	return widget
- end
+end
 
- PRT.Dropdown = function(textID, values, value, withEmpty)	
+PRT.Dropdown = function(textID, values, value, withEmpty)	
 	local text = PRT.Strings.GetText(textID)
 
 	local dropdownItems = {}
@@ -193,9 +303,9 @@ PRT.TabGroup = function(textID, tabs)
 	widget:SetList(dropdownItems)
 
 	return widget
- end
+end
 
- PRT.CheckBox = function(textID, value, addTooltip)	
+PRT.CheckBox = function(textID, value, addTooltip)	
 	local text = PRT.Strings.GetText(textID)	
 
 	local widget = AceGUI:Create("CheckBox")
@@ -208,36 +318,16 @@ PRT.TabGroup = function(textID, tabs)
 	widget:SetValue(value)
  
 	return widget
- end
+end
 
- PRT.Icon = function(value)	
+PRT.Icon = function(value)	
 	local widget = AceGUI:Create("Icon")
 	widget:SetImage(value)
  
 	return widget
- end
+end
 
- PRT.InlineGroup = function(textID)
-	local text = PRT.Strings.GetText(textID)
-	local widget = AceGUI:Create("InlineGroup")    
-	
-	widget:SetFullWidth(true)
-	widget:SetLayout("List")
-	widget:SetTitle(text)
-
-    return widget
- end
-
- PRT.SimpleGroup = function()
-	local widget = AceGUI:Create("SimpleGroup")    
-	
-	widget:SetFullWidth(true)
-	widget:SetLayout("List")
-
-    return widget
- end
-
- PRT.Slider = function(textID, value)
+PRT.Slider = function(textID, value)
 	local text = PRT.Strings.GetText(textID)
 	local widget = AceGUI:Create("Slider")    
 	
@@ -246,13 +336,4 @@ PRT.TabGroup = function(textID, tabs)
 	widget:SetValue(value)
 
     return widget
- end
-
- PRT.SelectFirstTab = function(container, t)		
-	container:SelectTab(nil)
-    if t then
-		if getn(t) > 0 then
-			container:SelectTab(1)
-		end
-	end
- end
+end

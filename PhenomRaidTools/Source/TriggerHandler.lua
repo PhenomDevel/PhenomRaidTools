@@ -340,7 +340,7 @@ PRT.ProcessMessageQueue = function()
             for i, message in ipairs(PRT.MessageQueue) do
                 if message.executionTime < currentTime then
                     PRT.ProcessMessage(message)
-                    table.remove(PRT.MessageQueue, i)
+                    tremove(PRT.MessageQueue, i)
                 end
             end
         end

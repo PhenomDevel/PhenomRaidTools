@@ -1,10 +1,40 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
-local Options = {}
+local Options = {
+    tankCount = 3,
+    healerCount = 6,
+    ddCount = 9,
+    difficultyStrings = {
+        "Normal", -- Localization
+        "Heroic",
+        "Mythic"
+    },
 
-local difficulties = {"Normal", "Heroic", "Mythic"}
-local senderModeEntries = {"sender", "sender+receiver"}
-local receiverModeEntries = {"receiver", "sender+receiver"}
+    senderModeSelections = {
+        "sender",
+        "sender+receiver"
+    },
+
+    receiverModeSelections = {
+        "receiver",
+        "sender+receiver"
+    },
+    runModes = {
+        { 
+            id = "receiver", 
+            name = "Receiver" 
+        }, 
+        { 
+            id = "sender", 
+            name = "Sender" 
+        }, 
+        { 
+            id = "sender+receiver", 
+            name = "Sender & Receiver"
+        }
+    }
+}
+
 
 -------------------------------------------------------------------------------
 -- Local Helper
@@ -16,7 +46,7 @@ Options.AddRaidRosterWidget = function(container, options)
     local tankGroup = PRT.InlineGroup("Tanks")
     tankGroup:SetLayout("Flow")
 
-    for i=1,3 do 
+    for i = 1, Options.tankCount do 
         local id = "tank"..i
         local value = options[id]
         local tankEditBox = PRT.EditBox(id, value)
@@ -24,7 +54,7 @@ Options.AddRaidRosterWidget = function(container, options)
             function(widget) 
                 local text = widget:GetText()
                 if text ~= "" then
-                    options[id] = widget:GetText() 
+                    options[id] = text
                 else
                     options[id] = nil
                 end
@@ -36,14 +66,14 @@ Options.AddRaidRosterWidget = function(container, options)
     local healGroup = PRT.InlineGroup("Healer")
     healGroup:SetLayout("Flow")
 
-    for i=1,6 do 
+    for i = 1, Options.healerCount do 
         local id = "heal"..i
         local value = options[id]
         local healEditBox = PRT.EditBox(id, value)
         healEditBox:SetCallback("OnEnterPressed", function(widget) 
             local text = widget:GetText()
-            if not text ~= "" then
-                options[id] = widget:GetText() 
+            if text ~= "" then
+                options[id] = text
             else
                 options[id] = nil
             end
@@ -56,14 +86,14 @@ Options.AddRaidRosterWidget = function(container, options)
     local ddGroup = PRT.InlineGroup("Damage Dealer")
     ddGroup:SetLayout("Flow")
 
-    for i=1,9 do 
+    for i = 1, Options.ddCount do 
         local id = "dd"..i
         local value = options[id]
         local healEditBox = PRT.EditBox(id, value)
         healEditBox:SetCallback("OnEnterPressed", function(widget) 
             local text = widget:GetText()
-            if not text ~= "" then
-                options[id] = widget:GetText() 
+            if text ~= "" then
+                options[id] = text 
             else
                 options[id] = nil
             end
@@ -134,7 +164,7 @@ Options.AddDifficultyWidgets = function(container, options)
     local dungeonGroup = PRT.InlineGroup("dungeonHeading")
     dungeonGroup:SetLayout("Flow")
     
-    for i, difficulty in ipairs(difficulties) do
+    for i, difficulty in ipairs(Options.difficultyStrings) do
         local widget = PRT.CheckBox("dungeonDifficulty"..difficulty, options["dungeon"][difficulty])
         widget:SetCallback("OnValueChanged", function(widget, event, key) options["dungeon"][difficulty] = widget:GetValue() end)
         widget:SetWidth(100)                
@@ -144,7 +174,7 @@ Options.AddDifficultyWidgets = function(container, options)
     local raidGroup = PRT.InlineGroup("raidHeading")
     raidGroup:SetLayout("Flow")
 
-    for i, difficulty in ipairs(difficulties) do
+    for i, difficulty in ipairs(Options.difficultyStrings) do
         local widget = PRT.CheckBox("raidDifficulty"..difficulty, options["raid"][difficulty])
         widget:SetCallback("OnValueChanged", function(widget, event, key) options["raid"][difficulty] = widget:GetValue() end)
         widget:SetWidth(100)
@@ -156,7 +186,7 @@ Options.AddDifficultyWidgets = function(container, options)
     container:AddChild(raidGroup)
 end
 
-Options.AddVariousWidgets = function(container, options)
+Options.AddGeneralWidgets = function(container, options)
     local debugModeCheckbox = PRT.CheckBox("optionsDebugMode", options.debugMode, true)
 	debugModeCheckbox:SetCallback("OnValueChanged", function(widget) options.debugMode = widget:GetValue() end)
     debugModeCheckbox:SetRelativeWidth(1)
@@ -168,14 +198,13 @@ Options.AddVariousWidgets = function(container, options)
     local textEncounterIDDropdown = PRT.Dropdown("optionsTestEncounterID", options.encounters, options.testEncounterID)        
     textEncounterIDDropdown:SetCallback("OnValueChanged", function(widget) options.testEncounterID = tonumber(widget:GetValue()) end)  
     
-    local executionModes = {{ id = "receiver", name = "Receiver" }, { id = "sender", name = "Sender" }, { id = "sender+receiver", name = "Sender & Receiver"}}
-    local executionModeDropdown = PRT.Dropdown("executionModeDropdown", executionModes, options.executionMode)        
-    executionModeDropdown:SetCallback("OnValueChanged", 
+    local runModeDropdown = PRT.Dropdown("runModeDropdown", Options.runModes, options.runMode)        
+    runModeDropdown:SetCallback("OnValueChanged", 
         function(widget) 
             local text = widget:GetValue()
-            options.senderMode = tContains(senderModeEntries, text)
-            options.receiverMode = tContains(receiverModeEntries, text)
-            options.executionMode = text
+            options.senderMode = tContains(Options.senderModeSelections, text)
+            options.receiverMode = tContains(Options.receiverModeSelections, text)
+            options.runMode = text
 
             if options.senderMode then
                 PRT.SenderOverlay.Initialize(PRT.db.profile.overlay.sender)
@@ -185,7 +214,7 @@ Options.AddVariousWidgets = function(container, options)
             end
         end)     
     
-    container:AddChild(executionModeDropdown)
+    container:AddChild(runModeDropdown)
     container:AddChild(debugModeCheckbox)
     container:AddChild(testModeCheckbox)    
     container:AddChild(textEncounterIDDropdown)
@@ -302,11 +331,11 @@ end
 
 PRT.AddOptionWidgets = function(container, profile)
     local optionsTabs = {
-        { value = "various", text = "Various Settings" },
-        { value = "difficulties", text = "Difficulty Settings" },
+        { value = "general", text = "General" },
+        { value = "difficulties", text = "Difficulties" },
         { value = "defaults", text = "Trigger Defaults" },
         { value = "raidRoster", text = "Raid Roster" },
-        { value = "overlay", text = "Overlay Settings" }
+        { value = "overlay", text = "Overlays" }
     }
 
     local optionsTabsGroup = PRT.TabGroup(nil, optionsTabs)
@@ -315,8 +344,8 @@ PRT.AddOptionWidgets = function(container, profile)
         function(widget, event, key)             
             widget:ReleaseChildren()
                          
-            if key ==  "various" then
-                Options.AddVariousWidgets(widget, PRT.db.profile)
+            if key ==  "general" then
+                Options.AddGeneralWidgets(widget, PRT.db.profile)
             elseif key == "difficulties" then
                 Options.AddDifficultyWidgets(widget, PRT.db.profile.enabledDifficulties)
             elseif key == "defaults" then
@@ -326,10 +355,8 @@ PRT.AddOptionWidgets = function(container, profile)
             elseif key == "overlay" then
                 Options.AddOverlayWidget(widget, PRT.db.profile.overlay)
             end
-
-            PRT.mainFrameContent.scrollFrame:DoLayout()
         end)
 
     container:AddChild(optionsTabsGroup) 
-    optionsTabsGroup:SelectTab("various")
+    optionsTabsGroup:SelectTab("general")
 end

@@ -36,7 +36,7 @@ local defaults =  {
 		showOverlay = false,
 		hideOverlayAfterCombat = false,
 
-		executionMode = "receiver",
+		runMode = "receiver",
 		senderMode = false,
 		receiverMode = true,
 
@@ -186,7 +186,7 @@ end
 
 function PRT:Open()
 	if (PRT.mainFrame and not PRT.mainFrame:IsShown()) or not PRT.mainFrame then
-		PRT.CreateMainFrame(self.db.profile)
+		PRT.CreateMainWindow(self.db.profile)
 	end
 end
 
