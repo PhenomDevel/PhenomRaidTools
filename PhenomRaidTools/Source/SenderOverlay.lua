@@ -72,7 +72,7 @@ end
 
 SenderOverlay.CreateOverlay = function(options)
     SenderOverlay.overlayFrame = PRT.Overlay.CreateOverlay(options, true)
-    SenderOverlay.overlayFrame.header:SetText("PRT - Sender-Overlay")
+    SenderOverlay.overlayFrame.header:SetText("PhenomRaidTools")
     SenderOverlay.overlayFrame.text:SetJustifyH("LEFT")
     SenderOverlay.overlayFrame:SetPoint("CENTER", "UIParent", "CENTER", options.left, -options.top)
 end
