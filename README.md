@@ -82,6 +82,8 @@ Message consists of the following:
 
 3. Copy the folder `PhenomRaidTools` to your World of Warcraft addon folder `path\to\World of Warcraft\_retail_\Interface\AddOns`
 
+(!) If you want to use [WeakAuras2](https://github.com/WeakAuras/WeakAuras2/releases) to receive messages do the next steps aswell. You can use the addon to receive message but you won't have as many visual options as in [WeakAuras2](https://github.com/WeakAuras/WeakAuras2/releases).
+
 4. You will have to install [WeakAuras2](https://github.com/WeakAuras/WeakAuras2/releases) if you haven't yet
 
 5. Install the receiver weakaura which is used to receive messages that PhenomRaidTools will send to the given players [PhenomRaidTools: Receiver](https://wago.io/HyieicnAz)
