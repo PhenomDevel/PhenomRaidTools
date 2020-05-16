@@ -1,6 +1,9 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local AceGUI = LibStub("AceGUI-3.0")
-local AceHelper = {}
+
+local AceHelper = {
+	widgetDefaultWidth = 250
+}
 
 -------------------------------------------------------------------------------
 -- Local Helper
@@ -107,6 +110,8 @@ PRT.TabGroupSelected = function(widget, t, key, itemFunction, emptyItemFunction,
 	
 		widget:AddChild(deleteButton)
 	end
+	
+	PRT.mainWindowContent.scrollFrame:DoLayout()
 end
 
 PRT.Release = function(widget)
@@ -244,7 +249,7 @@ PRT.EditBox = function(textID, value, addTooltip)
 
 	widget:SetLabel(text)
 	widget:SetText(value)
-	widget:SetWidth(200)
+	widget:SetWidth(AceHelper.widgetDefaultWidth)
  
 	return widget
 end
@@ -275,6 +280,7 @@ PRT.ColorPicker = function(textID, value)
 	widget:SetColor((value.r or 0), (value.g or 0), (value.b or 0), (value.a or 0))	
 	widget:SetHasAlpha(false)
 	widget:SetRelativeWidth(1)
+	widget:SetWidth(AceHelper.widgetDefaultWidth)
 
 	return widget
 end
@@ -299,7 +305,7 @@ PRT.Dropdown = function(textID, values, value, withEmpty)
 
 	widget:SetLabel(text)	
 	widget:SetText(dropdownItems[value])
-	widget:SetWidth(200)
+	widget:SetWidth(AceHelper.widgetDefaultWidth)
 	widget:SetList(dropdownItems)
 
 	return widget
@@ -316,7 +322,8 @@ PRT.CheckBox = function(textID, value, addTooltip)
 
 	widget:SetLabel(text)
 	widget:SetValue(value)
- 
+	widget:SetWidth(AceHelper.widgetDefaultWidth)
+
 	return widget
 end
 
@@ -334,6 +341,7 @@ PRT.Slider = function(textID, value)
 	widget:SetSliderValues(0, 60, 1)
 	widget:SetLabel(text)
 	widget:SetValue(value)
+	widget:SetWidth(AceHelper.widgetDefaultWidth)
 
     return widget
 end

@@ -1,6 +1,21 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
-local Percentage = {}
+local Percentage = {
+    operatorValues = {
+        { 
+            id = "greater", 
+            name = ">" 
+        },
+        { 
+            id = "less",    
+            name = "<" 
+        },
+        { 
+            id = "equals",  
+            name = "=" 
+        }
+    }
+}
 
 
 -------------------------------------------------------------------------------
@@ -9,23 +24,19 @@ local Percentage = {}
 Percentage.PercentageEntryWidget = function(entry, container)
     local percentageEntryOptionsGroup = PRT.InlineGroup("percentageEntryOptionsHeading")
 
-    local operatorValues = {
-        { id = "greater", name = "greater than" },
-        { id = "less",    name = "less than" },
-        { id = "equals",  name = "equals" }
-    }
-    local operatorDropdown = PRT.Dropdown("percentageEntryOperatorDropdown", operatorValues, entry.operator)
+    local operatorDropdown = PRT.Dropdown("percentageEntryOperatorDropdown", Percentage.operatorValues, entry.operator)
     operatorDropdown:SetCallback("OnValueChanged", 
         function(widget, event, key) 
             entry.operator = key 
         end)
 
-    local valueEditBox = PRT.EditBox("percentageEntryPercent", entry.value)
-    valueEditBox:SetCallback("OnEnterPressed", 
+    local valueSlider = PRT.Slider("percentageEntryPercent", entry.value)
+    valueSlider:SetSliderValues(0, 100, 1)
+    valueSlider:SetCallback("OnValueChanged", 
         function(widget) 
-            entry.value = tonumber(widget:GetText()) 
-            entry.name = widget:GetText().." %" 
-			widget:ClearFocus()
+            local value = widget:GetValue()
+            entry.value = value
+            entry.name = value.." %" 
         end)
 
     local messagesHeading = PRT.Heading("messageHeading")
@@ -41,7 +52,7 @@ Percentage.PercentageEntryWidget = function(entry, container)
 
     percentageEntryOptionsGroup:SetLayout("Flow")
     percentageEntryOptionsGroup:AddChild(operatorDropdown)
-    percentageEntryOptionsGroup:AddChild(valueEditBox)
+    percentageEntryOptionsGroup:AddChild(valueSlider)
 
     container:AddChild(percentageEntryOptionsGroup)
     container:AddChild(messagesTabGroup)
@@ -51,31 +62,35 @@ Percentage.PercentageWidget = function(percentage, container)
     local percentageOptionsGroup = PRT.InlineGroup("percentageOptionsHeading")
 
     local nameEditBox = PRT.EditBox("percentageName", percentage.name)
+    local unitIDEditBox = PRT.EditBox("percentageUnitID", percentage.unitID)
+    local percentageCheckAgainCheckBox = PRT.CheckBox("percentageCheckAgain", percentage.checkAgain)
+    local checkAgainAfterSlider = PRT.Slider("percentageCheckAgainAfter", percentage.checkAgainAfter)
+
+    checkAgainAfterSlider:SetDisabled(not percentage.checkAgain)
+
     nameEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
             percentage.name = widget:GetText() 
             PRT.mainWindowContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
             PRT.Core.ReselectExchangeLast(percentage.name)
         end)
-
-    local unitIDEditBox = PRT.EditBox("percentageUnitID", percentage.unitID)
+    
     unitIDEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
             percentage.unitID = widget:GetText() 
 			widget:ClearFocus()
         end)
-    
-    local percentageCheckAgainCheckBox = PRT.CheckBox("percentageCheckAgain", percentage.checkAgain)
+        
     percentageCheckAgainCheckBox:SetCallback("OnValueChanged", 
         function(widget) 
-            percentage.checkAgain = widget:GetValue() 
+            local value = widget:GetValue() 
+            percentage.checkAgain = value
+            checkAgainAfterSlider:SetDisabled(not value)
         end)
-
-    local checkAgainAfterEditBox = PRT.EditBox("percentageCheckAgainAfter", percentage.checkAgainAfter)
-    checkAgainAfterEditBox:SetCallback("OnEnterPressed", 
+    
+    checkAgainAfterSlider:SetCallback("OnValueChanged", 
         function(widget) 
-            percentage.checkAgainAfter = tonumber(widget:GetText()) 
-			widget:ClearFocus()
+            percentage.checkAgainAfter = widget:GetValue()
         end)
 
     local tabs = PRT.TableToTabs(percentage.values, true)
@@ -92,7 +107,7 @@ Percentage.PercentageWidget = function(percentage, container)
     percentageOptionsGroup:AddChild(nameEditBox)
     percentageOptionsGroup:AddChild(unitIDEditBox)
     percentageOptionsGroup:AddChild(percentageCheckAgainCheckBox)
-    percentageOptionsGroup:AddChild(checkAgainAfterEditBox)
+    percentageOptionsGroup:AddChild(checkAgainAfterSlider)
 
     container:AddChild(percentageOptionsGroup)
     container:AddChild(valuesTabGroupWidget)

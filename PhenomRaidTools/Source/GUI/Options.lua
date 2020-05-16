@@ -123,7 +123,7 @@ Options.AddDefaultsWidgets = function(container, t)
                 widget = PRT.Slider(k, v)
                 widget:SetCallback("OnValueChanged", function(widget) t[k] = widget:GetValue() end)
             elseif type(v) == "table" then
-                widget = PRT.EditBox(k, strjoin(", ", unpack(v)), true)
+                widget = PRT.EditBox(k, strjoin(", ", unpack(v)), true)              
                 widget:SetWidth(300)
                 widget:SetCallback("OnEnterPressed", 
                     function(widget) 
@@ -354,6 +354,10 @@ PRT.AddOptionWidgets = function(container, profile)
                 Options.AddRaidRosterWidget(widget, PRT.db.profile.raidRoster) 
             elseif key == "overlay" then
                 Options.AddOverlayWidget(widget, PRT.db.profile.overlay)
+            end
+
+            if PRT.mainWindowContent.scrollFrame then
+                PRT.mainWindowContent.scrollFrame:DoLayout()
             end
         end)
 

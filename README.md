@@ -102,6 +102,8 @@ I have set up a discord server up and running for every kind of question. Feel f
 
 - Sync function to sync all encounters with someone else at once
 
+- Disable all sender related inputs if just receiver mode is enabled
+
 
 ## TODOs
 - Refactor `TriggerHandler.lua` for better performance and better readability

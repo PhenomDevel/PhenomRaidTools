@@ -25,30 +25,34 @@ Rotation.RotationWidget = function(rotation, container)
     rotationOptionsGroup:SetLayout("Flow")
 
     local nameEditBox = PRT.EditBox("rotationName", rotation.name)    
+    local shouldRestartCheckBox =  PRT.CheckBox("rotationShouldRestart", rotation.shouldRestart)
+    local ignoreAfterActivationCheckBox = PRT.CheckBox("rotationIgnoreAfterActivation", rotation.ignoreAfterActivation)
+    local ignoreDurationSlider = PRT.Slider("rotationIgnoreDuration", rotation.ignoreDuration)
+
+    ignoreDurationSlider:SetDisabled(not rotation.ignoreAfterActivation)
+
     nameEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
             rotation.name = widget:GetText() 
             PRT.mainWindowContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
             PRT.Core.ReselectExchangeLast(rotation.name)
         end)
-
-    local shouldRestartCheckBox =  PRT.CheckBox("rotationShouldRestart", rotation.shouldRestart)
+    
     shouldRestartCheckBox:SetCallback("OnValueChanged", 
         function(widget) 
             rotation.shouldRestart = widget:GetValue() 
-        end)
+        end)    
     
-    local ignoreAfterActivationCheckBox = PRT.CheckBox("rotationIgnoreAfterActivation", rotation.ignoreAfterActivation)
     ignoreAfterActivationCheckBox:SetCallback("OnValueChanged", 
         function(widget) 
-            rotation.ignoreAfterActivation = widget:GetValue() 
+            local value = widget:GetValue()
+            rotation.ignoreAfterActivation = value
+            ignoreDurationSlider:SetDisabled(not value)
         end)
-
-    local ignoreDurationEditBox = PRT.EditBox("rotationIgnoreDuration", rotation.ignoreDuration)
-    ignoreDurationEditBox:SetCallback("OnEnterPressed", 
+    
+    ignoreDurationSlider:SetCallback("OnValueChanged", 
         function(widget) 
-            rotation.ignoreDuration = widget:GetText() 
-			widget:ClearFocus()
+            rotation.ignoreDuration = widget:GetValue() 
         end)
 
     local triggerConditionGroup = PRT.ConditionWidget(rotation.triggerCondition, "Trigger Condition")
@@ -66,7 +70,7 @@ Rotation.RotationWidget = function(rotation, container)
     rotationOptionsGroup:AddChild(nameEditBox)
     rotationOptionsGroup:AddChild(shouldRestartCheckBox)
     rotationOptionsGroup:AddChild(ignoreAfterActivationCheckBox)
-    rotationOptionsGroup:AddChild(ignoreDurationEditBox)    
+    rotationOptionsGroup:AddChild(ignoreDurationSlider)    
     container:AddChild(rotationOptionsGroup)
     container:AddChild(triggerConditionGroup)    
     container:AddChild(entriesTabGroupWidget) 
