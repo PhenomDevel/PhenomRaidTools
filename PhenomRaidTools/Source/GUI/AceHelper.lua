@@ -340,7 +340,9 @@ PRT.Slider = function(textID, value)
 	
 	widget:SetSliderValues(0, 60, 1)
 	widget:SetLabel(text)
-	widget:SetValue(value)
+	if value then
+		widget:SetValue(value)
+	end
 	widget:SetWidth(AceHelper.widgetDefaultWidth)
 
     return widget
