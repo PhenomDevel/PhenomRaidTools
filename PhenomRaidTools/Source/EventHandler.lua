@@ -21,11 +21,10 @@ EventHandler.StartEncounter = function(event, encounterID, encounterName)
 	if PRT.db.profile.senderMode then
 		PRT.Debug("Starting new encounter", encounterID, encounterName)
 		local _, encounter = PRT.FilterEncounterTable(PRT.db.profile.encounters, encounterID)
-		
-		encounter.startedAt = GetTime()
-
-		if encounter then
+				
+		if encounter then			
 			if encounter.enabled then
+				encounter.startedAt = GetTime()
 				PRT:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 				PRT.currentEncounter = {}
 				PRT.currentEncounter.inFight = true
