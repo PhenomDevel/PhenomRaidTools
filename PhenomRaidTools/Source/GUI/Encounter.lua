@@ -120,9 +120,18 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
     encounterOptionsGroup:SetLayout("Flow")
 
 	local encounterIDEditBox = PRT.EditBox("encounterID", encounter.id, true)	
-	encounterIDEditBox:SetCallback("OnTextChanged", 
-		function(widget) 
-			encounter.id = tonumber(widget:GetText()) 
+	encounterIDEditBox:SetCallback("OnEnterPressed", 
+        function(widget) 
+            local id = tonumber(widget:GetText()) 
+            local _, existingEncounter = PRT.FilterEncounterTable(profile.encounters, id)
+            if not existingEncounter then
+                encounter.id = tonumber(widget:GetText()) 
+            else
+                if encounter.id then
+                    widget:SetText(encounter.id)
+                end
+                PRT.Error("The encounter id you entered was already taken by ", existingEncounter.name)
+            end
 		end)		
         
     local encounterNameEditBox = PRT.EditBox("encounterName", encounter.name)	
