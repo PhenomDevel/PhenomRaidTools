@@ -24,28 +24,31 @@ EventHandler.StartEncounter = function(event, encounterID, encounterName)
 				
 		if encounter then			
 			if encounter.enabled then
-				encounter.startedAt = GetTime()
 				PRT:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 				PRT.currentEncounter = {}
 				PRT.currentEncounter.inFight = true
 						
-				PRT.currentEncounter.encounter = PRT.CopyTable(encounter)
+				PRT.currentEncounter.encounter = PRT.CopyTable(encounter)				
+				PRT.currentEncounter.encounter.startedAt = GetTime()
+
 			else
 				PRT.Debug("Found encounter but it is disabled. Skipping encounter.")
 			end
+
+			if PRT.db.profile.overlay.sender.enabled then
+				PRT.SenderOverlay.Initialize(PRT.db.profile.overlay.sender)
+				PRT.SenderOverlay.Show()
+				PRT.Overlay.SetMoveable(PRT.SenderOverlay.overlayFrame, false)
+				AceTimer:ScheduleRepeatingTimer(PRT.SenderOverlay.UpdateFrame, 1, PRT.currentEncounter.encounter)
+			end
+	
+			if PRT.db.profile.receiverMode then
+				PRT.ReceiverOverlay.Show()
+				AceTimer:ScheduleRepeatingTimer(PRT.ReceiverOverlay.UpdateFrame, 0.5)
+			end
 		end
 
-		if PRT.db.profile.overlay.sender.enabled then
-			PRT.SenderOverlay.Initialize(PRT.db.profile.overlay.sender)
-			PRT.SenderOverlay.Show()
-			PRT.Overlay.SetMoveable(PRT.SenderOverlay.overlayFrame, false)
-			AceTimer:ScheduleRepeatingTimer(PRT.SenderOverlay.UpdateFrame, 1, encounter)
-		end
 
-		if PRT.db.profile.receiverMode then
-			PRT.ReceiverOverlay.Show()
-			AceTimer:ScheduleRepeatingTimer(PRT.ReceiverOverlay.UpdateFrame, 0.5)
-		end
 
 		PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 	end
