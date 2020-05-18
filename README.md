@@ -32,7 +32,7 @@ You can configure a lot of different things for a rotation:
 
 - Trigger condition on which the counter for the rotation should increment e.g. spell cast of encounter
 
-- Should the rotation restart - so if all you rotation entries are successfully processed the rotation will start over again e.g. kick rotation
+- Should the rotation restart - so if all your rotation entries are successfully processed the rotation will start over again e.g. kick rotation
 
 - Ignore after activation - you can ignore the trigger condition for a set amount of time so the trigger won't activate e.g. if there are a lot of the same events happening at the given time and you only care about it once every 30 seconds
 
