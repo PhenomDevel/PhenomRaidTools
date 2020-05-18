@@ -50,8 +50,10 @@ Overlay.AddText = function(s, text)
 end
 
 Overlay.SetMoveable = function(widget, v)
-    widget:EnableMouse(v)
-    widget:SetMovable(v)
+    if widget then
+        widget:EnableMouse(v)
+        widget:SetMovable(v)
+    end
 end
 
 Overlay.CreateOverlay = function(options, withBackdrop)    
