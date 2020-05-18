@@ -88,8 +88,7 @@ SenderOverlay.UpdateFrame = function(text)
     PRT.Overlay.UpdateSize(SenderOverlay.overlayFrame)
 end
 
-SenderOverlay.ShowPlaceholder = function()    
-    SenderOverlay.Initialize()
+SenderOverlay.ShowPlaceholder = function()   
     SenderOverlay.Show()
     SenderOverlay.overlayFrame.text:SetText("PhenomRaidTools")
     PRT.Overlay.UpdateSize(SenderOverlay.overlayFrame)
@@ -106,7 +105,6 @@ SenderOverlay.Hide = function()
 end
 
 SenderOverlay.Show = function()    
-    SenderOverlay.Initialize()
     PRT.Overlay.Show(SenderOverlay.overlayFrame)
 end
 
