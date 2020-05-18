@@ -142,7 +142,7 @@ ReceiverOverlay.Hide = function()
 end
 
 ReceiverOverlay.Show = function()    
-    SenderOverlay.Initialize()
+    ReceiverOverlay.Initialize()
     PRT.Overlay.Show(ReceiverOverlay.overlayFrame)
 end
 
