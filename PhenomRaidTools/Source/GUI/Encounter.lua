@@ -124,10 +124,18 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
         function(widget) 
             local id = tonumber(widget:GetText()) 
             local _, existingEncounter = PRT.FilterEncounterTable(profile.encounters, id)
+
             if not existingEncounter then
-                encounter.id = id     
-                PRT.mainWindowContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
-                PRT.Core.ReselectExchangeLast(id)
+                if id ~= "" and id ~= nil then
+                    encounter.id = id     
+                    PRT.mainWindowContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
+                    PRT.Core.ReselectExchangeLast(id)
+                else
+                    PRT.Error("Encounter id can not be empty")
+                    if encounter.id then
+                        widget:SetText(encounter.id)
+                    end
+                end
             else
                 if encounter.id then
                     widget:SetText(encounter.id)
