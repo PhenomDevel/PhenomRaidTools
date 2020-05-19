@@ -104,6 +104,8 @@ I have set up a discord server up and running for every kind of question. Feel f
 
 - Disable all sender related inputs if just receiver mode is enabled
 
+- Add "global" encounter which will always be merged with the current encounter for e.g. seconds pots or something
+
 
 ## TODOs
 - Refactor `TriggerHandler.lua` for better performance and better readability
