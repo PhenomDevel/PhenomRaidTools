@@ -17,7 +17,7 @@ end
 
 ImportExport.StringToTable = function(s)
     local decoded = LibDeflate:DecodeForPrint(s)
-    if decoeded then
+    if decoded then
         local decompressed = LibDeflate:DecompressDeflate(decoded)
 
         if decompressed then
@@ -54,8 +54,8 @@ PRT.CreateImportEncounterFrame = function(encounters)
          
         if worked == true then
             tinsert(encounters, encounter)
-            PRT.mainFrame:ReleaseChildren()
-            PRT.mainFrame:AddChild(PRT.Core.CreateMainFrameContent(PRT.mainFrame, PRT.db.profile))            
+            PRT.mainWindow:ReleaseChildren()
+            PRT.mainWindow:AddChild(PRT.Core.CreateMainWindowContent(PRT.db.profile))            
         else
             if not (text == "") then
                 PRT.Error("Import was not successfull.")

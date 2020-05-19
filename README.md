@@ -119,3 +119,5 @@ I have set up a discord server up and running for every kind of question. Feel f
 - Find a good way of referencing raid roster entries within `targets` *and* `message`
 
 - When open the addon show placeholders for sender and receiver
+
+- Make sure import can't import a second encounter with the same id
