@@ -125,13 +125,15 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
             local id = tonumber(widget:GetText()) 
             local _, existingEncounter = PRT.FilterEncounterTable(profile.encounters, id)
             if not existingEncounter then
-                encounter.id = tonumber(widget:GetText()) 
+                encounter.id = id     
+                PRT.mainWindowContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
+                PRT.Core.ReselectExchangeLast(id)
             else
                 if encounter.id then
                     widget:SetText(encounter.id)
                 end
                 PRT.Error("The encounter id you entered was already taken by ", existingEncounter.name)
-            end
+            end            
 		end)		
         
     local encounterNameEditBox = PRT.EditBox("encounterName", encounter.name)	

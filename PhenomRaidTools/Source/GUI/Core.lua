@@ -273,8 +273,6 @@ PRT.CreateMainWindow = function(profile)
     -- Initialite sender and receiver frames
     PRT.ReceiverOverlay.Initialize(profile.overlay.receiver)
     PRT.SenderOverlay.Initialize(profile.overlay.sender)
-
-    -- When the gui is open also show sender and receiver overlays
     PRT.ReceiverOverlay.Show()
     PRT.SenderOverlay.Show()    
     PRT.SenderOverlay.ShowPlaceholder()

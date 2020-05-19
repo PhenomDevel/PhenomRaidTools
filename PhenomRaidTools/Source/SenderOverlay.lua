@@ -9,6 +9,10 @@ local SenderOverlay = {
 -------------------------------------------------------------------------------
 -- Local Helper
 
+SenderOverlay.EnsureOverlay = function()
+    SenderOverlay.Initialize(PRT.db.profile.overlay.sender)
+end
+
 SenderOverlay.GetNextTiming = function(timer, seconds)
     local nextTiming
     local lowestSecond
@@ -88,7 +92,8 @@ SenderOverlay.UpdateFrame = function(text)
     PRT.Overlay.UpdateSize(SenderOverlay.overlayFrame)
 end
 
-SenderOverlay.ShowPlaceholder = function()   
+SenderOverlay.ShowPlaceholder = function()
+    SenderOverlay.EnsureOverlay()  
     SenderOverlay.Show()
     SenderOverlay.overlayFrame.text:SetText("PhenomRaidTools")
     PRT.Overlay.UpdateSize(SenderOverlay.overlayFrame)
@@ -104,7 +109,8 @@ SenderOverlay.Hide = function()
     PRT.Overlay.Hide(SenderOverlay.overlayFrame)
 end
 
-SenderOverlay.Show = function()    
+SenderOverlay.Show = function()
+    SenderOverlay.EnsureOverlay()    
     PRT.Overlay.Show(SenderOverlay.overlayFrame)
 end
 

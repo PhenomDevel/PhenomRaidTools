@@ -13,6 +13,10 @@ local ReceiverOverlay = {
 -------------------------------------------------------------------------------
 -- Local Helper
 
+ReceiverOverlay.EnsureOverlay = function()
+    ReceiverOverlay.Initialize(PRT.db.profile.overlay.receiver)
+end
+
 ReceiverOverlay.IsMessageForMe = function(message)
     local target = message.target
     local messageForMe = false
@@ -102,6 +106,7 @@ ReceiverOverlay.AddMessage = function(msg)
 end
 
 ReceiverOverlay.ShowPlaceholder = function()
+    ReceiverOverlay.EnsureOverlay()
     ReceiverOverlay.overlayFrame.text:SetText("Placeholder")
 end
 
@@ -142,7 +147,7 @@ ReceiverOverlay.Hide = function()
 end
 
 ReceiverOverlay.Show = function()    
-    ReceiverOverlay.Initialize()
+    ReceiverOverlay.EnsureOverlay()
     PRT.Overlay.Show(ReceiverOverlay.overlayFrame)
 end
 
