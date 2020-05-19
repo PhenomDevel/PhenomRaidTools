@@ -3,7 +3,7 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local Options = {
     tankCount = 3,
     healerCount = 6,
-    ddCount = 9,
+    ddCount = 21,
     difficultyStrings = {
         "Normal", -- Localization
         "Heroic",
