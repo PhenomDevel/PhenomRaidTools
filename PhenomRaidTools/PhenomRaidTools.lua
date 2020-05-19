@@ -161,8 +161,8 @@ function PRT:OnInitialize()
 
 	-- We hold the main frame within the global addon variable 
 	-- because we sometimes have to do a re-layout of the complete content
-	PRT.mainFrame = nil
-	PRT.mainFrameContent = nil
+	PRT.mainWindow = nil
+	PRT.mainWindowContent = nil
 	PRT.InitializeStrings()
 
 	if self.db.profile.overlay.sender.enabled and not self.db.profile.overlay.sender.hideAfterCombat then
@@ -185,7 +185,7 @@ function PRT:OnDisable()
 end
 
 function PRT:Open()
-	if (PRT.mainFrame and not PRT.mainFrame:IsShown()) or not PRT.mainFrame then
+	if (PRT.mainWindow and not PRT.mainWindow:IsShown()) or not PRT.mainWindow then
 		PRT.CreateMainWindow(self.db.profile)
 	end
 end
