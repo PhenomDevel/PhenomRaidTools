@@ -22,6 +22,8 @@ EventHandler.StartEncounter = function(event, encounterID, encounterName)
 		PRT.Debug("Starting new encounter", encounterID, encounterName)
 		local _, encounter = PRT.FilterEncounterTable(PRT.db.profile.encounters, encounterID)
 
+		-- Ensure that encounter has all trigger tables!
+		PRT.EnsureEncounterTrigger(encounter)
 		if encounter then			
 			if encounter.enabled then
 				PRT:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")

@@ -4,26 +4,6 @@ local Core = {}
 -------------------------------------------------------------------------------
 -- Local Helper
 
-Core.EnsureEncounterTrigger = function(encounter)
-	if encounter then
-		if not encounter.Rotations then
-			encounter.Rotations = {}
-		end
-
-		if not encounter.Timers then
-			encounter.Timers = {}
-		end
-
-		if not encounter.HealthPercentages then
-			encounter.HealthPercentages = {}
-		end
-
-		if not encounter.PowerPercentages then
-			encounter.PowerPercentages = {}
-		end
-	end
-end
-
 local RegisterESCHandler = function(name, container)
 	_G[name] = container.frame
     tinsert(UISpecialFrames, name)
@@ -132,8 +112,9 @@ Core.GenerateTimersTree = function(timers)
 end
 
 Core.GenerateEncounterTree = function(encounter)
-    -- Make sure encounter trigger tables are present!
-    Core.EnsureEncounterTrigger(encounter)
+    -- Ensure that encounter has all trigger tables!
+    PRT.EnsureEncounterTrigger(encounter)
+    
     local children = {}
     local t = {
         value = encounter.id,
