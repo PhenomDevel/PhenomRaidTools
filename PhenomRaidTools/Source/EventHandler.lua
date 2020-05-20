@@ -191,12 +191,11 @@ function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 end
 
 function PRT:PLAYER_ENTERING_WORLD(event)
+	PRT.Debug("Zone entered.")
+	PRT.Debug("Will check zone/difficulty in 10 seconds to determine if addon should be loaded.")
 	AceTimer:ScheduleTimer(
 		function()
-			local name, type, _, difficulty = GetInstanceInfo()
-
-			PRT.Debug("Zone entered.")
-			
+			local name, type, _, difficulty = GetInstanceInfo()						
 			if type == "party" then
 				PRT.Debug("Player entered dungeon - checking difficulty")
 				PRT.Debug("Current difficulty is", difficulty)
