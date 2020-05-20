@@ -25,11 +25,13 @@ Core.GeneratePercentagesTree = function(percentages)
         text = "Percentages",
     }
 
-    if getn(percentages) > 0 then
-        PRT.SortTableByName(percentages)
-        t.children = children
-        for i, percentage in ipairs(percentages) do
-            tinsert(children, Core.GeneratePercentageTree(percentage))
+    if percentages then
+        if getn(percentages) > 0 then
+            PRT.SortTableByName(percentages)
+            t.children = children
+            for i, percentage in ipairs(percentages) do
+                tinsert(children, Core.GeneratePercentageTree(percentage))
+            end
         end
     end
     
@@ -67,15 +69,15 @@ Core.GenerateRotationsTree = function(rotations)
         value = "rotations",
         text = "Rotations",
     }
-
-    if getn(rotations) > 0 then
-        PRT.SortTableByName(rotations)
-        t.children = children
-        for i, rotation in ipairs(rotations) do
-            tinsert(children, Core.GenerateRotationTree(rotation))
+    if rotations then
+        if getn(rotations) > 0 then
+            PRT.SortTableByName(rotations)
+            t.children = children
+            for i, rotation in ipairs(rotations) do
+                tinsert(children, Core.GenerateRotationTree(rotation))
+            end
         end
     end
-    
     return t
 end
 
@@ -95,14 +97,15 @@ Core.GenerateTimersTree = function(timers)
         text = "Timers",
     }
 
-    if getn(timers) > 0 then
-        PRT.SortTableByName(timers)
-        t.children = children
-        for i, timer in ipairs(timers) do
-            tinsert(children, Core.GenerateTimerTree(timer))
+    if timers then
+        if getn(timers) > 0 then
+            PRT.SortTableByName(timers)
+            t.children = children
+            for i, timer in ipairs(timers) do
+                tinsert(children, Core.GenerateTimerTree(timer))
+            end
         end
     end
-    
     
     return t
 end
