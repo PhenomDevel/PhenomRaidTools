@@ -76,8 +76,10 @@ table.mergecopy = function(t1, t2)
 end
 
 table.empty = function(t)
-    if table.getn(t) == 0 then
-        return true
+    if t then
+        if table.getn(t) == 0 then
+            return true
+        end
     end
 
     return false

@@ -32,6 +32,7 @@ Encounter.OverviewWidget = function(encounter)
     -- Rotations
     if not table.empty(encounter.Rotations) then
         local group = PRT.InlineGroup("rotationOverview")
+        
         for i, v in ipairs(encounter.Rotations) do
             local s = "- "..v.name.."\n"
             if v.triggerCondition.event then
