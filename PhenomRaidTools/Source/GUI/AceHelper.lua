@@ -5,6 +5,7 @@ local AceHelper = {
 	widgetDefaultWidth = 250
 }
 
+
 -------------------------------------------------------------------------------
 -- Local Helper
 
@@ -103,7 +104,7 @@ PRT.TabGroupSelected = function(widget, t, key, itemFunction, emptyItemFunction,
 		
 		itemFunction(item, widget) 
 		
-		local deleteButtonText = PRT.Strings.GetText(deleteTextID)
+		local deleteButtonText = L[deleteTextID]
 		local deleteButton = AceGUI:Create("Button")
 		deleteButton:SetText(deleteButtonText)
 		deleteButton:SetCallback("OnClick", function() AceHelper.RemoveTab(widget, t, key) end)
@@ -123,7 +124,7 @@ end
 -- Container
 
 PRT.TabGroup = function(textID, tabs)
-	local text = PRT.Strings.GetText(textID)
+	local text = L[textID]
 	local container = AceGUI:Create("TabGroup")
 	
 	container:SetTitle(text)
@@ -137,7 +138,7 @@ PRT.TabGroup = function(textID, tabs)
 end
 
 PRT.InlineGroup = function(textID)
-	local text = PRT.Strings.GetText(textID)
+	local text = L[textID]
 	local container = AceGUI:Create("InlineGroup")    
 	
 	container:SetFullWidth(true)
@@ -186,7 +187,7 @@ PRT.TreeGroup = function(tree)
 end
 
 PRT.Window = function(titleID)
-	local titleText = PRT.Strings.GetText(titleID)
+	local titleText = L[titleID]
 	local container = AceGUI:Create("Window")    
 	
 	container:SetTitle(titleText)
@@ -200,12 +201,12 @@ end
 -- Widgets
 
 PRT.Button = function(textID, addTooltip)
-	local text = PRT.Strings.GetText(textID)
+	local text = L[textID]
 
 	local widget = AceGUI:Create("Button")
 
 	if addTooltip then 		
-		local tooltip = PRT.Strings.GetTooltip(textID)
+		local tooltip = L[textID.."Tooltip"]
 		AceHelper.AddTooltip(widget, tooltip)
 	end
 
@@ -215,7 +216,7 @@ PRT.Button = function(textID, addTooltip)
 end
 
 PRT.Heading = function(textID)
-	local text = PRT.Strings.GetText(textID)
+	local text = L[textID]
 
 	local widget = AceGUI:Create("Heading")
 
@@ -226,7 +227,7 @@ PRT.Heading = function(textID)
 end
  
 PRT.Label = function(textID)
-	local text = PRT.Strings.GetText(textID)
+	local text = L[textID]
 
 	local widget = AceGUI:Create("Label")
 
@@ -238,12 +239,12 @@ PRT.Label = function(textID)
 end
 
 PRT.EditBox = function(textID, value, addTooltip)
-	local text = PRT.Strings.GetText(textID)
+	local text = L[textID]
 
 	local widget = AceGUI:Create("EditBox")
 	
 	if addTooltip then 
-		local tooltip = PRT.Strings.GetTooltip(textID)
+		local tooltip = L[textID.."Tooltip"]
 		AceHelper.AddTooltip(widget, tooltip)
 	end
 
@@ -255,11 +256,11 @@ PRT.EditBox = function(textID, value, addTooltip)
 end
 
 PRT.MultiLineEditBox = function(textID, value, addTooltip)
-	local text = PRT.Strings.GetText(textID)
+	local text = L[textID]
 	local widget = AceGUI:Create("MultiLineEditBox")
 	
 	if addTooltip then 
-		local tooltip = PRT.Strings.GetTooltip(textID)
+		local tooltip = L[textID.."Tooltip"]
 		AceHelper.AddTooltip(widget, tooltip)
 	end
 
@@ -272,7 +273,7 @@ PRT.MultiLineEditBox = function(textID, value, addTooltip)
 end
 
 PRT.ColorPicker = function(textID, value)
-	local text = PRT.Strings.GetText(textID)
+	local text = L[textID]
 
 	local widget = AceGUI:Create("ColorPicker")
 
@@ -286,7 +287,7 @@ PRT.ColorPicker = function(textID, value)
 end
 
 PRT.Dropdown = function(textID, values, value, withEmpty)	
-	local text = PRT.Strings.GetText(textID)
+	local text = L[textID]
 
 	local dropdownItems = {}
 	if withEmpty then
@@ -312,11 +313,11 @@ PRT.Dropdown = function(textID, values, value, withEmpty)
 end
 
 PRT.CheckBox = function(textID, value, addTooltip)	
-	local text = PRT.Strings.GetText(textID)	
+	local text = L[textID]	
 
 	local widget = AceGUI:Create("CheckBox")
 	if addTooltip then 
-		local tooltip = PRT.Strings.GetTooltip(textID)
+		local tooltip = L[textID.."Tooltip"]
 		AceHelper.AddTooltip(widget, tooltip)
 	end
 
@@ -335,7 +336,7 @@ PRT.Icon = function(value)
 end
 
 PRT.Slider = function(textID, value)
-	local text = PRT.Strings.GetText(textID)
+	local text = L[textID]
 	local widget = AceGUI:Create("Slider")    
 	
 	widget:SetSliderValues(0, 60, 1)

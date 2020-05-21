@@ -5,7 +5,7 @@ local Options = {
     healerCount = 6,
     ddCount = 21,
     difficultyStrings = {
-        "Normal", -- Localization
+        "Normal",
         "Heroic",
         "Mythic"
     },
@@ -43,7 +43,7 @@ Options.AddRaidRosterWidget = function(container, options)
     local explanationLabel = PRT.Label("optionsRaidRosterExplanation")
     explanationLabel:SetRelativeWidth(1)
 
-    local tankGroup = PRT.InlineGroup("Tanks")
+    local tankGroup = PRT.InlineGroup("raidRosterTanksHeading")
     tankGroup:SetLayout("Flow")
 
     for i = 1, Options.tankCount do 
@@ -63,7 +63,7 @@ Options.AddRaidRosterWidget = function(container, options)
         tankGroup:AddChild(tankEditBox)
     end 
 
-    local healGroup = PRT.InlineGroup("Healer")
+    local healGroup = PRT.InlineGroup("raidRosterHealerHeading")
     healGroup:SetLayout("Flow")
 
     for i = 1, Options.healerCount do 
@@ -83,7 +83,7 @@ Options.AddRaidRosterWidget = function(container, options)
         healGroup:AddChild(healEditBox)
     end 
 
-    local ddGroup = PRT.InlineGroup("Damage Dealer")
+    local ddGroup = PRT.InlineGroup("raidRosterDDHeading")
     ddGroup:SetLayout("Flow")
 
     for i = 1, Options.ddCount do 
@@ -324,11 +324,11 @@ end
 
 PRT.AddOptionWidgets = function(container, profile)
     local optionsTabs = {
-        { value = "general", text = "General" },
-        { value = "difficulties", text = "Difficulties" },
-        { value = "defaults", text = "Trigger Defaults" },
-        { value = "raidRoster", text = "Raid Roster" },
-        { value = "overlay", text = "Overlays" }
+        { value = "general", text = L["optionsTabGeneral"] },
+        { value = "difficulties", text = L["optionsTabDifficulties"] },
+        { value = "defaults", text = L["optionsTabDefaults"] },
+        { value = "raidRoster", text = L["optionsTabRaidRoster"] },
+        { value = "overlay", text = L["optionsTabOverlays"] }
     }
 
     local optionsTabsGroup = PRT.TabGroup(nil, optionsTabs)

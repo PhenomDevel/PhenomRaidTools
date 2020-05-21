@@ -25,7 +25,7 @@ Timer.TimingWidget = function(timing, container)
         end)
 
     local messagesTabs = PRT.TableToTabs(timing.messages, true)    
-    local messagesTabGroup = PRT.TabGroup("Messages", messagesTabs)
+    local messagesTabGroup = PRT.TabGroup("messageHeading", messagesTabs)
     messagesTabGroup:SetLayout("List")
     messagesTabGroup:SetCallback("OnGroupSelected", 
         function(widget, event, key) 
@@ -49,12 +49,11 @@ Timer.TimerWidget = function(timer, container)
             PRT.Core.ReselectExchangeLast(timer.name)            
         end)
     
-    local startConditionGroup = PRT.ConditionWidget(timer.startCondition, "Start Condition")
+    local startConditionGroup = PRT.ConditionWidget(timer.startCondition, "conditionStartHeading")
     startConditionGroup:SetLayout("Flow")
 
-    local timingsHeading = PRT.Heading("Timings")
     local timingsTabs = PRT.TableToTabs(timer.timings, true)
-    local timingsTabGroup = PRT.TabGroup("Timings", timingsTabs)
+    local timingsTabGroup = PRT.TabGroup("timingOptions", timingsTabs)
     timingsTabGroup:SetCallback("OnGroupSelected", 
     function(widget, event, key) 
         PRT.TabGroupSelected(widget, timer.timings, key, Timer.TimingWidget, PRT.EmptyTiming, "timingDeleteButton") 
@@ -66,10 +65,10 @@ Timer.TimerWidget = function(timer, container)
     container:AddChild(startConditionGroup)
 
     if timer.hasStopCondition then
-        local stopConditionGroup = PRT.ConditionWidget(timer.stopCondition, "Stop Condition")
+        local stopConditionGroup = PRT.ConditionWidget(timer.stopCondition, "conditionStopHeading")
         stopConditionGroup:SetLayout("Flow")
 
-        local removeStopConditionButton = PRT.Button("Remove Stop Condition")
+        local removeStopConditionButton = PRT.Button("conditionRemoveStopCondition")
         removeStopConditionButton:SetCallback("OnClick",
             function()
                 timer.hasStopCondition = false

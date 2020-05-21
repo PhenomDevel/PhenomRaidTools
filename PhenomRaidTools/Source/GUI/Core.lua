@@ -41,7 +41,7 @@ end
 Core.GeneratePowerPercentagesTree = function(percentages)
     local tree = Core.GeneratePercentagesTree(percentages)
     tree.value = "powerPercentages"
-    tree.text = "Power Percentages"
+    tree.text = L["treePowerPercentage"]
 
     return tree
 end
@@ -49,7 +49,7 @@ end
 Core.GenerateHealthPercentagesTree = function(percentages)
     local tree = Core.GeneratePercentagesTree(percentages)
     tree.value = "healthPercentages"
-    tree.text = "Health Percentages"
+    tree.text = L["treeHealthPercentage"]
 
     return tree
 end
@@ -67,7 +67,7 @@ Core.GenerateRotationsTree = function(rotations)
     local children = {}
     local t = {
         value = "rotations",
-        text = "Rotations",
+        text = L["treeRotation"],
     }
 
     if rotations then
@@ -95,7 +95,7 @@ Core.GenerateTimersTree = function(timers)
     local children = {}
     local t = {
         value = "timers",
-        text = "Timers",
+        text = L["treeTimer"],
     }
 
     if timers then
@@ -135,7 +135,7 @@ Core.GenerateEncountersTree = function(encounters)
 
     local t = {
         value  = "encounters",
-        text = "Encounters",
+        text = L["treeEncounters"],
         children = children
     }    
     PRT.SortTableByName(encounters)
@@ -149,7 +149,7 @@ end
 Core.GenerateOptionsTree = function()
     local t = {
         value = "options",
-        text = "Options"
+        text = L["treeOptions"]
     }
     return t
 end

@@ -106,7 +106,7 @@ PRT.MessageWidget = function (message, container)
 	local raidRosterItems = Message.GenerateRaidRosterDropdownItems()	
 
 	local targetsEditBox = PRT.EditBox("messageTargets", targetsString, true)	
-    local targetsPreviewLabel = PRT.Label("Preview: "..targetsPreviewString)
+    local targetsPreviewLabel = PRT.Label(L["messagePreview"]..targetsPreviewString)
 	local raidRosterDropdown = PRT.Dropdown("messageRaidRosterAddDropdown", raidRosterItems)
 
 	targetsEditBox:SetCallback("OnEnterPressed", 
@@ -117,7 +117,7 @@ PRT.MessageWidget = function (message, container)
 			else
 				message.targets = {}
 			end
-			targetsPreviewLabel:SetText("Preview: "..Message.TargetsPreviewString(message.targets))
+			targetsPreviewLabel:SetText(L["messagePreview"]..Message.TargetsPreviewString(message.targets))
 			widget:ClearFocus()
 		end) 
 				
@@ -125,7 +125,7 @@ PRT.MessageWidget = function (message, container)
 		function(widget) 	
 			tinsert(message.targets, widget:GetValue())	
 			targetsEditBox:SetText(strjoin(", ", unpack(message.targets)))
-			targetsPreviewLabel:SetText("Preview: "..Message.TargetsPreviewString(message.targets))
+			targetsPreviewLabel:SetText(L["messagePreview"]..Message.TargetsPreviewString(message.targets))
 			widget:SetValue(nil)
 		end)    
 

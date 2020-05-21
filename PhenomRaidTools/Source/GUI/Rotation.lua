@@ -8,7 +8,7 @@ local Rotation = {}
 
 Rotation.RotationEntryWidget = function(entry, container)
     local messagesTabs = PRT.TableToTabs(entry.messages, true)
-    local messagesTabGroup = PRT.TabGroup("Messages", messagesTabs)    
+    local messagesTabGroup = PRT.TabGroup("messageHeading", messagesTabs)    
     messagesTabGroup:SetLayout("List")
     messagesTabGroup:SetCallback("OnGroupSelected", 
         function(widget, event, key) 
@@ -59,7 +59,7 @@ Rotation.RotationWidget = function(rotation, container)
     triggerConditionGroup:SetLayout("Flow")
 
     local tabs = PRT.TableToTabs(rotation.entries, true)
-	local entriesTabGroupWidget = PRT.TabGroup("Rotation Entries", tabs)
+	local entriesTabGroupWidget = PRT.TabGroup("rotationEntryHeading", tabs)
     entriesTabGroupWidget:SetCallback("OnGroupSelected", 
         function(widget, event,key) 
             PRT.TabGroupSelected(widget, rotation.entries, key, Rotation.RotationEntryWidget, PRT.EmptyRotationEntry, "rotationEntryDeleteButton") 

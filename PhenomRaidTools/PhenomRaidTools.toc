@@ -8,17 +8,15 @@
 ## SavedVariables: PhenomRaidToolsDB
 ## X-Category: Raid
 
-# Localization
-Localization/Localization.lua
-Localization/Localization.deDE.lua
-Localization/Localization.enEN.lua
-
 # Init
 embeds.xml
 PhenomRaidTools.lua
 
+# Localization
+Localization/Localization.lua
+Localization/Localization.deDE.lua
+
 # Source
-Source/Strings.lua
 Source/Utils.lua
 Source/EncounterHelper.lua
 Source/EventHandler.lua

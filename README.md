@@ -121,3 +121,5 @@ I have set up a discord server up and running for every kind of question. Feel f
 - When open the addon show placeholders for sender and receiver
 
 - Make sure import can't import a second encounter with the same id
+
+- Translate error messages and debug messages

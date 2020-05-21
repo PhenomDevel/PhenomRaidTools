@@ -2,6 +2,7 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 local Encounter = {}
 
+
 -------------------------------------------------------------------------------
 -- Local Helper
 
