@@ -163,7 +163,6 @@ function PRT:OnInitialize()
 	-- because we sometimes have to do a re-layout of the complete content
 	PRT.mainWindow = nil
 	PRT.mainWindowContent = nil
-	PRT.InitializeStrings()
 end
 
 function PRT:OnEnable()

@@ -1,4 +1,8 @@
 L = {
+    ["sender"] = "Sender",
+    ["receiver"] = "Receiver",
+    ["sender+receiver"] = "Sender & Receiver",
+
     ["mainWindowTitle"] = "PhenomRaidTools",
     ["runModeDropdown"] = "Run mode",
 

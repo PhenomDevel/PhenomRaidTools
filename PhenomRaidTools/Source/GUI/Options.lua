@@ -22,15 +22,15 @@ local Options = {
     runModes = {
         { 
             id = "receiver", 
-            name = "Receiver" 
+            name = L["receiver"]
         }, 
         { 
             id = "sender", 
-            name = "Sender" 
+            name = L["sender"]
         }, 
         { 
             id = "sender+receiver", 
-            name = "Sender & Receiver"
+            name = L["sender+receiver"]
         }
     }
 }

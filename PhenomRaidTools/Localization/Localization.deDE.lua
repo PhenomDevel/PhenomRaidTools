@@ -1,4 +1,8 @@
 if GetLocale() == "deDE" then
+    L["sender"] = "Absender"
+    L["receiver"] = "Empfänger"
+    L["sender+receiver"] = "Absender & Empfänger"
+
     L["mainWindowTitle"] = "PhenomRaidTools"
     L["runModeDropdown"] = "Ausführungsmodus"
 
