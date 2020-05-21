@@ -6,7 +6,8 @@ local ReceiverOverlay = {
     messageStack = {},
     validTargets = {
         "ALL", 
-        UnitName("player")
+        UnitName("player"),
+        GetUnitName("player", true)
     }
 }
 
