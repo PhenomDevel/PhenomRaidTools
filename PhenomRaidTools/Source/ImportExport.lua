@@ -16,21 +16,22 @@ ImportExport.TableToString = function(t)
 end
 
 ImportExport.StringToTable = function(s)
-    local decoded = LibDeflate:DecodeForPrint(s)
-    if decoded then
-        local decompressed = LibDeflate:DecompressDeflate(decoded)
+    if s ~= nil and s ~= "" then
+        local decoded = LibDeflate:DecodeForPrint(s)
+        if decoded then
+            local decompressed = LibDeflate:DecompressDeflate(decoded)
 
-        if decompressed then
-            local worked, t = AceSerializer:Deserialize(decompressed)
-            
-            return worked, t    
+            if decompressed then
+                local worked, t = AceSerializer:Deserialize(decompressed)
+                
+                return worked, t    
+            else
+                PRT.Error("String could not be decompressed. Aborting import.")
+            end
         else
-            PRT.Error("String could not be decompressed. Aborting import.")
+            PRT.Error("String could not be decoded. Aborting import.")
         end
-    else
-        PRT.Error("String could not be decoded. Aborting import.")
     end
-
     return nil
 end
 

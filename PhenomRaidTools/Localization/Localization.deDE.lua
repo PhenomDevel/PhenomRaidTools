@@ -75,7 +75,7 @@ if GetLocale() == "deDE" then
         "- |cFF69CCF0ALL|r |cFF69CCF0HEALER|r |cFF69CCF0TANK|r |cFF69CCF0DAMAGER|r\n"
     L["messageMessage"] = "Nachricht"
     L["messageMessageTooltip"] =          
-        "- Benutze |cFF69CCF0%s|r um einen Countdown anzuzeigen\n"..
+        "- Benutze |cFF69CCF0%.0f|r oder |cFF69CCF0%s|r  um einen Countdown anzuzeigen (1 kann ebenso 1-2 sein, um Dezimalstellen anzuzeigen)\n"..
         "- Es können Platzhalter benutzt werden, welche später mit den entsprechenden Namen ausgetauscht werden z.B. |cFF69CCF0$source|r |cFF69CCF0$target|r |cFF69CCF0$heal1|r |cFF69CCF0$me|r\n"..
         "- Bitte benutze keine reservierten Zeichen in den Nachrichten (|cFF69CCF0#|r |cFF69CCF0?|r |cFF69CCF0~|r |cFF69CCF0%|r)"
     L["messageDelay"] = "Verzögerung (s)"

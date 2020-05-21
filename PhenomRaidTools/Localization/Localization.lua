@@ -75,7 +75,7 @@ L = {
         "- |cFF69CCF0ALL|r, |cFF69CCF0HEALER|r, |cFF69CCF0TANK|r, |cFF69CCF0DAMAGER|r\n",
     ["messageMessage"] = "Message",
     ["messageMessageTooltip"] =          
-        "- Use |cFF69CCF0%s|r to display the countdown\n"..
+        "- Use |cFF69CCF0%.0f|r or |cFF69CCF0%s|r to display the countdown (1 can also change to 0-2 for decimals)\n"..
         "- You can use tokens which will be replaced within the message e.g. |cFF69CCF0$source|r, |cFF69CCF0$target|r, |cFF69CCF0$heal1|r, |cFF69CCF0$me|r\n"..
         "- Do not use reserved characters (|cFF69CCF0#|r, |cFF69CCF0?|r, |cFF69CCF0~|r, |cFF69CCF0%|r)",
     ["messageDelay"] = "Delay (s)",

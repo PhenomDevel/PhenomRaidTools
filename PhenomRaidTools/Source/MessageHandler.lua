@@ -12,14 +12,10 @@ local validTargets = {
 -- Local Helper
 
 MessageHandler.SendMessageToSlave = function(message)
-    if PRT.db.profile.testMode then
-        if UnitInRaid("player") then
-            C_ChatInfo.SendAddonMessage(PRT.db.profile.addonMessagePrefix, message, "RAID") 
-        else
-            C_ChatInfo.SendAddonMessage(PRT.db.profile.addonMessagePrefix, message, "WHISPER", UnitName("player")) 
-        end       
-    else
+    if UnitInRaid("player") or UnitInParty("player") then
         C_ChatInfo.SendAddonMessage(PRT.db.profile.addonMessagePrefix, message, "RAID")    
+    else
+        C_ChatInfo.SendAddonMessage(PRT.db.profile.addonMessagePrefix, message, "WHISPER", UnitName("player")) 
     end
 end
 

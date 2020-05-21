@@ -167,12 +167,14 @@ PRT.ScrollFrame = function()
     return container
 end
 
-PRT.Frame = function()
+PRT.Frame = function(titleID)
+	local titleText = L[titleID]
 	local container = AceGUI:Create("Frame")    
 	
 	container:SetLayout("List")	
 	container:SetFullHeight(true)
 	container:SetAutoAdjustHeight(true)
+	container:SetTitle(titleText)
 
     return container
 end

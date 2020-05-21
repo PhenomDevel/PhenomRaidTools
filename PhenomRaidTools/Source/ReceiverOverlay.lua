@@ -113,7 +113,7 @@ ReceiverOverlay.UpdateFrame = function()
         if message ~= "" then
             if message.expirationTime > GetTime() then                        
                 local timeLeftRaw = message.expirationTime - GetTime()
-                local timeLeft = PRT.Round(timeLeftRaw, 0)
+                local timeLeft = PRT.Round(timeLeftRaw, 2)
                 
                 if text == "" then
                     text = "|cFF"..PRT.db.profile.overlay.receiver.fontColor.hex..string.format(message.message, timeLeft)

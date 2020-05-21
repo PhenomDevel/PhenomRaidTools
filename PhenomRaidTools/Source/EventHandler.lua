@@ -48,7 +48,7 @@ EventHandler.StartEncounter = function(event, encounterID, encounterName)
 	
 			if PRT.db.profile.receiverMode then
 				PRT.ReceiverOverlay.Show()
-				AceTimer:ScheduleRepeatingTimer(PRT.ReceiverOverlay.UpdateFrame, 0.5)
+				AceTimer:ScheduleRepeatingTimer(PRT.ReceiverOverlay.UpdateFrame, 0.01)
 			end
 		end
 
