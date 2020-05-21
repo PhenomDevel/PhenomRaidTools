@@ -3,38 +3,24 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local Strings = {}
 PRT.Strings = Strings
 
+
 -------------------------------------------------------------------------------
 -- Public API
 
 PRT.InitializeStrings = function()
     Strings = {
 
-        mainWindowTitle = {
-            text = "PhenomRaidTools - Raid smarter not harder"
-        },
+        mainWindowTitle = {},
 
         -- Options
-        runModeDropdown = {
-            text = "Run mode"
-        },
-        optionsHeading = {
-            text = "Global Options"
-        },
-        optionsTestMode = {
-            text = "Test mode"
-        },
+        runModeDropdown = {},
+        optionsTestMode = {},
         optionsDebugMode = {
-            text = "Debug mode",
-            tooltip = {
-                "If enabled the addon will print a whole lot of information in the default chat frame."
-            }
+            tooltip = L["optionsDebugModeTooltip"]
         },
         optionsTestEncounterID = {
             text = "Test encounter",
             tooltip = "Choose the encounter you want to test"
-        },
-        optionsEnabledDifficulties = {
-            text = "Enabled difficulties"
         },
         optionsShowOverlay = {
             text = "Show overlay"
@@ -409,8 +395,12 @@ PRT.Strings.GetText = function(s)
             if Strings[s].text then
                 return Strings[s].text
             else
-                PRT.Error("String entry found but no text specified for:", s)
-                return s
+                if L[s] then
+                    return L[s]
+                else
+                    PRT.Error("String entry found but no text specified for:", s)
+                    return s
+                end
             end
         else
             return s
