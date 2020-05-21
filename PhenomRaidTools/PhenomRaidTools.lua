@@ -157,21 +157,13 @@ function PRT:OnInitialize()
 
 	if not encounterIdx then
 		table.insert(self.db.profile.encounters, PRT.ExampleEncounter())
-	end
+	end	
 
 	-- We hold the main frame within the global addon variable 
 	-- because we sometimes have to do a re-layout of the complete content
 	PRT.mainWindow = nil
 	PRT.mainWindowContent = nil
 	PRT.InitializeStrings()
-
-	if self.db.profile.overlay.sender.enabled and not self.db.profile.overlay.sender.hideAfterCombat then
-		PRT.SenderOverlay.Initialize(PRT.db.profile.overlay.sender)
-	end
-
-	if self.db.profile.receiverMode then
-		PRT.ReceiverOverlay.Initialize(PRT.db.profile.overlay.receiver)
-	end
 end
 
 function PRT:OnEnable()
@@ -186,7 +178,9 @@ end
 
 function PRT:Open()
 	if (PRT.mainWindow and not PRT.mainWindow:IsShown()) or not PRT.mainWindow then
-		PRT.CreateMainWindow(self.db.profile)
+		PRT.SenderOverlay.Initialize(PRT.db.profile.overlay.sender)
+		PRT.ReceiverOverlay.Initialize(PRT.db.profile.overlay.receiver)
+		PRT.CreateMainWindow(self.db.profile)		
 	end
 end
 

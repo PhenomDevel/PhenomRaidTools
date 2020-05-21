@@ -18,6 +18,9 @@ local EventHandler = {
 -- Local Helper
 
 EventHandler.StartEncounter = function(event, encounterID, encounterName)
+	PRT.SenderOverlay.Initialize(PRT.db.profile.overlay.sender)
+	PRT.ReceiverOverlay.Initialize(PRT.db.profile.overlay.receiver)
+
 	if PRT.db.profile.senderMode then
 		PRT.Debug("Starting new encounter", encounterID, encounterName)
 		local _, encounter = PRT.FilterEncounterTable(PRT.db.profile.encounters, encounterID)
@@ -38,7 +41,6 @@ EventHandler.StartEncounter = function(event, encounterID, encounterName)
 			end
 
 			if PRT.db.profile.overlay.sender.enabled then
-				PRT.SenderOverlay.Initialize(PRT.db.profile.overlay.sender)
 				PRT.SenderOverlay.Show()
 				PRT.Overlay.SetMoveable(PRT.SenderOverlay.overlayFrame, false)
 				AceTimer:ScheduleRepeatingTimer(PRT.SenderOverlay.UpdateFrame, 1, PRT.currentEncounter.encounter)

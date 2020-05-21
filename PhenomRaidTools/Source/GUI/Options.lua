@@ -205,13 +205,6 @@ Options.AddGeneralWidgets = function(container, options)
             options.senderMode = tContains(Options.senderModeSelections, text)
             options.receiverMode = tContains(Options.receiverModeSelections, text)
             options.runMode = text
-
-            if options.senderMode then
-                PRT.SenderOverlay.Initialize(PRT.db.profile.overlay.sender)
-            end
-            if options.receiverMode then
-                PRT.ReceiverOverlay.Initialize(PRT.db.profile.overlay.receiver)
-            end
         end)     
     
     container:AddChild(runModeDropdown)
@@ -228,8 +221,8 @@ Options.AddSenderOverlayWidget = function(container, options)
             local value = widget:GetValue() 
             options.enabled = value
             if value then
-                PRT.SenderOverlay.Initialize(options)
                 PRT.SenderOverlay.Show()
+                PRT.SenderOverlay.ShowPlaceholder()
             else
                 PRT.SenderOverlay.Hide()
             end

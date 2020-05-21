@@ -278,8 +278,6 @@ PRT.CreateMainWindow = function(profile)
     RegisterESCHandler("mainWindow", mainWindow)
 
     -- Initialite sender and receiver frames
-    PRT.ReceiverOverlay.Initialize(profile.overlay.receiver)
-    PRT.SenderOverlay.Initialize(profile.overlay.sender)
     PRT.ReceiverOverlay.Show()
     PRT.SenderOverlay.Show()    
     PRT.SenderOverlay.ShowPlaceholder()
