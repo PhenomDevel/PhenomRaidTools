@@ -54,9 +54,14 @@ PRT.CreateImportEncounterFrame = function(encounters)
         local worked, encounter = ImportExport.StringToTable(text)     
          
         if worked == true then
-            tinsert(encounters, encounter)
-            PRT.mainWindow:ReleaseChildren()
-            PRT.mainWindow:AddChild(PRT.Core.CreateMainWindowContent(PRT.db.profile))            
+            local idx, existingEncounter = PRT.FilterEncounterTable(encounters, encounter.id)
+            if not existingEncounter then
+                tinsert(encounters, encounter)
+                PRT.mainWindow:ReleaseChildren()
+                PRT.mainWindow:AddChild(PRT.Core.CreateMainWindowContent(PRT.db.profile))            
+            else
+                PRT.Error("Stopped import due to already existing encounter with the same id:", existingEncounter.name)
+            end
         else
             if not (text == "") then
                 PRT.Error("Import was not successfull.")

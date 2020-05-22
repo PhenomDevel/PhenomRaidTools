@@ -94,8 +94,6 @@ I have set up a discord server up and running for every kind of question. Feel f
 
 
 ## Feature Requests
-- Add condition counter for timer (timer only starts after the condition was met x times)
-
 - Add trigger for `DBM` / `BW` - On hold
 
 - Be able to configure multiple conditions for each trigger. Like trigger on `ENCOUNTER_START` *or* `SPELL_CAST_SUCCESS/123`
