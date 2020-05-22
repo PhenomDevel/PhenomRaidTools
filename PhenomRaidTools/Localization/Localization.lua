@@ -165,6 +165,7 @@ L = {
     ["timerName"] = "Name",
     ["timerDeleteButton"] = "Delete Timer",
     ["timerOptionsHeading"] = "Timer Options",
+    ["timerOptionsTriggerAtOccurence"] = "Trigger at occurence",
 
     -- Timings
     ["timingOptions"] = "Timing Options",

@@ -65,18 +65,18 @@ TriggerHandler.FilterPercentagesTable = function(percentages, percent)
     return value
 end
 
-TriggerHandler.GetRotationCounter = function(rotation)
-    if rotation ~= nil then
-        if rotation.counter ~= nil then
-            return rotation.counter
+TriggerHandler.GetTriggerCounter = function(trigger)
+    if trigger ~= nil then
+        if trigger.counter ~= nil then
+            return trigger.counter
         else
-            return 1
+            return 0
         end
     end
 end
 
 TriggerHandler.GetRotationMessages = function(rotation)
-    local rotationCounter = TriggerHandler.GetRotationCounter(rotation)
+    local rotationCounter = TriggerHandler.GetTriggerCounter(rotation)
     if rotation ~= nil then
         if rotation.entries ~= nil then
             if rotationCounter <=  table.getn(rotation.entries) then
@@ -90,28 +90,28 @@ TriggerHandler.GetRotationMessages = function(rotation)
     end
 end
 
-TriggerHandler.IncrementRotationCounter = function(rotation)
-    local rotationCurrentCount = TriggerHandler.GetRotationCounter(rotation)
-    local newCounterValue = rotationCurrentCount + 1
+TriggerHandler.IncrementTriggerCounter = function(trigger)
+    local triggerCounter = TriggerHandler.GetTriggerCounter(trigger)
+    local newValue = triggerCounter + 1
         
-    PRT.DebugRotation("Incrementing rotation counter to", rotation.counter)
-    rotation.counter = newCounterValue
+    PRT.DebugRotation("Incrementing trigger counter ("..(trigger.name or "NO NAME")..") to", newValue)
+    trigger.counter = newValue
 end 
 
 TriggerHandler.UpdateRotationCounter = function(rotation)
     if rotation ~= nil then
         if rotation.entries ~= nil then
-            local rotationCurrentCount = TriggerHandler.GetRotationCounter(rotation)
+            local rotationCurrentCount = TriggerHandler.GetTriggerCounter(rotation)
             local rotationMaxCount = table.getn(rotation.entries)
             if rotationCurrentCount >= rotationMaxCount then
                 if rotation.shouldRestart == true then
                     PRT.DebugRotation("Resetting rotation counter to 1")
                     rotation.counter = 1
                 else                   
-                    TriggerHandler.IncrementRotationCounter(rotation)
+                    TriggerHandler.IncrementTriggerCounter(rotation)
                 end
             else                
-                TriggerHandler.IncrementRotationCounter(rotation)
+                TriggerHandler.IncrementTriggerCounter(rotation)
             end
         end
     end
@@ -184,9 +184,12 @@ PRT.CheckTimerStartConditions = function(timers, event, combatEvent, spellID, ta
         for i, timer in ipairs(timers) do                           
             if timer.startCondition ~= nil and timer.started ~= true then     
                 if TriggerHandler.CheckCondition(timer.startCondition, event, combatEvent, spellID, targetGUID, sourceGUID) then
-                    PRT.DebugTimer("Started timer `"..(timer.name or "NO NAME").."` at "..GetTime())
-                    timer.started = true
-                    timer.startedAt = GetTime()
+                    TriggerHandler.IncrementTriggerCounter(timer)
+                    if (timer.triggerAtOccurence or 1) == timer.counter then
+                        PRT.DebugTimer("Started timer `"..(timer.name or "NO NAME").."` at "..GetTime())
+                        timer.started = true
+                        timer.startedAt = GetTime()
+                    end
                 end
             end
         end
@@ -201,6 +204,7 @@ PRT.CheckTimerStopConditions = function(timers, event, combatEvent, spellID, tar
                     PRT.DebugTimer("Stopped timer `"..(timer.name or "NO NAME").."` at "..GetTime())
                     timer.started = false
                     timer.startedAt = nil
+                    timer.counter = 0
                     
                     for i, timing in pairs(timer.timings) do
                         timing.executed = false  
@@ -245,11 +249,13 @@ PRT.CheckRotationTriggerCondition = function(rotations, event, combatEvent, even
                 
                 if rotation.ignored ~= true then
                     if TriggerHandler.CheckCondition(rotation.triggerCondition, event, combatEvent, eventSpellID, targetGUID, sourceGUID) then                        
-                        local messages = TriggerHandler.GetRotationMessages(rotation)
-                        					    
-                        TriggerHandler.SendMessagesAfterDelayWithEventInfo(messages, event, combatEvent, eventSpellID, targetName, sourceName)
                         TriggerHandler.UpdateRotationCounter(rotation)
+
+                        local messages = TriggerHandler.GetRotationMessages(rotation)                        					    
+                        TriggerHandler.SendMessagesAfterDelayWithEventInfo(messages, event, combatEvent, eventSpellID, targetName, sourceName)
+                        
                         rotation.lastActivation = GetTime()
+
                         if rotation.ignoreAfterActivation == true then
                             rotation.ignored = true
                             PRT.DebugRotation("Started ignoring rotation", rotation.name, "for", rotation.ignoreDuration)

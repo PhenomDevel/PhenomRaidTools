@@ -161,6 +161,7 @@ if GetLocale() == "deDE" then
     L["timerName"] = "Name"
     L["timerDeleteButton"] = "Timer löschen"
     L["timerOptionsHeading"] = "Timer Optionen"
+    L["timerOptionsTriggerAtOccurence"] = "Nach n Start Auslösern starten"
 
     -- Timings
     L["timingOptions"] = "Zeiteinträge"

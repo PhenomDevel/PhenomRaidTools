@@ -47,6 +47,8 @@ PRT.EmptyTimer = function()
         startCondition = PRT.EmptyCondition(),
         stopCondition = {},
         hasStopCondition = false,
+        counter = 0,        
+        triggerAtOccurence = 1,
         name = "Timer Name"..random(0,100000),
         timings = {
             PRT.EmptyTiming()
@@ -70,6 +72,7 @@ PRT.EmptyRotation = function()
     return {
         triggerCondition = PRT.EmptyCondition(),
         name = "Rotation Name"..random(0,100000),
+        counter = 0,
         entries = {
             PRT.EmptyRotationEntry()
         },

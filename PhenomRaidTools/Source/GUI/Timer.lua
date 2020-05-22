@@ -40,6 +40,7 @@ end
 
 Timer.TimerWidget = function(timer, container)    
     local timerOptionsGroup = PRT.InlineGroup("timerOptionsHeading")
+    timerOptionsGroup:SetLayout("Flow")
 
     local nameEditBox = PRT.EditBox("timerName", timer.name)
     nameEditBox:SetCallback("OnEnterPressed", 
@@ -47,6 +48,14 @@ Timer.TimerWidget = function(timer, container)
             timer.name = widget:GetText()             
             PRT.mainWindowContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
             PRT.Core.ReselectExchangeLast(timer.name)            
+        end)
+
+    local triggerAtOccurenceSlider = PRT.Slider("timerOptionsTriggerAtOccurence", (timer.triggerAtOccurence or 1))
+    triggerAtOccurenceSlider:SetSliderValues(1, 20, 1)
+    triggerAtOccurenceSlider:SetCallback("OnValueChanged",
+        function(widget)
+            local value = widget:GetValue()
+            timer.triggerAtOccurence = value
         end)
     
     local startConditionGroup = PRT.ConditionWidget(timer.startCondition, "conditionStartHeading")
@@ -61,6 +70,7 @@ Timer.TimerWidget = function(timer, container)
     PRT.SelectFirstTab(timingsTabGroup, timer.timings)  
 
     timerOptionsGroup:AddChild(nameEditBox)
+    timerOptionsGroup:AddChild(triggerAtOccurenceSlider)
     container:AddChild(timerOptionsGroup)
     container:AddChild(startConditionGroup)
 

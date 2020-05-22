@@ -47,13 +47,13 @@ SenderOverlay.UpdateFrame = function(text)
                 if timer.started then
                     local timeIntoTimer = GetTime() - timer.startedAt
                     local timeIntoTimerString = PRT.SecondsToClock(timeIntoTimer)
-                    timerString = timerString.." - |c"..SenderOverlay.timerColor..timeIntoTimerString.."|r "
+                    timerString = timerString.."(|c"..SenderOverlay.timerColor..timeIntoTimerString.."|r)"
 
                     local nextInSeconds, nextTiming = SenderOverlay.GetNextTiming(timer, timeIntoTimer)
 
                     if nextInSeconds then
                         local nextDelta = PRT.Round(nextInSeconds - timeIntoTimer)
-                        timerString = timerString.."[-|c"..SenderOverlay.timerColor..PRT.SecondsToClock(nextDelta).."|r]\n"
+                        timerString = timerString.." next -|c"..SenderOverlay.timerColor..PRT.SecondsToClock(nextDelta).."|r\n"
                     else
                         timerString = timerString.."\n"
                     end
