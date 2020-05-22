@@ -106,18 +106,4 @@ I have set up a discord server up and running for every kind of question. Feel f
 
 
 ## TODOs
-- Refactor `TriggerHandler.lua` for better performance and better readability
-
-- Refactor `GUI/*` for better readability and generalize some widget generation functions
-
-- Add full support for `Phenom Raid Tools: Receiver` without using [WeakAuras2](https://github.com/WeakAuras/WeakAuras2/releases)
-
-- Rename `check again` etc. for percentages to match rotation options
-
-- Find a good way of referencing raid roster entries within `targets` *and* `message`
-
-- When open the addon show placeholders for sender and receiver
-
-- Make sure import can't import a second encounter with the same id
-
 - Translate error messages and debug messages
