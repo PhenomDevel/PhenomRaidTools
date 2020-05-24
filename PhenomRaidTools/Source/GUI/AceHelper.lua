@@ -318,6 +318,7 @@ PRT.CheckBox = function(textID, value, addTooltip)
 	local text = L[textID]	
 
 	local widget = AceGUI:Create("CheckBox")
+
 	if addTooltip then 
 		local tooltip = L[textID.."Tooltip"]
 		AceHelper.AddTooltip(widget, tooltip)

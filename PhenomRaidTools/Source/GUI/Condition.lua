@@ -10,7 +10,7 @@ local Condition = {
         "SPELL_AURA_APPLIED_DOSE",
         "SPELL_AURA_REMOVED_DOSE",
         "SPELL_AURA_REFRESH",
-        "SPELL_CAST_INTERRUPT",
+        "SPELL_INTERRUPT",
         "ENCOUNTER_START",
         "ENCOUNTER_END",
         "PLAYER_REGEN_DISABLED",

@@ -94,7 +94,7 @@ I have set up a discord server up and running for every kind of question. Feel f
 
 
 ## Feature Requests
-- Add trigger for `DBM` / `BW` - On hold
+- Add trigger for `DBM` / `BW`
 
 - Be able to configure multiple conditions for each trigger. Like trigger on `ENCOUNTER_START` *or* `SPELL_CAST_SUCCESS/123`
 
