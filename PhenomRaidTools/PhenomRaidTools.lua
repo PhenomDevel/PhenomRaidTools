@@ -144,7 +144,9 @@ local defaults =  {
 		},
 
 		raidRoster = {
-			
+			tank1 = "Tank1",
+			heal1 = "Heal1",
+			dd1 = "Damager1"
 		}
 	}
 }
