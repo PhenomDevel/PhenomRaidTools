@@ -57,6 +57,8 @@ SenderOverlay.UpdateFrame = function(text)
                     else
                         timerString = timerString.."\n"
                     end
+                elseif timer.enabled ~= true then
+                    timerString = timerString.." - |cFFFF0000disabled|r\n"
                 else
                     timerString = timerString.." - |cFFFF0000inactive|r\n"
                 end
@@ -72,10 +74,14 @@ SenderOverlay.UpdateFrame = function(text)
             for i, rotation in ipairs(encounter.Rotations) do
                 rotationString = rotationString..rotation.name.." - |c"..SenderOverlay.rotationColor
 
-                if rotation.counter then
-                    rotationString = rotationString..rotation.counter.."|r\n"
+                if rotation.enabled ~= true then
+                    rotationString = rotationString.."|cFFFF0000disabled|r\n"
                 else
-                    rotationString = rotationString.."0|r\n"
+                    if rotation.counter then
+                        rotationString = rotationString..rotation.counter.."|r\n"
+                    else
+                        rotationString = rotationString.."0|r\n"
+                    end
                 end
             end
 

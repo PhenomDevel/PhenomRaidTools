@@ -44,6 +44,7 @@ end
 
 PRT.EmptyTimer = function()
     return {
+        enabled = true,
         startCondition = PRT.EmptyCondition(),
         stopCondition = {},
         hasStopCondition = false,
@@ -70,6 +71,7 @@ end
 
 PRT.EmptyRotation = function()
     return {
+        enabled = true,
         triggerCondition = PRT.EmptyCondition(),
         name = "Rotation Name"..random(0,100000),
         counter = 0,
@@ -88,6 +90,7 @@ end
 
 PRT.EmptyPercentageEntry = function()
     return {
+        enabled = true,
         value = 50,
         operator = "equals",
         messages = {

@@ -24,12 +24,18 @@ Rotation.RotationWidget = function(rotation, container)
     local rotationOptionsGroup = PRT.InlineGroup("rotationOptionsHeading")
     rotationOptionsGroup:SetLayout("Flow")
 
+    local enabledCheckbox = PRT.CheckBox("rotationEnabled", rotation.enabled)
     local nameEditBox = PRT.EditBox("rotationName", rotation.name)    
     local shouldRestartCheckBox =  PRT.CheckBox("rotationShouldRestart", rotation.shouldRestart)
     local ignoreAfterActivationCheckBox = PRT.CheckBox("rotationIgnoreAfterActivation", rotation.ignoreAfterActivation)
     local ignoreDurationSlider = PRT.Slider("rotationIgnoreDuration", rotation.ignoreDuration)
 
     ignoreDurationSlider:SetDisabled(not rotation.ignoreAfterActivation)
+    enabledCheckbox:SetRelativeWidth(1)
+    enabledCheckbox:SetCallback("OnValueChanged", 
+        function(widget) 
+            rotation.enabled = widget:GetValue()           
+        end)
 
     nameEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
@@ -67,6 +73,7 @@ Rotation.RotationWidget = function(rotation, container)
 
     PRT.SelectFirstTab(entriesTabGroupWidget, rotation.entries)
 
+    rotationOptionsGroup:AddChild(enabledCheckbox)
     rotationOptionsGroup:AddChild(nameEditBox)
     rotationOptionsGroup:AddChild(shouldRestartCheckBox)
     rotationOptionsGroup:AddChild(ignoreAfterActivationCheckBox)

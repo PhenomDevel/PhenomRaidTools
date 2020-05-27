@@ -85,6 +85,7 @@ if GetLocale() == "deDE" then
     L["messageRaidRosterAddDropdown"] = "Zusätzliche Empfänger auswählen"
 
     -- Rotations
+    L["rotationEnabled"] = "Enabled"
     L["rotationHeading"] = "Rotationen"
     L["rotationName"] = "Name"
     L["rotationDeleteButton"] = "Rotation löschen"
@@ -99,6 +100,7 @@ if GetLocale() == "deDE" then
     L["rotationEntryDeleteButton"] = "Eintrag löschen"
 
     -- Percentages
+    L["percentageEnabled"] = "Enabled"
     L["percentageDeleteButton"] = "Prozent löschen"
     L["percentageName"] = "Name"
     L["percentageUnitID"] = "Unit-ID"
@@ -158,6 +160,7 @@ if GetLocale() == "deDE" then
     L["conditionRemoveStopCondition"] = "Stop Auslöser hinzufügen"
    
     -- Timers
+    L["timerEnabled"] = "Enabled"
     L["timerName"] = "Name"
     L["timerDeleteButton"] = "Timer löschen"
     L["timerOptionsHeading"] = "Timer Optionen"

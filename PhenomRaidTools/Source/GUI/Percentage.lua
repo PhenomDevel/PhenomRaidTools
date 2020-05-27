@@ -61,12 +61,18 @@ end
 Percentage.PercentageWidget = function(percentage, container)
     local percentageOptionsGroup = PRT.InlineGroup("percentageOptionsHeading")
 
+    local enabledCheckbox = PRT.CheckBox("percentageEnabled", percentage.enabled)
     local nameEditBox = PRT.EditBox("percentageName", percentage.name)
     local unitIDEditBox = PRT.EditBox("percentageUnitID", percentage.unitID)
     local percentageCheckAgainCheckBox = PRT.CheckBox("percentageCheckAgain", percentage.checkAgain)
     local checkAgainAfterSlider = PRT.Slider("percentageCheckAgainAfter", percentage.checkAgainAfter)
 
     checkAgainAfterSlider:SetDisabled(not percentage.checkAgain)
+    enabledCheckbox:SetRelativeWidth(1)
+    enabledCheckbox:SetCallback("OnValueChanged", 
+        function(widget) 
+            percentage.enabled = widget:GetValue()           
+        end)
 
     nameEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
@@ -104,6 +110,7 @@ Percentage.PercentageWidget = function(percentage, container)
 
     percentageOptionsGroup:SetLayout("Flow")
 
+    percentageOptionsGroup:AddChild(enabledCheckbox)
     percentageOptionsGroup:AddChild(nameEditBox)
     percentageOptionsGroup:AddChild(unitIDEditBox)
     percentageOptionsGroup:AddChild(percentageCheckAgainCheckBox)

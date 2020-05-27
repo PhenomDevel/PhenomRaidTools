@@ -86,6 +86,7 @@ L = {
     ["messageRaidRosterAddDropdownTooltip"] = "You can add a reference of your configured raid roster. It will always add the reference *not* the player name in the targets.",
 
     -- Rotations
+    ["rotationEnabled"] = "Enabled",
     ["rotationHeading"] = "Rotations",
     ["rotationName"] = "Name",
     ["rotationDeleteButton"] = "Delete Rotation",
@@ -101,6 +102,7 @@ L = {
     ["rotationEntryDeleteButton"] = "Delete Rotation Entry",
 
     -- Percentages
+    ["percentageEnabled"] = "Enabled",
     ["percentageDeleteButton"] = "Delete Percentage",
     ["percentageName"] = "Name",
     ["percentageUnitID"] = "Unit-ID",
@@ -162,6 +164,7 @@ L = {
     ["conditionRemoveStopCondition"] = "Add stop condition",
 
     -- Timers
+    ["timerEnabled"] = "Enabled",
     ["timerName"] = "Name",
     ["timerDeleteButton"] = "Delete Timer",
     ["timerOptionsHeading"] = "Timer Options",

@@ -42,6 +42,13 @@ Timer.TimerWidget = function(timer, container)
     local timerOptionsGroup = PRT.InlineGroup("timerOptionsHeading")
     timerOptionsGroup:SetLayout("Flow")
 
+    local enabledCheckbox = PRT.CheckBox("timerEnabled", timer.enabled)
+    enabledCheckbox:SetRelativeWidth(1)
+    enabledCheckbox:SetCallback("OnValueChanged", 
+        function(widget) 
+            timer.enabled = widget:GetValue()           
+        end)
+
     local nameEditBox = PRT.EditBox("timerName", timer.name)
     nameEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
@@ -69,6 +76,7 @@ Timer.TimerWidget = function(timer, container)
     end)        
     PRT.SelectFirstTab(timingsTabGroup, timer.timings)  
 
+    timerOptionsGroup:AddChild(enabledCheckbox)
     timerOptionsGroup:AddChild(nameEditBox)
     timerOptionsGroup:AddChild(triggerAtOccurenceSlider)
     container:AddChild(timerOptionsGroup)
