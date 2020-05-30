@@ -1,6 +1,7 @@
 local PRT = LibStub("AceAddon-3.0"):NewAddon("PhenomRaidTools", "AceConsole-3.0", "AceEvent-3.0");
 
 local AceGUI = LibStub("AceGUI-3.0")
+local AceComm = LibStub("AceComm-3.0")
 
 local PhenomRaidToolsLDB = LibStub("LibDataBroker-1.1"):NewDataObject("PhenomRaidTools", {
 	type = "data source",
@@ -157,7 +158,7 @@ function PRT:OnInitialize()
 
 	local encounterIdx, encounter = PRT.FilterEncounterTable(self.db.profile.encounters, 9999)
 
-	if not encounterIdx then
+	if not encounterIdx and table.empty(self.db.profile.encounters) then
 		table.insert(self.db.profile.encounters, PRT.ExampleEncounter())
 	end	
 
@@ -170,6 +171,8 @@ end
 function PRT:OnEnable()
 	PRT.RegisterEssentialEvents()
 
+	-- AceComm:RegisterComm(PRT.db.profile.addonMessagePrefix, PRT.OnCommReceive)
+	-- AceComm:SendCommMessage(PRT.db.profile.addonMessagePrefix, PRT.TableToString({a = 5}), "WHISPER", UnitName("player"))
 	C_ChatInfo.RegisterAddonMessagePrefix(PRT.db.profile.addonMessagePrefix)
 end
 
