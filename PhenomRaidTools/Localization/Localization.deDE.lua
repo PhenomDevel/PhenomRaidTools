@@ -157,7 +157,8 @@ if GetLocale() == "deDE" then
     L["conditionHeading"] = "Auslöser"
     L["conditionStartHeading"] = "Start Auslöser"
     L["conditionStopHeading"] = "Stop Auslöser"
-    L["conditionRemoveStopCondition"] = "Stop Auslöser hinzufügen"
+    L["conditionRemoveStopCondition"] = "Stop Auslöser löschen"
+    L["conditionAddStopCondition"] = "Stop Auslöser hinzufügen"
    
     -- Timers
     L["timerEnabled"] = "Enabled"

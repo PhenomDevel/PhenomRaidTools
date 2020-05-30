@@ -161,7 +161,8 @@ L = {
     ["conditionHeading"] = "Condition",
     ["conditionStartHeading"] = "Start Condition",
     ["conditionStopHeading"] = "Stop Condition",
-    ["conditionRemoveStopCondition"] = "Add stop condition",
+    ["conditionRemoveStopCondition"] = "Remove stop condition",
+    ["conditionAddStopCondition"] = "Add stop condition",
 
     -- Timers
     ["timerEnabled"] = "Enabled",
