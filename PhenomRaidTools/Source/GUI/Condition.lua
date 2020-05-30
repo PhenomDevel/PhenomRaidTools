@@ -91,6 +91,7 @@ PRT.ConditionWidget = function(condition, textID)
 			spellIcon:SetImage(condition.spellIcon)
 			spellNameLabel:SetText(condition.spellName)
 			spellIDEditBox:SetText(condition.spellID)
+			PRT.mainWindowContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
 			widget:ClearFocus()
 		end)
 			

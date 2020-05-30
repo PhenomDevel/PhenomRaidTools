@@ -1,13 +1,31 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 local SenderOverlay = {
-    timerColor = "FF00f276",
-    rotationColor = "FFffa763",    
+    timerColor = "FF1a8200",
+    rotationColor = "FFab4700",   
+    disabledColor = "FF595959",
+    inactiveColor = "FF8f8f8f"
 }
 
 
 -------------------------------------------------------------------------------
 -- Local Helper
+
+local inactiveColor = function(s)
+    return "|c"..SenderOverlay.inactiveColor..s.."|r"
+end
+
+local disabledColor = function(s)
+    return "|c"..SenderOverlay.disabledColor..s.."|r"
+end
+
+local timerColor = function(s)
+    return "|c"..SenderOverlay.timerColor..s.."|r"
+end
+
+local rotationColor = function(s)
+    return "|c"..SenderOverlay.rotationColor..s.."|r"
+end
 
 SenderOverlay.GetNextTiming = function(timer, seconds)
     local nextTiming
@@ -40,32 +58,35 @@ SenderOverlay.UpdateFrame = function(text)
 
         -- Timer
         if not table.empty(encounter.Timers) then
-            local timerString = ""
+            local timerStringComplete = ""
             for i, timer in ipairs(encounter.Timers) do
+                local timerString = ""
                 timerString = timerString..timer.name 
                 
                 if timer.started then
                     local timeIntoTimer = GetTime() - timer.startedAt
                     local timeIntoTimerString = PRT.SecondsToClock(timeIntoTimer)
-                    timerString = timerString.."(|c"..SenderOverlay.timerColor..timeIntoTimerString.."|r)"
+                    timerString = timerString.."("..timerColor(timeIntoTimerString)..")"
 
                     local nextInSeconds, nextTiming = SenderOverlay.GetNextTiming(timer, timeIntoTimer)
 
                     if nextInSeconds then
                         local nextDelta = PRT.Round(nextInSeconds - timeIntoTimer)
-                        timerString = timerString.." next -|c"..SenderOverlay.timerColor..PRT.SecondsToClock(nextDelta).."|r\n"
+                        timerString = timerString.." next -"..PRT.SecondsToClock(nextDelta).."\n"
                     else
                         timerString = timerString.."\n"
                     end
                 elseif timer.enabled ~= true then
-                    timerString = timerString.." - |cFFFF0000disabled|r\n"
+                    timerString = disabledColor(timerString.." - disabled\n")
                 else
-                    timerString = timerString.." - |cFFFF0000inactive|r\n"
+                    timerString = inactiveColor(timerString.." - inactive\n")
                 end
+
+                timerStringComplete = timerStringComplete..timerString
             end
 
-            overlayText = overlayText.."|c"..SenderOverlay.timerColor.."Timers|r\n"   
-            overlayText = overlayText..timerString      
+            overlayText = overlayText..timerColor("Timers\n")
+            overlayText = overlayText..timerStringComplete
         end
 
         -- Rotation

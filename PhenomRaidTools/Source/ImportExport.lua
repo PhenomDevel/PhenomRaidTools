@@ -1,39 +1,6 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
-local AceSerializer = LibStub("AceSerializer-3.0")
-local LibDeflate = LibStub("LibDeflate")
 
 local ImportExport = {}
-
-
--------------------------------------------------------------------------------
--- Local Helper
-
-ImportExport.TableToString = function(t)
-    local serialized = AceSerializer:Serialize(t)
-    local compressed = LibDeflate:CompressDeflate(serialized, {level = 9})
-
-    return LibDeflate:EncodeForPrint(compressed)
-end
-
-ImportExport.StringToTable = function(s)
-    if s ~= nil and s ~= "" then
-        local decoded = LibDeflate:DecodeForPrint(s)
-        if decoded then
-            local decompressed = LibDeflate:DecompressDeflate(decoded)
-
-            if decompressed then
-                local worked, t = AceSerializer:Deserialize(decompressed)
-                
-                return worked, t    
-            else
-                PRT.Error("String could not be decompressed. Aborting import.")
-            end
-        else
-            PRT.Error("String could not be decoded. Aborting import.")
-        end
-    end
-    return nil
-end
 
 
 -------------------------------------------------------------------------------
@@ -51,7 +18,7 @@ PRT.CreateImportEncounterFrame = function(encounters)
 
     importFrame:SetCallback("OnClose", function(widget)
         local text = importDataBox:GetText()
-        local worked, encounter = ImportExport.StringToTable(text)     
+        local worked, encounter = PRT.StringToTable(text)     
          
         if worked == true then
             local idx, existingEncounter = PRT.FilterEncounterTable(encounters, encounter.id)
@@ -76,7 +43,7 @@ PRT.CreateExportEncounterFrame = function(encounter)
     local exportFrame = PRT.Frame("exportEncounter")  
     exportFrame:SetLayout("Fill")
 
-    local exportDataBox = PRT.MultiLineEditBox(nil, ImportExport.TableToString(encounter))
+    local exportDataBox = PRT.MultiLineEditBox(nil, PRT.TableToString(encounter))
     exportDataBox:SetLabel("String")
     exportDataBox:SetFocus()
     exportDataBox:DisableButton(true)

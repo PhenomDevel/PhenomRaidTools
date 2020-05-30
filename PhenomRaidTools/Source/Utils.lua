@@ -1,5 +1,7 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
+local AceSerializer = LibStub("AceSerializer-3.0")
+local LibDeflate = LibStub("LibDeflate")
 
 -------------------------------------------------------------------------------
 -- Public API
@@ -48,6 +50,33 @@ end
 
 -------------------------------------------------------------------------------
 -- Table Helper
+
+PRT.TableToString = function(t)
+    local serialized = AceSerializer:Serialize(t)
+    local compressed = LibDeflate:CompressDeflate(serialized, {level = 9})
+
+    return LibDeflate:EncodeForPrint(compressed)
+end
+
+PRT.StringToTable = function(s)
+    if s ~= nil and s ~= "" then
+        local decoded = LibDeflate:DecodeForPrint(s)
+        if decoded then
+            local decompressed = LibDeflate:DecompressDeflate(decoded)
+
+            if decompressed then
+                local worked, t = AceSerializer:Deserialize(decompressed)
+                
+                return worked, t    
+            else
+                PRT.Error("String could not be decompressed. Aborting import.")
+            end
+        else
+            PRT.Error("String could not be decoded. Aborting import.")
+        end
+    end
+    return nil
+end
 
 table.mergemany = function(...)
     local tNew = {}

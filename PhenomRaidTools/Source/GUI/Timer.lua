@@ -96,7 +96,7 @@ Timer.TimerWidget = function(timer, container)
         stopConditionGroup:AddChild(removeStopConditionButton)
         container:AddChild(stopConditionGroup)
     else
-        local addStopConditionButton = PRT.Button("Add Stop Condition")
+        local addStopConditionButton = PRT.Button("conditionAddStopCondition")
         addStopConditionButton:SetCallback("OnClick",
             function()
                 timer.hasStopCondition = true

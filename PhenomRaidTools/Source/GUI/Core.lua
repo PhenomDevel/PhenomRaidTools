@@ -42,6 +42,7 @@ Core.GeneratePowerPercentagesTree = function(percentages)
     local tree = Core.GeneratePercentagesTree(percentages)
     tree.value = "powerPercentages"
     tree.text = L["treePowerPercentage"]
+    tree.icon = 132849
 
     return tree
 end
@@ -50,6 +51,7 @@ Core.GenerateHealthPercentagesTree = function(percentages)
     local tree = Core.GeneratePercentagesTree(percentages)
     tree.value = "healthPercentages"
     tree.text = L["treeHealthPercentage"]
+    tree.icon = 648207
 
     return tree
 end
@@ -59,6 +61,12 @@ Core.GenerateRotationTree = function(rotation)
         value = rotation.name,
         text = rotation.name
     }
+
+    if rotation.triggerCondition then
+        if rotation.triggerCondition.spellIcon then
+            t.icon = rotation.triggerCondition.spellIcon
+        end
+    end
     
     return t
 end
@@ -67,7 +75,8 @@ Core.GenerateRotationsTree = function(rotations)
     local children = {}
     local t = {
         value = "rotations",
-        text = L["treeRotation"],
+        text = L["treeRotation"], 
+        icon = 450907
     }
 
     if rotations then
@@ -87,6 +96,12 @@ Core.GenerateTimerTree = function(timer)
         value = timer.name,
         text = timer.name
     }
+
+    if timer.startCondition then
+        if timer.startCondition.spellIcon then
+            t.icon = timer.startCondition.spellIcon
+        end
+    end
     
     return t
 end
@@ -96,6 +111,7 @@ Core.GenerateTimersTree = function(timers)
     local t = {
         value = "timers",
         text = L["treeTimer"],
+        icon = 237538,
     }
 
     if timers then
@@ -118,7 +134,7 @@ Core.GenerateEncounterTree = function(encounter)
     local children = {}
     local t = {
         value = encounter.id,
-        text = encounter.name,
+        text = encounter.name,        
         children = {
             Core.GenerateTimersTree(encounter.Timers),
             Core.GenerateRotationsTree(encounter.Rotations),

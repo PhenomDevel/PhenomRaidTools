@@ -104,6 +104,7 @@ I have set up a discord server up and running for every kind of question. Feel f
 
 - Add "global" encounter which will always be merged with the current encounter for e.g. seconds pots or something
 
+- Filter messages by player so you won't get spammed by messages if multiple people use sender mode
 
 ## TODOs
 - Translate error messages and debug messages
