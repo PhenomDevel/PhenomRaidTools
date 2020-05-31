@@ -215,7 +215,7 @@ function PRT:PLAYER_ENTERING_WORLD(event)
 				PRT.Debug("Player entered raid - checking difficulty")
 				PRT.Debug("Current difficulty is|cFF9482C9"..difficulty, "|r")
 				
-				if self.db.profile.enabledDifficulties["dungeon"][difficulty] then
+				if self.db.profile.enabledDifficulties["raid"][difficulty] then
 					PRT.Debug("Enabling PhenomRaidTools for|cFF9482C9", name, "|ron difficulty|cFF9482C9", difficulty, "|r")
 					PRT.enabled = true
 				else
