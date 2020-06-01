@@ -81,9 +81,10 @@ L = {
         "- |cFF69CCF0ALL|r, |cFF69CCF0HEALER|r, |cFF69CCF0TANK|r, |cFF69CCF0DAMAGER|r\n",
     ["messageMessage"] = "Message",
     ["messageMessageTooltip"] =          
-        "- Use |cFF69CCF0%.0f|r or |cFF69CCF0%s|r to display the countdown (1 can also change to 0-2 for decimals)\n"..
+        "- Use |cFF69CCF0%.0f|r or |cFF69CCF0%s|r to display the countdown (the 1 can also changed to 0-2 for decimals)\n"..
         "- You can use tokens which will be replaced within the message e.g. |cFF69CCF0$source|r, |cFF69CCF0$target|r, |cFF69CCF0$heal1|r, |cFF69CCF0$me|r\n"..
-        "- Use placeholder {rt1-8} for raid markers ({rt1} = |TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:16|t, {rt2} = |TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:16|t, ...)",
+        "- Use placeholder |cFF69CCF0{rt1-8}|r for raid markers ({rt1} = |TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:16|t, {rt2} = |TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:16|t, ...)\n"..
+        "- Use placeholder |cFF69CCF0{spell:$ID}|r where $ID is any spellID of the spell you want to display the texture of e.g. {spell:17} = |T135940:16|t",
     ["messageDelay"] = "Delay (s)",
     ["messageDelayTooltip"] = "After how many seconds the message should be send to the receiver?",
     ["messageDuration"] = "Duration (s)",

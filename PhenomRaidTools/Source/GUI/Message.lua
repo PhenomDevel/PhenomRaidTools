@@ -129,7 +129,7 @@ PRT.MessageWidget = function (message, container)
 			widget:SetValue(nil)
 		end)    
 		
-	local messagePreviewLabel = PRT.Label(L["messagePreview"]..PRT.ExchangeRaidMarker(message.message:gsub("||", "|")) )
+	local messagePreviewLabel = PRT.Label(L["messagePreview"]..PRT.PrepareMessageForDisplay(message.message))
 	local messageEditBox = PRT.EditBox("messageMessage", message.message, true)		
 	messageEditBox:SetWidth(400)
 	messageEditBox:SetMaxLetters(180)
@@ -138,7 +138,7 @@ PRT.MessageWidget = function (message, container)
 			local text = widget:GetText() 
 			message.message = text
 			widget:ClearFocus()
-			messagePreviewLabel:SetText(L["messagePreview"]..PRT.ExchangeRaidMarker(message.message:gsub("||", "|")))
+			messagePreviewLabel:SetText(L["messagePreview"]..PRT.PrepareMessageForDisplay(message.message))
 		end)
 
 

@@ -83,7 +83,8 @@ if GetLocale() == "deDE" then
     L["messageMessageTooltip"] =          
         "- Benutze |cFF69CCF0%.0f|r oder |cFF69CCF0%s|r um einen Countdown anzuzeigen (1 kann ebenso 1-2 sein, um Dezimalstellen anzuzeigen)\n"..
         "- Es können Platzhalter benutzt werden, welche später mit den entsprechenden Namen ausgetauscht werden z.B. |cFF69CCF0$source|r |cFF69CCF0$target|r |cFF69CCF0$heal1|r |cFF69CCF0$me|r\n"..
-        "- Benutzer den Platzhalter {rt1-8} um Raidmarkierungen im Text zu benutzen ({rt1} = |TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:16|t, {rt2} = |TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:16|t, ...)"
+        "- Benutzer den Platzhalter |cFF69CCF0{rt1-8}|r um Raidmarkierungen im Text zu benutzen ({rt1} = |TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:16|t, {rt2} = |TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:16|t, ...)\n"..
+        "- Benutzer den Platzhalter |cFF69CCF0{spell:$ID}|r, um die Textur eines Zaubers anzuzeigen. Dabei ist $ID die Zauber-ID dessen Textur angezeigt werden soll. Z.b. {spell:17} = |T135940:16|t"
     L["messageDelay"] = "Verzögerung (s)"
     L["messageDelayTooltip"] = "Nach wie vielen Sekunden soll die Nachricht erst zum Empfänger geschickt werden?"
     L["messageDuration"] = "Dauer (s)"

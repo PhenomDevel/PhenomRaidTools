@@ -33,7 +33,7 @@ ReceiverOverlay.AddMessage = function(messageTable)
         if messageTable.withSound and PRT.db.profile.overlay.receiver.enableSound then
             PlaySoundFile("Interface\\AddOns\\PhenomRaidTools\\Media\\Sounds\\ReceiveMessage.ogg", "Master")
         end
-        messageTable.message = PRT.ExchangeRaidMarker(messageTable.message) 
+        messageTable.message = PRT.PrepareMessageForDisplay(messageTable.message) 
         local index = #ReceiverOverlay.messageStack+1
         ReceiverOverlay.messageStack[index] = messageTable
         AceTimer:ScheduleTimer(

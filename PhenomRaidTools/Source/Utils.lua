@@ -231,3 +231,15 @@ end
 PRT.ExchangeRaidMarker = function(s)
     return string.gsub(s, "{rt([^}])}", "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%1:16|t")
 end
+
+PRT.ExchangeSpellIcons = function(s)
+    return string.gsub(s, "{spell:([^}]+)}", 
+        function(match)
+            local _, _, texture = GetSpellInfo(tonumber(match))
+            return "|T"..(texture or "Interface\\Icons\\INV_MISC_QUESTIONMARK")..":16|t"
+        end)
+end
+
+PRT.PrepareMessageForDisplay = function(s)
+    return PRT.ExchangeSpellIcons(PRT.ExchangeRaidMarker(s:gsub("||", "|")))
+end
