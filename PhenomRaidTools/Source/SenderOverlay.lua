@@ -1,8 +1,8 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 local SenderOverlay = {
-    timerColor = "FF1a8200",
-    rotationColor = "FFab4700",   
+    timerColor = "FF1aBB00",
+    rotationColor = "FFcc1100",   
     disabledColor = "FF595959",
     inactiveColor = "FF8f8f8f"
 }
@@ -54,7 +54,7 @@ SenderOverlay.UpdateFrame = function(text)
     if encounter then        
         -- Set Header to encounter name
         local timeIntoCombat = PRT.SecondsToClock(GetTime() - encounter.startedAt)
-        overlayText = encounter.name.." |cFF3d94ff"..timeIntoCombat.."|r\n"
+        overlayText = encounter.name.." (|cFF3d94ff"..timeIntoCombat.."|r)\n"
 
         -- Timer
         if not table.empty(encounter.Timers) then
@@ -66,13 +66,13 @@ SenderOverlay.UpdateFrame = function(text)
                 if timer.started then
                     local timeIntoTimer = GetTime() - timer.startedAt
                     local timeIntoTimerString = PRT.SecondsToClock(timeIntoTimer)
-                    timerString = timerString.."("..timerColor(timeIntoTimerString)..")"
+                    timerString = timerString.." ("..timerColor(timeIntoTimerString)..")"
 
                     local nextInSeconds, nextTiming = SenderOverlay.GetNextTiming(timer, timeIntoTimer)
 
                     if nextInSeconds then
                         local nextDelta = PRT.Round(nextInSeconds - timeIntoTimer)
-                        timerString = timerString.." next -"..PRT.SecondsToClock(nextDelta).."\n"
+                        timerString = timerString.." [-"..timerColor(PRT.SecondsToClock(nextDelta)).."]\n"
                     else
                         timerString = timerString.."\n"
                     end
