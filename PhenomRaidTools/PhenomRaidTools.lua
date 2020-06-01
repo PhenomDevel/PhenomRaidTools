@@ -6,14 +6,15 @@ local AceComm = LibStub("AceComm-3.0")
 local PhenomRaidToolsLDB = LibStub("LibDataBroker-1.1"):NewDataObject("PhenomRaidTools", {
 	type = "data source",
 	text = "PhenomRaidTools",
-	icon = "615103",
+	icon = "Interface\\AddOns\\PhenomRaidTools\\Media\\Icons\\PRT.blp",
 	OnClick = function() 
 		PRT:OpenPRT()
 	end,
 
 	OnEnter = function()
 		GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
-		GameTooltip:AddLine("PhenomRaidTools") 
+		GameTooltip:AddLine("|cFF69CCF0PhenomRaidTools|r") 
+		GameTooltip:AddLine("Left click to open config") 
 		GameTooltip:Show() 
 	end,
 
