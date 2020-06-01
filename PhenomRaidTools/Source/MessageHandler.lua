@@ -32,30 +32,13 @@ MessageHandler.MessageToReceiverMessage = function(message)
     return target.."?"..spellID.."#"..duration.."&"..message.."~"..withSound
 end
 
-MessageHandler.ReplaceToken = function(token)
-    token = strtrim(token, " ")
-    local playerName = token
-    
-    if token == "me" then
-        playerName = UnitName("player")
-    elseif PRT.db.profile.raidRoster[token] then
-        playerName = PRT.db.profile.raidRoster[token]
-    else
-        playerName = "N/A"
-    end
 
-    return playerName
-end
-
-MessageHandler.ReplaceTokens = function(s)
-    return string.gsub(s, "[$]+([^$, ]*)", MessageHandler.ReplaceToken)
-end
 
 MessageHandler.ExecuteMessageAction = function(message)
     for i, target in ipairs(message.targets) do
         local targetMessage = PRT.CopyTable(message)
         targetMessage.target = strtrim(target, " ")
-        targetMessage.message = MessageHandler.ReplaceTokens(targetMessage.message)
+        targetMessage.message = PRT.ReplacePlayerNameTokens(targetMessage.message)
 
         if message.withSound then 
             targetMessage.withSound = "t"
@@ -70,7 +53,7 @@ MessageHandler.ExecuteMessageAction = function(message)
             targetMessage.target = message.eventTarget  
         elseif targetMessage.target == "$me" or string.match(targetMessage.target, "$tank") or string.match(targetMessage.target, "$heal") then      
             -- send message to token target  
-            targetMessage.target = MessageHandler.ReplaceTokens(targetMessage.target)
+            targetMessage.target = PRT.ReplacePlayerNameTokens(targetMessage.target)
         end
         
         if UnitExists(targetMessage.target) or tContains(validTargets, targetMessage.target) then

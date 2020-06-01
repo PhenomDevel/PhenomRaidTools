@@ -240,6 +240,29 @@ PRT.ExchangeSpellIcons = function(s)
         end)
 end
 
+PRT.ReplaceToken = function(token)
+    token = strtrim(token, " ")
+    local playerName = token
+    
+    if token == "me" then
+        playerName = UnitName("player")
+    elseif PRT.db.profile.raidRoster[token] then
+        playerName = PRT.db.profile.raidRoster[token]
+    else
+        playerName = "N/A"
+    end
+
+    return playerName
+end
+
+PRT.ReplacePlayerNameTokens = function(s)
+    return string.gsub(s, "[$]+([^$, ]*)", PRT.ReplaceToken)
+end
+
 PRT.PrepareMessageForDisplay = function(s)
-    return PRT.ExchangeSpellIcons(PRT.ExchangeRaidMarker(s:gsub("||", "|")))
+    if s then
+        return PRT.ReplacePlayerNameTokens(PRT.ExchangeSpellIcons(PRT.ExchangeRaidMarker(s:gsub("||", "|"))))
+    else
+        return ""
+    end
 end
