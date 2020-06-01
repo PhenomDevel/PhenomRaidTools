@@ -173,8 +173,7 @@ end
 function PRT:OnEnable()
 	PRT.RegisterEssentialEvents()
 
-	-- AceComm:RegisterComm(PRT.db.profile.addonMessagePrefix, PRT.OnCommReceive)
-	-- AceComm:SendCommMessage(PRT.db.profile.addonMessagePrefix, PRT.TableToString({a = 5}), "WHISPER", UnitName("player"))
+	AceComm:RegisterComm(PRT.db.profile.addonMessagePrefix, self.OnCommReceive)
 	C_ChatInfo.RegisterAddonMessagePrefix(PRT.db.profile.addonMessagePrefix)
 end
 

@@ -1,4 +1,7 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+
+local AceComm = LibStub("AceComm-3.0")
+
 local MessageHandler = {}
 
 local validTargets = {    
@@ -15,7 +18,7 @@ MessageHandler.SendMessageToReceiver = function(message)
     if UnitInRaid("player") or UnitInParty("player") then
         C_ChatInfo.SendAddonMessage(PRT.db.profile.addonMessagePrefix, message, "RAID")    
     else
-        C_ChatInfo.SendAddonMessage(PRT.db.profile.addonMessagePrefix, message, "WHISPER", UnitName("player")) 
+        C_ChatInfo.SendAddonMessage(PRT.db.profile.addonMessagePrefix, message, "WHISPER", UnitName("player"))         
     end
 end
 
@@ -60,32 +63,37 @@ MessageHandler.ExecuteMessageAction = function(message)
             targetMessage.withSound = "f"
         end
         
-        local receiverMessage = nil
+        local weakAuraReceiverMessage = nil
 
-        if (UnitExists(targetMessage.target)) or tContains(validTargets, targetMessage.target) then     
-            -- Send "normal" message       
-            receiverMessage = MessageHandler.MessageToReceiverMessage(targetMessage)
-        elseif targetMessage.target == "$target" then
+        if targetMessage.target == "$target" then
             -- Set event target as message target
-            targetMessage.target = message.eventTarget
-            receiverMessage = MessageHandler.MessageToReceiverMessage(targetMessage)    
+            targetMessage.target = message.eventTarget  
         elseif targetMessage.target == "$me" or string.match(targetMessage.target, "$tank") or string.match(targetMessage.target, "$heal") then      
             -- send message to token target  
             targetMessage.target = MessageHandler.ReplaceTokens(targetMessage.target)
-            receiverMessage = MessageHandler.MessageToReceiverMessage(targetMessage) 
         end
         
-        if receiverMessage then
-            if UnitExists(targetMessage.target) or tContains(validTargets, targetMessage.target) then
-                PRT.Debug("Sending new message", receiverMessage)                
-                MessageHandler.SendMessageToReceiver(receiverMessage) 
-            else
-                PRT.Error("Target", targetMessage.target, "does not exist. Skipping message.")
+        if UnitExists(targetMessage.target) or tContains(validTargets, targetMessage.target) then
+            if not PRT.db.profile.weakAuraMode then
+                PRT.Debug("Sending new message to", targetMessage.target)
+                AceComm:SendCommMessage(PRT.db.profile.addonMessagePrefix, PRT.TableToString(targetMessage), "WHISPER", UnitName("player")) 
+            elseif weakAuraReceiverMessage and PRT.db.profile.weakAuraMode then
+                weakAuraReceiverMessage = MessageHandler.MessageToReceiverMessage(targetMessage) 
+                PRT.Debug("Sending new weakaura message", weakAuraReceiverMessage)
+                MessageHandler.SendMessageToReceiver(weakAuraReceiverMessage) 
             end
-        end
+        else
+            PRT.Error("Target", targetMessage.target, "does not exist. Skipping message.")
+        end        
     end    
 end
 
+function PRT:OnCommReceive(message)
+    if not PRT.db.profile.weakAuraMode then
+        local worked, messageTable = PRT.StringToTable(message)
+        PRT.ReceiverOverlay.AddMessage(messageTable)
+    end
+end
 
 -------------------------------------------------------------------------------
 -- Public API

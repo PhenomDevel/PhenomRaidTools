@@ -13,6 +13,12 @@ if GetLocale() == "deDE" then
     L["optionsTabRaidRoster"] = "Raidkader"
     L["optionsTabOverlays"] = "Overlays"
 
+    L["optionsWeakAuraMode"] = "WeakAura Empfänger benutzen"
+    L["optionsWeakAuraModeTooltip"] = 
+        "Aktiviere diese Option, um den WeakAura Empfänger zu benutzen.\n"..
+        "Wenn Du das Addon als Empfänger benutzen möchstest stelle sicher, dass die WeakAura |cFF69CCF0Phenom Raid Tools: Receiver|r deaktiviert ist.\n"..
+        "|cFFcc7000WARNUNG|r: Nicht alle Funktionalitäten des Addons funktionieren mit der WeakAura!"
+    L["optionsEnabled"] = "Aktiviert"
     L["optionsTestMode"] = "Testmodus"
     L["optionsDebugMode"] = "Debugmodus"
     L["optionsDebugModeTooltip"] = "Wenn dieser Modus aktiviert ist werden einige allgemeine Informationen in das Chatfenster ausgegeben"
@@ -75,9 +81,9 @@ if GetLocale() == "deDE" then
         "- |cFF69CCF0ALL|r |cFF69CCF0HEALER|r |cFF69CCF0TANK|r |cFF69CCF0DAMAGER|r\n"
     L["messageMessage"] = "Nachricht"
     L["messageMessageTooltip"] =          
-        "- Benutze |cFF69CCF0%.0f|r oder |cFF69CCF0%s|r  um einen Countdown anzuzeigen (1 kann ebenso 1-2 sein, um Dezimalstellen anzuzeigen)\n"..
+        "- Benutze |cFF69CCF0%.0f|r oder |cFF69CCF0%s|r um einen Countdown anzuzeigen (1 kann ebenso 1-2 sein, um Dezimalstellen anzuzeigen)\n"..
         "- Es können Platzhalter benutzt werden, welche später mit den entsprechenden Namen ausgetauscht werden z.B. |cFF69CCF0$source|r |cFF69CCF0$target|r |cFF69CCF0$heal1|r |cFF69CCF0$me|r\n"..
-        "- Bitte benutze keine reservierten Zeichen in den Nachrichten (|cFF69CCF0#|r |cFF69CCF0?|r |cFF69CCF0~|r |cFF69CCF0%|r)"
+        "- Benutzer den Platzhalter {rt1-8} um Raidmarkierungen im Text zu benutzen ({rt1} = |TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:16|t, {rt2} = |TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:16|t, ...)"
     L["messageDelay"] = "Verzögerung (s)"
     L["messageDelayTooltip"] = "Nach wie vielen Sekunden soll die Nachricht erst zum Empfänger geschickt werden?"
     L["messageDuration"] = "Dauer (s)"

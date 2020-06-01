@@ -8,8 +8,7 @@ local EventHandler = {
 		"PLAYER_REGEN_ENABLED",
 		"ENCOUNTER_START",
 		"ENCOUNTER_END",
-		"PLAYER_ENTERING_WORLD",
-		"CHAT_MSG_ADDON"
+		"PLAYER_ENTERING_WORLD"
 	}
 }
 
@@ -115,14 +114,6 @@ function PRT:ENCOUNTER_START(event, encounterID, encounterName)
 	-- We only start a real encounter if PRT is enabled (correct dungeon/raid difficulty) and we're not in test mode
 	if PRT.enabled and not self.db.profile.testMode then
 		EventHandler.StartEncounter(event, encounterID, encounterName)
-	end
-end
-
-function PRT:CHAT_MSG_ADDON(event, prefix, message, channel, sender)
-	if PRT.db.profile.receiverMode then
-		if prefix == PRT.db.profile.addonMessagePrefix then
-			PRT.ReceiverOverlay.AddMessage(message)
-		end
 	end
 end
 

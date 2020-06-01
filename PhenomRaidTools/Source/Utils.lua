@@ -75,6 +75,7 @@ PRT.StringToTable = function(s)
             PRT.Error("String could not be decoded. Aborting import.")
         end
     end
+
     return nil
 end
 
@@ -221,4 +222,12 @@ PRT.EnsureEncounterTrigger = function(encounter)
 			encounter.PowerPercentages = {}
 		end
 	end
+end
+
+
+-------------------------------------------------------------------------------
+-- String Helper
+
+PRT.ExchangeRaidMarker = function(s)
+    return string.gsub(s, "{rt([^}])}", "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%1:16|t")
 end

@@ -128,15 +128,19 @@ PRT.MessageWidget = function (message, container)
 			targetsPreviewLabel:SetText(L["messagePreview"]..Message.TargetsPreviewString(message.targets))
 			widget:SetValue(nil)
 		end)    
-
-	local messageEditBox = PRT.EditBox("messageMessage", message.message, true)	
+		
+	local messagePreviewLabel = PRT.Label(L["messagePreview"]..PRT.ExchangeRaidMarker(message.message:gsub("||", "|")) )
+	local messageEditBox = PRT.EditBox("messageMessage", message.message, true)		
 	messageEditBox:SetWidth(400)
 	messageEditBox:SetMaxLetters(180)
 	messageEditBox:SetCallback("OnEnterPressed", 
 		function(widget) 
-			message.message = widget:GetText() 
+			local text = widget:GetText() 
+			message.message = text
 			widget:ClearFocus()
+			messagePreviewLabel:SetText(L["messagePreview"]..PRT.ExchangeRaidMarker(message.message:gsub("||", "|")))
 		end)
+
 
 	local delayEditBox = PRT.Slider("messageDelay", message.delay, true)	
 	delayEditBox:SetCallback("OnValueChanged", 
@@ -158,9 +162,10 @@ PRT.MessageWidget = function (message, container)
 
 	container:AddChild(targetsEditBox)
 	container:AddChild(targetsPreviewLabel)	
-	container:AddChild(raidRosterDropdown)		
+	container:AddChild(raidRosterDropdown)	
 
 	container:AddChild(messageEditBox)
+	container:AddChild(messagePreviewLabel)
 	container:AddChild(delayEditBox)
     container:AddChild(durationEditBox)	
     

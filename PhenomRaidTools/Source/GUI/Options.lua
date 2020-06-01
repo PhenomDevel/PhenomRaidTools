@@ -199,7 +199,6 @@ Options.AddGeneralWidgets = function(container, options)
     debugModeCheckbox:SetRelativeWidth(1)
     
 	testModeCheckbox:SetCallback("OnValueChanged", function(widget)	options.testMode = widget:GetValue() end)	
-    -- testModeCheckbox:SetRelativeWidth(1)
     
     textEncounterIDDropdown:SetCallback("OnValueChanged", function(widget) options.testEncounterID = tonumber(widget:GetValue()) end)  
         
@@ -222,7 +221,7 @@ Options.AddGeneralWidgets = function(container, options)
     container:AddChild(debugModeCheckbox)
     container:AddChild(testModeCheckbox)    
     container:AddChild(textEncounterIDDropdown)
-    -- container:AddChild(weakAuraModeCheckbox)    
+    container:AddChild(weakAuraModeCheckbox)    
 end
 
 Options.AddSenderOverlayWidget = function(container, options)

@@ -15,82 +15,27 @@ local ReceiverOverlay = {
 -- Local Helper
 
 ReceiverOverlay.IsMessageForMe = function(message)
-    local target = message.target
-    local messageForMe = false
-    
-    if tContains(ReceiverOverlay.validTargets, target) or target == UnitGroupRolesAssigned("player")
-    then        
-        messageForMe = true
+    if tContains(ReceiverOverlay.validTargets, message.target) or message.target == UnitGroupRolesAssigned("player") then        
+        return true
     end        
     
-    return messageForMe
+    return false
 end
-
-ReceiverOverlay.TextBefore = function(msg, char)
-    -- Get text out of `msg` before the first match of `char`
-    local index = string.find(msg, char)
-    
-    return string.sub(msg, 0, index - 1)
-end 
-
-ReceiverOverlay.TextAfter = function(msg, char)
-    -- Get text out of `msg` after first match of `char`
-    local index = string.find(msg, char)
-    if index then
-        return string.sub(msg, index + 1, string.len(msg))
-    else
-        return nil
-    end
-end 
-
-ReceiverOverlay.TextBetween = function(msg, before, after)
-    -- Get text between characters `before` and `after`
-    local textAfter = ReceiverOverlay.TextAfter(msg, before)
-    
-    return ReceiverOverlay.TextBefore(textAfter, after)
-end
-
-ReceiverOverlay.ParseMessage = function(msg)
-    local target = ReceiverOverlay.TextBefore(msg, "?")
-    local spellID = ReceiverOverlay.TextBetween(msg, "?", "#")
-    local timer = ReceiverOverlay.TextBetween(msg, "#", "&")
-    local message = ReceiverOverlay.TextBetween(msg, "&", "~")
-    local withSound = ReceiverOverlay.TextAfter(msg, "~")
-        
-    if timer then
-        timer = tonumber(timer)
-    end
-    
-    local parsedMessage = {
-        target = target,
-        spellID = spellID,
-        timer = (timer or 5),
-        message = message,
-        expirationTime = GetTime() + (timer or 5)
-    }
-    
-    if withSound == "t" then
-        parsedMessage.withSound = true
-    else
-        parsedMessage.withSound = false
-    end
-    
-    return parsedMessage
-end 
 
 ReceiverOverlay.ClearMessageStack = function()
     ReceiverOverlay.messageStack = {}
 end
 
-ReceiverOverlay.AddMessage = function(msg)
-    local parsedMessage = ReceiverOverlay.ParseMessage(msg)
+ReceiverOverlay.AddMessage = function(messageTable)
+    messageTable.expirationTime = GetTime() + (messageTable.duration or 5)
 
-    if ReceiverOverlay.IsMessageForMe(parsedMessage) then
-        if parsedMessage.withSound and PRT.db.profile.overlay.receiver.enableSound then
+    if ReceiverOverlay.IsMessageForMe(messageTable) then
+        if messageTable.withSound and PRT.db.profile.overlay.receiver.enableSound then
             PlaySoundFile("Interface\\AddOns\\PhenomRaidTools\\Media\\Sounds\\ReceiveMessage.ogg", "Master")
         end
+        messageTable.message = PRT.ExchangeRaidMarker(messageTable.message) 
         local index = #ReceiverOverlay.messageStack+1
-        ReceiverOverlay.messageStack[index] = parsedMessage
+        ReceiverOverlay.messageStack[index] = messageTable
         AceTimer:ScheduleTimer(
             function() 
                 ReceiverOverlay.messageStack[index] = ""
@@ -111,20 +56,20 @@ ReceiverOverlay.UpdateFrame = function()
 
     for i, message in pairs(ReceiverOverlay.messageStack) do
         if message ~= "" then
-            if message.expirationTime > GetTime() then                        
+            if message.expirationTime > GetTime() then           
                 local timeLeftRaw = message.expirationTime - GetTime()
                 local timeLeft = PRT.Round(timeLeftRaw, 2)
                 
                 if text == "" then
                     text = "|cFF"..PRT.db.profile.overlay.receiver.fontColor.hex..string.format(message.message, timeLeft)
                 else
-                    text = text.."\n"..string.format(message.message, timeLeft)
+                    text = text.."|n"..string.format(message.message, timeLeft)
                 end
             end 
         end
     end
-    
-    ReceiverOverlay.overlayFrame.text:SetText(text.."|r")
+
+    ReceiverOverlay.overlayFrame.text:SetText(text)
 end
 
 ReceiverOverlay.CreateOverlay = function(options)

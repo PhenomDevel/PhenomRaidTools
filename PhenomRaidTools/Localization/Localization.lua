@@ -13,6 +13,12 @@ L = {
     ["optionsTabRaidRoster"] = "Raid roster",
     ["optionsTabOverlays"] = "Overlays",
 
+    ["optionsWeakAuraMode"] = "Use legacy WeakAura receiver",
+    ["optionsWeakAuraModeTooltip"] = 
+        "Activate this option if you want to use the WeakAura as receiver.\n"..
+        "If you want to use the addon as receiver make sure you deactivate the WeakAura |cFF69CCF0Phenom Raid Tools: Receiver|r\n"..
+        "|cFFcc7000WARNING|r: Not every feature of the addon is supported with the WeakAura!",
+    ["optionsEnabled"] = "Enabled",
     ["optionsTestMode"] = "Test mode",
     ["optionsDebugMode"] = "Debug mode",
     ["optionsDebugModeTooltip"] = "If this mode is active PRT will print debug information to the default chat frame",
@@ -77,7 +83,7 @@ L = {
     ["messageMessageTooltip"] =          
         "- Use |cFF69CCF0%.0f|r or |cFF69CCF0%s|r to display the countdown (1 can also change to 0-2 for decimals)\n"..
         "- You can use tokens which will be replaced within the message e.g. |cFF69CCF0$source|r, |cFF69CCF0$target|r, |cFF69CCF0$heal1|r, |cFF69CCF0$me|r\n"..
-        "- Do not use reserved characters (|cFF69CCF0#|r, |cFF69CCF0?|r, |cFF69CCF0~|r, |cFF69CCF0%|r)",
+        "- Use placeholder {rt1-8} for raid markers ({rt1} = |TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:16|t, {rt2} = |TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:16|t, ...)",
     ["messageDelay"] = "Delay (s)",
     ["messageDelayTooltip"] = "After how many seconds the message should be send to the receiver?",
     ["messageDuration"] = "Duration (s)",
