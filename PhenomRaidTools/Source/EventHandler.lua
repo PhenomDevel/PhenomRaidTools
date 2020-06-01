@@ -18,43 +18,47 @@ local EventHandler = {
 -- Local Helper
 
 EventHandler.StartEncounter = function(event, encounterID, encounterName)
-	PRT.SenderOverlay.Initialize(PRT.db.profile.overlay.sender)
-	PRT.ReceiverOverlay.Initialize(PRT.db.profile.overlay.receiver)
+	if PRT.db.profile.enabled then
+		PRT.SenderOverlay.Initialize(PRT.db.profile.overlay.sender)
+		PRT.ReceiverOverlay.Initialize(PRT.db.profile.overlay.receiver)
 
-	if PRT.db.profile.senderMode then
-		PRT.Debug("Starting new encounter|cFF69CCF0", encounterID, encounterName, "|r")
-		local _, encounter = PRT.FilterEncounterTable(PRT.db.profile.encounters, encounterID)
+		if PRT.db.profile.senderMode then
+			PRT.Debug("Starting new encounter|cFF69CCF0", encounterID, encounterName, "|r")
+			local _, encounter = PRT.FilterEncounterTable(PRT.db.profile.encounters, encounterID)
 
-		-- Ensure that encounter has all trigger tables!
-		PRT.EnsureEncounterTrigger(encounter)
-		if encounter then			
-			if encounter.enabled then
-				PRT:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-				PRT.currentEncounter = {}
-				PRT.currentEncounter.inFight = true
-						
-				PRT.currentEncounter.encounter = PRT.CopyTable(encounter)				
-				PRT.currentEncounter.encounter.startedAt = GetTime()
+			-- Ensure that encounter has all trigger tables!
+			PRT.EnsureEncounterTrigger(encounter)
+			if encounter then			
+				if encounter.enabled then
+					PRT:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+					PRT.currentEncounter = {}
+					PRT.currentEncounter.inFight = true
+							
+					PRT.currentEncounter.encounter = PRT.CopyTable(encounter)				
+					PRT.currentEncounter.encounter.startedAt = GetTime()
 
-			else
-				PRT.Debug("Found encounter but it is disabled. Skipping encounter.")
+				else
+					PRT.Debug("Found encounter but it is disabled. Skipping encounter.")
+				end
+
+				if PRT.db.profile.overlay.sender.enabled then
+					PRT.SenderOverlay.Show()
+					PRT.Overlay.SetMoveable(PRT.SenderOverlay.overlayFrame, false)
+					AceTimer:ScheduleRepeatingTimer(PRT.SenderOverlay.UpdateFrame, 1, PRT.currentEncounter.encounter)
+				end
+		
+				if PRT.db.profile.receiverMode then
+					PRT.ReceiverOverlay.Show()
+					AceTimer:ScheduleRepeatingTimer(PRT.ReceiverOverlay.UpdateFrame, 0.01)
+				end
 			end
 
-			if PRT.db.profile.overlay.sender.enabled then
-				PRT.SenderOverlay.Show()
-				PRT.Overlay.SetMoveable(PRT.SenderOverlay.overlayFrame, false)
-				AceTimer:ScheduleRepeatingTimer(PRT.SenderOverlay.UpdateFrame, 1, PRT.currentEncounter.encounter)
-			end
-	
-			if PRT.db.profile.receiverMode then
-				PRT.ReceiverOverlay.Show()
-				AceTimer:ScheduleRepeatingTimer(PRT.ReceiverOverlay.UpdateFrame, 0.01)
-			end
+
+
+			PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 		end
-
-
-
-		PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
+	else
+		PRT.Debug("PRT is disabled. Not starting encounter.")
 	end
 end
 
@@ -197,6 +201,7 @@ end
 function PRT:PLAYER_ENTERING_WORLD(event)
 	PRT.Debug("Zone entered.")
 	PRT.Debug("Will check zone/difficulty in 10 seconds to determine if addon should be loaded.")
+
 	AceTimer:ScheduleTimer(
 		function()
 			local name, type, _, difficulty = GetInstanceInfo()						
@@ -227,5 +232,5 @@ function PRT:PLAYER_ENTERING_WORLD(event)
 			end
 		end,
 		10
-	)	
+	)
 end

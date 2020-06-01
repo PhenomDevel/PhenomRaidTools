@@ -188,30 +188,41 @@ Options.AddDifficultyWidgets = function(container, options)
 end
 
 Options.AddGeneralWidgets = function(container, options)
+    local enabledCheckbox = PRT.CheckBox("optionsEnabled", options.enabled)
     local debugModeCheckbox = PRT.CheckBox("optionsDebugMode", options.debugMode, true)
+    local testModeCheckbox = PRT.CheckBox("optionsTestMode", options.testMode)
+    local textEncounterIDDropdown = PRT.Dropdown("optionsTestEncounterID", options.encounters, options.testEncounterID)        
+    local runModeDropdown = PRT.Dropdown("runModeDropdown", Options.runModes, options.runMode)        
+    local weakAuraModeCheckbox = PRT.CheckBox("optionsWeakAuraMode", options.weakAuraMode, true)
+
 	debugModeCheckbox:SetCallback("OnValueChanged", function(widget) options.debugMode = widget:GetValue() end)
     debugModeCheckbox:SetRelativeWidth(1)
-
-    local testModeCheckbox = PRT.CheckBox("optionsTestMode", options.testMode)
-	testModeCheckbox:SetCallback("OnValueChanged", function(widget)	options.testMode = widget:GetValue() end)	
-    testModeCheckbox:SetRelativeWidth(1)
-
-    local textEncounterIDDropdown = PRT.Dropdown("optionsTestEncounterID", options.encounters, options.testEncounterID)        
-    textEncounterIDDropdown:SetCallback("OnValueChanged", function(widget) options.testEncounterID = tonumber(widget:GetValue()) end)  
     
-    local runModeDropdown = PRT.Dropdown("runModeDropdown", Options.runModes, options.runMode)        
+	testModeCheckbox:SetCallback("OnValueChanged", function(widget)	options.testMode = widget:GetValue() end)	
+    -- testModeCheckbox:SetRelativeWidth(1)
+    
+    textEncounterIDDropdown:SetCallback("OnValueChanged", function(widget) options.testEncounterID = tonumber(widget:GetValue()) end)  
+        
     runModeDropdown:SetCallback("OnValueChanged", 
         function(widget) 
             local text = widget:GetValue()
             options.senderMode = tContains(Options.senderModeSelections, text)
             options.receiverMode = tContains(Options.receiverModeSelections, text)
             options.runMode = text
-        end)     
+        end)   
+            
+    weakAuraModeCheckbox:SetCallback("OnValueChanged", function(widget)	options.weakAuraMode = widget:GetValue() end)	
+    weakAuraModeCheckbox:SetRelativeWidth(1)
+
+    enabledCheckbox:SetCallback("OnValueChanged", function(widget)	options.enabled = widget:GetValue() end)	
+    enabledCheckbox:SetRelativeWidth(1)
     
+    container:AddChild(enabledCheckbox)
     container:AddChild(runModeDropdown)
     container:AddChild(debugModeCheckbox)
     container:AddChild(testModeCheckbox)    
     container:AddChild(textEncounterIDDropdown)
+    -- container:AddChild(weakAuraModeCheckbox)    
 end
 
 Options.AddSenderOverlayWidget = function(container, options)

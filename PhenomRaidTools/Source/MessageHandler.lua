@@ -11,7 +11,7 @@ local validTargets = {
 -------------------------------------------------------------------------------
 -- Local Helper
 
-MessageHandler.SendMessageToSlave = function(message)
+MessageHandler.SendMessageToReceiver = function(message)
     if UnitInRaid("player") or UnitInParty("player") then
         C_ChatInfo.SendAddonMessage(PRT.db.profile.addonMessagePrefix, message, "RAID")    
     else
@@ -78,7 +78,7 @@ MessageHandler.ExecuteMessageAction = function(message)
         if receiverMessage then
             if UnitExists(targetMessage.target) or tContains(validTargets, targetMessage.target) then
                 PRT.Debug("Sending new message", receiverMessage)                
-                MessageHandler.SendMessageToSlave(receiverMessage) 
+                MessageHandler.SendMessageToReceiver(receiverMessage) 
             else
                 PRT.Error("Target", targetMessage.target, "does not exist. Skipping message.")
             end

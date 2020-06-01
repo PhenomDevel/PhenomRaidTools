@@ -29,6 +29,7 @@ local LibDBIcon = LibStub("LibDBIcon-1.0")
 
 local defaults =  {
 	profile = {
+		enabled = true,
 		addonMessagePrefix = "PRT_MSG",
 		testMode = false,
 		testEncounterID = 9999,
@@ -36,6 +37,7 @@ local defaults =  {
 		debugMode = false,
 		showOverlay = false,
 		hideOverlayAfterCombat = false,
+		weakAuraMode = false,
 
 		runMode = "receiver",
 		senderMode = false,
