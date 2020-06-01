@@ -74,6 +74,10 @@ Message consists of the following:
 
  - `$target` will be interpolated with the target of the occurring event e.g. `XY cast on $target`
 
+ - `{spell:$ID}` will be interpolated with the texture of spell $ID
+
+ - `{rt1-8}` will be interpolated with the texture of the raidmarker rt1 - rt8
+
 
 ## Setup
 1. Download the latest release of the addon: [Releases](https://github.com/PhenomDevel/PhenomRaidTools/releases)
