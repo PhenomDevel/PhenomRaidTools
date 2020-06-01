@@ -32,14 +32,16 @@ MessageHandler.MessageToReceiverMessage = function(message)
     return target.."?"..spellID.."#"..duration.."&"..message.."~"..withSound
 end
 
-
-
 MessageHandler.ExecuteMessageAction = function(message)
     for i, target in ipairs(message.targets) do
         local targetMessage = PRT.CopyTable(message)
         targetMessage.target = strtrim(target, " ")
         targetMessage.message = PRT.ReplacePlayerNameTokens(targetMessage.message)
 
+        -- Cleanup unused fields
+        targetMessage.targets = nil
+
+        -- Determine if the message should play a sound on the receiver side
         if message.withSound then 
             targetMessage.withSound = "t"
         else 
