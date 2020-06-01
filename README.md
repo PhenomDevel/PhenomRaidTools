@@ -106,5 +106,7 @@ I have set up a discord server up and running for every kind of question. Feel f
 
 - Filter messages by player so you won't get spammed by messages if multiple people use sender mode
 
+- Different sounds for messages such as `Yellow` or `Square` as addition to the new icons within messages
+
 ## TODOs
 - Translate error messages and debug messages
