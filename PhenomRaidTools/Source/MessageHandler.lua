@@ -76,7 +76,9 @@ end
 function PRT:OnCommReceive(message)
     if not PRT.db.profile.weakAuraMode then
         local worked, messageTable = PRT.StringToTable(message)
-        PRT.ReceiverOverlay.AddMessage(messageTable)
+        if PRT.db.profile.receiverMode then
+            PRT.ReceiverOverlay.AddMessage(messageTable)
+        end
     end
 end
 
