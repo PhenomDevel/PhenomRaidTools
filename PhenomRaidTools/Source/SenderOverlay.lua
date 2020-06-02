@@ -103,7 +103,7 @@ SenderOverlay.UpdateFrame = function(encounter, options)
 
             overlayText = overlayText.."|c"..SenderOverlay.rotationColor    .."Rotations|r\n"  
             overlayText = overlayText..rotationString
-        end        
+        end
     end    
 
     SenderOverlay.overlayFrame.text:SetText(overlayText)

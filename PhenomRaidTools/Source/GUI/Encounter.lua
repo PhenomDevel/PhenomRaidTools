@@ -2,6 +2,30 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 local Encounter = {}
 
+local stringByCondition = function(name, condition)
+    local s = name.."\n"
+
+    if condition.event then
+        s = s.."    Event: "..PRT.ColoredString(condition.event, PRT.db.profile.colors.highlight).."\n"
+    end
+
+    if condition.spellName and condition.spellID then
+        local _, _, texture = GetSpellInfo(condition.spellID)
+        s = s.."    Spell: "..PRT.TextureString(texture)..condition.spellName.." ( "..PRT.ColoredString(condition.spellID, PRT.db.profile.colors.highlight).." )\n"  
+    end
+
+    return s
+end
+
+local stringByPercentage = function(name, percentage)
+    local s = name.."\n"
+
+    if percentage.unitID then
+        s = s.."    UnitID: "..PRT.ColoredString(percentage.unitID, PRT.db.profile.colors.highlight).."\n"
+    end
+
+    return s
+end
 
 -------------------------------------------------------------------------------
 -- Local Helper
@@ -11,17 +35,9 @@ Encounter.OverviewWidget = function(encounter)
 
     -- Timers
     if not table.empty(encounter.Timers) then
-        local group = PRT.InlineGroup("timerOverview")
+        local group = PRT.InlineGroup(PRT.TextureString(237538).." "..L["timerOverview"])
         for i, v in ipairs(encounter.Timers) do
-            local s = "- "..v.name.."\n"
-            local s = "- "..v.name.."\n"
-            if v.startCondition.event then
-                s = s.."  - Event: "..v.startCondition.event.."\n"
-            end
-
-            if v.startCondition.spellName and v.startCondition.spellID then
-                s = s.."  - Spell: "..v.startCondition.spellID.." / "..v.startCondition.spellName.."\n"  
-            end
+            local s = stringByCondition(i..". "..v.name, v.startCondition)
            
             local label = PRT.Label(s)
             label:SetRelativeWidth(1)
@@ -32,17 +48,10 @@ Encounter.OverviewWidget = function(encounter)
 
     -- Rotations
     if not table.empty(encounter.Rotations) then
-        local group = PRT.InlineGroup("rotationOverview")
+        local group = PRT.InlineGroup(PRT.TextureString(450907).." "..L["rotationOverview"])
         
         for i, v in ipairs(encounter.Rotations) do
-            local s = "- "..v.name.."\n"
-            if v.triggerCondition.event then
-                s = s.."  - Event: "..v.triggerCondition.event.."\n"
-            end
-
-            if v.triggerCondition.spellName and v.triggerCondition.spellID then
-                s = s.."  - Spell: "..v.triggerCondition.spellID.." / "..v.triggerCondition.spellName.."\n"  
-            end
+            local s = stringByCondition(i..". "..v.name, v.triggerCondition)
            
             local label = PRT.Label(s)
             label:SetRelativeWidth(1)
@@ -53,10 +62,9 @@ Encounter.OverviewWidget = function(encounter)
 
     -- Health Percentages
     if not table.empty(encounter.HealthPercentages) then
-        local group = PRT.InlineGroup("healthPercentageOverview")
+        local group = PRT.InlineGroup(PRT.TextureString(648207).." "..L["healthPercentageOverview"])
         for i, v in ipairs(encounter.HealthPercentages) do
-            local s = "- "..v.name.."\n"
-            s = s.."  - UnitID: "..v.unitID.."\n"
+            local s = stringByPercentage(i..". "..v.name, v)
 
             local label = PRT.Label(s)
             label:SetRelativeWidth(1)
@@ -67,10 +75,9 @@ Encounter.OverviewWidget = function(encounter)
 
     -- Power Percentages
     if not table.empty(encounter.PowerPercentages) then
-        local group = PRT.InlineGroup("powerPercentageOverview")
+        local group = PRT.InlineGroup(PRT.TextureString(132849).." "..L["powerPercentageOverview"])
         for i, v in ipairs(encounter.PowerPercentages) do
-            local s = "- "..v.name.."\n"
-            s = s.."  - UnitID: "..v.unitID.."\n"
+            local s = stringByPercentage(i..". "..v.name, v)
             
             local label = PRT.Label(s)
             label:SetRelativeWidth(1)

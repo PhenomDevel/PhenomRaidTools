@@ -126,8 +126,8 @@ local defaults =  {
 		
 		colors = {
 			general = "FFB5FFEB",
-			timers = "FFFFF569",
-			rotations = "FF9482C9",
+			timers = "FF1aBB00",
+			rotations = "FFcc1100",
 			percentages = "FFABD473",
 			error = "FFFF0000",
 			highlight = "FF69CCF0",

@@ -228,6 +228,16 @@ end
 -------------------------------------------------------------------------------
 -- String Helper
 
+PRT.ColoredString = function(s, color)
+    return "|c"..(color or "FFFFFFFF")..s.."|r"
+end
+
+PRT.TextureString = function(id)
+    if id then
+        return "|T"..id..":16:16:0:0:64:64:6:58:6:58|t"
+    end
+end
+
 PRT.ExchangeRaidMarker = function(s)
     return string.gsub(s, "{rt([^}])}", "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%1:16:16:0:0:64:64:6:58:6:58|t")
 end
