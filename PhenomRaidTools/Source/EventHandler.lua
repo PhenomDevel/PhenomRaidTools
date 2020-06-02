@@ -36,23 +36,20 @@ EventHandler.StartEncounter = function(event, encounterID, encounterName)
 					PRT.currentEncounter.encounter = PRT.CopyTable(encounter)				
 					PRT.currentEncounter.encounter.startedAt = GetTime()
 
+					if PRT.db.profile.overlay.sender.enabled then
+						PRT.SenderOverlay.Show()
+						PRT.Overlay.SetMoveable(PRT.SenderOverlay.overlayFrame, false)
+						AceTimer:ScheduleRepeatingTimer(PRT.SenderOverlay.UpdateFrame, 1, PRT.currentEncounter.encounter)
+					end
+			
+					if PRT.db.profile.receiverMode then
+						PRT.ReceiverOverlay.Show()
+						AceTimer:ScheduleRepeatingTimer(PRT.ReceiverOverlay.UpdateFrame, 0.01)
+					end
 				else
 					PRT.Debug("Found encounter but it is disabled. Skipping encounter.")
-				end
-
-				if PRT.db.profile.overlay.sender.enabled then
-					PRT.SenderOverlay.Show()
-					PRT.Overlay.SetMoveable(PRT.SenderOverlay.overlayFrame, false)
-					AceTimer:ScheduleRepeatingTimer(PRT.SenderOverlay.UpdateFrame, 1, PRT.currentEncounter.encounter)
-				end
-		
-				if PRT.db.profile.receiverMode then
-					PRT.ReceiverOverlay.Show()
-					AceTimer:ScheduleRepeatingTimer(PRT.ReceiverOverlay.UpdateFrame, 0.01)
-				end
+				end				
 			end
-
-
 
 			PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 		end
