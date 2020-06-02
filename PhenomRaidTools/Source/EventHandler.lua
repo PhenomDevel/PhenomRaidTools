@@ -39,7 +39,7 @@ EventHandler.StartEncounter = function(event, encounterID, encounterName)
 					if PRT.db.profile.overlay.sender.enabled then
 						PRT.SenderOverlay.Show()
 						PRT.Overlay.SetMoveable(PRT.SenderOverlay.overlayFrame, false)
-						AceTimer:ScheduleRepeatingTimer(PRT.SenderOverlay.UpdateFrame, 1, PRT.currentEncounter.encounter)
+						AceTimer:ScheduleRepeatingTimer(PRT.SenderOverlay.UpdateFrame, 1, PRT.currentEncounter.encounter, PRT.db.profile.overlay.sender)
 					end
 			
 					if PRT.db.profile.receiverMode then

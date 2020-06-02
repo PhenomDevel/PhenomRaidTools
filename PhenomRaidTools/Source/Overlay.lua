@@ -21,12 +21,21 @@ Overlay.SavePosition = function(widget, options)
     options.left = left
 end
 
-Overlay.UpdateSize = function(container)
+Overlay.UpdateSize = function(container, options)
     local width = container.text:GetStringWidth()
     container:SetWidth(width + (2 * padding))
 
     local height = container.text:GetStringHeight()
-    container:SetHeight(height + (2 * padding))
+    container:SetHeight(height + (2 * padding))    
+
+    if options then
+        print("left", options.left, "top", -options.top, "width", width, "height", height, "UI-Width", UIParent:GetWidth(), "UI-Height", UIParent:GetHeight())
+        local left = min((options.left + width), UIParent:GetWidth()) - width
+        local top = min((options.top + height), UIParent:GetHeight()) - height
+        print(left, top)
+        container:ClearAllPoints()
+        container:SetPoint("TOPLEFT", "UIParent", "TOPLEFT", left, -top)
+    end
 end
 
 Overlay.UpdateFont = function(container, fontSize)
@@ -58,7 +67,7 @@ end
 
 Overlay.SetFont = function(container, options)
     container.text:SetFont((options.font or GameFontHighlightSmall:GetFont()), options.fontSize, "OUTLINE")
-    Overlay.UpdateSize(container)
+    Overlay.UpdateSize(container, options)
 end
 
 Overlay.CreateOverlay = function(options, withBackdrop)    

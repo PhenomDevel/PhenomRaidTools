@@ -296,7 +296,7 @@ PRT.CreateMainWindow = function(profile)
     -- Initialite sender and receiver frames
     PRT.ReceiverOverlay.Show()
     PRT.SenderOverlay.Show()    
-    PRT.SenderOverlay.ShowPlaceholder()
+    PRT.SenderOverlay.ShowPlaceholder(profile.overlay.sender)
 
     mainWindow:AddChild(mainWindowContent)
     

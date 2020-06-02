@@ -43,12 +43,7 @@ SenderOverlay.GetNextTiming = function(timer, seconds)
     return lowestSecond, nextTiming    
 end
 
-SenderOverlay.UpdateFrame = function(text)
-    local encounter
-    if PRT.currentEncounter then
-        encounter = PRT.currentEncounter.encounter
-    end
-
+SenderOverlay.UpdateFrame = function(encounter, options)
     local overlayText = text
 
     if encounter then        
@@ -112,13 +107,13 @@ SenderOverlay.UpdateFrame = function(text)
     end    
 
     SenderOverlay.overlayFrame.text:SetText(overlayText)
-    PRT.Overlay.UpdateSize(SenderOverlay.overlayFrame)
+    PRT.Overlay.UpdateSize(SenderOverlay.overlayFrame, options)
 end
 
-SenderOverlay.ShowPlaceholder = function()
+SenderOverlay.ShowPlaceholder = function(options)
     SenderOverlay.Show()
     SenderOverlay.overlayFrame.text:SetText("PhenomRaidTools")
-    PRT.Overlay.UpdateSize(SenderOverlay.overlayFrame)
+    PRT.Overlay.UpdateSize(SenderOverlay.overlayFrame, options)
 end
 
 SenderOverlay.CreateOverlay = function(options)

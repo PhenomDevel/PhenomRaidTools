@@ -233,7 +233,7 @@ Options.AddSenderOverlayWidget = function(container, options)
             options.enabled = value
             if value then
                 PRT.SenderOverlay.Show()
-                PRT.SenderOverlay.ShowPlaceholder()
+                PRT.SenderOverlay.ShowPlaceholder(options)
             else
                 PRT.SenderOverlay.Hide()
             end
@@ -261,7 +261,7 @@ Options.AddSenderOverlayWidget = function(container, options)
             local fontSize = widget:GetValue() 
             options.fontSize = fontSize            
             PRT.Overlay.UpdateFont(PRT.SenderOverlay.overlayFrame, fontSize)
-            PRT.Overlay.UpdateSize(PRT.SenderOverlay.overlayFrame)
+            PRT.Overlay.UpdateSize(PRT.SenderOverlay.overlayFrame, options)
         end)
 
     local backdropColor =  PRT.ColorPicker("overlayBackdropColor", options.backdropColor)
