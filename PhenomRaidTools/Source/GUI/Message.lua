@@ -148,7 +148,7 @@ PRT.MessageWidget = function (message, container)
 			widget:SetValue(nil)
 		end)    
 		
-	local messagePreviewLabel = PRT.Label("messagePreview"..PRT.PrepareMessageForDisplay(message.message))	
+	local messagePreviewLabel = PRT.Label(L["messagePreview"]..PRT.PrepareMessageForDisplay(message.message))	
 	local messageEditBox = PRT.EditBox("messageMessage", message.message, true)		
 	messageEditBox:SetWidth(400)
 	messageEditBox:SetMaxLetters(180)
