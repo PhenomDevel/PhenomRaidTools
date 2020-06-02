@@ -7,6 +7,7 @@ if GetLocale() == "deDE" then
     L["runModeDropdown"] = "Ausführungsmodus"
 
     -- Options
+    L["optionsFontSelect"] = "Schriftart"
     L["optionsTabGeneral"] = "Generell"
     L["optionsTabDifficulties"] = "Schwierigkeiten"
     L["optionsTabDefaults"] = "Auslöser Standards"
@@ -90,6 +91,9 @@ if GetLocale() == "deDE" then
     L["messageDuration"] = "Dauer (s)"
     L["messageDurationTooltip"] = "Wie lange soll die Nachricht angezeigt werden?"
     L["messageRaidRosterAddDropdown"] = "Zusätzliche Empfänger auswählen"
+    L["messageStandardSound"] = "Standard"
+    L["messageUseCustomSound"] = "Benutzerdefinierter Sound"
+    L["messageSound"] = "Sound"
 
     -- Rotations
     L["rotationEnabled"] = "Enabled"

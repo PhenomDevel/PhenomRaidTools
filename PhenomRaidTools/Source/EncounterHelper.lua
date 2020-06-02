@@ -20,6 +20,7 @@ end
 PRT.EmptyMessage = function()
     return {
         message = "TODO",
+        useCustomSound = false,
         duration = 5,
         targets = {
             "ALL"

@@ -22,7 +22,7 @@ EventHandler.StartEncounter = function(event, encounterID, encounterName)
 		PRT.ReceiverOverlay.Initialize(PRT.db.profile.overlay.receiver)
 
 		if PRT.db.profile.senderMode then
-			PRT.Debug("Starting new encounter|cFF69CCF0", encounterID, encounterName, "|r")
+			PRT.Debug("Starting new encounter|cFF69CCF0", encounterName,"(", encounterID, ")" , "|r")
 			local _, encounter = PRT.FilterEncounterTable(PRT.db.profile.encounters, encounterID)
 
 			-- Ensure that encounter has all trigger tables!

@@ -31,7 +31,17 @@ ReceiverOverlay.AddMessage = function(messageTable)
 
     if ReceiverOverlay.IsMessageForMe(messageTable) then
         if messageTable.withSound and PRT.db.profile.overlay.receiver.enableSound then
-            PlaySoundFile("Interface\\AddOns\\PhenomRaidTools\\Media\\Sounds\\ReceiveMessage.ogg", "Master")
+            local soundFile = messageTable.soundFile   
+            local customWillPlay 
+
+            if soundFile and messageTable.useCustomSound then      
+                customWillPlay, _ = PlaySoundFile(soundFile, "Master")
+            end
+
+            if not customWillPlay then
+                -- Play default soundfile if configured sound does not exist
+                PlaySoundFile(PRT.db.profile.overlay.receiver.soundFile, "Master")
+            end            
         end
         messageTable.message = PRT.PrepareMessageForDisplay(messageTable.message) 
         local index = #ReceiverOverlay.messageStack+1
@@ -81,6 +91,7 @@ ReceiverOverlay.CreateOverlay = function(options)
     ReceiverOverlay.overlayFrame.text:SetWidth(700)
     ReceiverOverlay.overlayFrame:SetHeight(80)
     ReceiverOverlay.overlayFrame:SetWidth(700)
+    ReceiverOverlay.overlayFrame.text:SetFont((options.font or GameFontHighlightSmall:GetFont()), options.fontSize, "OUTLINE")
 end
 
 ReceiverOverlay.Hide = function()

@@ -7,6 +7,7 @@ L = {
     ["runModeDropdown"] = "Run mode",
 
     -- Options
+    ["optionsFontSelect"] = "Font",
     ["optionsTabGeneral"] = "General",
     ["optionsTabDifficulties"] = "Difficulties",
     ["optionsTabDefaults"] = "Trigger defaults",
@@ -91,6 +92,9 @@ L = {
     ["messageDurationTooltip"] = "For how long should the message be displayed?",
     ["messageRaidRosterAddDropdown"] = "Select additional target entry",
     ["messageRaidRosterAddDropdownTooltip"] = "You can add a reference of your configured raid roster. It will always add the reference *not* the player name in the targets.",
+    ["messageStandardSound"] = "Default",
+    ["messageUseCustomSound"] = "Use custom sound",
+    ["messageSound"] = "Select sound",
 
     -- Rotations
     ["rotationEnabled"] = "Enabled",

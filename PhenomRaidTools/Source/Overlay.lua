@@ -56,6 +56,11 @@ Overlay.SetMoveable = function(widget, v)
     end
 end
 
+Overlay.SetFont = function(container, options)
+    container.text:SetFont((options.font or GameFontHighlightSmall:GetFont()), options.fontSize, "OUTLINE")
+    Overlay.UpdateSize(container)
+end
+
 Overlay.CreateOverlay = function(options, withBackdrop)    
     local overlayFrame = CreateFrame("Frame", nil, UIParent)
     overlayFrame:EnableMouse(true)

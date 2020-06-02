@@ -1,10 +1,14 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local AceGUI = LibStub("AceGUI-3.0")
+local Media = LibStub("LibSharedMedia-3.0")
 
 local AceHelper = {
-	widgetDefaultWidth = 250
+	widgetDefaultWidth = 250,
+	LSMLists = {
+		font = Media:HashTable("font"),
+		sound = Media:HashTable("sound")
+	}
 }
-
 
 -------------------------------------------------------------------------------
 -- Local Helper
@@ -350,4 +354,26 @@ PRT.Slider = function(textID, value)
 	widget:SetWidth(AceHelper.widgetDefaultWidth)
 
     return widget
+end
+
+PRT.SoundSelect = function(textID, value)
+	local text = L[textID]
+
+	local widget = AceGUI:Create("LSM30_Sound")
+	widget:SetList(AceGUIWidgetLSMlists.sound)
+	widget:SetLabel(text)	
+	widget:SetText(value)
+
+	return widget 
+end
+
+PRT.FontSelect = function(textID, value)
+	local text = L[textID]
+
+	local widget = AceGUI:Create("LSM30_Font")
+	widget:SetList(AceGUIWidgetLSMlists.font)
+	widget:SetLabel(text)	
+	widget:SetText(value)
+
+	return widget 
 end

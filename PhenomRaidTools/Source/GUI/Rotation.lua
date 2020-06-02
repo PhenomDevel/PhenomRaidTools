@@ -43,7 +43,7 @@ Rotation.RotationWidget = function(rotation, container)
             PRT.mainWindowContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
             PRT.Core.ReselectExchangeLast(rotation.name)
         end)
-    
+    shouldRestartCheckBox:SetRelativeWidth(1)
     shouldRestartCheckBox:SetCallback("OnValueChanged", 
         function(widget) 
             rotation.shouldRestart = widget:GetValue() 

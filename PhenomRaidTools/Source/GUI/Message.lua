@@ -104,10 +104,29 @@ PRT.MessageWidget = function (message, container)
 	local targetsString = strjoin(", ", unpack(message.targets))
 	local targetsPreviewString = Message.TargetsPreviewString(message.targets)
 	local raidRosterItems = Message.GenerateRaidRosterDropdownItems()	
-
+	
 	local targetsEditBox = PRT.EditBox("messageTargets", targetsString, true)	
     local targetsPreviewLabel = PRT.Label(L["messagePreview"]..PRT.PrepareMessageForDisplay(targetsPreviewString))
 	local raidRosterDropdown = PRT.Dropdown("messageRaidRosterAddDropdown", raidRosterItems)
+
+	local soundSelect = PRT.SoundSelect("messageSound", (message.soundFileName or L["messageStandardSound"]))	
+	soundSelect:SetCallback("OnValueChanged", 
+		function(widget, event, value)
+			local path = AceGUIWidgetLSMlists.sound[value]
+			message.soundFile = path
+			message.soundFileName = value
+			widget:SetText(value)
+		end)
+
+	local useCustomSoundCheckbox = PRT.CheckBox("messageUseCustomSound", message.useCustomSound)
+	useCustomSoundCheckbox:SetCallback("OnValueChanged", 
+		function(widget)
+			local value = widget:GetValue()
+			message.useCustomSound = value
+			container:ReleaseChildren()
+			PRT.MessageWidget(message, container)
+			PRT.mainWindowContent.scrollFrame:DoLayout()
+		end)
 
 	targetsEditBox:SetCallback("OnEnterPressed", 
 		function(widget) 
@@ -129,7 +148,7 @@ PRT.MessageWidget = function (message, container)
 			widget:SetValue(nil)
 		end)    
 		
-	local messagePreviewLabel = PRT.Label(L["messagePreview"]..PRT.PrepareMessageForDisplay(message.message))
+	local messagePreviewLabel = PRT.Label("messagePreview"..PRT.PrepareMessageForDisplay(message.message))	
 	local messageEditBox = PRT.EditBox("messageMessage", message.message, true)		
 	messageEditBox:SetWidth(400)
 	messageEditBox:SetMaxLetters(180)
@@ -162,12 +181,16 @@ PRT.MessageWidget = function (message, container)
 
 	container:AddChild(targetsEditBox)
 	container:AddChild(targetsPreviewLabel)	
-	container:AddChild(raidRosterDropdown)	
+	container:AddChild(raidRosterDropdown)		
 
 	container:AddChild(messageEditBox)
 	container:AddChild(messagePreviewLabel)
 	container:AddChild(delayEditBox)
-    container:AddChild(durationEditBox)	
-    
+	container:AddChild(durationEditBox)	
 	container:AddChild(withSoundCheckbox)
+	container:AddChild(useCustomSoundCheckbox)	
+
+	if message.useCustomSound then
+		container:AddChild(soundSelect)
+	end	
 end

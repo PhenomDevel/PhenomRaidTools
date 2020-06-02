@@ -104,13 +104,13 @@ I have set up a discord server up and running for every kind of question. Feel f
 
 - Sync function to sync all encounters with someone else at once
 
-- Disable all sender related inputs if just receiver mode is enabled
-
 - Add "global" encounter which will always be merged with the current encounter for e.g. seconds pots or something
-
-- Filter messages by player so you won't get spammed by messages if multiple people use sender mode
 
 - Different sounds for messages such as `Yellow` or `Square` as addition to the new icons within messages
 
 ## TODOs
 - Translate error messages and debug messages
+
+- Filter messages by player so you won't get spammed by messages if multiple people use sender mode
+
+- Disable all sender related inputs if just receiver mode is enabled

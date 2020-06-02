@@ -238,6 +238,17 @@ Options.AddSenderOverlayWidget = function(container, options)
                 PRT.SenderOverlay.Hide()
             end
         end)
+
+    local fontSelect = PRT.FontSelect("optionsFontSelect", options.fontName)
+    fontSelect:SetCallback("OnValueChanged", 
+        function(widget, event, value)
+            local path = AceGUIWidgetLSMlists.font[value]
+            options.font = path
+            options.fontName = value
+            widget:SetText(value)
+            PRT.Overlay.SetFont(PRT.SenderOverlay.overlayFrame, options)
+        end)
+
     
     local hideOverlayAfterCombatCheckbox = PRT.CheckBox("optionsHideOverlayAfterCombat", options.hideAfterCombat)
     hideOverlayAfterCombatCheckbox:SetRelativeWidth(1)
@@ -263,9 +274,10 @@ Options.AddSenderOverlayWidget = function(container, options)
             options.backdropColor.b = b
             PRT.Overlay.UpdateBackdrop(PRT.SenderOverlay.overlayFrame, r, g, b, a)
         end)   
-
+    
     container:AddChild(showOverlayCheckbox)
     container:AddChild(hideOverlayAfterCombatCheckbox)
+    container:AddChild(fontSelect)
     container:AddChild(fontSizeSlider)
     container:AddChild(backdropColor)
 end
@@ -279,6 +291,16 @@ Options.AddReceiverOverlayWidget = function(container, options)
         options.fontSize = fontSize            
         PRT.Overlay.UpdateFont(PRT.ReceiverOverlay.overlayFrame, fontSize)
     end)
+
+    local fontSelect = PRT.FontSelect("optionsFontSelect", options.fontName)
+    fontSelect:SetCallback("OnValueChanged", 
+        function(widget, event, value)
+            local path = AceGUIWidgetLSMlists.font[value]
+            options.font = path
+            options.fontName = value
+            widget:SetText(value)
+            PRT.Overlay.SetFont(PRT.ReceiverOverlay.overlayFrame, options)
+        end)
 
     local fontColor =  PRT.ColorPicker("overlayFontColor", options.fontColor)
     fontColor:SetCallback("OnValueConfirmed", 
@@ -311,6 +333,7 @@ Options.AddReceiverOverlayWidget = function(container, options)
 
     container:AddChild(enableSoundCheckbox)
     container:AddChild(lockedCheckBox)
+    container:AddChild(fontSelect)
     container:AddChild(fontSizeSlider)
     container:AddChild(fontColor)
     
