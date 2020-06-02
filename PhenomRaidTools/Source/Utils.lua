@@ -229,14 +229,14 @@ end
 -- String Helper
 
 PRT.ExchangeRaidMarker = function(s)
-    return string.gsub(s, "{rt([^}])}", "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%1:16|t")
+    return string.gsub(s, "{rt([^}])}", "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%1:16:16:0:0:64:64:6:58:6:58|t")
 end
 
 PRT.ExchangeSpellIcons = function(s)
     return string.gsub(s, "{spell:([^}]+)}", 
         function(match)
             local _, _, texture = GetSpellInfo(tonumber(match))
-            return "|T"..(texture or "Interface\\Icons\\INV_MISC_QUESTIONMARK")..":16|t"
+            return "|T"..(texture or "Interface\\Icons\\INV_MISC_QUESTIONMARK")..":16:16:0:0:64:64:6:58:6:58|t"
         end)
 end
 
