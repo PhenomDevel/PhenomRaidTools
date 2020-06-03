@@ -1,18 +1,27 @@
 ===============================================================================
+# Changelog 1.3.10.0-BETA
+## Bugfixes
+None
+
+## Features
+ - When a custom sound is selected the sound will now play once
+
+
+===============================================================================
 # Changelog 1.3.9.0-BETA
 ## Bugfixes
 None
 
 ## Features
-- Receiver overlay will now be displayed while in options
-- Receiver font color will now be updated directly if changed
+ - Receiver overlay will now be displayed while in options
+ - Receiver font color will now be updated directly if changed
 
 
 ===============================================================================
 # Changelog 1.3.8.1
 ## Bugfixes
-- Make sure newly created percentages are enabled by default
-- Make sure example encounter triggers are enabled by default
+ - Make sure newly created percentages are enabled by default
+ - Make sure example encounter triggers are enabled by default
 
 ## Features
 None
@@ -24,9 +33,9 @@ None
 None
 
 ## Features
-- Update default values for example encounter
-- Update default values for trigger settings
-- Update example encounter to show raid markers and spell icons
+ - Update default values for example encounter
+ - Update default values for trigger settings
+ - Update example encounter to show raid markers and spell icons
 
 
 ===============================================================================
@@ -35,13 +44,13 @@ None
 None
 
 ## Features
-- Release version 1.3.7.3
+ - Release version 1.3.7.3
 
 
 ===============================================================================
 # Changelog 1.3.7.3-BETA
 ## Bugfixes
-- Make sure you can deactivate sounds on each message
+ - Make sure you can deactivate sounds on each message
 
 ## Features
 None
@@ -50,7 +59,7 @@ None
 ===============================================================================
 # Changelog 1.3.7.1-BETA
 ## Bugfixes
-- Make sure message.duration is used correctly to remove message from receiver display
+ - Make sure message.duration is used correctly to remove message from receiver display
 
 ## Features
 None
