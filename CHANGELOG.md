@@ -1,3 +1,10 @@
+# Changelog 1.3.8.1
+## Bugfixes
+- Make sure newly created percentages are enabled by default
+- Make sure example encounter triggers are enabled by default
+## Features
+None
+
 # Changelog 1.3.8.0
 ## Bugfixes
 None
