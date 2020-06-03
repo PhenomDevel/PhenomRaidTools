@@ -9,10 +9,18 @@ local RegisterESCHandler = function(name, container)
     tinsert(UISpecialFrames, name)
 end
 
+Core.DisabledText = function(text, enabled)
+    if enabled then
+        return text
+    else
+        return PRT.ColoredString(text, PRT.db.profile.colors.disabled)
+    end
+end
+
 Core.GeneratePercentageTree = function(percentage)
     local t = {
         value = percentage.name,
-        text = percentage.name
+        text = Core.DisabledText(percentage.name, percentage.enabled)
     }
     
     return t
@@ -21,8 +29,6 @@ end
 Core.GeneratePercentagesTree = function(percentages)
     local children = {}
     local t = {
-        value = "percentages",
-        text = "Percentages",
     }
 
     if percentages then
@@ -59,7 +65,7 @@ end
 Core.GenerateRotationTree = function(rotation)
     local t = {
         value = rotation.name,
-        text = rotation.name
+        text = Core.DisabledText(rotation.name, rotation.enabled)
     }
 
     if rotation.triggerCondition then
@@ -94,7 +100,7 @@ end
 Core.GenerateTimerTree = function(timer)
     local t = {
         value = timer.name,
-        text = timer.name
+        text = Core.DisabledText(timer.name, timer.enabled)
     }
 
     if timer.startCondition then
@@ -133,8 +139,8 @@ Core.GenerateEncounterTree = function(encounter)
     
     local children = {}
     local t = {
-        value = encounter.id,
-        text = encounter.name,        
+        value = encounter.id,  
+        text = Core.DisabledText(encounter.name, encounter.enabled),    
         children = {
             Core.GenerateTimersTree(encounter.Timers),
             Core.GenerateRotationsTree(encounter.Rotations),
@@ -244,6 +250,10 @@ Core.ReselectExchangeLast = function(last)
         PRT.mainWindowContent:SelectByValue(selectValue)
         PRT.mainWindowContent.selectedValue = selectValue
     end
+end
+
+Core.UpdateTree = function()
+    PRT.mainWindowContent:SetTree(Core.GenerateTreeByProfile(PRT.db.profile))
 end
 
 Core.CreateMainWindowContent = function(profile)

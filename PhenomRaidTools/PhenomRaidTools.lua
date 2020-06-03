@@ -131,6 +131,7 @@ local defaults =  {
 			percentages = "FFABD473",
 			error = "FFFF0000",
 			highlight = "FF69CCF0",
+			disabled = "FFff1100",
 			classes = {
 				[0] = nil,
 				[1] = "C79C6E",

@@ -103,7 +103,7 @@ PRT.AddEncountersWidgets = function(container, profile)
     function(widget) 
         local newEncounter = PRT.EmptyEncounter()
         tinsert(profile.encounters, newEncounter)
-        PRT.mainWindowContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
+        PRT.Core.UpdateTree()
         PRT.mainWindowContent:SelectByPath("encounters", newEncounter.id)
     end)
 
@@ -137,7 +137,7 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
             if not existingEncounter then
                 if id ~= "" and id ~= nil then
                     encounter.id = id     
-                    PRT.mainWindowContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
+                    PRT.Core.UpdateTree()
                     PRT.Core.ReselectExchangeLast(id)
                 else
                     PRT.Error("Encounter id can not be empty")
@@ -157,7 +157,7 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
     encounterNameEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
             encounter.name = widget:GetText()
-            PRT.mainWindowContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
+            PRT.Core.UpdateTree()
             PRT.mainWindowContent:DoLayout()    
             PRT.Core.ReselectExchangeLast(encounter.id)
         end)
@@ -175,6 +175,7 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
     enabledCheckBox:SetCallback("OnValueChanged", 
         function(widget) 
             encounter.enabled = widget:GetValue()
+            PRT.Core.UpdateTree() 
         end)
 
     local deleteButton = PRT.NewTriggerDeleteButton(container, profile.encounters, encounterIndex, "deleteEncounter")

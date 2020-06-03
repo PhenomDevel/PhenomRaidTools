@@ -5,6 +5,7 @@ None
 
 ## Features
  - When a custom sound is selected the sound will now play once
+ - Show disabled trigger in red within the tree view
 
 
 ===============================================================================

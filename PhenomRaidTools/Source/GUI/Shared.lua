@@ -11,7 +11,7 @@ PRT.NewTriggerDeleteButton = function(container, t, idx, textID)
     deleteButton:SetCallback("OnClick", 
         function() 
             tremove(t, idx) 
-            PRT.mainWindowContent:SetTree(PRT.Core.GenerateTreeByProfile(PRT.db.profile))
+            PRT.Core.UpdateTree()
             PRT.mainWindowContent:DoLayout()
             container:ReleaseChildren()
         end)

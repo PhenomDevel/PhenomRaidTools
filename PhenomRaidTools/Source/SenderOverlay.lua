@@ -3,7 +3,7 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local SenderOverlay = {
     timerColor = "FF1aBB00",
     rotationColor = "FFcc1100",   
-    disabledColor = "FF595959",
+    disabledColor = "FFb30c00",
     inactiveColor = "FF8f8f8f"
 }
 
