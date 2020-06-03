@@ -142,6 +142,7 @@ PRT.ExampleEncounter = function()
         name = "Example", 
         Timers = {
             {
+                enabled = true,
                 startCondition = {
                     event = "PLAYER_REGEN_DISABLED",
                     spellID = nil,
@@ -190,6 +191,7 @@ PRT.ExampleEncounter = function()
 
         Rotations = {
             {
+                enabled = true,
                 triggerCondition = {
                     event = "SPELL_CAST_START",
                     spellID = 188196,
@@ -222,6 +224,7 @@ PRT.ExampleEncounter = function()
 
         HealthPercentages = {
             {
+                enabled = true,
                 name = "Above 60 %",
                 unitID = "player",
                 values = {
@@ -248,6 +251,7 @@ PRT.ExampleEncounter = function()
 
         PowerPercentages = {
             {
+                enabled = true,
                 name = "Above 90% Power",
                 unitID = "player",
                 values = {
