@@ -8,122 +8,126 @@ local padding = 15
 
 
 -------------------------------------------------------------------------------
+-- Local Helper
+
+
+-------------------------------------------------------------------------------
 -- Public API
 
 Overlay.SavePosition = function(widget, options)
-   local left, top = widget:GetLeft(), widget:GetTop()
+    local left, top = widget:GetLeft(), widget:GetTop()
 
-   options.top = UIParent:GetHeight() - top
-   options.left = left
+    options.top = UIParent:GetHeight() - top
+    options.left = left
 end
 
 Overlay.UpdateSize = function(container, options)
-   local width = container.text:GetStringWidth()
-   container:SetWidth(width + (2 * padding))
+    local width = container.text:GetStringWidth()
+    container:SetWidth(width + (2 * padding))
 
-   local height = container.text:GetStringHeight()
-   container:SetHeight(height + (2 * padding))
+    local height = container.text:GetStringHeight()
+    container:SetHeight(height + (2 * padding))    
 
-   if options then
-      local left = min((options.left + width), UIParent:GetWidth()) - width
-      local top = min((options.top + height), UIParent:GetHeight()) - height
+    if options then        
+        local left = min((options.left + width), UIParent:GetWidth()) - width
+        local top = min((options.top + height), UIParent:GetHeight()) - height
 
-      container:ClearAllPoints()
-      container:SetPoint("TOPLEFT", "UIParent", "TOPLEFT", left, -top)
-   end
+        container:ClearAllPoints()
+        container:SetPoint("TOPLEFT", "UIParent", "TOPLEFT", left, -top)
+    end
 end
 
 Overlay.UpdateFont = function(container, fontSize)
-   container.text:SetFont(GameFontHighlightSmall:GetFont(), fontSize, "OUTLINE")
+    container.text:SetFont(GameFontHighlightSmall:GetFont(), fontSize, "OUTLINE")
 end
 
 Overlay.UpdateBackdrop = function(container, r, g, b, a)
-   container:SetBackdropColor(r, g, b, a);
+    container:SetBackdropColor(r, g, b, a);
 end
 
 Overlay.AddHeading = function(s, text)
-   return s.."|c"..headerColor..text.."|r"
+    return s.."|c"..headerColor..text.."|r"
 end
 
 Overlay.AddSubHeading = function(s, text)
-   return s.."|c"..subHeaderColor..text.."|r\n"
+    return s.."|c"..subHeaderColor..text.."|r\n"
 end
 
 Overlay.AddText = function(s, text)
-   return s.."|c"..textColor..text.."|r\n"
+    return s.."|c"..textColor..text.."|r\n"
 end
 
 Overlay.SetMoveable = function(widget, v)
-   if widget then
-      widget:EnableMouse(v)
-      widget:SetMovable(v)
-   end
+    if widget then
+        widget:EnableMouse(v)
+        widget:SetMovable(v)
+    end
 end
 
 Overlay.SetFont = function(container, options)
-   container.text:SetFont((options.font or GameFontHighlightSmall:GetFont()), options.fontSize, "OUTLINE")
-   Overlay.UpdateSize(container, options)
+    container.text:SetFont((options.font or GameFontHighlightSmall:GetFont()), options.fontSize, "OUTLINE")
+    Overlay.UpdateSize(container, options)
 end
 
-Overlay.CreateOverlay = function(options, withBackdrop)
-   local overlayFrame = CreateFrame("Frame", nil, UIParent)
-   overlayFrame:EnableMouse(true)
-   overlayFrame:SetMovable(true)
-   overlayFrame:SetClampedToScreen(true)
-   overlayFrame:RegisterForDrag("LeftButton")
-   overlayFrame:SetScript("OnDragStart", overlayFrame.StartMoving)
-   overlayFrame:SetScript("OnDragStop",
-			  function(widget)
-			     Overlay.SavePosition(widget, options)
-			     overlayFrame:StopMovingOrSizing()
-   end)
+Overlay.CreateOverlay = function(options, withBackdrop)    
+    local overlayFrame = CreateFrame("Frame", nil, UIParent)
+    overlayFrame:EnableMouse(true)
+    overlayFrame:SetMovable(true)
+    overlayFrame:SetClampedToScreen(true)
+    overlayFrame:RegisterForDrag("LeftButton")
+    overlayFrame:SetScript("OnDragStart", overlayFrame.StartMoving)
+    overlayFrame:SetScript("OnDragStop", 
+        function(widget) 
+            Overlay.SavePosition(widget, options) 
+            overlayFrame:StopMovingOrSizing() 
+        end)
 
-   if withBackdrop then
-      overlayFrame:SetBackdrop(
-	 {
-	    bgFile = "Interface/Tooltips/UI-Tooltip-Background",
-	    edgeFile = nil,
-	    tile = true, tileSize = 16, edgeSize = 16,
-	    insets = {
-	       left = 4,
-	       right = 4,
-	       top = 4,
-	       bottom = 4
-      }});
+    if withBackdrop then
+        overlayFrame:SetBackdrop(
+            {
+                bgFile = "Interface/Tooltips/UI-Tooltip-Background", 
+                edgeFile = nil, 
+                tile = true, tileSize = 16, edgeSize = 16, 
+                insets = { 
+                    left = 4, 
+                    right = 4, 
+                    top = 4, 
+                    bottom = 4 
+            }});
 
-      overlayFrame:SetBackdropColor((options.backdropColor.r or 0), (options.backdropColor.g or 0), (options.backdropColor.b or 0), (options.backdropColor.a or 0));
-   end
+        overlayFrame:SetBackdropColor((options.backdropColor.r or 0), (options.backdropColor.g or 0), (options.backdropColor.b or 0), (options.backdropColor.a or 0));
+    end
 
-   overlayFrame:SetFrameStrata("MEDIUM")
-   overlayFrame:SetPoint("TOPLEFT", "UIParent", "TOPLEFT", options.left, -options.top)
+    overlayFrame:SetFrameStrata("MEDIUM")
+    overlayFrame:SetPoint("TOPLEFT", "UIParent", "TOPLEFT", options.left, -options.top)
 
-   overlayFrame.text = overlayFrame:CreateFontString(nil, "ARTWORK")
-   overlayFrame.text:SetJustifyH("CENTER")
-   overlayFrame.text:SetFont(GameFontHighlightSmall:GetFont(), options.fontSize, "OUTLINE")
-   overlayFrame.text:SetPoint("TOPLEFT", padding, -padding)
-   overlayFrame.text:SetText("")
+    overlayFrame.text = overlayFrame:CreateFontString(nil, "ARTWORK") 
+    overlayFrame.text:SetJustifyH("CENTER")
+    overlayFrame.text:SetFont(GameFontHighlightSmall:GetFont(), options.fontSize, "OUTLINE")
+    overlayFrame.text:SetPoint("TOPLEFT", padding, -padding)
+    overlayFrame.text:SetText("")
 
-   return overlayFrame
+    return overlayFrame
 end
 
 Overlay.ClearText = function(widget)
-   if widget then
-      widget.text:SetText("")
-   end
+    if widget then
+        widget.text:SetText("")
+    end
 end
 
 Overlay.Hide = function(widget)
-   if widget then
-      Overlay.ClearText(widget)
-      widget:Hide()
-   end
+    if widget then           
+		Overlay.ClearText(widget)
+        widget:Hide()
+    end
 end
 
 Overlay.Show = function(widget)
-   if widget then
-      Overlay.ClearText(widget)
-      widget:Show()
-   end
+    if widget then              
+        Overlay.ClearText(widget)
+        widget:Show()
+    end
 end
 
 PRT.Overlay = Overlay
