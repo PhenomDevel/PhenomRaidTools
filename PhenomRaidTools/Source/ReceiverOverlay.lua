@@ -27,9 +27,8 @@ ReceiverOverlay.ClearMessageStack = function()
 end
 
 ReceiverOverlay.AddMessage = function(messageTable)
-    messageTable.expirationTime = GetTime() + (messageTable.duration or 5)
-
     if ReceiverOverlay.IsMessageForMe(messageTable) then
+        messageTable.expirationTime = GetTime() + (messageTable.duration or 5)
         if messageTable.withSound and PRT.db.profile.overlay.receiver.enableSound then
             local soundFile = messageTable.soundFile   
             local customWillPlay 
@@ -51,7 +50,7 @@ ReceiverOverlay.AddMessage = function(messageTable)
                 ReceiverOverlay.messageStack[index] = ""
                 ReceiverOverlay.UpdateFrame()
             end, 
-            5)
+            (messageTable.duration or 5))
 
         ReceiverOverlay.UpdateFrame()    
     end
