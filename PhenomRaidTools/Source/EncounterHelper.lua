@@ -91,7 +91,6 @@ end
 
 PRT.EmptyPercentageEntry = function()
     return {
-        enabled = true,
         value = 50,
         operator = "equals",
         messages = {
@@ -101,7 +100,8 @@ PRT.EmptyPercentageEntry = function()
 end
 
 PRT.EmptyPercentage = function()
-    return {
+    return {        
+        enabled = true,
         name = "Percentage Name"..random(0,100000),
         unitID = "boss1",
         values = {
