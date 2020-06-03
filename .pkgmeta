@@ -18,6 +18,10 @@ enable-nolib-creation: no
 ignore:
   - README.md
   - CHANGELOG_TEMPLATE.md
+
+manual-changelog:
+    filename: CHANGELOG.md
+    markup-type: markdown  
   
 move-folders:
   PhenomRaidTools/PhenomRaidTools: PhenomRaidTools
