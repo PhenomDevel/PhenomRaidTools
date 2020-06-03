@@ -1,4 +1,14 @@
 ===============================================================================
+# Changelog 1.3.9.0-BETA
+## Bugfixes
+None
+
+## Features
+- Receiver overlay will now be displayed while in options
+- Receiver font color will now be updated directly if changed
+
+
+===============================================================================
 # Changelog 1.3.8.1
 ## Bugfixes
 - Make sure newly created percentages are enabled by default
