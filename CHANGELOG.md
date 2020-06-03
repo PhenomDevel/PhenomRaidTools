@@ -1,3 +1,9 @@
+# Changelog 1.3.7.3
+## Bugfixes
+None
+## Features
+- Release version 1.3.7.3
+
 # Changelog 1.3.7.3-BETA
 ## Bugfixes
 - Make sure you can deactivate sounds on each message
