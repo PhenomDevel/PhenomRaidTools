@@ -29,7 +29,7 @@ end
 ReceiverOverlay.AddMessage = function(messageTable)
     if ReceiverOverlay.IsMessageForMe(messageTable) then
         messageTable.expirationTime = GetTime() + (messageTable.duration or 5)
-        if messageTable.withSound and PRT.db.profile.overlay.receiver.enableSound then
+        if messageTable.withSound == true and PRT.db.profile.overlay.receiver.enableSound then
             local soundFile = messageTable.soundFile   
             local customWillPlay 
 

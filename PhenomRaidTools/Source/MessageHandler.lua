@@ -40,13 +40,6 @@ MessageHandler.ExecuteMessageAction = function(message)
 
         -- Cleanup unused fields
         targetMessage.targets = nil
-
-        -- Determine if the message should play a sound on the receiver side
-        if message.withSound then 
-            targetMessage.withSound = "t"
-        else 
-            targetMessage.withSound = "f"
-        end
         
         local weakAuraReceiverMessage = nil
 
@@ -63,6 +56,12 @@ MessageHandler.ExecuteMessageAction = function(message)
                 PRT.Debug("Sending new message to", targetMessage.target)
                 AceComm:SendCommMessage(PRT.db.profile.addonMessagePrefix, PRT.TableToString(targetMessage), "WHISPER", UnitName("player")) 
             elseif weakAuraReceiverMessage and PRT.db.profile.weakAuraMode then
+                -- Determine if the message should play a sound on the receiver side
+                if message.withSound then 
+                    targetMessage.withSound = "t"
+                else 
+                    targetMessage.withSound = "f"
+                end
                 weakAuraReceiverMessage = MessageHandler.MessageToReceiverMessage(targetMessage) 
                 PRT.Debug("Sending new weakaura message", weakAuraReceiverMessage)
                 MessageHandler.SendMessageToReceiver(weakAuraReceiverMessage) 
