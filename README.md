@@ -1,4 +1,4 @@
-[![PhenomRaidTools on Discord](https://img.shields.io/badge/discord-PhenomRaidTools-738bd7.svg)](https://discord.gg/s5HEuMQ)
+[![PhenomRaidTools on Discord](https://img.shields.io/badge/discord-PhenomRaidTools-738bd7.svg)](https://discord.gg/GAYDjBF)
 
 # PhenomRaidTools
 ## Quick Start
@@ -71,7 +71,7 @@ Message consists of the following
  - Install the receiver weakaura which is used to receive messages that PhenomRaidTools will send to the given players [PhenomRaidTools: Receiver](https://wago.io/HyieicnAz)
 
 ## Help
-I have set up a discord server up and running for every kind of question. Feel free to enter and ask what you have trouble with. [Discord](https://discord.gg/s5HEuMQ)
+I have set up a discord server up and running for every kind of question. Feel free to enter and ask what you have trouble with. [Discord](https://discord.gg/GAYDjBF)
 
 ## Feature Requests
  - Add trigger for `DBM` / `BW`
