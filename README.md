@@ -84,3 +84,5 @@ I have set up a discord server up and running for every kind of question. Feel f
  - Translate error messages and debug messages
  - Filter messages by player so you won't get spammed by messages if multiple people use sender mode
  - Disable all sender related inputs if just receiver mode is enabled. 
+ - Refresh receiver overlay after font color change
+ - Make sure receiver overlay backdrop is scaled correctly after any change to the font

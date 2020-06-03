@@ -1,3 +1,11 @@
+# Changelog 1.3.8.0
+## Bugfixes
+None
+## Features
+- Update default values for example encounter
+- Update default values for trigger settings
+- Update example encounter to show raid markers and spell icons
+
 # Changelog 1.3.7.3
 ## Bugfixes
 None

@@ -37,7 +37,7 @@ local defaults =  {
 		testEncounterName = "Example Encounter",
 		debugMode = false,
 		showOverlay = false,
-		hideOverlayAfterCombat = false,
+		hideOverlayAfterCombat = true,
 		weakAuraMode = false,
 
 		runMode = "receiver",
@@ -49,13 +49,13 @@ local defaults =  {
 				locked = true,
 				top = 450,
 				left = 615,
-				fontSize = 14,
+				fontSize = 32,
 				fontColor = {
 					hex = "FFFFFF",
 					r = 0,
 					g = 0,
 					b = 0,
-					a = 0
+					a = 1
 				},
 				enableSound = true,
 				backdropColor = {
@@ -105,11 +105,11 @@ local defaults =  {
 			},
 			rotationDefaults = {
 				defaultShouldRestart = true,
-				defaultIgnoreAfterActivation = true,
+				defaultIgnoreAfterActivation = false,
 				defaultIgnoreDuration = 10
 			},
 			percentageDefaults = {
-				defaultCheckAgain = true,
+				defaultCheckAgain = false,
 				defaultCheckAgainAfter = 5
 			},
 			conditionDefaults = {

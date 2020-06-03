@@ -154,7 +154,7 @@ PRT.ExampleEncounter = function()
                     source = nil,
                     target = nil,
                 },
-                name = "Timer Name",
+                name = "Phase 1 Timer",
                 timings = {
                     {
                         seconds = {1, 7},
@@ -174,7 +174,7 @@ PRT.ExampleEncounter = function()
                         seconds = {5},
                         messages = {
                             {
-                                message = "Message 5 seconds into the Encounter",
+                                message = "Message with raid marker {rt1}",
                                 duration = 5,
                                 targets = {
                                     "ALL"
@@ -203,7 +203,7 @@ PRT.ExampleEncounter = function()
                     {
                         messages = {
                             {
-                                message = "You started casting Lightning Bolt",
+                                message = "You cast {spell:188196}",
                                 duration = 5,
                                 targets = {
                                     "ALL"
