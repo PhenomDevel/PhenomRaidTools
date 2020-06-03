@@ -1,4 +1,13 @@
 ===============================================================================
+# Changelog 1.3.11.0-BETA
+## Bugfixes
+ - Disabled rotations will now display correctly on the sender overlay
+
+## Features
+None
+
+
+===============================================================================
 # Changelog 1.3.10.0-BETA
 ## Bugfixes
 None
