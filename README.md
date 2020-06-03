@@ -86,3 +86,4 @@ I have set up a discord server up and running for every kind of question. Feel f
  - Disable all sender related inputs if just receiver mode is enabled. 
  - Refresh receiver overlay after font color change
  - Make sure receiver overlay backdrop is scaled correctly after any change to the font
+ - Be able to hide disabled rotations and timers on the sender overlay
