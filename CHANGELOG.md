@@ -1,3 +1,9 @@
+# Changelog 1.3.7.3-BETA
+## Bugfixes
+- Make sure you can deactivate sounds on each message
+## Features
+None
+
 # Changelog 1.3.7.1-BETA
 ## Bugfixes
 - Make sure message.duration is used correctly to remove message from receiver display
