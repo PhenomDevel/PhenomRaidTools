@@ -293,10 +293,11 @@ PRT.CreateMainWindow = function(profile)
     mainWindow.frame:SetMinResize(400, 400)
     RegisterESCHandler("mainWindow", mainWindow)
 
-    -- Initialite sender and receiver frames
+    -- Initialize sender and receiver frames
     PRT.ReceiverOverlay.Show()
     PRT.SenderOverlay.Show()    
     PRT.SenderOverlay.ShowPlaceholder(profile.overlay.sender)
+    PRT.ReceiverOverlay.ShowPlaceholder(profile.overlay.receiver)
 
     mainWindow:AddChild(mainWindowContent)
     
