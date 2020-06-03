@@ -106,7 +106,7 @@ PRT.MessageWidget = function (message, container)
 	local raidRosterItems = Message.GenerateRaidRosterDropdownItems()	
 	
 	local targetsEditBox = PRT.EditBox("messageTargets", targetsString, true)	
-    local targetsPreviewLabel = PRT.Label(L["messagePreview"]..PRT.PrepareMessageForDisplay(targetsPreviewString))
+   local targetsPreviewLabel = PRT.Label(L["messagePreview"]..PRT.PrepareMessageForDisplay(targetsPreviewString))
 	local raidRosterDropdown = PRT.Dropdown("messageRaidRosterAddDropdown", raidRosterItems)
 
 	local soundSelect = PRT.SoundSelect("messageSound", (message.soundFileName or L["messageStandardSound"]))	
@@ -116,6 +116,10 @@ PRT.MessageWidget = function (message, container)
 			message.soundFile = path
 			message.soundFileName = value
 			widget:SetText(value)
+
+			if path then
+				PlaySoundFile(path, "Master")
+			end
 		end)
 
 	local useCustomSoundCheckbox = PRT.CheckBox("messageUseCustomSound", message.useCustomSound)
