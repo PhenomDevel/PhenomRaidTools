@@ -57,7 +57,7 @@ ReceiverOverlay.AddMessage = function(messageTable)
 end
 
 ReceiverOverlay.ShowPlaceholder = function()
-    ReceiverOverlay.overlayFrame.text:SetText("Placeholder")
+    ReceiverOverlay.overlayFrame.text:SetText(PRT.ColoredString("All received messages will show here", "FF"..PRT.db.profile.overlay.receiver.fontColor.hex))
 end
 
 ReceiverOverlay.UpdateFrame = function()  

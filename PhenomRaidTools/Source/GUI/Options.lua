@@ -310,6 +310,8 @@ Options.AddReceiverOverlayWidget = function(container, options)
             options.fontColor.g = g
             options.fontColor.b = b
             options.fontColor.a = a
+            PRT.ReceiverOverlay.UpdateFrame()
+            PRT.ReceiverOverlay.ShowPlaceholder()
         end)
 
     local lockedCheckBox = PRT.CheckBox("overlayLocked", options.locked)
