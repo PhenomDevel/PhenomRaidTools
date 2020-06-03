@@ -1,10 +1,10 @@
-# 1.3.8.0-BETA
+# Changelog 1.3.7.1-BETA
 ## Bugfixes
-None
+- Make sure message.duration is used correctly to remove message from receiver display
 ## Features
 None
 
-# $Version
+# Changelog $Version
 ## Bugfixes
 None
 ## Features
