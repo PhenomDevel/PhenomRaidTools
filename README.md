@@ -83,7 +83,14 @@ I have set up a discord server up and running for every kind of question. Feel f
 ## TODOs
  - Translate error messages and debug messages
  - Filter messages by player so you won't get spammed by messages if multiple people use sender mode
- - Disable all sender related inputs if just receiver mode is enabled. 
  - Refresh receiver overlay after font color change
  - Make sure receiver overlay backdrop is scaled correctly after any change to the font
  - Be able to hide disabled rotations and timers on the sender overlay
+ - Cleanup github templates
+ - PhenomRaidTools.lua `PRT.mainWindow` obsolete?
+ - Refactor some ifs as helper functions for more readable code
+ - Use ColoredString helper everywhere
+ - TriggerHandler.FilterPercentagesTable use name->fn mapping for operators
+ - Overlay.lua cleanup locals
+ - MessageHandler.lua do we really need `validTargets`?
+ - Exchange `getn` with `#`
