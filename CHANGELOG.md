@@ -2,9 +2,10 @@
 # Changelog 1.3.11.0-BETA
 ## Bugfixes
  - Disabled rotations will now display correctly on the sender overlay
+ - Remove duplicate files
 
 ## Features
-None
+ - Disable or hide all sender related inputs if only receiver mode is selected
 
 
 ===============================================================================
