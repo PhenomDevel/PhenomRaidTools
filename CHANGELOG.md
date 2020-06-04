@@ -1,5 +1,5 @@
 ===============================================================================
-# Changelog 1.3.12.0-BETA
+# Changelog 1.3.12.1-BETA
 ## Bugfixes
  - Only update receiver overlay if it is already initialized
  - Only start encounter if it is enabled even in test mode
