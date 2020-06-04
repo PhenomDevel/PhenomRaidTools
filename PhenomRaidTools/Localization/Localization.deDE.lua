@@ -16,7 +16,7 @@ if GetLocale() == "deDE" then
 
     L["optionsReceiverModeHelp"] = 
         "|cFF69CCF0Notiz|r: Alle Optionen, welche mit dem Sender-Modus zusammenhängen sind entweder ausgeblendet oder deaktiviert.\n"..
-        "Wenn du das Aussehen des für das Empfänger-Overlay ändern möchtest bitte navgiere auf `Overlays`."
+        "Wenn du das Aussehen des für das Empfänger-Overlay ändern möchtest bitte navgiere auf `|cFF69CCF0Overlays|r`."
     L["optionsWeakAuraMode"] = "WeakAura Empfänger benutzen"
     L["optionsWeakAuraModeTooltip"] = 
         "Aktiviere diese Option, um den WeakAura Empfänger zu benutzen.\n"..
