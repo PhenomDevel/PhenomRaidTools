@@ -208,6 +208,8 @@ Options.AddGeneralWidgets = function(container, options)
             options.senderMode = tContains(Options.senderModeSelections, text)
             options.receiverMode = tContains(Options.receiverModeSelections, text)
             options.runMode = text
+            PRT.Core.UpdateTree()
+            PRT.Core.ReselectCurrentValue()
         end)   
             
     weakAuraModeCheckbox:SetCallback("OnValueChanged", function(widget)	options.weakAuraMode = widget:GetValue() end)	
@@ -219,8 +221,10 @@ Options.AddGeneralWidgets = function(container, options)
     container:AddChild(enabledCheckbox)
     container:AddChild(runModeDropdown)
     container:AddChild(debugModeCheckbox)
-    container:AddChild(testModeCheckbox)    
-    container:AddChild(textEncounterIDDropdown)
+    if options.senderMode then
+        container:AddChild(testModeCheckbox)    
+        container:AddChild(textEncounterIDDropdown)
+    end
     container:AddChild(weakAuraModeCheckbox)    
 end
 
@@ -362,8 +366,8 @@ PRT.AddOptionWidgets = function(container, profile)
     local optionsTabs = {
         { value = "general", text = L["optionsTabGeneral"] },
         { value = "difficulties", text = L["optionsTabDifficulties"] },
-        { value = "defaults", text = L["optionsTabDefaults"] },
-        { value = "raidRoster", text = L["optionsTabRaidRoster"] },
+        { value = "defaults", text = L["optionsTabDefaults"] , disabled = not profile.senderMode},
+        { value = "raidRoster", text = L["optionsTabRaidRoster"] , disabled = not profile.senderMode},
         { value = "overlay", text = L["optionsTabOverlays"] }
     }
 

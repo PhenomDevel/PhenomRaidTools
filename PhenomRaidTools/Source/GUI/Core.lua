@@ -178,9 +178,12 @@ end
 
 Core.GenerateTreeByProfile = function(profile)
     local t = {
-        Core.GenerateOptionsTree(),
-        Core.GenerateEncountersTree(profile.encounters)
+        Core.GenerateOptionsTree(),        
     }
+
+    if profile.senderMode then
+        tinsert(t, Core.GenerateEncountersTree(profile.encounters))
+    end
 
     return t
 end
