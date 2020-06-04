@@ -61,24 +61,26 @@ ReceiverOverlay.ShowPlaceholder = function()
 end
 
 ReceiverOverlay.UpdateFrame = function()  
-    local text = ""
+    if ReceiverOverlay.overlayFrame then
+        local text = ""
 
-    for i, message in pairs(ReceiverOverlay.messageStack) do
-        if message ~= "" then
-            if message.expirationTime > GetTime() then           
-                local timeLeftRaw = message.expirationTime - GetTime()
-                local timeLeft = PRT.Round(timeLeftRaw, 2)
-                
-                if text == "" then
-                    text = "|cFF"..PRT.db.profile.overlay.receiver.fontColor.hex..string.format(message.message, timeLeft)
-                else
-                    text = text.."|n"..string.format(message.message, timeLeft)
-                end
-            end 
+        for i, message in pairs(ReceiverOverlay.messageStack) do
+            if message ~= "" then
+                if message.expirationTime > GetTime() then           
+                    local timeLeftRaw = message.expirationTime - GetTime()
+                    local timeLeft = PRT.Round(timeLeftRaw, 2)
+                    
+                    if text == "" then
+                        text = "|cFF"..PRT.db.profile.overlay.receiver.fontColor.hex..string.format(message.message, timeLeft)
+                    else
+                        text = text.."|n"..string.format(message.message, timeLeft)
+                    end
+                end 
+            end
         end
-    end
 
-    ReceiverOverlay.overlayFrame.text:SetText(text)
+        ReceiverOverlay.overlayFrame.text:SetText(text)
+    end
 end
 
 ReceiverOverlay.CreateOverlay = function(options)
