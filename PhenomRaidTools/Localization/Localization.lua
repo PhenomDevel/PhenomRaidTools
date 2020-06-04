@@ -14,6 +14,9 @@ L = {
     ["optionsTabRaidRoster"] = "Raid roster",
     ["optionsTabOverlays"] = "Overlays",
 
+    ["optionsReceiverModeHelp"] = 
+        "|cFF69CCF0Note|r: All options regarding the sender mode are hidden or disabled.\n"..
+        "If you want to change the appereance of the receiver ovelay please go to `Overlays`.",
     ["optionsWeakAuraMode"] = "Use legacy WeakAura receiver",
     ["optionsWeakAuraModeTooltip"] = 
         "Activate this option if you want to use the WeakAura as receiver.\n"..

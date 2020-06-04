@@ -220,11 +220,19 @@ Options.AddGeneralWidgets = function(container, options)
     
     container:AddChild(enabledCheckbox)
     container:AddChild(runModeDropdown)
+    
+    if not options.senderMode and options.receiverMode then
+        local helpLabel = PRT.Label("optionsReceiverModeHelp")
+        container:AddChild(helpLabel)
+    end
+
     container:AddChild(debugModeCheckbox)
+
     if options.senderMode then
         container:AddChild(testModeCheckbox)    
         container:AddChild(textEncounterIDDropdown)
     end
+
     container:AddChild(weakAuraModeCheckbox)    
 end
 
