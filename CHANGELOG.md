@@ -1,4 +1,13 @@
 ===============================================================================
+# Changelog 1.3.12.2-BETA
+## Bugfixes
+ - Make sure weakaura legacy mode actually sends messages to the weakaura
+
+## Features
+None
+
+
+===============================================================================
 # Changelog 1.3.12.1-BETA
 ## Bugfixes
  - Only update receiver overlay if it is already initialized
