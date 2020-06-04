@@ -219,6 +219,24 @@ PRT.ExampleEncounter = function()
                 shouldRestart = true,
                 ignoreAfterActivation = false,
                 ignoreDuration = 0
+            },
+            {
+                enabled = false,
+                triggerCondition = {
+                    event = "SPELL_CAST_SUCCESS",
+                    source = nil,
+                    target = nil,
+                },
+                name = "Disabled Rotation",
+                entries = {
+                    {
+                        messages = {
+                        }
+                    }
+                },
+                shouldRestart = true,
+                ignoreAfterActivation = false,
+                ignoreDuration = 0
             }
         },
 
