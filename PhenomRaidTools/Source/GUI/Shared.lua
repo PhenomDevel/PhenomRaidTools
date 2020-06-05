@@ -42,27 +42,7 @@ PRT.PartyOrRaidNames = function()
     return names
 end
 
-PRT.ColoredPartyOrRaidNames = function()
-    local names = PRT.PartyOrRaidNames()
-    local coloredNames = {}
-    for i, name in ipairs(names) do
-        local _, _, classIndex = UnitClass(name)
-        local color = PRT.db.profile.colors.classes[classIndex]
-        local coloredName = nil
-
-        if color then
-            coloredName = "|cFF"..color..name.."|r"
-        else
-            coloredName = name
-        end
-
-        tinsert(coloredNames, coloredName)
-    end
-
-    return coloredNames
-end
-
-PRT.ClassColorName = function(name)
+PRT.ClassColoredName = function(name)
     if name then
         local _, _, classIndex = UnitClass(name)
         local color = PRT.db.profile.colors.classes[classIndex]
@@ -72,10 +52,25 @@ PRT.ClassColorName = function(name)
             coloredName = "|cFF"..color..name.."|r"
         else
             coloredName = name
-        end
-
-        return name, coloredName
+        end        
+        return coloredName
     else
         return name
     end
+end
+
+PRT.ColoredPartyOrRaidNames = function()
+    local names = PRT.PartyOrRaidNames()
+    local coloredNames = {}
+    for i, name in ipairs(names) do
+        local coloredName = PRT.ClassColoredName(name)
+
+        tinsert(coloredNames, coloredName)
+    end
+
+    return coloredNames
+end
+
+PRT.PlayerInParty = function()
+    return UnitInParty("player") or UnitInRaid("player")
 end

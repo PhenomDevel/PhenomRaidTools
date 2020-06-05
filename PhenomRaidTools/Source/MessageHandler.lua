@@ -16,7 +16,7 @@ local validTargets = {
 
 MessageHandler.SendMessageToReceiver = function(message)
     print(message)
-    if UnitInRaid("player") or UnitInParty("player") then
+    if PRT.PlayerInParty() then
         C_ChatInfo.SendAddonMessage(PRT.db.profile.addonPrefixes.weakAuraMessage, message, "RAID")    
     else
         C_ChatInfo.SendAddonMessage(PRT.db.profile.addonPrefixes.weakAuraMessage, message, "WHISPER", UnitName("player"))         
@@ -72,7 +72,7 @@ MessageHandler.ExecuteMessageAction = function(message)
     end    
 end
 
-function PRT:OnCommReceive(message)
+function PRT:OnAddonMessage(message)
     if not PRT.db.profile.weakAuraMode then
         local worked, messageTable = PRT.StringToTable(message)
         if PRT.db.profile.receiverMode then
@@ -95,9 +95,9 @@ function PRT:OnVersionRequest(message)
     end
 end
 
-function PRT:OnVersionResponse(message)
+function PRT:OnVersionResponse(message)    
     local worked, messageTable = PRT.StringToTable(message)
-    PRT:Print(messageTable.name, ": ", messageTable.version)
+    PRT.db.profile.versionCheck[messageTable.name] = messageTable.version
 end
 
 

@@ -2,6 +2,7 @@ local PRT = LibStub("AceAddon-3.0"):NewAddon("PhenomRaidTools", "AceConsole-3.0"
 
 local AceGUI = LibStub("AceGUI-3.0")
 local AceComm = LibStub("AceComm-3.0")
+local AceTimer = LibStub("AceTimer-3.0")
 
 local PhenomRaidToolsLDB = LibStub("LibDataBroker-1.1"):NewDataObject("PhenomRaidTools", {
 	type = "data source",
@@ -187,7 +188,7 @@ end
 function PRT:OnEnable()
 	PRT.RegisterEssentialEvents()
 
-	AceComm:RegisterComm(self.db.profile.addonPrefixes.addonMessage, self.OnCommReceive)
+	AceComm:RegisterComm(self.db.profile.addonPrefixes.addonMessage, self.OnAddonMessage)
 	AceComm:RegisterComm(self.db.profile.addonPrefixes.versionRequest, self.OnVersionRequest)
 	AceComm:RegisterComm(self.db.profile.addonPrefixes.versionResponse, self.OnVersionResponse)
 	C_ChatInfo.RegisterAddonMessagePrefix(PRT.db.profile.addonPrefixes.weakAuraMessage)
@@ -215,16 +216,54 @@ function PRT:PrintHelp()
 	PRT:Print("/prt versions - Will check PRT versions for each member of your group")
 end
 
+function PRT:PrintPartyOrRaidVersions()	
+	local myVersion = tonumber(string.gsub(PRT.db.profile.version, "[^%d]+", ""))
+
+	for player, version in pairs(PRT.db.profile.versionCheck) do				
+		local coloredName = PRT.ClassColoredName(player)
+
+		if version == "" or version == nil then
+			PRT:Print(coloredName, ":", PRT.ColoredString("no response", PRT.db.profile.colors.disabled))
+		else
+			local parsedVersion = tonumber(string.gsub(version, "[^%d]+", ""))
+
+			if parsedVersion >= myVersion then
+				PRT:Print(coloredName, ":", PRT.ColoredString(version, PRT.db.profile.colors.highlight))			
+			elseif parsedVersion < myVersion then
+				PRT:Print(coloredName, ":", PRT.ColoredString(version, PRT.db.profile.colors.disabled))
+			end
+		end
+	end
+end
+
 function PRT:ExecuteChatCommand(input)
 	if input == "" or input == nil then
 		PRT:Open()
-	elseif input == "versions" then
+	elseif input == "help" then
+		PRT.PrintHelp()
+	elseif input == "version" or input == "versions" then
 		local request = {
 			type = "request",
 			requestor = UnitName("player")
 		}
-		AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.versionRequest, PRT.TableToString(request), "RAID")		
-		PRT:Print("Started version check")
+
+		if PRT.PlayerInParty() then
+			AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.versionRequest, PRT.TableToString(request), "RAID")		
+			PRT:Print("Started version check")
+			PRT:Print("Print results in 5 seconds")
+
+			self.db.profile.versionCheck = {}
+			local playerNames = PRT.PartyOrRaidNames()
+			for i, playerName in ipairs(playerNames) do
+				self.db.profile.versionCheck[playerName] = ""
+			end
+
+			self.db.profile.versionCheck["test"] = ""
+
+			AceTimer:ScheduleTimer(PRT.PrintPartyOrRaidVersions, 5)
+		else
+			PRT:Print("You are currently running version", PRT.ColoredString(self.db.profile.version, self.db.profile.colors.highlight))
+		end
 	else		
 		PRT.PrintHelp()
 	end
