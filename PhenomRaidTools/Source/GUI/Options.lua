@@ -334,12 +334,12 @@ Options.AddReceiverOverlayWidget = function(container, options)
             if not v then                
                 PRT.Overlay.UpdateBackdrop(PRT.ReceiverOverlay.overlayFrame, 0, 0, 0, 0.7)
                 PRT.Overlay.SetMoveable(PRT.ReceiverOverlay.overlayFrame, true)
-                PRT.ReceiverOverlay.ShowPlaceholder()
             else
                 PRT.Overlay.UpdateBackdrop(PRT.ReceiverOverlay.overlayFrame, 0, 0, 0, 0)
                 PRT.Overlay.SetMoveable(PRT.ReceiverOverlay.overlayFrame, false)
-                PRT.Overlay.ClearText(PRT.ReceiverOverlay.overlayFrame)
             end
+
+            PRT.ReceiverOverlay.ShowPlaceholder()
         end)
 
     local enableSoundCheckbox = PRT.CheckBox("overlayEnableSound", options.enableSound)
