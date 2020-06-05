@@ -8,7 +8,7 @@ local PhenomRaidToolsLDB = LibStub("LibDataBroker-1.1"):NewDataObject("PhenomRai
 	text = "PhenomRaidTools",
 	icon = "Interface\\AddOns\\PhenomRaidTools\\Media\\Icons\\PRT.blp",
 	OnClick = function() 
-		PRT:OpenPRT()
+		PRT:Open()
 	end,
 
 	OnEnter = function()
@@ -30,8 +30,8 @@ local LibDBIcon = LibStub("LibDBIcon-1.0")
 
 local defaults =  {
 	profile = {
+		version = "@project-version@",
 		enabled = true,
-		addonMessagePrefix = "PRT_MSG",
 		testMode = false,
 		testEncounterID = 9999,
 		testEncounterName = "Example Encounter",
@@ -153,6 +153,17 @@ local defaults =  {
 			tank1 = "Tank1",
 			heal1 = "Heal1",
 			dd1 = "Damager1"
+		},
+
+		addonPrefixes = { 
+			weakAuraMessage = "PRT_MSG",
+			addonMessage = "PRT_ADDON_MSG",
+			versionRequest = "PRT_VERSION_REQ",
+			versionResponse = "PRT_VERSION_RESP"
+		},
+
+		versionCheck = {
+
 		}
 	}
 }
@@ -176,8 +187,10 @@ end
 function PRT:OnEnable()
 	PRT.RegisterEssentialEvents()
 
-	AceComm:RegisterComm(PRT.db.profile.addonMessagePrefix, self.OnCommReceive)
-	C_ChatInfo.RegisterAddonMessagePrefix(PRT.db.profile.addonMessagePrefix)
+	AceComm:RegisterComm(self.db.profile.addonPrefixes.addonMessage, self.OnCommReceive)
+	AceComm:RegisterComm(self.db.profile.addonPrefixes.versionRequest, self.OnVersionRequest)
+	AceComm:RegisterComm(self.db.profile.addonPrefixes.versionResponse, self.OnVersionResponse)
+	C_ChatInfo.RegisterAddonMessagePrefix(PRT.db.profile.addonPrefixes.weakAuraMessage)
 end
 
 function PRT:OnDisable()
@@ -185,23 +198,44 @@ function PRT:OnDisable()
 end
 
 function PRT:Open()
-	if (PRT.mainWindow and not PRT.mainWindow:IsShown()) or not PRT.mainWindow then
-		PRT.SenderOverlay.Initialize(PRT.db.profile.overlay.sender)
-		PRT.ReceiverOverlay.Initialize(PRT.db.profile.overlay.receiver)
-		PRT.CreateMainWindow(self.db.profile)		
-	end
-end
-
-function PRT:OpenPRT(input)
 	if UnitAffectingCombat("player") then
 		PRT:Print("Can't open during combat")
 	else
-		PRT:Open()	
+		if (PRT.mainWindow and not PRT.mainWindow:IsShown()) or not PRT.mainWindow then
+			PRT.SenderOverlay.Initialize(PRT.db.profile.overlay.sender)
+			PRT.ReceiverOverlay.Initialize(PRT.db.profile.overlay.receiver)
+			PRT.CreateMainWindow(self.db.profile)		
+		end	
+	end	
+end
+
+function PRT:PrintHelp()
+	PRT:Print("You can use following commands:")
+	PRT:Print("/prt - Will open the PRT config")
+	PRT:Print("/prt versions - Will check PRT versions for each member of your group")
+end
+
+function PRT:ExecuteChatCommand(input)
+	if input == "" or input == nil then
+		PRT:Open()
+	elseif input == "versions" then
+		local request = {
+			type = "request",
+			requestor = UnitName("player")
+		}
+		AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.versionRequest, PRT.TableToString(request), "WHISPER", UnitName("player"))		
+		PRT:Print("Started version check")
+	else		
+		PRT.PrintHelp()
 	end
+end
+
+function PRT:VersionCheck(input)
+	print("Version Check")
 end
 
 
 -------------------------------------------------------------------------------
 -- Chat Commands
 
-PRT:RegisterChatCommand("prt", "OpenPRT")
+PRT:RegisterChatCommand("prt", "ExecuteChatCommand")

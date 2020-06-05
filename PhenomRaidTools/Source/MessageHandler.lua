@@ -15,10 +15,11 @@ local validTargets = {
 -- Local Helper
 
 MessageHandler.SendMessageToReceiver = function(message)
+    print(message)
     if UnitInRaid("player") or UnitInParty("player") then
-        C_ChatInfo.SendAddonMessage(PRT.db.profile.addonMessagePrefix, message, "RAID")    
+        C_ChatInfo.SendAddonMessage(PRT.db.profile.addonPrefixes.weakAuraMessage, message, "RAID")    
     else
-        C_ChatInfo.SendAddonMessage(PRT.db.profile.addonMessagePrefix, message, "WHISPER", UnitName("player"))         
+        C_ChatInfo.SendAddonMessage(PRT.db.profile.addonPrefixes.weakAuraMessage, message, "WHISPER", UnitName("player"))         
     end
 end
 
@@ -52,7 +53,7 @@ MessageHandler.ExecuteMessageAction = function(message)
         if UnitExists(targetMessage.target) or tContains(validTargets, targetMessage.target) then
             if not PRT.db.profile.weakAuraMode then
                 PRT.Debug("Sending new message to", targetMessage.target)
-                AceComm:SendCommMessage(PRT.db.profile.addonMessagePrefix, PRT.TableToString(targetMessage), "WHISPER", UnitName("player")) 
+                AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.addonMessage, PRT.TableToString(targetMessage), "WHISPER", UnitName("player")) 
             elseif PRT.db.profile.weakAuraMode then
                 local weakAuraReceiverMessage = nil
                 -- Determine if the message should play a sound on the receiver side
@@ -79,6 +80,26 @@ function PRT:OnCommReceive(message)
         end
     end
 end
+
+function PRT:OnVersionRequest(message)
+    local worked, messageTable = PRT.StringToTable(message)
+    if messageTable.requestor then
+        local response = {
+            type = "response",
+            name = UnitName("player"),
+            version = PRT.db.profile.version
+        }
+
+        AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.versionResponse, PRT.TableToString(response), "WHISPER", messageTable.requestor) 
+        PRT.Debug("Answering version check of", messageTable.requestor)
+    end
+end
+
+function PRT:OnVersionResponse(message)
+    local worked, messageTable = PRT.StringToTable(message)
+    PRT:Print(messageTable.name, ": ", messageTable.version)
+end
+
 
 -------------------------------------------------------------------------------
 -- Public API
