@@ -1,4 +1,14 @@
 ===============================================================================
+# Changelog 1.3.13.0-BETA
+## Bugfixes
+ - Make sure receiver overlay stays visible after locking it
+
+## Features
+ - The WeakAura and the addon now have different addon message prefixes so the WeakAura won't receiver messages if legacy mode is disabled
+ - First attempt of adding version check (only prints the versions of people who have the addon installed!)
+
+
+===============================================================================
 # Release 1.3.12.2
 
 
