@@ -1,4 +1,8 @@
 ===============================================================================
+# Release 1.3.12.2
+
+
+===============================================================================
 # Changelog 1.3.12.2-BETA
 ## Bugfixes
  - Make sure weakaura legacy mode actually sends messages to the weakaura
