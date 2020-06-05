@@ -223,7 +223,7 @@ function PRT:ExecuteChatCommand(input)
 			type = "request",
 			requestor = UnitName("player")
 		}
-		AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.versionRequest, PRT.TableToString(request), "WHISPER", UnitName("player"))		
+		AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.versionRequest, PRT.TableToString(request), "RAID")		
 		PRT:Print("Started version check")
 	else		
 		PRT.PrintHelp()
