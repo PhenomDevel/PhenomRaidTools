@@ -1,4 +1,13 @@
 ===============================================================================
+# Changelog 1.3.14.0-BETA
+## Bugfixes
+None
+
+## Features
+ - Added version check /prt version
+
+
+===============================================================================
 # Changelog 1.3.13.0-BETA
 ## Bugfixes
  - Make sure receiver overlay stays visible after locking it
