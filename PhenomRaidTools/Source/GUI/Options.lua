@@ -292,7 +292,10 @@ Options.AddGeneralWidgets = function(container, options)
         container:AddChild(receiveMessagesFromDropdown)
     end
     container:AddChild(debugModeCheckbox)
-    container:AddChild(weakAuraModeCheckbox)    
+
+    if options.senderMode then
+        container:AddChild(weakAuraModeCheckbox)    
+    end
 end
 
 Options.AddSenderOverlayWidget = function(container, options)
