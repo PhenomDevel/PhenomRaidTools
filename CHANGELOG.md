@@ -1,4 +1,14 @@
 ===============================================================================
+# Changelog 1.3.16.3-BETA
+## Bugfixes
+ - Make sure to show weakaura receiver button only in sender mode
+ - Make sure to show message filter in receiver mode aswell
+
+## Features
+None
+
+
+===============================================================================
 # Changelog 1.3.16.2-BETA
 ## Bugfixes
  - Make sure raid roster tab is refreshed after import of current group
