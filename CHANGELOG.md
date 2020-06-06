@@ -1,4 +1,18 @@
 ===============================================================================
+# Changelog 1.3.16.0-BETA
+## Bugfixes
+None
+
+## Features
+ - Added raid roster import by current group
+ - Added confirmation dialog for raid roster import 
+ - Added confirmation dialog for encounter deletion
+ - Added confirmation dialog for timer deletion
+ - Added confirmation dialog for rotation deletion
+ - Added confirmation dialog for percentage deletion
+
+
+===============================================================================
 # Changelog 1.3.15.2-BETA
 ## Bugfixes
  - Make version check work again
