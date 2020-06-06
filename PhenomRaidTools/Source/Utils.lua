@@ -172,31 +172,21 @@ PRT.PrintTable = function(prefix, t)
     end
 end
 
+PRT.Info = function(...)
+    PRT:Print(PRT.ColoredString("[Info]", PRT.db.profile.colors.info), ...)
+end
+
+PRT.Warn = function(...)
+    PRT:Print(PRT.ColoredString("[Warn]", PRT.db.profile.colors.warn), ...)
+end
+
 PRT.Error = function(...)
-    PRT:Print("[Error]|c"..PRT.db.profile.colors.error, ...)
+    PRT:Print(PRT.ColoredString("[Error]", PRT.db.profile.colors.error), ...)
 end
 
 PRT.Debug = function(...)
     if PRT.db.profile.debugMode then
-        PRT:Print("[Debug]|c"..PRT.db.profile.colors.general, ...)
-    end
-end
-
-PRT.DebugTimer = function(...)
-    if PRT.db.profile.debugMode then
-        PRT:Print("[Debug]|c"..PRT.db.profile.colors.timers, "[Timer] - ", ...)
-    end
-end
-
-PRT.DebugRotation = function(...)
-    if PRT.db.profile.debugMode then
-        PRT:Print("[Debug]|c"..PRT.db.profile.colors.rotations, "[Rotation] - ", ...)
-    end
-end
-
-PRT.DebugPercentage = function(...)
-    if PRT.db.profile.debugMode then
-        PRT:Print("[Debug]|c"..PRT.db.profile.colors.percentages, "[Percentage] - ", ...)
+        PRT:Print(PRT.ColoredString("[Debug]", PRT.db.profile.colors.debug), ...)
     end
 end
 
@@ -230,6 +220,10 @@ end
 
 PRT.ColoredString = function(s, color)
     return "|c"..(color or "FFFFFFFF")..s.."|r"
+end
+
+PRT.HighlightString = function(s)
+    return PRT.ColoredString(s, PRT.db.profile.colors.highlight)
 end
 
 PRT.TextureString = function(id)

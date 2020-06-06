@@ -132,7 +132,10 @@ local defaults =  {
 			timers = "FF1aBB00",
 			rotations = "FFcc1100",
 			percentages = "FFABD473",
-			error = "FFFF0000",
+			error = "FFff6363",
+			debug = "FFdcabff",
+			info = "FF6bfdff", 
+			warn = "FFffc526",
 			highlight = "FF69CCF0",
 			disabled = "FFff1100",
 			enabled = "FF008a25",
@@ -203,7 +206,7 @@ end
 
 function PRT:Open()
 	if UnitAffectingCombat("player") then
-		PRT:Print("Can't open during combat")
+		PRT.Info("Can't open during combat")
 	else
 		if (PRT.mainWindow and not PRT.mainWindow:IsShown()) or not PRT.mainWindow then
 			PRT.SenderOverlay.Initialize(PRT.db.profile.overlay.sender)
@@ -214,9 +217,9 @@ function PRT:Open()
 end
 
 function PRT:PrintHelp()
-	PRT:Print("You can use following commands:")
-	PRT:Print("/prt - Will open the PRT config")
-	PRT:Print("/prt versions - Will check PRT versions for each member of your group")
+	PRT.Info("You can use following commands:")
+	PRT.Info("/prt - Will open the PRT config")
+	PRT.Info("/prt versions - Will check PRT versions for each member of your group")
 end
 
 function PRT:PrintPartyOrRaidVersions()	
@@ -227,16 +230,16 @@ function PRT:PrintPartyOrRaidVersions()
 		local coloredName = PRT.ClassColoredName(player)
 
 		if version == "" or version == nil then
-			PRT:Print(coloredName, ":", PRT.ColoredString("no response", PRT.db.profile.colors.disabled))
+			PRT.Info(coloredName, ":", PRT.ColoredString("no response", PRT.db.profile.colors.disabled))
 		else
 			local parsedVersion = string.gsub(version, "[^%d]+", "")
 			local parsedVersionN = tonumber(parsedVersion)
 
 			if parsedVersionN and myVersionN then
 				if parsedVersionN >= myVersionN then
-					PRT:Print(coloredName, ":", PRT.ColoredString(version, PRT.db.profile.colors.highlight))			
+					PRT.Info(coloredName, ":", PRT.ColoredString(version, PRT.db.profile.colors.highlight))			
 				elseif parsedVersionN < myVersionN then
-					PRT:Print(coloredName, ":", PRT.ColoredString(version, PRT.db.profile.colors.disabled))
+					PRT.Info(coloredName, ":", PRT.ColoredString(version, PRT.db.profile.colors.disabled))
 				end
 			end
 		end
@@ -256,8 +259,8 @@ function PRT:ExecuteChatCommand(input)
 
 		if PRT.PlayerInParty() then
 			AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.versionRequest, PRT.TableToString(request), "RAID")		
-			PRT:Print("Started version check")
-			PRT:Print("Print results in 5 seconds")
+			PRT.Info("Started version check")
+			PRT.Info("Print results in 5 seconds")
 
 			self.db.profile.versionCheck = {}
 			local playerNames = PRT.PartyOrRaidNames()
@@ -267,7 +270,7 @@ function PRT:ExecuteChatCommand(input)
 
 			AceTimer:ScheduleTimer(PRT.PrintPartyOrRaidVersions, 5)
 		else
-			PRT:Print("You are currently running version", PRT.ColoredString(self.db.profile.version, self.db.profile.colors.highlight))
+			PRT.Info("You are currently running version", PRT.ColoredString(self.db.profile.version, self.db.profile.colors.highlight))
 		end
 	else		
 		PRT.PrintHelp()

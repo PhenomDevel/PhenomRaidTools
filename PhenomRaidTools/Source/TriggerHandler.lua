@@ -94,7 +94,7 @@ TriggerHandler.IncrementTriggerCounter = function(trigger)
     local triggerCounter = TriggerHandler.GetTriggerCounter(trigger)
     local newValue = triggerCounter + 1
         
-    PRT.DebugRotation("Incrementing trigger counter ("..(trigger.name or "NO NAME")..") to", newValue)
+    PRT.Debug("Incrementing trigger counter ("..(trigger.name or "NO NAME")..") to", newValue)
     trigger.counter = newValue
 end 
 
@@ -105,7 +105,7 @@ TriggerHandler.UpdateRotationCounter = function(rotation)
             local rotationMaxCount = table.getn(rotation.entries)
             if rotationCurrentCount >= rotationMaxCount then
                 if rotation.shouldRestart == true then
-                    PRT.DebugRotation("Resetting rotation counter to 1")
+                    PRT.Debug("Resetting rotation counter to 1")
                     rotation.counter = 1
                 else                   
                     TriggerHandler.IncrementTriggerCounter(rotation)
@@ -187,7 +187,7 @@ PRT.CheckTimerStartConditions = function(timers, event, combatEvent, spellID, ta
                     if TriggerHandler.CheckCondition(timer.startCondition, event, combatEvent, spellID, targetGUID, sourceGUID) then
                         TriggerHandler.IncrementTriggerCounter(timer)
                         if (timer.triggerAtOccurence or 1) == timer.counter then
-                            PRT.DebugTimer("Started timer `"..(timer.name or "NO NAME").."` at "..GetTime())
+                            PRT.Debug("Started timer `"..(timer.name or "NO NAME").."` at "..GetTime())
                             timer.started = true
                             timer.startedAt = GetTime()
                         end
@@ -204,7 +204,7 @@ PRT.CheckTimerStopConditions = function(timers, event, combatEvent, spellID, tar
             if timer.enabled == true or timer.enabled == nil then
                 if timer.stopCondition ~= nil and timer.started == true then
                     if TriggerHandler.CheckCondition(timer.stopCondition, event, combatEvent, spellID, sourceGUID, targetGUID) then
-                        PRT.DebugTimer("Stopped timer `"..(timer.name or "NO NAME").."` at "..GetTime())
+                        PRT.Debug("Stopped timer `"..(timer.name or "NO NAME").."` at "..GetTime())
                         timer.started = false
                         timer.startedAt = nil
                         timer.counter = 0
@@ -265,7 +265,7 @@ PRT.CheckRotationTriggerCondition = function(rotations, event, combatEvent, even
 
                             if rotation.ignoreAfterActivation == true then
                                 rotation.ignored = true
-                                PRT.DebugRotation("Started ignoring rotation", rotation.name, "for", rotation.ignoreDuration)
+                                PRT.Debug("Started ignoring rotation", rotation.name, "for", rotation.ignoreDuration)
                             end 
                         end
                     end     
@@ -296,7 +296,7 @@ PRT.CheckUnitHealthPercentages = function(percentages)
                                 percentage.lastActivation = GetTime()
                                 if percentage.checkAgain ~= true then
                                     percentage.ignored = true
-                                    PRT.DebugRotation("Started ignoring percentage", percentage.name, "for", percentage.checkAgainAfter)
+                                    PRT.Debug("Started ignoring percentage", percentage.name, "for", percentage.checkAgainAfter)
                                 else
                                     percentage.executed = true
                                 end
@@ -329,7 +329,7 @@ PRT.CheckUnitPowerPercentages = function(percentages)
                                 percentage.lastActivation = GetTime()
                                 if percentage.ignoreAfterActivation == true then
                                     percentage.ignored = true
-                                    PRT.DebugRotation("Started ignoring percentage", percentage.name, "for", percentage.ignoreDuration)
+                                    PRT.Debug("Started ignoring percentage", percentage.name, "for", percentage.ignoreDuration)
                                 else
                                     messagesByPower.executed = true
                                 end

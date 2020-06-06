@@ -75,11 +75,14 @@ end
 function PRT:OnAddonMessage(message)
     if not PRT.db.profile.weakAuraMode then
         local worked, messageTable = PRT.StringToTable(message)
-        if PRT.db.profile.receiverMode and 
-           (messageTable.sender == PRT.db.profile.receiveMessagesFrom or 
-            PRT.db.profile.receiveMessagesFrom == nil or
-            PRT.db.profile.receiveMessagesFrom == "") then
-            PRT.ReceiverOverlay.AddMessage(messageTable)
+        if PRT.db.profile.receiverMode then 
+            if (messageTable.sender == PRT.db.profile.receiveMessagesFrom or 
+                PRT.db.profile.receiveMessagesFrom == nil or
+                PRT.db.profile.receiveMessagesFrom == "") then
+                PRT.ReceiverOverlay.AddMessage(messageTable)
+            else
+                PRT.Debug("We received a message from", PRT.HighlightString(messageTable.sender), "and only accept messages from", PRT.HighlightString(PRT.db.profile.receiveMessagesFrom), "therefore skipping the message.")
+            end
         end
     end
 end

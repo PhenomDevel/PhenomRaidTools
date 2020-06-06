@@ -47,7 +47,7 @@ EventHandler.StartEncounter = function(event, encounterID, encounterName)
 						AceTimer:ScheduleRepeatingTimer(PRT.ReceiverOverlay.UpdateFrame, 0.01)
 					end
 				else
-					PRT.Debug("Found encounter but it is disabled. Skipping encounter.")
+					PRT.Warn("Found encounter but it is disabled. Skipping encounter.")
 				end				
 			end
 
@@ -131,13 +131,13 @@ function PRT:PLAYER_REGEN_DISABLED(event)
 				if encounter.enabled then
 					EventHandler.StartEncounter(event, encounter.id, encounter.name)
 				else
-					PRT.Error("The selected encounter is disabled. Please enabled it before testing.")
+					PRT.Warn("The selected encounter is disabled. Please enabled it before testing.")
 				end
 			else
-				PRT.Error("You are in test mode and have no encounter selected.")
+				PRT.Warn("You are in test mode and have no encounter selected.")
 			end
 		else
-			PRT.Error("You are in test mode and have sender mode disabled. Enable it if you want to test an encounter.")
+			PRT.Warn("You are in test mode and have sender mode disabled. Enable it if you want to test an encounter.")
 		end
 	end
 end

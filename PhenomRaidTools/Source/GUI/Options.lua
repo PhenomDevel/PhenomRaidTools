@@ -204,7 +204,7 @@ Options.AddGeneralWidgets = function(container, options)
 
     local partyPlayerDropdownItems = {}
     for i, name in ipairs(PRT.PartyNames()) do
-        tinsert(partyPlayerDropdownItems, { id = name, name = name})
+        tinsert(partyPlayerDropdownItems, { id = name, name = PRT.ClassColoredName(name)})
     end
     local receiveMessagesFromDropdown = PRT.Dropdown("optionsReceiveMessagesFromDropdown", partyPlayerDropdownItems)
     receiveMessagesFromDropdown:SetCallback("OnValueChanged", 
