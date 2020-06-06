@@ -1,7 +1,7 @@
 ===============================================================================
 # Changelog 1.3.16.0-BETA
 ## Bugfixes
-None
+ - All open frames will now be closed when PRT is closed
 
 ## Features
  - Added raid roster import by current group
