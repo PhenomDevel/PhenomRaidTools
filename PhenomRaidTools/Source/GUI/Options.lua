@@ -40,7 +40,7 @@ local Options = {
 -------------------------------------------------------------------------------
 -- Local Helper
 
-Options.ImportRaidRosterByGroup = function(options)
+Options.ImportRaidRosterByGroup = function(options, container)
     wipe(options)
     local names = PRT.PartyNames()
     local tanksCounter = 0
@@ -66,11 +66,14 @@ Options.ImportRaidRosterByGroup = function(options)
             options[raidRosterID] = name
         end
     end
+
+    container:ReleaseChildren()
+    Options.AddRaidRosterWidget(container, options)
 end
 
 Options.AddRaidRosterWidget = function(container, options)
     local importByGroupButton = PRT.Button("optionsRaidRosterImportByGroup")
-    importByGroupButton:SetCallback("OnClick", function(_) PRT.ConfirmationDialog(L["importByGroupConfirmationText"], Options.ImportRaidRosterByGroup, options)  end)
+    importByGroupButton:SetCallback("OnClick", function(_) PRT.ConfirmationDialog(L["importByGroupConfirmationText"], Options.ImportRaidRosterByGroup, options, container)  end)
     importByGroupButton:SetWidth(300)
 
     local explanationLabel = PRT.Label("optionsRaidRosterExplanation")
@@ -427,7 +430,7 @@ Options.AddOverlayWidget = function(container, options)
     local receiverGroup = PRT.InlineGroup("receiverGroup") 
     receiverGroup:SetLayout("Flow")   
     Options.AddReceiverOverlayWidget(receiverGroup, options.receiver)
-        
+    
     container:AddChild(senderGroup)
     container:AddChild(receiverGroup)
 end

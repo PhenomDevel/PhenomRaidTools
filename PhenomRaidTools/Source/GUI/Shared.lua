@@ -43,7 +43,7 @@ PRT.NewTriggerDeleteButton = function(container, t, idx, textID, entityName)
 end
 
 PRT.ConfirmationDialog = function(text, successFn, ...)
-    local args = ...
+    local args = {...}
     local confirmationFrame = PRT.Window("confirmationWindow")
     confirmationFrame:SetLayout("Flow")
     confirmationFrame:SetHeight(130)
@@ -58,7 +58,7 @@ PRT.ConfirmationDialog = function(text, successFn, ...)
     okButton:SetCallback("OnClick", 
         function(_)
             if successFn then
-                successFn(args)
+                successFn(unpack(args))
                 confirmationFrame:Hide()
             end
         end)
