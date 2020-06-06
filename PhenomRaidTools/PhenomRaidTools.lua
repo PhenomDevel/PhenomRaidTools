@@ -263,7 +263,7 @@ function PRT:ExecuteChatCommand(input)
 			PRT.Info("Print results in 5 seconds")
 
 			self.db.profile.versionCheck = {}
-			local playerNames = PRT.PartyOrRaidNames()
+			local playerNames = PRT.PartyNames()
 			for i, playerName in ipairs(playerNames) do
 				self.db.profile.versionCheck[playerName] = ""
 			end

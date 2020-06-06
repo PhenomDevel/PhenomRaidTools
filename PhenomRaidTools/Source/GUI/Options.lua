@@ -200,6 +200,7 @@ Options.AddGeneralWidgets = function(container, options)
         function(widget)
             local text = widget:GetText()
             options.receiveMessagesFrom = text
+            widget:ClearFocus()
         end)
 
     local partyPlayerDropdownItems = {}
