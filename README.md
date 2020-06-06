@@ -82,8 +82,6 @@ I have set up a discord server up and running for every kind of question. Feel f
 
 ## TODOs
  - Translate error messages and debug messages
- - Filter messages by player so you won't get spammed by messages if multiple people use sender mode
- - Refresh receiver overlay after font color change
  - Make sure receiver overlay backdrop is scaled correctly after any change to the font
  - Be able to hide disabled rotations and timers on the sender overlay
  - Cleanup github templates
