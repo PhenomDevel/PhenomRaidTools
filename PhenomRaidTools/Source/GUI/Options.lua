@@ -287,10 +287,11 @@ Options.AddGeneralWidgets = function(container, options)
 
     if options.senderMode then
         container:AddChild(testModeCheckbox)    
-        container:AddChild(textEncounterIDDropdown)        
-        container:AddChild(receiveMessagesFromEditBox)
-        container:AddChild(receiveMessagesFromDropdown)
+        container:AddChild(textEncounterIDDropdown)   
     end
+         
+    container:AddChild(receiveMessagesFromEditBox)
+    container:AddChild(receiveMessagesFromDropdown)
     container:AddChild(debugModeCheckbox)
 
     if options.senderMode then
