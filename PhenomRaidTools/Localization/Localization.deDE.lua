@@ -37,6 +37,7 @@ if GetLocale() == "deDE" then
     L["optionsReceiveMessagesFromTooltip"] = "Wähle einen Spielernamen von dem du Nachrichten erhalten möchtest. Alle Nachrichten von anderen Absendern werden ignoriert."
     L["optionsReceiveMessagesFromDropdown"] = "Namensauswahl"
     L["optionsHideDisabledTriggers"] = "Deaktivierte Auslöser verstecken"
+    L["optionsRaidRosterImportByGroup"] = "Importiere Raidroster anhand der aktuellen Gruppe"
 
     -- Dungeon Difficulty
     L["dungeonHeading"] = "Dungeon"
@@ -217,6 +218,15 @@ if GetLocale() == "deDE" then
     L["newRotation"] = "Neue Rotation"
     L["newHealthPercentage"] = "Neues Lebens-Prozent"
     L["newPowerPercentage"] = "Neues Energie-Prozent"
+
+    -- Confirmation
+    L["confirmationWindow"] = "Bestätigung"
+    L["confirmationDialogOk"] = "Ok"
+    L["confirmationDialogCancel"] = "Abbrechen"
+    L["importByGroupConfirmationText"] = 
+        "Bist Du sicher, dass du das Raid-Roster anhand der aktuellen Gruppe importieren willst?|n"..
+        "|cFF69CCF0Notiz: |rDieser Vorgang wird alle aktuell eingetragenen Namen überschreiben."
+    L["deleteConfirmationText"] = "Bist Du sicher, dass Du folgenden Eintrag löschen willst:"
 else 
     return 
 end

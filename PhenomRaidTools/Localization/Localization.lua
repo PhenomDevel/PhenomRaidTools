@@ -39,6 +39,7 @@ L = {
         "All other messages will be filtered out so you won't get spammed.", 
     ["optionsReceiveMessagesFromDropdown"] = "Choose player", 
     ["optionsHideDisabledTriggers"] = "Hide disabled triggers",
+    ["optionsRaidRosterImportByGroup"] = "Import raid roster by current group",
 
     -- Dungeon Difficulty
     ["dungeonHeading"] = "Dungeon",
@@ -223,6 +224,15 @@ L = {
     ["newRotation"] = "New Rotation",
     ["newHealthPercentage"] = "New Health Percentage",
     ["newPowerPercentage"] = "New Power Percentage",
+
+    -- Confirmation
+    ["confirmationWindow"] = "Confirmation",
+    ["confirmationDialogOk"] = "Ok",
+    ["confirmationDialogCancel"] = "Cancel",
+    ["importByGroupConfirmationText"] = 
+        "Are you sure you want to import raid roster by your current group?|n"..
+        "|cFF69CCF0Note: |rThis will overwrite all of your current raid roster entries.",
+    ["deleteConfirmationText"] = "Are you sure you want to delete:",
 
 }
 
