@@ -1,4 +1,13 @@
 ===============================================================================
+# Changelog 1.3.14.1-BETA
+## Bugfixes
+ - Make sure version check works for raids and not only for groups
+
+## Features
+None
+
+
+===============================================================================
 # Changelog 1.3.14.0-BETA
 ## Bugfixes
 None
