@@ -21,27 +21,20 @@ Message.TargetsPreviewString = function(targets)
         for i, target in ipairs(targets) do
 			local trimmedName = strtrim(target, " ")
 			local raidRosterID = string.gsub(trimmedName, "[$]+", "")  
-            local raidRosterEntry
-            local color 
+			local raidRosterEntry
+			local coloredName
 
 			if raidRosterID then
 				raidRosterEntry = PRT.db.profile.raidRoster[raidRosterID]
 			end
 
 			if raidRosterEntry then
-				if UnitExists(raidRosterEntry) then
-					local _, _, classIndex = UnitClass(raidRosterEntry)
-					color = PRT.db.profile.colors.classes[classIndex]
-				end
-				
-				if color then
-					tinsert(previewNames, "|cFF"..(color or "")..raidRosterEntry.."|r")
-                else
-                    tinsert(previewNames, raidRosterEntry)
-                end
+				coloredName = PRT.ClassColoredName(raidRosterEntry)
 			else
-				tinsert(previewNames, trimmedName)
-			end	
+				coloredName = PRT.ClassColoredName(trimmedName)
+			end
+			
+			tinsert(previewNames, coloredName)
 		end
 
 		return strjoin(", ", unpack(previewNames))
@@ -63,19 +56,9 @@ end
 Message.GenerateRaidRosterDropdownItems = function()
 	local raidRosterItems = {}
 	for k, v in pairs(PRT.db.profile.raidRoster) do
-		local color = nil
-
-		if UnitExists(v) then
-			local _, _, classIndex = UnitClass(v)
-			color = PRT.db.profile.colors.classes[classIndex]
-		end
+		local name = PRT.ClassColoredName(v)
 		
-		local name = ""
-		if color then
-			name = "$"..k.." (|cFF"..(color or "")..v.."|r)"
-		else
-			name = "$"..k.." ("..v..")"
-		end
+		name = "$"..k.." ("..name..")"
 
 		tinsert(raidRosterItems, { id = "$"..k , name = name})
 	end
