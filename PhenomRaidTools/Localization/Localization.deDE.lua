@@ -34,6 +34,7 @@ if GetLocale() == "deDE" then
     L["optionsDefaultsExplanation"] = "Hier können Standardwerte für die Auslöser ausgewählt werden."
     L["optionsRaidRosterExplanation"] = "Hier können Spielernamen des Raidkaders eingetragen werden, um diese später zu referenzieren mit z.B. |cFF69CCF0$tank2|r |cFF69CCF0$heal1|r etc."
     L["optionsReceiveMessagesFrom"] = "Akzeptiere nur Nachrichten von:"
+    L["optionsReceiveMessagesFromTooltip"] = "Wähle einen Spielernamen von dem du Nachrichten erhalten möchtest. Alle Nachrichten von anderen Absendern werden ignoriert."
     L["optionsReceiveMessagesFromDropdown"] = "Namensauswahl"
 
     -- Dungeon Difficulty

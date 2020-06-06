@@ -194,7 +194,7 @@ Options.AddGeneralWidgets = function(container, options)
     local textEncounterIDDropdown = PRT.Dropdown("optionsTestEncounterID", options.encounters, options.testEncounterID)        
     local runModeDropdown = PRT.Dropdown("runModeDropdown", Options.runModes, options.runMode)        
     local weakAuraModeCheckbox = PRT.CheckBox("optionsWeakAuraMode", options.weakAuraMode, true)
-    local receiveMessagesFromEditBox = PRT.EditBox("optionsReceiveMessagesFrom", options.receiveMessagesFrom)
+    local receiveMessagesFromEditBox = PRT.EditBox("optionsReceiveMessagesFrom", options.receiveMessagesFrom, true)
 
     receiveMessagesFromEditBox:SetCallback("OnEnterPressed",
         function(widget)
