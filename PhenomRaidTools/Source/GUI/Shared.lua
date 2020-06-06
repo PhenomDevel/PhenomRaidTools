@@ -38,23 +38,25 @@ end
 
 PRT.PartyNames = function()
     local names = {}
+    local unitString = ""
 
     if UnitInRaid("player") then
-        for i=1, 40 do
-            local index = "raid"..i
-            local playerName = GetRaidRosterInfo(i)
+        unitString = "raid%d"
+    elseif UnitInParty("player") then
+        unitString = "party%d"
+    end
+
+    for i = 1, GetNumGroupMembers() do
+        local index = unitString:format(i)
+        local playerName = GetUnitName(index)
+
+        if not (playerName == GetUnitName("player")) then
             tinsert(names, playerName)
         end
-    elseif UnitInParty("player") then
-		for i=1, 5 do
-            local index = "party"..i
-            local playerName = GetRaidRosterInfo(i)
-            tinsert(names, playerName)
-		end
-	else
-        local name = UnitName("player")
-        tinsert(names, name)
     end
+
+    -- Always add the own character into the list
+    tinsert(names, GetUnitName("player"))
 
     return names
 end
