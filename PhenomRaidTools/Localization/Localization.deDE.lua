@@ -33,10 +33,16 @@ if GetLocale() == "deDE" then
     L["optionsDifficultyExplanation"] = "Hier können die Schwierigkeiten ausgewählt werden auf denen das Addon aktiv sein soll."
     L["optionsDefaultsExplanation"] = "Hier können Standardwerte für die Auslöser ausgewählt werden."
     L["optionsRaidRosterExplanation"] = "Hier können Spielernamen des Raidkaders eingetragen werden, um diese später zu referenzieren mit z.B. |cFF69CCF0$tank2|r |cFF69CCF0$heal1|r etc."
+    L["optionsReceiveMessagesFrom"] = "Akzeptiere nur Nachrichten von:"
+    L["optionsReceiveMessagesFromDropdown"] = "Namensauswahl"
+
+    -- Dungeon Difficulty
     L["dungeonHeading"] = "Dungeon"
     L["dungeonDifficultyNormal"] = "Normal"
     L["dungeonDifficultyHeroic"] = "Heroisch"   
     L["dungeonDifficultyMythic"] = "Mythisch"
+
+    -- Raid Difficulty
     L["raidHeading"] = "Schlachtzug"
     L["raidDifficultyNormal"] = "Normal"
     L["raidDifficultyHeroic"] = "Heroisch"

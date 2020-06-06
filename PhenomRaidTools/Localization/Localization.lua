@@ -33,10 +33,16 @@ L = {
     ["optionsDifficultyExplanation"] = "Set the difficulties on which the addon should start tracking combat events",
     ["optionsDefaultsExplanation"] = "Set some default values for all new messages, timers, percentages and so on.",
     ["optionsRaidRosterExplanation"] = "Here you can define player names and reference them as targets in message with e.g. |cFF69CCF0$tank2|r, |cFF69CCF0$heal1|r etc.",
+    ["optionsReceiveMessagesFrom"] = "Accept messages only from", 
+    ["optionsReceiveMessagesFromDropdown"] = "Choose player", 
+
+    -- Dungeon Difficulty
     ["dungeonHeading"] = "Dungeon",
     ["dungeonDifficultyNormal"] = "Normal",
     ["dungeonDifficultyHeroic"] = "Heroic",   
     ["dungeonDifficultyMythic"] = "Mythic",
+
+    -- Raid Difficulty
     ["raidHeading"] = "Raid",
     ["raidDifficultyNormal"] = "Normal",
     ["raidDifficultyHeroic"] = "Heroic",

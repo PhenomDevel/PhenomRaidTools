@@ -239,7 +239,6 @@ Options.AddGeneralWidgets = function(container, options)
         function(widget) 
             options.enabled = widget:GetValue() 
         end)	
-    enabledCheckbox:SetRelativeWidth(1)
     
     container:AddChild(enabledCheckbox)
     container:AddChild(runModeDropdown)
@@ -249,15 +248,13 @@ Options.AddGeneralWidgets = function(container, options)
         container:AddChild(helpLabel)
     end
 
-    container:AddChild(debugModeCheckbox)
-
     if options.senderMode then
         container:AddChild(testModeCheckbox)    
         container:AddChild(textEncounterIDDropdown)        
         container:AddChild(receiveMessagesFromEditBox)
         container:AddChild(receiveMessagesFromDropdown)
     end
-
+    container:AddChild(debugModeCheckbox)
     container:AddChild(weakAuraModeCheckbox)    
 end
 
