@@ -246,39 +246,41 @@ function PRT:PrintPartyOrRaidVersions()
 	end
 end
 
+function PRT:VersionCheck(_)
+	local request = {
+		type = "request",
+		requestor = UnitName("player")
+	}
+
+	if PRT.PlayerInParty() then
+		AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.versionRequest, PRT.TableToString(request), "RAID")		
+		PRT.Info("Initialize version check")
+		PRT.Info("Waiting for everyone to respond...")
+
+		self.db.profile.versionCheck = {}
+
+		local playerNames = PRT.PartyNames()
+
+		for i, playerName in ipairs(playerNames) do
+			self.db.profile.versionCheck[playerName] = ""
+		end
+
+		AceTimer:ScheduleTimer(PRT.PrintPartyOrRaidVersions, 5)
+	else
+		PRT.Info("You are currently running version", PRT.ColoredString(self.db.profile.version, self.db.profile.colors.highlight))
+	end
+end
+
 function PRT:ExecuteChatCommand(input)
 	if input == "" or input == nil then
 		PRT:Open()
 	elseif input == "help" then
 		PRT.PrintHelp()
 	elseif input == "version" or input == "versions" then
-		local request = {
-			type = "request",
-			requestor = UnitName("player")
-		}
-
-		if PRT.PlayerInParty() then
-			AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.versionRequest, PRT.TableToString(request), "RAID")		
-			PRT.Info("Started version check")
-			PRT.Info("Print results in 5 seconds")
-
-			self.db.profile.versionCheck = {}
-			local playerNames = PRT.PartyNames()
-			for i, playerName in ipairs(playerNames) do
-				self.db.profile.versionCheck[playerName] = ""
-			end
-
-			AceTimer:ScheduleTimer(PRT.PrintPartyOrRaidVersions, 5)
-		else
-			PRT.Info("You are currently running version", PRT.ColoredString(self.db.profile.version, self.db.profile.colors.highlight))
-		end
+		PRT:VersionCheck()
 	else		
 		PRT.PrintHelp()
 	end
-end
-
-function PRT:VersionCheck(input)
-	print("Version Check")
 end
 
 
@@ -286,3 +288,4 @@ end
 -- Chat Commands
 
 PRT:RegisterChatCommand("prt", "ExecuteChatCommand")
+PRT:RegisterChatCommand("prtv", "VersionCheck")
