@@ -1,4 +1,13 @@
 ===============================================================================
+# Changelog 1.3.16.2-BETA
+## Bugfixes
+ - Make sure raid roster tab is refreshed after import of current group
+
+## Features
+None
+
+
+===============================================================================
 # Changelog 1.3.16.1-BETA
 ## Bugfixes
  - All open frames will now be closed when PRT is closed

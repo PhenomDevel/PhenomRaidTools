@@ -35,8 +35,7 @@ PRT.NewTriggerDeleteButton = function(container, t, idx, textID, entityName)
                     PRT.Core.UpdateTree()
                     PRT.mainWindowContent:DoLayout()
                     container:ReleaseChildren()
-                end)
-            
+                end)            
         end)
 
     return deleteButton
