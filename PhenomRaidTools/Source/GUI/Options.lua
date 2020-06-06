@@ -260,7 +260,21 @@ Options.AddGeneralWidgets = function(container, options)
 end
 
 Options.AddSenderOverlayWidget = function(container, options)
+    local hideDisabledTriggersCheckbox = PRT.CheckBox("optionsHideDisabledTriggers", options.hideDisabledTriggers)
     local showOverlayCheckbox = PRT.CheckBox("optionsShowOverlay", options.enabled)
+    local fontSelect = PRT.FontSelect("optionsFontSelect", options.fontName)
+    local hideOverlayAfterCombatCheckbox = PRT.CheckBox("optionsHideOverlayAfterCombat", options.hideAfterCombat)
+    local fontSizeSlider = PRT.Slider("overlayFontSize", options.fontSize)
+    local backdropColor =  PRT.ColorPicker("overlayBackdropColor", options.backdropColor)
+
+    -- Initialize widgets
+    hideDisabledTriggersCheckbox:SetRelativeWidth(1)
+    hideDisabledTriggersCheckbox:SetCallback("OnValueChanged", 
+        function(widget) 
+            local value = widget:GetValue() 
+            options.hideDisabledTriggers = value
+        end)
+        
     showOverlayCheckbox:SetRelativeWidth(1)
     showOverlayCheckbox:SetCallback("OnValueChanged", 
         function(widget) 
@@ -273,8 +287,7 @@ Options.AddSenderOverlayWidget = function(container, options)
                 PRT.SenderOverlay.Hide()
             end
         end)
-
-    local fontSelect = PRT.FontSelect("optionsFontSelect", options.fontName)
+    
     fontSelect:SetCallback("OnValueChanged", 
         function(widget, event, value)
             local path = AceGUIWidgetLSMlists.font[value]
@@ -282,14 +295,11 @@ Options.AddSenderOverlayWidget = function(container, options)
             options.fontName = value
             widget:SetText(value)
             PRT.Overlay.SetFont(PRT.SenderOverlay.overlayFrame, options)
-        end)
-
+        end)    
     
-    local hideOverlayAfterCombatCheckbox = PRT.CheckBox("optionsHideOverlayAfterCombat", options.hideAfterCombat)
     hideOverlayAfterCombatCheckbox:SetRelativeWidth(1)
     hideOverlayAfterCombatCheckbox:SetCallback("OnValueChanged", function(widget) options.hideAfterCombat = widget:GetValue() end)
-
-    local fontSizeSlider = PRT.Slider("overlayFontSize", options.fontSize)
+    
     fontSizeSlider:SetSliderValues(6, 72, 1)
     fontSizeSlider:SetCallback("OnValueChanged", 
         function(widget) 
@@ -298,8 +308,7 @@ Options.AddSenderOverlayWidget = function(container, options)
             PRT.Overlay.UpdateFont(PRT.SenderOverlay.overlayFrame, fontSize)
             PRT.Overlay.UpdateSize(PRT.SenderOverlay.overlayFrame, options)
         end)
-
-    local backdropColor =  PRT.ColorPicker("overlayBackdropColor", options.backdropColor)
+    
     backdropColor:SetHasAlpha(true)
     backdropColor:SetCallback("OnValueConfirmed", 
         function(widget, event, r, g, b, a) 
@@ -312,6 +321,7 @@ Options.AddSenderOverlayWidget = function(container, options)
     
     container:AddChild(showOverlayCheckbox)
     container:AddChild(hideOverlayAfterCombatCheckbox)
+    container:AddChild(hideDisabledTriggersCheckbox)
     container:AddChild(fontSelect)
     container:AddChild(fontSizeSlider)
     container:AddChild(backdropColor)

@@ -54,27 +54,31 @@ SenderOverlay.UpdateFrame = function(encounter, options)
         -- Timer
         if not table.empty(encounter.Timers) then
             local timerStringComplete = ""
+
             for i, timer in ipairs(encounter.Timers) do
                 local timerString = ""
-                timerString = timerString..timer.name 
                 
-                if timer.started then
-                    local timeIntoTimer = GetTime() - timer.startedAt
-                    local timeIntoTimerString = PRT.SecondsToClock(timeIntoTimer)
-                    timerString = timerString.." ("..timerColor(timeIntoTimerString)..")"
+                if timer.enabled or (not timer.enabled and not options.hideDisabledTriggers) then
+                    timerString = timerString..timer.name 
+                    
+                    if timer.started then
+                        local timeIntoTimer = GetTime() - timer.startedAt
+                        local timeIntoTimerString = PRT.SecondsToClock(timeIntoTimer)
+                        timerString = timerString.." ("..timerColor(timeIntoTimerString)..")"
 
-                    local nextInSeconds, nextTiming = SenderOverlay.GetNextTiming(timer, timeIntoTimer)
+                        local nextInSeconds, nextTiming = SenderOverlay.GetNextTiming(timer, timeIntoTimer)
 
-                    if nextInSeconds then
-                        local nextDelta = PRT.Round(nextInSeconds - timeIntoTimer)
-                        timerString = timerString.." [-"..timerColor(PRT.SecondsToClock(nextDelta)).."]\n"
+                        if nextInSeconds then
+                            local nextDelta = PRT.Round(nextInSeconds - timeIntoTimer)
+                            timerString = timerString.." [-"..timerColor(PRT.SecondsToClock(nextDelta)).."]\n"
+                        else
+                            timerString = timerString.."\n"
+                        end
+                    elseif timer.enabled ~= true then
+                        timerString = disabledColor(timerString.." - disabled\n")
                     else
-                        timerString = timerString.."\n"
+                        timerString = inactiveColor(timerString.." - inactive\n")
                     end
-                elseif timer.enabled ~= true then
-                    timerString = disabledColor(timerString.." - disabled\n")
-                else
-                    timerString = inactiveColor(timerString.." - inactive\n")
                 end
 
                 timerStringComplete = timerStringComplete..timerString
@@ -86,23 +90,30 @@ SenderOverlay.UpdateFrame = function(encounter, options)
 
         -- Rotation
         if not table.empty(encounter.Rotations) then
-            local rotationString = ""
-            for i, rotation in ipairs(encounter.Rotations) do
-                rotationString = rotationString..rotation.name
+            local rotationStringComplete = ""
 
-                if rotation.enabled ~= true then
-                    rotationString = disabledColor(rotationString.." - disabled\n")
-                else
-                    if rotation.counter then
-                        rotationString = rotationString.." - "..rotationColor(rotation.counter).."\n"
+            for i, rotation in ipairs(encounter.Rotations) do
+                local rotationString = ""
+
+                if rotation.enabled or (not rotation.enabled and not options.hideDisabledTriggers) then
+                    rotationString = rotationString..rotation.name
+
+                    if rotation.enabled ~= true then
+                        rotationString = disabledColor(rotationString.." - disabled\n")
                     else
-                        rotationString = rotationString.." - 0\n"
+                        if rotation.counter then
+                            rotationString = rotationString.." - "..rotationColor(rotation.counter).."\n"
+                        else
+                            rotationString = rotationString.." - 0\n"
+                        end
                     end
                 end
+
+                rotationStringComplete = rotationStringComplete..rotationString
             end
 
             overlayText = overlayText.."\n|c"..SenderOverlay.rotationColor.."Rotations|r\n"  
-            overlayText = overlayText..rotationString
+            overlayText = overlayText..rotationStringComplete
         end
     end    
 

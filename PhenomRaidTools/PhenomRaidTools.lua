@@ -32,7 +32,7 @@ local LibDBIcon = LibStub("LibDBIcon-1.0")
 local defaults =  {
 	profile = {
 		myName = UnitName("player"),
-		version = "@project-version@", --"1.3.14.0-BETA", 
+		version = "@project-version@", --"1.3.15.2-BETA", 
 		receiveMessagesFrom = "",
 		enabled = true,
 		testMode = false,
@@ -81,7 +81,8 @@ local defaults =  {
 					a = 0.7
 				},
 				enabled = true,
-				hideAfterCombat = false
+				hideAfterCombat = false,
+				hideDisabledTriggers = false,
 			}
 		},
 
