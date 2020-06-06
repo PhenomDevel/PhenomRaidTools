@@ -36,6 +36,7 @@ if GetLocale() == "deDE" then
     L["optionsReceiveMessagesFrom"] = "Akzeptiere nur Nachrichten von:"
     L["optionsReceiveMessagesFromTooltip"] = "Wähle einen Spielernamen von dem du Nachrichten erhalten möchtest. Alle Nachrichten von anderen Absendern werden ignoriert."
     L["optionsReceiveMessagesFromDropdown"] = "Namensauswahl"
+    L["optionsHideDisabledTriggers"] = "Deaktivierte Auslöser verstecken"
 
     -- Dungeon Difficulty
     L["dungeonHeading"] = "Dungeon"

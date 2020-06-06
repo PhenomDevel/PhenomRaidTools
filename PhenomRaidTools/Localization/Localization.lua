@@ -38,6 +38,7 @@ L = {
         "Put the name of the player you want to receive messages from in here.\n"..
         "All other messages will be filtered out so you won't get spammed.", 
     ["optionsReceiveMessagesFromDropdown"] = "Choose player", 
+    ["optionsHideDisabledTriggers"] = "Hide disabled triggers",
 
     -- Dungeon Difficulty
     ["dungeonHeading"] = "Dungeon",
