@@ -83,7 +83,6 @@ I have set up a discord server up and running for every kind of question. Feel f
 ## TODOs
  - Translate error messages and debug messages
  - Make sure receiver overlay backdrop is scaled correctly after any change to the font
- - Be able to hide disabled rotations and timers on the sender overlay
  - Cleanup github templates
  - PhenomRaidTools.lua `PRT.mainWindow` obsolete?
  - Refactor some ifs as helper functions for more readable code
