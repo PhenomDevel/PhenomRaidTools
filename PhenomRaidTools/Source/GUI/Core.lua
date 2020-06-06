@@ -1,5 +1,11 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
-local Core = {}
+
+local Core = {
+    openFrames = {
+
+    }
+}
+
 
 -------------------------------------------------------------------------------
 -- Local Helper
@@ -7,6 +13,18 @@ local Core = {}
 local RegisterESCHandler = function(name, container)
 	_G[name] = container.frame
     tinsert(UISpecialFrames, name)
+end
+
+Core.RegisterFrame = function(frame)
+    tinsert(Core.openFrames, frame)
+end
+
+Core.CloseAllOpenFrames = function()
+    for i, frame in ipairs(Core.openFrames) do
+        frame:Hide()
+    end
+
+    wipe(Core.openFrames)
 end
 
 Core.DisabledText = function(text, enabled)
@@ -299,6 +317,7 @@ PRT.CreateMainWindow = function(profile)
             PRT.Release(widget)
             PRT.ReceiverOverlay.Hide()
             PRT.SenderOverlay.Hide()
+            Core.CloseAllOpenFrames()
         end)
         
     mainWindow:SetWidth(950)

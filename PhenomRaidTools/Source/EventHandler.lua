@@ -22,11 +22,12 @@ EventHandler.StartEncounter = function(event, encounterID, encounterName)
 		PRT.ReceiverOverlay.Initialize(PRT.db.profile.overlay.receiver)
 
 		if PRT.db.profile.senderMode then
-			PRT.Debug("Starting new encounter|cFF69CCF0", encounterName,"(", encounterID, ")" , "|r")
+			PRT.Debug("Starting new encounter", PRT.HighlightString(encounterName),"(", PRT.HighlightString(encounterID), ")" , "|r")
 			local _, encounter = PRT.FilterEncounterTable(PRT.db.profile.encounters, encounterID)
 
 			-- Ensure that encounter has all trigger tables!
 			PRT.EnsureEncounterTrigger(encounter)
+			
 			if encounter then			
 				if encounter.enabled then
 					PRT:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
@@ -199,10 +200,10 @@ function PRT:PLAYER_ENTERING_WORLD(event)
 			local name, type, _, difficulty = GetInstanceInfo()						
 			if type == "party" then
 				PRT.Debug("Player entered dungeon - checking difficulty")
-				PRT.Debug("Current difficulty is |cFF9482C9", difficulty, "|r")
+				PRT.Debug("Current difficulty is", PRT.HighlightString(difficulty))
 				
 				if self.db.profile.enabledDifficulties["dungeon"][difficulty] then
-					PRT.Debug("Enabling PhenomRaidTools for|cFF9482C9", name, "|ron difficulty|cFF9482C9", difficulty, "|r")
+					PRT.Debug("Enabling PhenomRaidTools for", PRT.HighlightString(name), "on difficulty", PRT.HighlightString(difficulty))
 					PRT.enabled = true
 				else
 					PRT.Debug("Difficulty not configured. PhenomRaidTools disabled.")
@@ -210,10 +211,10 @@ function PRT:PLAYER_ENTERING_WORLD(event)
 				end
 			elseif type == "raid" then
 				PRT.Debug("Player entered raid - checking difficulty")
-				PRT.Debug("Current difficulty is|cFF9482C9"..difficulty, "|r")
+				PRT.Debug("Current difficulty is", PRT.HighlightString(difficulty))
 				
 				if self.db.profile.enabledDifficulties["raid"][difficulty] then
-					PRT.Debug("Enabling PhenomRaidTools for|cFF9482C9", name, "|ron difficulty|cFF9482C9", difficulty, "|r")
+					PRT.Debug("Enabling PhenomRaidTools for", PRT.HighlightString(name), "on difficulty", PRT.HighlightString(difficulty))
 					PRT.enabled = true
 				else
 					PRT.Debug("Difficulty not configured. PhenomRaidTools disabled.")

@@ -3,25 +3,25 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local Encounter = {}
 
 local stringByCondition = function(name, condition)
-    local s = name.."\n"
+    local s = name.."|n"
 
     if condition.event then
-        s = s.."    Event: "..PRT.ColoredString(condition.event, PRT.db.profile.colors.highlight).."\n"
+        s = s.."    Event: "..PRT.ColoredString(condition.event, PRT.db.profile.colors.highlight).."|n"
     end
 
     if condition.spellName and condition.spellID then
         local _, _, texture = GetSpellInfo(condition.spellID)
-        s = s.."    Spell: "..PRT.TextureString(texture)..condition.spellName.." ( "..PRT.ColoredString(condition.spellID, PRT.db.profile.colors.highlight).." )\n"  
+        s = s.."    Spell: "..PRT.TextureString(texture)..condition.spellName.." ( "..PRT.ColoredString(condition.spellID, PRT.db.profile.colors.highlight).." )|n"  
     end
 
     return s
 end
 
 local stringByPercentage = function(name, percentage)
-    local s = name.."\n"
+    local s = name.."|n"
 
     if percentage.unitID then
-        s = s.."    UnitID: "..PRT.ColoredString(percentage.unitID, PRT.db.profile.colors.highlight).."\n"
+        s = s.."    UnitID: "..PRT.ColoredString(percentage.unitID, PRT.db.profile.colors.highlight).."|n"
     end
 
     return s
@@ -178,7 +178,7 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
             PRT.Core.UpdateTree() 
         end)
 
-    local deleteButton = PRT.NewTriggerDeleteButton(container, profile.encounters, encounterIndex, "deleteEncounter")
+    local deleteButton = PRT.NewTriggerDeleteButton(container, profile.encounters, encounterIndex, "deleteEncounter", encounter.name)
 
     encounterOptionsGroup:AddChild(enabledCheckBox)
     encounterOptionsGroup:AddChild(encounterIDEditBox)

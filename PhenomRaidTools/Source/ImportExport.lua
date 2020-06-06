@@ -37,6 +37,7 @@ PRT.CreateImportEncounterFrame = function(encounters)
     end)    
 
     importFrame:Show()
+    PRT.Core.RegisterFrame(importFrame)
 end
 
 PRT.CreateExportEncounterFrame = function(encounter)
@@ -50,5 +51,6 @@ PRT.CreateExportEncounterFrame = function(encounter)
     exportDataBox:HighlightText()
 
     exportFrame:AddChild(exportDataBox)        
-    exportFrame:Show()    
+    exportFrame:Show()
+    PRT.Core.RegisterFrame(exportFrame)
 end

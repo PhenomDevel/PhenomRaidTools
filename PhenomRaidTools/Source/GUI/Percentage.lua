@@ -153,7 +153,7 @@ PRT.AddPowerPercentageWidget = function(container, profile, encounterID, trigger
     local _, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)    
     local percentages = encounter.PowerPercentages
     local percentageIndex, percentage = PRT.FilterTableByName(percentages, triggerName)
-    local deleteButton = PRT.NewTriggerDeleteButton(container, percentages, percentageIndex, "deletePercentage")
+    local deleteButton = PRT.NewTriggerDeleteButton(container, percentages, percentageIndex, "deletePercentage", percentage.name)
 
     Percentage.PercentageWidget(percentage, container)
     container:AddChild(deleteButton)
@@ -190,7 +190,7 @@ PRT.AddHealthPercentageWidget = function(container, profile, encounterID, trigge
     local _, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)    
     local percentages = encounter.HealthPercentages
     local percentageIndex, percentage = PRT.FilterTableByName(percentages, triggerName)
-    local deleteButton = PRT.NewTriggerDeleteButton(container, percentages, percentageIndex, "deletePercentage")
+    local deleteButton = PRT.NewTriggerDeleteButton(container, percentages, percentageIndex, "deletePercentage", percentage.name)
 
     Percentage.PercentageWidget(percentage, container)
     container:AddChild(deleteButton)

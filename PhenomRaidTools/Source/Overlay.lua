@@ -1,14 +1,7 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 local Overlay = {}
-local headerColor = "FFFFF569"
-local subHeaderColor = "FFFF7D0A"
-local textColor = "FFFFFFFF"
 local padding = 15
-
-
--------------------------------------------------------------------------------
--- Local Helper
 
 
 -------------------------------------------------------------------------------
@@ -37,24 +30,12 @@ Overlay.UpdateSize = function(container, options)
     end
 end
 
-Overlay.UpdateFont = function(container, fontSize)
-    container.text:SetFont(GameFontHighlightSmall:GetFont(), fontSize, "OUTLINE")
+Overlay.UpdateFont = function(container, options)
+    container.text:SetFont((options.font or GameFontHighlightSmall:GetFont()), options.fontSize, "OUTLINE")
 end
 
 Overlay.UpdateBackdrop = function(container, r, g, b, a)
     container:SetBackdropColor(r, g, b, a);
-end
-
-Overlay.AddHeading = function(s, text)
-    return s.."|c"..headerColor..text.."|r"
-end
-
-Overlay.AddSubHeading = function(s, text)
-    return s.."|c"..subHeaderColor..text.."|r\n"
-end
-
-Overlay.AddText = function(s, text)
-    return s.."|c"..textColor..text.."|r\n"
 end
 
 Overlay.SetMoveable = function(widget, v)
@@ -66,7 +47,6 @@ end
 
 Overlay.SetFont = function(container, options)
     container.text:SetFont((options.font or GameFontHighlightSmall:GetFont()), options.fontSize, "OUTLINE")
-    Overlay.UpdateSize(container, options)
 end
 
 Overlay.CreateOverlay = function(options, withBackdrop)    

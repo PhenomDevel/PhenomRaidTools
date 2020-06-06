@@ -40,7 +40,39 @@ local Options = {
 -------------------------------------------------------------------------------
 -- Local Helper
 
+Options.ImportRaidRosterByGroup = function(options)
+    wipe(options)
+    local names = PRT.PartyNames()
+    local tanksCounter = 0
+    local healerCounter = 0
+    local ddsCounter = 0
+
+    for i, name in ipairs(names) do
+        local playerRole = UnitGroupRolesAssigned(name);
+        local raidRosterID
+
+        if playerRole == "TANK" then
+            tanksCounter = tanksCounter + 1
+            raidRosterID = "tank"..tanksCounter
+        elseif playerRole == "HEALER" then
+            healerCounter = healerCounter + 1
+            raidRosterID = "heal"..healerCounter
+        elseif playerRole == "DAMAGER" then
+            ddsCounter = ddsCounter + 1
+            raidRosterID = "dd"..ddsCounter
+        end
+        
+        if raidRosterID then
+            options[raidRosterID] = name
+        end
+    end
+end
+
 Options.AddRaidRosterWidget = function(container, options)
+    local importByGroupButton = PRT.Button("optionsRaidRosterImportByGroup")
+    importByGroupButton:SetCallback("OnClick", function(_) PRT.ConfirmationDialog(L["importByGroupConfirmationText"], Options.ImportRaidRosterByGroup, options)  end)
+    importByGroupButton:SetWidth(300)
+
     local explanationLabel = PRT.Label("optionsRaidRosterExplanation")
     explanationLabel:SetRelativeWidth(1)
 
@@ -103,6 +135,7 @@ Options.AddRaidRosterWidget = function(container, options)
         ddGroup:AddChild(healEditBox)
     end 
 
+    container:AddChild(importByGroupButton)
     container:AddChild(explanationLabel)
     container:AddChild(tankGroup)
     container:AddChild(healGroup)
@@ -305,7 +338,7 @@ Options.AddSenderOverlayWidget = function(container, options)
         function(widget) 
             local fontSize = widget:GetValue() 
             options.fontSize = fontSize            
-            PRT.Overlay.UpdateFont(PRT.SenderOverlay.overlayFrame, fontSize)
+            PRT.Overlay.UpdateFont(PRT.SenderOverlay.overlayFrame, options)
             PRT.Overlay.UpdateSize(PRT.SenderOverlay.overlayFrame, options)
         end)
     
@@ -334,7 +367,7 @@ Options.AddReceiverOverlayWidget = function(container, options)
     function(widget) 
         local fontSize = widget:GetValue() 
         options.fontSize = fontSize            
-        PRT.Overlay.UpdateFont(PRT.ReceiverOverlay.overlayFrame, fontSize)
+        PRT.Overlay.UpdateFont(PRT.ReceiverOverlay.overlayFrame, options)
     end)
 
     local fontSelect = PRT.FontSelect("optionsFontSelect", options.fontName)

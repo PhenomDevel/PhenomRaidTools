@@ -82,12 +82,4 @@ I have set up a discord server up and running for every kind of question. Feel f
 
 ## TODOs
  - Translate error messages and debug messages
- - Make sure receiver overlay backdrop is scaled correctly after any change to the font
- - Cleanup github templates
- - PhenomRaidTools.lua `PRT.mainWindow` obsolete?
  - Refactor some ifs as helper functions for more readable code
- - Use ColoredString helper everywhere
- - TriggerHandler.FilterPercentagesTable use name->fn mapping for operators
- - Overlay.lua cleanup locals
- - MessageHandler.lua do we really need `validTargets`?
- - Exchange `getn` with `#`

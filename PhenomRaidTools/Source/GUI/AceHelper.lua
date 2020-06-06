@@ -194,7 +194,8 @@ end
 
 PRT.Window = function(titleID)
 	local titleText = L[titleID]
-	local container = AceGUI:Create("Window")    
+	local container = AceGUI:Create("Window") 
+	container.frame:SetFrameStrata("HIGH")   
 	
 	container:SetTitle(titleText)
 	container:SetLayout("Fill")

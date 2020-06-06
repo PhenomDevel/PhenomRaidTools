@@ -115,7 +115,7 @@ PRT.AddRotationWidget = function(container, profile, encounterID, triggerName)
     local idx, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)    
     local rotations = encounter.Rotations
     local rotationIndex, rotation = PRT.FilterTableByName(rotations, triggerName)
-    local deleteButton = PRT.NewTriggerDeleteButton(container, rotations, rotationIndex, "deleteRotation")
+    local deleteButton = PRT.NewTriggerDeleteButton(container, rotations, rotationIndex, "deleteRotation", rotation.name)
 
     Rotation.RotationWidget(rotation, container)
     container:AddChild(deleteButton)

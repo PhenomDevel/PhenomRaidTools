@@ -68,12 +68,13 @@ ReceiverOverlay.UpdateFrame = function()
             if message ~= "" then
                 if message.expirationTime > GetTime() then           
                     local timeLeftRaw = message.expirationTime - GetTime()
-                    local timeLeft = PRT.Round(timeLeftRaw, 2)
-                    
-                    if text == "" then
-                        text = "|cFF"..PRT.db.profile.overlay.receiver.fontColor.hex..string.format(message.message, timeLeft)
+                    local timeLeft = PRT.Round(timeLeftRaw, 2)                    
+                    local color = "FF"..PRT.db.profile.overlay.receiver.fontColor.hex
+
+                    if text == "" then                        
+                        text = PRT.ColoredString(string.format(message.message, timeLeft), color)                        
                     else
-                        text = text.."|n"..string.format(message.message, timeLeft)
+                        text = text.."|n"..PRT.ColoredString(string.format(message.message, timeLeft), color)
                     end
                 end 
             end

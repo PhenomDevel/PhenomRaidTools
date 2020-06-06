@@ -11,22 +11,6 @@ local SenderOverlay = {
 -------------------------------------------------------------------------------
 -- Local Helper
 
-local inactiveColor = function(s)
-    return "|c"..SenderOverlay.inactiveColor..s.."|r"
-end
-
-local disabledColor = function(s)
-    return "|c"..SenderOverlay.disabledColor..s.."|r"
-end
-
-local timerColor = function(s)
-    return "|c"..SenderOverlay.timerColor..s.."|r"
-end
-
-local rotationColor = function(s)
-    return "|c"..SenderOverlay.rotationColor..s.."|r"
-end
-
 SenderOverlay.GetNextTiming = function(timer, seconds)
     local nextTiming
     local lowestSecond
@@ -49,7 +33,7 @@ SenderOverlay.UpdateFrame = function(encounter, options)
     if encounter then        
         -- Set Header to encounter name
         local timeIntoCombat = PRT.SecondsToClock(GetTime() - encounter.startedAt)
-        overlayText = encounter.name.." (|cFF3d94ff"..timeIntoCombat.."|r)\n"
+        overlayText = encounter.name.." ("..PRT.HighlightString(timeIntoCombat)..")|n"
 
         -- Timer
         if not table.empty(encounter.Timers) then
@@ -64,27 +48,27 @@ SenderOverlay.UpdateFrame = function(encounter, options)
                     if timer.started then
                         local timeIntoTimer = GetTime() - timer.startedAt
                         local timeIntoTimerString = PRT.SecondsToClock(timeIntoTimer)
-                        timerString = timerString.." ("..timerColor(timeIntoTimerString)..")"
+                        timerString = timerString.." ("..PRT.ColoredString(timeIntoTimerString, SenderOverlay.timerColor)..")"
 
                         local nextInSeconds, nextTiming = SenderOverlay.GetNextTiming(timer, timeIntoTimer)
 
                         if nextInSeconds then
                             local nextDelta = PRT.Round(nextInSeconds - timeIntoTimer)
-                            timerString = timerString.." [-"..timerColor(PRT.SecondsToClock(nextDelta)).."]\n"
+                            timerString = timerString.." [-"..PRT.ColoredString(PRT.SecondsToClock(nextDelta), SenderOverlay.timerColor).."]|n"
                         else
-                            timerString = timerString.."\n"
+                            timerString = timerString.."|n"
                         end
                     elseif timer.enabled ~= true then
-                        timerString = disabledColor(timerString.." - disabled\n")
+                        timerString = PRT.ColoredString(timerString.." - disabled|n", SenderOverlay.disabledColor)
                     else
-                        timerString = inactiveColor(timerString.." - inactive\n")
+                        timerString = PRT.ColoredString(timerString.." - inactive|n", SenderOverlay.inactiveColor)
                     end
                 end
 
                 timerStringComplete = timerStringComplete..timerString
             end
 
-            overlayText = overlayText..timerColor("Timers\n")
+            overlayText = overlayText..PRT.ColoredString("Timers|n", SenderOverlay.timerColor)
             overlayText = overlayText..timerStringComplete
         end
 
@@ -99,12 +83,12 @@ SenderOverlay.UpdateFrame = function(encounter, options)
                     rotationString = rotationString..rotation.name
 
                     if rotation.enabled ~= true then
-                        rotationString = disabledColor(rotationString.." - disabled\n")
+                        rotationString = PRT.ColoredString(rotationString.." - disabled|n", SenderOverlay.disabledColor)
                     else
                         if rotation.counter then
-                            rotationString = rotationString.." - "..rotationColor(rotation.counter).."\n"
+                            rotationString = rotationString.." - "..PRT.ColoredString(rotation.counter, SenderOverlay.rotationColor).."|n"
                         else
-                            rotationString = rotationString.." - 0\n"
+                            rotationString = rotationString.." - 0|n"
                         end
                     end
                 end
@@ -112,7 +96,7 @@ SenderOverlay.UpdateFrame = function(encounter, options)
                 rotationStringComplete = rotationStringComplete..rotationString
             end
 
-            overlayText = overlayText.."\n|c"..SenderOverlay.rotationColor.."Rotations|r\n"  
+            overlayText = overlayText.."|n"..PRT.ColoredString("Rotations", SenderOverlay.rotationColor).."|n"
             overlayText = overlayText..rotationStringComplete
         end
     end    

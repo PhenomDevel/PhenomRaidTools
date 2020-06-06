@@ -140,7 +140,7 @@ PRT.AddTimerWidget = function(container, profile, encounterID, triggerName)
     local _, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)    
     local timers = encounter.Timers
     local timerIndex, timer = PRT.FilterTableByName(timers, triggerName)
-    local deleteButton = PRT.NewTriggerDeleteButton(container, timers, timerIndex, "deleteTimer")
+    local deleteButton = PRT.NewTriggerDeleteButton(container, timers, timerIndex, "deleteTimer", timer.name)
 
     Timer.TimerWidget(timer, container)    
     container:AddChild(deleteButton)
