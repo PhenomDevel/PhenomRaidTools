@@ -22,19 +22,19 @@ end
 PRT.PartyOrRaidNames = function()
 	local names = {}
 
-	if UnitInParty("player") then
+    if UnitInRaid("player") then
+        for i=1, 40 do
+            local index = "raid"..i
+            local playerName = GetRaidRosterInfo(i)
+            tinsert(names, playerName)
+        end
+    elseif UnitInParty("player") then
 		for i=1, 5 do
             local index = "party"..i
             local playerName = GetRaidRosterInfo(i)
             tinsert(names, playerName)
 		end
-	elseif UnitInRaid("player") then
-		for i=1, 40 do
-            local index = "raid"..i
-            local playerName = GetRaidRosterInfo(i)
-            tinsert(names, playerName)
-		end
-    else
+	else
         local name = UnitName("player")
         tinsert(names, name)
     end

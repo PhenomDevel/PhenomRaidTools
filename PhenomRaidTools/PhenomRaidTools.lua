@@ -31,7 +31,7 @@ local LibDBIcon = LibStub("LibDBIcon-1.0")
 
 local defaults =  {
 	profile = {
-		version = "@project-version@",
+		version = "@project-version@", --"1.3.14.0-BETA", 
 		enabled = true,
 		testMode = false,
 		testEncounterID = 9999,
@@ -217,7 +217,8 @@ function PRT:PrintHelp()
 end
 
 function PRT:PrintPartyOrRaidVersions()	
-	local myVersion = tonumber(string.gsub(PRT.db.profile.version, "[^%d]+", ""))
+	local myVersion = string.gsub(PRT.db.profile.version, "[^%d]+", "")
+	local myVersionN = tonumber(myVersion)
 
 	for player, version in pairs(PRT.db.profile.versionCheck) do				
 		local coloredName = PRT.ClassColoredName(player)
@@ -225,12 +226,15 @@ function PRT:PrintPartyOrRaidVersions()
 		if version == "" or version == nil then
 			PRT:Print(coloredName, ":", PRT.ColoredString("no response", PRT.db.profile.colors.disabled))
 		else
-			local parsedVersion = tonumber(string.gsub(version, "[^%d]+", ""))
+			local parsedVersion = string.gsub(version, "[^%d]+", "")
+			local parsedVersionN = tonumber(parsedVersion)
 
-			if parsedVersion >= myVersion then
-				PRT:Print(coloredName, ":", PRT.ColoredString(version, PRT.db.profile.colors.highlight))			
-			elseif parsedVersion < myVersion then
-				PRT:Print(coloredName, ":", PRT.ColoredString(version, PRT.db.profile.colors.disabled))
+			if parsedVersionN and myVersionN then
+				if parsedVersionN >= myVersionN then
+					PRT:Print(coloredName, ":", PRT.ColoredString(version, PRT.db.profile.colors.highlight))			
+				elseif parsedVersionN < myVersionN then
+					PRT:Print(coloredName, ":", PRT.ColoredString(version, PRT.db.profile.colors.disabled))
+				end
 			end
 		end
 	end
@@ -257,8 +261,6 @@ function PRT:ExecuteChatCommand(input)
 			for i, playerName in ipairs(playerNames) do
 				self.db.profile.versionCheck[playerName] = ""
 			end
-
-			self.db.profile.versionCheck["test"] = ""
 
 			AceTimer:ScheduleTimer(PRT.PrintPartyOrRaidVersions, 5)
 		else
