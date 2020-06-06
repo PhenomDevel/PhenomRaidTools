@@ -1,5 +1,5 @@
 ===============================================================================
-# Changelog 1.3.16.0-BETA
+# Changelog 1.3.16.1-BETA
 ## Bugfixes
  - All open frames will now be closed when PRT is closed
 
