@@ -1,4 +1,13 @@
 ===============================================================================
+# Changelog 1.3.15.0-BETA
+## Bugfixes
+None
+
+## Features
+ - Be able to filter messages by player name (select the player who you want to display messages from)
+
+
+===============================================================================
 # Changelog 1.3.14.1-BETA
 ## Bugfixes
  - Make sure version check works for raids and not only for groups
