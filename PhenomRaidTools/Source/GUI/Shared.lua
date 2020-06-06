@@ -19,8 +19,25 @@ PRT.NewTriggerDeleteButton = function(container, t, idx, textID)
     return deleteButton
 end
 
-PRT.PartyOrRaidNames = function()
-	local names = {}
+PRT.ClassColoredName = function(name)
+    if name then
+        local _, _, classIndex = UnitClass(name)
+        local color = PRT.db.profile.colors.classes[classIndex]
+        local coloredName = name
+
+        if color then
+            coloredName = "|cFF"..color..name.."|r"
+        else
+            coloredName = name
+        end        
+        return coloredName
+    else
+        return name
+    end
+end
+
+PRT.PartyNames = function()
+    local names = {}
 
     if UnitInRaid("player") then
         for i=1, 40 do
@@ -42,25 +59,20 @@ PRT.PartyOrRaidNames = function()
     return names
 end
 
-PRT.ClassColoredName = function(name)
-    if name then
-        local _, _, classIndex = UnitClass(name)
-        local color = PRT.db.profile.colors.classes[classIndex]
-        local coloredName = name
+PRT.ColoredPartyNames = function()
+    local names = PRT.PartyNames()
+    local coloredNames = {}
 
-        if color then
-            coloredName = "|cFF"..color..name.."|r"
-        else
-            coloredName = name
-        end        
-        return coloredName
-    else
-        return name
+    for i, name in ipairs(names) do
+        local coloredName = PRT.ClassColoredName(name)
+        tinsert(coloredNames, coloredName)
     end
+
+    return coloredNames
 end
 
 PRT.ColoredPartyOrRaidNames = function()
-    local names = PRT.PartyOrRaidNames()
+    local names = PRT.PartyNames()
     local coloredNames = {}
     for i, name in ipairs(names) do
         local coloredName = PRT.ClassColoredName(name)

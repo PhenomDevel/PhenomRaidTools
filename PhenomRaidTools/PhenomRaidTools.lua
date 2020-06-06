@@ -31,7 +31,9 @@ local LibDBIcon = LibStub("LibDBIcon-1.0")
 
 local defaults =  {
 	profile = {
+		myName = UnitName("player"),
 		version = "@project-version@", --"1.3.14.0-BETA", 
+		receiveMessagesFrom = "",
 		enabled = true,
 		testMode = false,
 		testEncounterID = 9999,
@@ -133,6 +135,7 @@ local defaults =  {
 			error = "FFFF0000",
 			highlight = "FF69CCF0",
 			disabled = "FFff1100",
+			enabled = "FF008a25",
 			classes = {
 				[0] = nil,
 				[1] = "C79C6E",

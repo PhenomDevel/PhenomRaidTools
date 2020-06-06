@@ -15,7 +15,6 @@ local validTargets = {
 -- Local Helper
 
 MessageHandler.SendMessageToReceiver = function(message)
-    print(message)
     if PRT.PlayerInParty() then
         C_ChatInfo.SendAddonMessage(PRT.db.profile.addonPrefixes.weakAuraMessage, message, "RAID")    
     else
@@ -53,6 +52,7 @@ MessageHandler.ExecuteMessageAction = function(message)
         if UnitExists(targetMessage.target) or tContains(validTargets, targetMessage.target) then
             if not PRT.db.profile.weakAuraMode then
                 PRT.Debug("Sending new message to", targetMessage.target)
+                targetMessage.sender = PRT.db.profile.myName
                 AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.addonMessage, PRT.TableToString(targetMessage), "WHISPER", UnitName("player")) 
             elseif PRT.db.profile.weakAuraMode then
                 local weakAuraReceiverMessage = nil
@@ -75,7 +75,10 @@ end
 function PRT:OnAddonMessage(message)
     if not PRT.db.profile.weakAuraMode then
         local worked, messageTable = PRT.StringToTable(message)
-        if PRT.db.profile.receiverMode then
+        if PRT.db.profile.receiverMode and 
+           (messageTable.sender == PRT.db.profile.receiveMessagesFrom or 
+            PRT.db.profile.receiveMessagesFrom == nil or
+            PRT.db.profile.receiveMessagesFrom == "") then
             PRT.ReceiverOverlay.AddMessage(messageTable)
         end
     end
@@ -91,7 +94,6 @@ function PRT:OnVersionRequest(message)
         }
 
         AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.versionResponse, PRT.TableToString(response), "WHISPER", messageTable.requestor) 
-        PRT.Debug("Answering version check of", messageTable.requestor)
     end
 end
 

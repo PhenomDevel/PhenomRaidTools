@@ -53,15 +53,8 @@ end
 Message.ColoredRaidPlayerNames = function()
 	local playerNames = {}
 
-	for i=1, 40 do
-		local index = "raid"..i
-		if UnitExists(index) then
-			local name = GetRaidRosterInfo(i)
-			local _, _, classIndex = UnitClass(name)
-			local color = PRT.db.profile.colors.classes[classIndex]
-			local coloredName = "|cFF"..color..name.."|r"
-			tinsert(playerNames, { id = name, name = coloredName})
-		end
+	for i, name in ipairs(PRT.ColoredPartyNames()) do
+		tinsert(playerNames, { id = name, name = coloredName})
 	end
 
 	return playerNames

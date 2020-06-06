@@ -194,6 +194,26 @@ Options.AddGeneralWidgets = function(container, options)
     local textEncounterIDDropdown = PRT.Dropdown("optionsTestEncounterID", options.encounters, options.testEncounterID)        
     local runModeDropdown = PRT.Dropdown("runModeDropdown", Options.runModes, options.runMode)        
     local weakAuraModeCheckbox = PRT.CheckBox("optionsWeakAuraMode", options.weakAuraMode, true)
+    local receiveMessagesFromEditBox = PRT.EditBox("optionsReceiveMessagesFrom", options.receiveMessagesFrom)
+
+    receiveMessagesFromEditBox:SetCallback("OnEnterPressed",
+        function(widget)
+            local text = widget:GetText()
+            options.receiveMessagesFrom = text
+        end)
+
+    local partyPlayerDropdownItems = {}
+    for i, name in ipairs(PRT.PartyNames()) do
+        tinsert(partyPlayerDropdownItems, { id = name, name = name})
+    end
+    local receiveMessagesFromDropdown = PRT.Dropdown("optionsReceiveMessagesFromDropdown", partyPlayerDropdownItems)
+    receiveMessagesFromDropdown:SetCallback("OnValueChanged", 
+        function(widget)
+            local text = widget:GetValue()
+            options.receiveMessagesFrom = text
+            receiveMessagesFromEditBox:SetText(text)
+            receiveMessagesFromDropdown:SetValue(nil)
+        end)
 
 	debugModeCheckbox:SetCallback("OnValueChanged", function(widget) options.debugMode = widget:GetValue() end)
     debugModeCheckbox:SetRelativeWidth(1)
@@ -215,7 +235,10 @@ Options.AddGeneralWidgets = function(container, options)
     weakAuraModeCheckbox:SetCallback("OnValueChanged", function(widget)	options.weakAuraMode = widget:GetValue() end)	
     weakAuraModeCheckbox:SetRelativeWidth(1)
 
-    enabledCheckbox:SetCallback("OnValueChanged", function(widget)	options.enabled = widget:GetValue() end)	
+    enabledCheckbox:SetCallback("OnValueChanged", 
+        function(widget) 
+            options.enabled = widget:GetValue() 
+        end)	
     enabledCheckbox:SetRelativeWidth(1)
     
     container:AddChild(enabledCheckbox)
@@ -230,7 +253,9 @@ Options.AddGeneralWidgets = function(container, options)
 
     if options.senderMode then
         container:AddChild(testModeCheckbox)    
-        container:AddChild(textEncounterIDDropdown)
+        container:AddChild(textEncounterIDDropdown)        
+        container:AddChild(receiveMessagesFromEditBox)
+        container:AddChild(receiveMessagesFromDropdown)
     end
 
     container:AddChild(weakAuraModeCheckbox)    
