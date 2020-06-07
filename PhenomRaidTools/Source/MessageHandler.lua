@@ -77,6 +77,7 @@ function PRT:OnAddonMessage(message)
         local worked, messageTable = PRT.StringToTable(message)
         if PRT.db.profile.receiverMode then 
             if (messageTable.sender == PRT.db.profile.receiveMessagesFrom or 
+                messageTable.sender == "$me" or
                 PRT.db.profile.receiveMessagesFrom == nil or
                 PRT.db.profile.receiveMessagesFrom == "") then
                 PRT.ReceiverOverlay.AddMessage(messageTable)

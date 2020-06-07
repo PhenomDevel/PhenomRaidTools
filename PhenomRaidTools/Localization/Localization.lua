@@ -35,8 +35,9 @@ L = {
     ["optionsRaidRosterExplanation"] = "Here you can define player names and reference them as targets in message with e.g. |cFF69CCF0$tank2|r, |cFF69CCF0$heal1|r etc.",
     ["optionsReceiveMessagesFrom"] = "Accept messages only from", 
     ["optionsReceiveMessagesFromTooltip"] = 
-        "Put the name of the player you want to receive messages from in here.\n"..
-        "All other messages will be filtered out so you won't get spammed.", 
+        "Put the name of the player you want to receive messages from in here.|n"..
+        "All other messages will be filtered out so you won't get spammed.|n"..
+        "You also can use |cFF69CCF0$me|r to always receive messages from yourself.", 
     ["optionsReceiveMessagesFromDropdown"] = "Choose player", 
     ["optionsHideDisabledTriggers"] = "Hide disabled triggers",
     ["optionsRaidRosterImportByGroup"] = "Import raid roster by current group",

@@ -34,7 +34,10 @@ if GetLocale() == "deDE" then
     L["optionsDefaultsExplanation"] = "Hier können Standardwerte für die Auslöser ausgewählt werden."
     L["optionsRaidRosterExplanation"] = "Hier können Spielernamen des Raidkaders eingetragen werden, um diese später zu referenzieren mit z.B. |cFF69CCF0$tank2|r |cFF69CCF0$heal1|r etc."
     L["optionsReceiveMessagesFrom"] = "Akzeptiere nur Nachrichten von:"
-    L["optionsReceiveMessagesFromTooltip"] = "Wähle einen Spielernamen von dem du Nachrichten erhalten möchtest. Alle Nachrichten von anderen Absendern werden ignoriert."
+    L["optionsReceiveMessagesFromTooltip"] = 
+        "Wähle einen Spielernamen von dem du Nachrichten erhalten möchtest.|n"..
+        "Alle Nachrichten von anderen Absendern werden ignoriert.|n"..
+        "Du kannst auch |cFF69CCF0$me|r benutzen damit du Nachrichten von dir selbst immer erhälst.|n"
     L["optionsReceiveMessagesFromDropdown"] = "Namensauswahl"
     L["optionsHideDisabledTriggers"] = "Deaktivierte Auslöser verstecken"
     L["optionsRaidRosterImportByGroup"] = "Importiere Raidroster anhand der aktuellen Gruppe"
