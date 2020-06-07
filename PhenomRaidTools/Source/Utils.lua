@@ -173,20 +173,28 @@ PRT.PrintTable = function(prefix, t)
 end
 
 PRT.Info = function(...)
-    PRT:Print(PRT.ColoredString("[Info]", PRT.db.profile.colors.info), ...)
+    if PRT.db.profile.enabled then
+        PRT:Print(PRT.ColoredString("[Info]", PRT.db.profile.colors.info), ...)
+    end
 end
 
 PRT.Warn = function(...)
-    PRT:Print(PRT.ColoredString("[Warn]", PRT.db.profile.colors.warn), ...)
+    if PRT.db.profile.enabled then
+        PRT:Print(PRT.ColoredString("[Warn]", PRT.db.profile.colors.warn), ...)
+    end
 end
 
 PRT.Error = function(...)
-    PRT:Print(PRT.ColoredString("[Error]", PRT.db.profile.colors.error), ...)
+    if PRT.db.profile.enabled then
+        PRT:Print(PRT.ColoredString("[Error]", PRT.db.profile.colors.error), ...)
+    end
 end
 
 PRT.Debug = function(...)
-    if PRT.db.profile.debugMode then
-        PRT:Print(PRT.ColoredString("[Debug]", PRT.db.profile.colors.debug), ...)
+    if PRT.db.profile.enabled then
+        if PRT.db.profile.debugMode then
+            PRT:Print(PRT.ColoredString("[Debug]", PRT.db.profile.colors.debug), ...)
+        end
     end
 end
 

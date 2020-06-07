@@ -46,7 +46,7 @@ end
 Message.ColoredRaidPlayerNames = function()
 	local playerNames = {}
 
-	for i, name in ipairs(PRT.PartyNames()) do
+	for i, name in ipairs(PRT.PartyNames(false)) do
 		tinsert(playerNames, { id = name, name = PRT.ClassColoredName(name)})
 	end
 

@@ -53,7 +53,7 @@ MessageHandler.ExecuteMessageAction = function(message)
             if not PRT.db.profile.weakAuraMode then
                 PRT.Debug("Sending new message to", targetMessage.target)
                 targetMessage.sender = PRT.db.profile.myName
-                AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.addonMessage, PRT.TableToString(targetMessage), "WHISPER", UnitName("player")) 
+                AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.addonMessage, PRT.TableToString(targetMessage), "RAID") 
             elseif PRT.db.profile.weakAuraMode then
                 local weakAuraReceiverMessage = nil
                 -- Determine if the message should play a sound on the receiver side
@@ -73,38 +73,50 @@ MessageHandler.ExecuteMessageAction = function(message)
 end
 
 function PRT:OnAddonMessage(message)
-    if not PRT.db.profile.weakAuraMode then
-        local worked, messageTable = PRT.StringToTable(message)
-        if PRT.db.profile.receiverMode then 
-            if (messageTable.sender == PRT.db.profile.receiveMessagesFrom or 
-                PRT.db.profile.receiveMessagesFrom == "$me" or
-                PRT.db.profile.receiveMessagesFrom == nil or
-                PRT.db.profile.receiveMessagesFrom == "") then
-                PRT.ReceiverOverlay.AddMessage(messageTable)
-            else
-                PRT.Debug("We received a message from", PRT.HighlightString(messageTable.sender), "and only accept messages from", PRT.HighlightString(PRT.db.profile.receiveMessagesFrom), "therefore skipping the message.")
+    if PRT.db.profile.enabled then 
+        if UnitAffectingCombat("player") then
+            if not PRT.db.profile.weakAuraMode then
+                local worked, messageTable = PRT.StringToTable(message)
+                if PRT.db.profile.receiverMode then 
+                    if (messageTable.sender == PRT.db.profile.receiveMessagesFrom or 
+                        PRT.db.profile.receiveMessagesFrom == "$me" or
+                        PRT.db.profile.receiveMessagesFrom == nil or
+                        PRT.db.profile.receiveMessagesFrom == "") then
+                        PRT.Debug("Received message from", PRT.ClassColoredName(messageTable.sender))
+                        PRT.ReceiverOverlay.AddMessage(messageTable)
+                    else
+                        PRT.Debug("We received a message from", PRT.ClassColoredName(messageTable.sender), "and only accept messages from", PRT.ClassColoredName(PRT.db.profile.receiveMessagesFrom), "therefore skipping the message.")
+                    end
+                end
             end
         end
     end
 end
 
 function PRT:OnVersionRequest(message)
-    local worked, messageTable = PRT.StringToTable(message)
-    PRT.Debug("Request from:", messageTable.requestor)
-    if messageTable.requestor then
-        local response = {
-            type = "response",
-            name = strjoin("-", UnitFullName("player")),
-            version = PRT.db.profile.version
-        }
-        AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.versionResponse, PRT.TableToString(response), "WHISPER", messageTable.requestor) 
+    if PRT.db.profile.enabled then 
+        local worked, messageTable = PRT.StringToTable(message)
+        
+        if messageTable.requestor then
+            PRT.Debug("Version request from:", messageTable.requestor)
+
+            local response = {
+                type = "response",
+                name = PRT.UnitFullName("player"),
+                version = PRT.db.profile.version
+            }
+
+            AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.versionResponse, PRT.TableToString(response), "RAID") 
+        end
     end
 end
 
-function PRT:OnVersionResponse(message)        
-    local worked, messageTable = PRT.StringToTable(message)
-    PRT.Debug("Response from:", messageTable.name)
-    PRT.db.profile.versionCheck[messageTable.name] = messageTable.version
+function PRT:OnVersionResponse(message)     
+    if PRT.db.profile.enabled then   
+        local worked, messageTable = PRT.StringToTable(message)
+        PRT.Debug("Version response from:", PRT.ClassColoredName(messageTable.name), PRT.HighlightString(messageTable.version))
+        PRT.db.profile.versionCheck[messageTable.name] = messageTable.version
+    end
 end
 
 

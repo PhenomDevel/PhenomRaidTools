@@ -42,7 +42,7 @@ local Options = {
 
 Options.ImportRaidRosterByGroup = function(options, container)
     wipe(options)
-    local names = PRT.PartyNames()
+    local names = PRT.PartyNames(false)
     local tanksCounter = 0
     local healerCounter = 0
     local ddsCounter = 0
@@ -240,7 +240,7 @@ Options.AddGeneralWidgets = function(container, options)
         end)
 
     local partyPlayerDropdownItems = {}
-    for i, name in ipairs(PRT.PartyNames()) do
+    for i, name in ipairs(PRT.PartyNames(false)) do
         tinsert(partyPlayerDropdownItems, { id = name, name = PRT.ClassColoredName(name)})
     end
     local receiveMessagesFromDropdown = PRT.Dropdown("optionsReceiveMessagesFromDropdown", partyPlayerDropdownItems)

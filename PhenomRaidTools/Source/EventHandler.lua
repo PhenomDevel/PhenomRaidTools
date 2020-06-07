@@ -7,7 +7,6 @@ local EventHandler = {
 		"PLAYER_REGEN_DISABLED", 
 		"PLAYER_REGEN_ENABLED",
 		"ENCOUNTER_START",
-		"ENCOUNTER_END",
 		"PLAYER_ENTERING_WORLD"
 	}
 }
@@ -16,18 +15,27 @@ local EventHandler = {
 -------------------------------------------------------------------------------
 -- Local Helper
 
+EventHandler.StartReceiveMessages = function()
+	if PRT.db.profile.enabled then
+		if PRT.db.profile.receiverMode then
+			PRT.ReceiverOverlay.Show()
+			AceTimer:ScheduleRepeatingTimer(PRT.ReceiverOverlay.UpdateFrame, 0.01)
+		else
+			PRT.Debug("You are not in receiver mode. We won't track messages.")
+		end
+	else
+		PRT.Debug("PRT is disabled. We do not start to track messages.")
+	end
+end
+
 EventHandler.StartEncounter = function(event, encounterID, encounterName)
 	if PRT.db.profile.enabled then
-		PRT.SenderOverlay.Initialize(PRT.db.profile.overlay.sender)
-		PRT.ReceiverOverlay.Initialize(PRT.db.profile.overlay.receiver)
-
 		if PRT.db.profile.senderMode then
 			PRT.Debug("Starting new encounter", PRT.HighlightString(encounterName),"(", PRT.HighlightString(encounterID), ")" , "|r")
 			local _, encounter = PRT.FilterEncounterTable(PRT.db.profile.encounters, encounterID)
 
-			-- Ensure that encounter has all trigger tables!
 			PRT.EnsureEncounterTrigger(encounter)
-			
+
 			if encounter then			
 				if encounter.enabled then
 					PRT:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
@@ -41,28 +49,22 @@ EventHandler.StartEncounter = function(event, encounterID, encounterName)
 						PRT.SenderOverlay.Show()
 						PRT.Overlay.SetMoveable(PRT.SenderOverlay.overlayFrame, false)
 						AceTimer:ScheduleRepeatingTimer(PRT.SenderOverlay.UpdateFrame, 1, PRT.currentEncounter.encounter, PRT.db.profile.overlay.sender)
-					end
-			
-					if PRT.db.profile.receiverMode then
-						PRT.ReceiverOverlay.Show()
-						AceTimer:ScheduleRepeatingTimer(PRT.ReceiverOverlay.UpdateFrame, 0.01)
-					end
+					end								
 				else
 					PRT.Warn("Found encounter but it is disabled. Skipping encounter.")
 				end				
 			end
-
-			PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 		end
+
+		PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 	else
 		PRT.Debug("PRT is disabled. Not starting encounter.")
 	end
 end
 
-EventHandler.StopEncounter = function(event)
+EventHandler.StopEncounter = function(event)	
+	PRT.Debug("Combat stopped.")
 	if PRT.db.profile.senderMode then
-		PRT.Debug("Combat stopped. Resetting PRT.")
-
 		-- Send the last event before unregistering the event
 		PRT:COMBAT_LOG_EVENT_UNFILTERED(event)	
 		PRT:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
@@ -75,9 +77,6 @@ EventHandler.StopEncounter = function(event)
 		if PRT.db.profile.overlay.sender.hideAfterCombat then
 			PRT.SenderOverlay.Hide()
 		end
-
-		-- Stop all timers
-		AceTimer:CancelAllTimers()	
 	end
 
 	if PRT.db.profile.overlay.sender.enabled then
@@ -90,6 +89,8 @@ EventHandler.StopEncounter = function(event)
 		PRT.ReceiverOverlay.UpdateFrame()
 		PRT.ReceiverOverlay.Hide()
 	end
+
+	AceTimer:CancelAllTimers()	
 end
 
 
@@ -115,38 +116,33 @@ function PRT:ENCOUNTER_START(event, encounterID, encounterName)
 	end
 end
 
-function PRT:ENCOUNTER_END(event)	
-	if PRT.enabled and not self.db.profile.testMode then
-		EventHandler.StopEncounter(event)
-	end
-end
+function PRT:PLAYER_REGEN_DISABLED(event)	
+	-- Initialize overlays
+	PRT.SenderOverlay.Initialize(PRT.db.profile.overlay.sender)
+	PRT.ReceiverOverlay.Initialize(PRT.db.profile.overlay.receiver)
 
-function PRT:PLAYER_REGEN_DISABLED(event)		
 	if self.db.profile.testMode then
-		if PRT.db.profile.senderMode then
-			PRT.Debug("You are currently in test mode.")
+		PRT.Debug("You are currently in test mode.")
 
-			local _, encounter = PRT.FilterEncounterTable(self.db.profile.encounters, self.db.profile.testEncounterID)
+		local _, encounter = PRT.FilterEncounterTable(self.db.profile.encounters, self.db.profile.testEncounterID)
 
-			if encounter then
-				if encounter.enabled then
-					EventHandler.StartEncounter(event, encounter.id, encounter.name)
-				else
-					PRT.Warn("The selected encounter is disabled. Please enabled it before testing.")
-				end
+		if encounter then
+			if encounter.enabled then
+				EventHandler.StartEncounter(event, encounter.id, encounter.name)
 			else
-				PRT.Warn("You are in test mode and have no encounter selected.")
+				PRT.Warn("The selected encounter is disabled. Please enabled it before testing.")
 			end
 		else
-			PRT.Warn("You are in test mode and have sender mode disabled. Enable it if you want to test an encounter.")
+			PRT.Warn("You are in test mode and have no encounter selected.")
 		end
-	end
+	end	
+	
+	-- Always try to start receiver
+	EventHandler.StartReceiveMessages()
 end
 
 function PRT:PLAYER_REGEN_ENABLED(event)
-	if self.db.profile.testMode then
-		EventHandler.StopEncounter(event)
-	end
+	EventHandler.StopEncounter(event)
 end
 
 function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)

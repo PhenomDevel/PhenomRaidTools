@@ -81,7 +81,7 @@ end
 
 PRT.ClassColoredName = function(name)
     if name then
-        local _, _, classIndex = UnitClass(name)
+        local _, _, classIndex = UnitClass(string.gsub(name, "-.*", ""))
         local color = classColors[classIndex]
         local coloredName = name
 
@@ -96,10 +96,19 @@ PRT.ClassColoredName = function(name)
     end
 end
 
+PRT.UnitFullName = function(unitID)
+    return GetUnitName(unitID, true)
+end
+
 PRT.PartyNames = function(withServer)
     local names = {}
     local unitString = ""
+    local myName = UnitName("player")
 
+    if withServer then
+        myName = PRT.UnitFullName("player")
+    end
+    
     if UnitInRaid("player") then
         unitString = "raid%d"
     elseif UnitInParty("player") then
@@ -108,46 +117,21 @@ PRT.PartyNames = function(withServer)
 
     for i = 1, GetNumGroupMembers() do
         local index = unitString:format(i)
-        local playerName
-        if withServer then        
-            playerName = strjoin("-", GetUnitName(index, true))
-        else
-            playerName = UnitName(index)
-        end
+        local playerName = UnitName(index)
         
-        if not (playerName == UnitName("player")) then
+        if withServer then
+            playerName = PRT.UnitFullName(index)
+        end
+
+        if not (playerName == myName) then
             tinsert(names, playerName)
         end
     end
 
     -- Always add the own character into the list
-    tinsert(names, strjoin("-", UnitFullName("player")))
+    tinsert(names, myName)
 
     return names
-end
-
-PRT.ColoredPartyNames = function()
-    local names = PRT.PartyNames()
-    local coloredNames = {}
-
-    for i, name in ipairs(names) do
-        local coloredName = PRT.ClassColoredName(name)
-        tinsert(coloredNames, coloredName)
-    end
-
-    return coloredNames
-end
-
-PRT.ColoredPartyOrRaidNames = function()
-    local names = PRT.PartyNames()
-    local coloredNames = {}
-    for i, name in ipairs(names) do
-        local coloredName = PRT.ClassColoredName(name)
-
-        tinsert(coloredNames, coloredName)
-    end
-
-    return coloredNames
 end
 
 PRT.PlayerInParty = function()

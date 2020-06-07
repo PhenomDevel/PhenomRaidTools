@@ -32,7 +32,7 @@ local LibDBIcon = LibStub("LibDBIcon-1.0")
 local defaults =  {
 	profile = {
 		myName = UnitName("player"),
-		version = "@project-version@", --"1.3.15.2-BETA", 
+		version = "@project-version@", --"1.3.15.2-BETA",
 		receiveMessagesFrom = "",
 		enabled = true,
 		testMode = false,
@@ -54,7 +54,7 @@ local defaults =  {
 				left = 615,
 				fontSize = 32,
 				fontColor = {
-					hex = "FFFFFF",
+					hex = "FFFFFFFF",
 					r = 0,
 					g = 0,
 					b = 0,
@@ -135,6 +135,7 @@ local defaults =  {
 			warn = "FFffc526",
 			highlight = "FF69CCF0",
 			disabled = "FFff1100",
+			enabled = "FF00c234"
 		},
 
 		raidRoster = {
@@ -174,7 +175,7 @@ end
 
 function PRT:OnEnable()
 	PRT.RegisterEssentialEvents()
-
+	
 	AceComm:RegisterComm(self.db.profile.addonPrefixes.addonMessage, self.OnAddonMessage)
 	AceComm:RegisterComm(self.db.profile.addonPrefixes.versionRequest, self.OnVersionRequest)
 	AceComm:RegisterComm(self.db.profile.addonPrefixes.versionResponse, self.OnVersionResponse)
@@ -206,9 +207,10 @@ end
 function PRT:PrintPartyOrRaidVersions()	
 	local myVersion = string.gsub(PRT.db.profile.version, "[^%d]+", "")
 	local myVersionN = tonumber(myVersion)
-	PRT.PrintTable("", PRT.db.profile.versionCheck)
-	for player, version in pairs(PRT.db.profile.versionCheck) do			
-		local coloredName = PRT.ClassColoredName(player)
+
+	for player, version in pairs(PRT.db.profile.versionCheck) do		
+		local playerWithServer = GetUnitName(player, true)	
+		local coloredName = PRT.ClassColoredName(playerWithServer)
 
 		if version == "" or version == nil then
 			PRT.Info(coloredName, ":", PRT.ColoredString("no response", PRT.db.profile.colors.disabled))
@@ -218,10 +220,12 @@ function PRT:PrintPartyOrRaidVersions()
 
 			if parsedVersionN and myVersionN then
 				if parsedVersionN >= myVersionN then
-					PRT.Info(coloredName, ":", PRT.ColoredString(version, PRT.db.profile.colors.highlight))			
+					PRT.Info(coloredName, ":", PRT.ColoredString(version, PRT.db.profile.colors.enabled))			
 				elseif parsedVersionN < myVersionN then
-					PRT.Info(coloredName, ":", PRT.ColoredString(version, PRT.db.profile.colors.disabled))
+					PRT.Info(coloredName, ":", PRT.ColoredString(version, PRT.db.profile.colors.disabled))	
 				end
+			else
+				PRT.Info(coloredName, ":", PRT.ColoredString(version, PRT.db.profile.colors.warn), "?")	
 			end
 		end
 	end
@@ -238,14 +242,8 @@ function PRT:VersionCheck(_)
 		PRT.Info("Waiting for everyone to respond...")
 
 		self.db.profile.versionCheck = {}
-
-		local playerNames = PRT.PartyNames(true)
-		for i, playerName in ipairs(playerNames) do
-			self.db.profile.versionCheck[playerName] = ""
-			PRT.Debug("Requesting version from: ", playerName)
-			AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.versionRequest, PRT.TableToString(request), "WHISPER", playerName)	
-		end
-
+		
+		AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.versionRequest, PRT.TableToString(request), "RAID")
 		AceTimer:ScheduleTimer(PRT.PrintPartyOrRaidVersions, 5)
 	else
 		PRT.Info("You are currently running version", PRT.ColoredString(self.db.profile.version, self.db.profile.colors.highlight))

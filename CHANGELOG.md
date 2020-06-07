@@ -1,4 +1,16 @@
 ===============================================================================
+# Changelog 1.3.18.0-BETA
+## Bugfixes
+ - Make sure receiver overlay is initialized even if you're not in sender mode
+ - Make sure receiver overlay is reset after combat if not in sender mode
+ - Make sure addon can run standalone
+ - Make sure version check correctly works crossrealm
+
+## Features
+ - If PRT is disabled it now won't display any debug or info messages
+
+
+===============================================================================
 # Changelog 1.3.17.3-BETA
 ## Bugfixes
  - Fix version check for crossrealm
