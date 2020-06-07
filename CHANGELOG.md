@@ -1,4 +1,13 @@
 ===============================================================================
+# Changelog 1.3.17.0-BETA
+## Bugfixes
+None
+
+## Features
+ - Be able to use `$me` as message filter
+
+
+===============================================================================
 # Changelog 1.3.16.3-BETA
 ## Bugfixes
  - Make sure to show weakaura receiver button only in sender mode
