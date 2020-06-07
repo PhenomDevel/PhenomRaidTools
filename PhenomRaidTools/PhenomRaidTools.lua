@@ -242,6 +242,10 @@ function PRT:VersionCheck(_)
 		PRT.Info("Waiting for everyone to respond...")
 
 		self.db.profile.versionCheck = {}
+
+		for i, name in ipairs(PRT.PartyNames()) do
+			self.db.profile.versionCheck[name] = ""
+		end
 		
 		AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.versionRequest, PRT.TableToString(request), "RAID")
 		AceTimer:ScheduleTimer(PRT.PrintPartyOrRaidVersions, 5)
