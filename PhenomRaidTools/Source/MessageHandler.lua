@@ -55,7 +55,7 @@ MessageHandler.ExecuteMessageAction = function(message)
                 targetMessage.sender = PRT.db.profile.myName
 
                 -- If in test mode send the message through the whipser channel in case we are not in a group
-                if PRT.db.profile.testMode and not PRT.PlayerInParty() then
+                if not PRT.PlayerInParty() then
                     AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.addonMessage, PRT.TableToString(targetMessage), "WHISPER", PRT.db.profile.myName) 
                 end
 
