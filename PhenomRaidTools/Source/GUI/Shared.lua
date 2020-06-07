@@ -42,41 +42,45 @@ PRT.NewTriggerDeleteButton = function(container, t, idx, textID, entityName)
 end
 
 PRT.ConfirmationDialog = function(text, successFn, ...)
-    local args = {...}
-    local confirmationFrame = PRT.Window("confirmationWindow")
-    confirmationFrame:SetLayout("Flow")
-    confirmationFrame:SetHeight(130)
-    confirmationFrame:SetWidth(430)
-    confirmationFrame:EnableResize(false)
-    confirmationFrame.frame:SetFrameStrata("DIALOG")   
+    if not PRT.Core.FrameExists(text) then
+        local args = {...}
+        local confirmationFrame = PRT.Window("confirmationWindow")
+        confirmationFrame:SetLayout("Flow")
+        confirmationFrame:SetHeight(130)
+        confirmationFrame:SetWidth(430)
+        confirmationFrame:EnableResize(false)
+        confirmationFrame.frame:SetFrameStrata("DIALOG")   
 
-    local textLabel = PRT.Label(text)
+        local textLabel = PRT.Label(text)
 
-    local okButton = PRT.Button("confirmationDialogOk")
-    okButton:SetHeight(30) 
-    okButton:SetCallback("OnClick", 
-        function(_)
-            if successFn then
-                successFn(unpack(args))
+        local okButton = PRT.Button("confirmationDialogOk")
+        okButton:SetHeight(30) 
+        okButton:SetCallback("OnClick", 
+            function(_)
+                if successFn then
+                    successFn(unpack(args))
+                    confirmationFrame:Hide()
+                    PRT.Core.UnregisterFrame(text)
+                end
+            end)
+        
+        local cancelButton = PRT.Button("confirmationDialogCancel")
+        cancelButton:SetHeight(30)  
+        cancelButton:SetCallback("OnClick",
+            function(_)
                 confirmationFrame:Hide()
-            end
-        end)
-    
-    local cancelButton = PRT.Button("confirmationDialogCancel")
-    cancelButton:SetHeight(30)  
-    cancelButton:SetCallback("OnClick",
-        function(_)
-            confirmationFrame:Hide()
-        end)
+                PRT.Core.UnregisterFrame(text)
+            end)
 
-    local heading = PRT.Heading(nil)
-    confirmationFrame:AddChild(textLabel)
-    confirmationFrame:AddChild(heading)
-    confirmationFrame:AddChild(okButton)
-    confirmationFrame:AddChild(cancelButton)
+        local heading = PRT.Heading(nil)
+        confirmationFrame:AddChild(textLabel)
+        confirmationFrame:AddChild(heading)
+        confirmationFrame:AddChild(okButton)
+        confirmationFrame:AddChild(cancelButton)
 
-    confirmationFrame:Show()
-    PRT.Core.RegisterFrame(confirmationFrame)
+        confirmationFrame:Show()
+        PRT.Core.RegisterFrame(text, confirmationFrame)
+    end
 end
 
 PRT.ClassColoredName = function(name)

@@ -15,12 +15,27 @@ local RegisterESCHandler = function(name, container)
     tinsert(UISpecialFrames, name)
 end
 
-Core.RegisterFrame = function(frame)
+Core.RegisterFrame = function(id, frame)
+    Core.openFrames[id] = frame
     tinsert(Core.openFrames, frame)
 end
 
+Core.UnregisterFrame = function(id)
+    Core.openFrames[id] = nil
+end
+
+Core.FrameExists = function(text)
+    local frame = Core.openFrames[text]
+
+    if frame then
+        return true
+    else
+        return false
+    end        
+end
+
 Core.CloseAllOpenFrames = function()
-    for i, frame in ipairs(Core.openFrames) do
+    for id, frame in pairs(Core.openFrames) do
         frame:Hide()
     end
 
