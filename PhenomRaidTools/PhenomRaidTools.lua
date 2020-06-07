@@ -242,6 +242,7 @@ function PRT:VersionCheck(_)
 		local playerNames = PRT.PartyNames(true)
 		for i, playerName in ipairs(playerNames) do
 			self.db.profile.versionCheck[playerName] = ""
+			PRT.Debug("Requesting version from: ", playerName)
 			AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.versionRequest, PRT.TableToString(request), "WHISPER", playerName)	
 		end
 
