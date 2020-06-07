@@ -206,7 +206,7 @@ end
 function PRT:PrintPartyOrRaidVersions()	
 	local myVersion = string.gsub(PRT.db.profile.version, "[^%d]+", "")
 	local myVersionN = tonumber(myVersion)
-
+	PRT.PrintTable("", PRT.db.profile.versionCheck)
 	for player, version in pairs(PRT.db.profile.versionCheck) do			
 		local coloredName = PRT.ClassColoredName(player)
 
@@ -233,8 +233,7 @@ function PRT:VersionCheck(_)
 		requestor = strjoin("-", UnitFullName("player"))
 	}
 
-	if PRT.PlayerInParty() then
-		AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.versionRequest, PRT.TableToString(request), "RAID")		
+	if PRT.PlayerInParty() then			
 		PRT.Info("Initialize version check")
 		PRT.Info("Waiting for everyone to respond...")
 
@@ -243,6 +242,7 @@ function PRT:VersionCheck(_)
 		local playerNames = PRT.PartyNames(true)
 		for i, playerName in ipairs(playerNames) do
 			self.db.profile.versionCheck[playerName] = ""
+			AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.versionRequest, PRT.TableToString(request), "WHISPER", playerName)	
 		end
 
 		AceTimer:ScheduleTimer(PRT.PrintPartyOrRaidVersions, 5)

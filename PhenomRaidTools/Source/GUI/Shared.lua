@@ -121,7 +121,7 @@ PRT.PartyNames = function(withServer)
     end
 
     -- Always add the own character into the list
-    tinsert(names, strjoin("-", GetUnitName(index, true)))
+    tinsert(names, strjoin("-", GetUnitName("player", true)))
 
     return names
 end
