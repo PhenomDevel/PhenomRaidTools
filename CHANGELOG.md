@@ -1,6 +1,15 @@
 ===============================================================================
 # Changelog 1.3.17.0-BETA
 ## Bugfixes
+ - Correctly check for `$me` in message filter
+
+## Features
+None
+
+
+===============================================================================
+# Changelog 1.3.17.0-BETA
+## Bugfixes
 None
 
 ## Features
