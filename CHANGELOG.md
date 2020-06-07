@@ -1,4 +1,13 @@
 ===============================================================================
+# Changelog 1.3.18.1-BETA
+## Bugfixes
+ - Show all party members on version check not only the ones with the addon
+
+## Features
+None
+
+
+===============================================================================
 # Changelog 1.3.18.0-BETA
 ## Bugfixes
  - Make sure receiver overlay is initialized even if you're not in sender mode
