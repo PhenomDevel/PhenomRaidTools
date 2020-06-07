@@ -96,7 +96,7 @@ PRT.ClassColoredName = function(name)
     end
 end
 
-PRT.PartyNames = function()
+PRT.PartyNames = function(withServer)
     local names = {}
     local unitString = ""
 
@@ -108,15 +108,20 @@ PRT.PartyNames = function()
 
     for i = 1, GetNumGroupMembers() do
         local index = unitString:format(i)
-        local playerName = UnitName(index)
-
+        local playerName
+        if withServer then        
+            playerName = strjoin("-", GetUnitName(index, true))
+        else
+            playerName = UnitName(index)
+        end
+        
         if not (playerName == UnitName("player")) then
             tinsert(names, playerName)
         end
     end
 
     -- Always add the own character into the list
-    tinsert(names, GetUnitName("player"))
+    tinsert(names, strjoin("-", GetUnitName(index, true)))
 
     return names
 end

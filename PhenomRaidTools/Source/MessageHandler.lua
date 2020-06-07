@@ -93,16 +93,16 @@ function PRT:OnVersionRequest(message)
     if messageTable.requestor then
         local response = {
             type = "response",
-            name = UnitName("player"),
+            name = strjoin("-", UnitFullName("player")),
             version = PRT.db.profile.version
         }
-
+        PRT.PrintTable("", response)
         AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.versionResponse, PRT.TableToString(response), "WHISPER", messageTable.requestor) 
     end
 end
 
-function PRT:OnVersionResponse(message)    
-    local worked, messageTable = PRT.StringToTable(message)
+function PRT:OnVersionResponse(message)        
+    local worked, messageTable = PRT.StringToTable(message)   
     PRT.db.profile.versionCheck[messageTable.name] = messageTable.version
 end
 

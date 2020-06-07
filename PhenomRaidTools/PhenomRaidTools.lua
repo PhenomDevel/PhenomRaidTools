@@ -207,7 +207,7 @@ function PRT:PrintPartyOrRaidVersions()
 	local myVersion = string.gsub(PRT.db.profile.version, "[^%d]+", "")
 	local myVersionN = tonumber(myVersion)
 
-	for player, version in pairs(PRT.db.profile.versionCheck) do				
+	for player, version in pairs(PRT.db.profile.versionCheck) do			
 		local coloredName = PRT.ClassColoredName(player)
 
 		if version == "" or version == nil then
@@ -230,7 +230,7 @@ end
 function PRT:VersionCheck(_)
 	local request = {
 		type = "request",
-		requestor = UnitName("player")
+		requestor = strjoin("-", UnitFullName("player"))
 	}
 
 	if PRT.PlayerInParty() then
@@ -240,8 +240,7 @@ function PRT:VersionCheck(_)
 
 		self.db.profile.versionCheck = {}
 
-		local playerNames = PRT.PartyNames()
-
+		local playerNames = PRT.PartyNames(true)
 		for i, playerName in ipairs(playerNames) do
 			self.db.profile.versionCheck[playerName] = ""
 		end
