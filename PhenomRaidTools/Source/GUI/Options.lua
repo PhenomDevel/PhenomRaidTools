@@ -385,6 +385,7 @@ Options.AddReceiverOverlayWidget = function(container, options)
             options.fontName = value
             widget:SetText(value)
             PRT.Overlay.SetFont(PRT.ReceiverOverlay.overlayFrame, options)
+            PRT.ReceiverOverlay.ShowPlaceholder()
         end)
 
     local fontColor =  PRT.ColorPicker("overlayFontColor", options.fontColor)
