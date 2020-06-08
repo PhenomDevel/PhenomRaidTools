@@ -17,7 +17,6 @@ end
 
 Core.RegisterFrame = function(id, frame)
     Core.openFrames[id] = frame
-    tinsert(Core.openFrames, frame)
 end
 
 Core.UnregisterFrame = function(id)
