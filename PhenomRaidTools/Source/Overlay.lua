@@ -31,7 +31,7 @@ Overlay.UpdateSize = function(container, options)
 end
 
 Overlay.UpdateFont = function(container, options)
-    container.text:SetFont((options.font or GameFontHighlightSmall:GetFont()), options.fontSize, "OUTLINE")
+    container.text:SetFont((options.font or GameFontHighlightSmall:GetFont()), options.fontSize, "OUTLINE")    
 end
 
 Overlay.UpdateBackdrop = function(container, r, g, b, a)
@@ -47,6 +47,7 @@ end
 
 Overlay.SetFont = function(container, options)
     container.text:SetFont((options.font or GameFontHighlightSmall:GetFont()), options.fontSize, "OUTLINE")
+    Overlay.UpdateSize(container, options)
 end
 
 Overlay.CreateOverlay = function(options, withBackdrop)    
