@@ -71,10 +71,20 @@ Options.ImportRaidRosterByGroup = function(options, container)
     Options.AddRaidRosterWidget(container, options)
 end
 
+Options.ClearRaidRoster = function(options, container)
+    wipe(options)
+
+    container:ReleaseChildren()
+    Options.AddRaidRosterWidget(container, options)
+end
+
 Options.AddRaidRosterWidget = function(container, options)
     local importByGroupButton = PRT.Button("optionsRaidRosterImportByGroup")
     importByGroupButton:SetCallback("OnClick", function(_) PRT.ConfirmationDialog(L["importByGroupConfirmationText"], Options.ImportRaidRosterByGroup, options, container)  end)
     importByGroupButton:SetWidth(300)
+
+    local clearRaidRosterButton = PRT.Button("optionsRaidRosterClear")
+    clearRaidRosterButton:SetCallback("OnClick", function(_) PRT.ConfirmationDialog(L["clearRaidRosterConfirmationText"], Options.ClearRaidRoster, options, container) end)
 
     local explanationLabel = PRT.Label("optionsRaidRosterExplanation")
     explanationLabel:SetRelativeWidth(1)
@@ -139,6 +149,7 @@ Options.AddRaidRosterWidget = function(container, options)
     end 
 
     container:AddChild(importByGroupButton)
+    container:AddChild(clearRaidRosterButton)
     container:AddChild(explanationLabel)
     container:AddChild(tankGroup)
     container:AddChild(healGroup)

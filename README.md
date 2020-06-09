@@ -83,4 +83,3 @@ I have set up a discord server up and running for every kind of question. Feel f
 ## TODOs
  - Translate error messages and debug messages
  - Refactor some ifs as helper functions for more readable code
- - Clear button for raid roster
