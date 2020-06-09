@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 1.3.19.0-BETA
+## Bugfixes
+ - Be able to open confirmation dialogs again after closing them with `x`
+
+## Features
+ - Add button to clear raid roster
+
+
+===============================================================================
 # Release 1.3.18.2
 ## Bugfixes
  - Send message to whisper channel regardless of test mode
