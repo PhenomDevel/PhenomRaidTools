@@ -73,13 +73,12 @@ Message consists of the following
 ## Help
 I have set up a discord server up and running for every kind of question. Feel free to enter and ask what you have trouble with. [Discord](https://discord.gg/GAYDjBF)
 
-## Feature Requests
- - Add trigger for `DBM` / `BW`
- - Be able to configure multiple conditions for each trigger. Like trigger on `ENCOUNTER_START` *or* `SPELL_CAST_SUCCESS/123`
- - Sync function to sync all encounters with someone else at once
- - Add "global" encounter which will always be merged with the current encounter for e.g. seconds pots or something
- - Be able to set a start condition for rotations so it does not start counting the first time a condition is met. It would only start counting after the start condition was met once
+## Feature Requests (Planned, Backlog, Questionable)
+ - [Questionable] Add trigger for `DBM` / `BW`
+ - [Backlog] Be able to configure multiple conditions for each trigger. Like trigger on `ENCOUNTER_START` *or* `SPELL_CAST_SUCCESS/123`
+ - [Backlog] Sync function to sync all encounters with someone else at once
+ - [Backlog] Add "global" encounter which will always be merged with the current encounter for e.g. seconds pots or something
+ - [Backlog] Be able to set a start condition for rotations so it does not start counting the first time a condition is met. It would only start counting after the start condition was met once
 
 ## TODOs
  - Translate error messages and debug messages
- - Refactor some ifs as helper functions for more readable code
