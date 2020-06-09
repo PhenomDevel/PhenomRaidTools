@@ -41,6 +41,7 @@ L = {
     ["optionsReceiveMessagesFromDropdown"] = "Choose player", 
     ["optionsHideDisabledTriggers"] = "Hide disabled triggers",
     ["optionsRaidRosterImportByGroup"] = "Import raid roster by current group",
+    ["optionsRaidRosterClear"] = "Clear raid roster",
 
     -- Dungeon Difficulty
     ["dungeonHeading"] = "Dungeon",
@@ -234,6 +235,7 @@ L = {
         "Are you sure you want to import raid roster by your current group?|n"..
         "|cFF69CCF0Note: |rThis will overwrite all of your current raid roster entries.",
     ["deleteConfirmationText"] = "Are you sure you want to delete:",
+    ["clearRaidRosterConfirmationText"] = "Are you sure you want to clear the raid roster settings?",
 
 }
 

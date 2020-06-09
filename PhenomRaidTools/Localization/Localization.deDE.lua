@@ -41,6 +41,7 @@ if GetLocale() == "deDE" then
     L["optionsReceiveMessagesFromDropdown"] = "Namensauswahl"
     L["optionsHideDisabledTriggers"] = "Deaktivierte Auslöser verstecken"
     L["optionsRaidRosterImportByGroup"] = "Importiere Raidroster anhand der aktuellen Gruppe"
+    L["optionsRaidRosterClear"] = "Raidroster leeren"
 
     -- Dungeon Difficulty
     L["dungeonHeading"] = "Dungeon"
@@ -230,6 +231,7 @@ if GetLocale() == "deDE" then
         "Bist Du sicher, dass du das Raid-Roster anhand der aktuellen Gruppe importieren willst?|n"..
         "|cFF69CCF0Notiz: |rDieser Vorgang wird alle aktuell eingetragenen Namen überschreiben."
     L["deleteConfirmationText"] = "Bist Du sicher, dass Du folgenden Eintrag löschen willst:"
+    L["clearRaidRosterConfirmationText"] = "Bist du sicher, dass Du alle Raidroster Einträge löschen willst?"
 else 
     return 
 end
