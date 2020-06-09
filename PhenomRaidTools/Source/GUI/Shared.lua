@@ -50,6 +50,11 @@ PRT.ConfirmationDialog = function(text, successFn, ...)
         confirmationFrame:SetWidth(430)
         confirmationFrame:EnableResize(false)
         confirmationFrame.frame:SetFrameStrata("DIALOG")   
+        confirmationFrame:SetCallback("OnClose",
+            function()
+                confirmationFrame:Hide()
+                PRT.Core.UnregisterFrame(text)
+            end)
 
         local textLabel = PRT.Label(text)
 
