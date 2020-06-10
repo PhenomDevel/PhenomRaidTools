@@ -63,7 +63,7 @@ Percentage.PercentageWidget = function(percentage, container)
 
     local enabledCheckbox = PRT.CheckBox("percentageEnabled", percentage.enabled)
     local nameEditBox = PRT.EditBox("percentageName", percentage.name)
-    local unitIDEditBox = PRT.EditBox("percentageUnitID", percentage.unitID)
+    local unitIDEditBox = PRT.EditBox("percentageUnitID", percentage.unitID, true)
     local checkAgainCheckBox = PRT.CheckBox("percentageCheckAgain", percentage.checkAgain)
     local checkAgainAfterSlider = PRT.Slider("percentageCheckAgainAfter", percentage.checkAgainAfter)
 

@@ -105,7 +105,7 @@ local defaults =  {
 
 		triggerDefaults = {
 			messageDefaults = {
-				defaultWithSound = true
+				defaultWithSound = true,
 			},
 			rotationDefaults = {
 				defaultShouldRestart = true,
@@ -113,11 +113,13 @@ local defaults =  {
 				defaultIgnoreDuration = 10
 			},
 			percentageDefaults = {
+				defaultUnitID = "boss1",
 				defaultCheckAgain = false,
-				defaultCheckAgainAfter = 5
+				defaultCheckAgainAfter = 5,				
 			},
 			conditionDefaults = {
-				additionalEvents = {}
+				additionalEvents = {},
+				defaultEvent = "SPELL_CAST_START"
 			}
 		}, 
 

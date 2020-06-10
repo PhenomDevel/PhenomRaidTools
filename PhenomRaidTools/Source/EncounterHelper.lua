@@ -6,7 +6,7 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 PRT.EmptyCondition = function()
     return {
-        event = "PLAYER_REGEN_DISABLED",
+        event = PRT.db.profile.triggerDefaults.conditionDefaults.defaultEvent,
         spellID = nil,
         source = nil,
         target = nil,
@@ -103,7 +103,7 @@ PRT.EmptyPercentage = function()
     return {        
         enabled = true,
         name = "Percentage Name"..random(0,100000),
-        unitID = "boss1",
+        unitID = PRT.db.profile.triggerDefaults.percentageDefaults.defaultUnitID,
         values = {
             PRT.EmptyPercentageEntry()
         },

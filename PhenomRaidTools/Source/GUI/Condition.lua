@@ -28,11 +28,11 @@ PRT.ConditionWidget = function(condition, textID)
 	local conditionGroup = PRT.InlineGroup(textID)
         
     -- Generate event list
-    local additionalEvents = PRT.db.profile.triggerDefaults.conditionDefaults.additionalEvents
+   local additionalEvents = PRT.db.profile.triggerDefaults.conditionDefaults.additionalEvents
 	local conditionEventsFull = table.mergecopy(Condition.defaultEvents, additionalEvents)
     
     -- Create default widgets for condition
-    local eventEditBox = PRT.EditBox("conditionEvent", condition.event, true)
+	local eventEditBox = PRT.EditBox("conditionEvent", condition.event, true)
 	local eventDropDown = PRT.Dropdown("conditionEvent", conditionEventsFull, condition.event, true)
 	local targetEditBox = PRT.EditBox("conditionTarget", condition.target, true)
 	local sourceEditBox = PRT.EditBox("conditionSource", condition.source, true)

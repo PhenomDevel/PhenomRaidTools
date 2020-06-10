@@ -187,7 +187,7 @@ PRT.CheckTimerStartConditions = function(timers, event, combatEvent, spellID, ta
                     if TriggerHandler.CheckCondition(timer.startCondition, event, combatEvent, spellID, targetGUID, sourceGUID) then
                         TriggerHandler.IncrementTriggerCounter(timer)
                         if (timer.triggerAtOccurence or 1) == timer.counter then
-                            PRT.Debug("Started timer `"..(timer.name or "NO NAME").."` at "..GetTime())
+                            PRT.Debug("Started timer `"..(timer.name or "NO NAME").."`")
                             timer.started = true
                             timer.startedAt = GetTime()
                         end
@@ -204,7 +204,7 @@ PRT.CheckTimerStopConditions = function(timers, event, combatEvent, spellID, tar
             if timer.enabled == true or timer.enabled == nil then
                 if timer.stopCondition ~= nil and timer.started == true then
                     if TriggerHandler.CheckCondition(timer.stopCondition, event, combatEvent, spellID, sourceGUID, targetGUID) then
-                        PRT.Debug("Stopped timer `"..(timer.name or "NO NAME").."` at "..GetTime())
+                        PRT.Debug("Stopped timer `"..(timer.name or "NO NAME").."`")
                         timer.started = false
                         timer.startedAt = nil
                         timer.counter = 0
