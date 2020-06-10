@@ -241,7 +241,7 @@ PRT.TextureString = function(id)
 end
 
 PRT.ExchangeRaidMarker = function(s)
-    return string.gsub(s, "{rt([^}])}", "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%1:16:16:0:0:64:64:6:58:6:58|t")
+    return string.gsub(s, "{rt([^}])}", "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%1:16|t")
 end
 
 PRT.ExchangeSpellIcons = function(s)
