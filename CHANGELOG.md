@@ -1,4 +1,17 @@
 ===============================================================================
+# Release 1.3.20.0
+
+
+===============================================================================
+# Release 1.3.20.0-BETA
+## Bugfixes
+ - Do not zoom raid markers in messages
+
+## Features
+ - Add some more default options
+
+
+===============================================================================
 # Release 1.3.19.0-BETA
 ## Bugfixes
  - Be able to open confirmation dialogs again after closing them with `x`
