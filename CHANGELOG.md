@@ -264,12 +264,3 @@ None
 
 ## Features
 None
-
-
-===============================================================================
-# Changelog $Version
-## Bugfixes
-None
-
-## Features
-None
