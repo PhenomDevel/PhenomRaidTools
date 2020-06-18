@@ -237,6 +237,13 @@ L = {
         "|cFF69CCF0Note: |rThis will overwrite all of your current raid roster entries.",
     ["deleteConfirmationText"] = "Are you sure you want to delete:",
     ["clearRaidRosterConfirmationText"] = "Are you sure you want to clear the raid roster settings?",
+    ["cloneConfirmationText"] = "Are you sure you want to clone the trigger:",
+
+    -- Clone
+    ["cloneTimer"] = "Clone Timer",
+    ["cloneRotation"] = "Clone Rotation",
+    ["clonePercentage"] = "Clone Percentage",
+
 
 }
 

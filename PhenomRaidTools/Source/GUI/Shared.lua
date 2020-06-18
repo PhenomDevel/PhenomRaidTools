@@ -41,6 +41,30 @@ PRT.NewTriggerDeleteButton = function(container, t, idx, textID, entityName)
     return deleteButton
 end
 
+PRT.NewCloneButton = function(container, t, idx, textID, entityName)
+    local cloneButton = PRT.Button(textID)
+    cloneButton:SetHeight(40)
+    cloneButton:SetRelativeWidth(1)
+    cloneButton:SetCallback("OnClick", 
+        function() 
+            local text = L["cloneConfirmationText"]
+            if entityName then
+                text = text.." "..PRT.HighlightString(entityName)
+            end
+            PRT.ConfirmationDialog(text, 
+                function()
+                    local clone = PRT.CopyTable(t[idx])
+                    clone.name = clone.name.."- Clone"..random(0,100000)
+                    tinsert(t, clone) 
+                    PRT.Core.UpdateTree()
+                    PRT.mainWindowContent:DoLayout()
+                    container:ReleaseChildren()
+                end)            
+        end)
+
+    return cloneButton
+end
+
 PRT.ConfirmationDialog = function(text, successFn, ...)
     if not PRT.Core.FrameExists(text) then
         local args = {...}

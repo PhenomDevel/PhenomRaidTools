@@ -124,6 +124,7 @@ PRT.Release = function(widget)
 	widget:Release()
 end
 
+
 -------------------------------------------------------------------------------
 -- Container
 
@@ -149,7 +150,7 @@ PRT.InlineGroup = function(textID)
 	container:SetLayout("List")
 	container:SetTitle(text)
 
-    return container
+   return container
 end
 
 PRT.SimpleGroup = function()
@@ -158,7 +159,7 @@ PRT.SimpleGroup = function()
 	container:SetFullWidth(true)
 	container:SetLayout("List")
 
-    return container
+   return container
 end
 
 PRT.ScrollFrame = function()
@@ -168,7 +169,7 @@ PRT.ScrollFrame = function()
 	container:SetFullHeight(true)
 	container:SetAutoAdjustHeight(true)
 
-    return container
+   return container
 end
 
 PRT.Frame = function(titleID)
@@ -180,16 +181,16 @@ PRT.Frame = function(titleID)
 	container:SetAutoAdjustHeight(true)
 	container:SetTitle(titleText)
 
-    return container
+   return container
 end
 
 PRT.TreeGroup = function(tree)
 	local container = AceGUI:Create("TreeGroup")    
 	
 	container:SetLayout("Fill")
-    container:SetTree(tree)
+   container:SetTree(tree)
 
-    return container
+   return container
 end
 
 PRT.Window = function(titleID)
@@ -200,7 +201,7 @@ PRT.Window = function(titleID)
 	container:SetTitle(titleText)
 	container:SetLayout("Fill")
 
-    return container
+   return container
 end
 
 

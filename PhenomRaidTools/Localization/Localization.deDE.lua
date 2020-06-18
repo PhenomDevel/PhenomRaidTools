@@ -229,10 +229,18 @@ if GetLocale() == "deDE" then
     L["confirmationDialogOk"] = "Ok"
     L["confirmationDialogCancel"] = "Abbrechen"
     L["importByGroupConfirmationText"] = 
-        "Bist Du sicher, dass du das Raid-Roster anhand der aktuellen Gruppe importieren willst?|n"..
+        "Bist Du sicher, dass Du das Raid-Roster anhand der aktuellen Gruppe importieren willst?|n"..
         "|cFF69CCF0Notiz: |rDieser Vorgang wird alle aktuell eingetragenen Namen überschreiben."
     L["deleteConfirmationText"] = "Bist Du sicher, dass Du folgenden Eintrag löschen willst:"
-    L["clearRaidRosterConfirmationText"] = "Bist du sicher, dass Du alle Raidroster Einträge löschen willst?"
+    L["clearRaidRosterConfirmationText"] = "Bist Du sicher, dass Du alle Raidroster Einträge löschen willst?"
+    L["cloneConfirmationText"] = "Bist Du sicher, dass Du diesen Auslöser duplizieren möchtest?"
+
+    -- Clone
+    L["cloneTimer"] = "Timer duplizieren"
+    L["cloneRotation"] = "Rotation duplizieren"
+    L["clonePercentage"] = "Prozent duplizieren"
+
+
 else 
     return 
 end
