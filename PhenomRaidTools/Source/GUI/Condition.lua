@@ -44,7 +44,7 @@ PRT.ConditionWidget = function(condition, textID)
 
 	local spellIDEditBox = PRT.EditBox("conditionSpellID", condition.spellID, true)
 	local spellNameLabel = PRT.Label(condition.spellName)
-    spellNameLabel:SetWidth(150)
+   spellNameLabel:SetWidth(150)
     
 	local spellIcon = PRT.Icon(condition.spellIcon)
 	spellIcon:SetHeight(20)
@@ -117,12 +117,15 @@ PRT.ConditionWidget = function(condition, textID)
 			widget:ClearFocus()
 		end)
 
-	spellGroup:AddChild(spellIDEditBox)
-	spellGroup:AddChild(spellIcon)
-    spellGroup:AddChild(spellNameLabel)
-    
+	eventDropDown:SetRelativeWidth(0.3)
+	spellIDEditBox:SetRelativeWidth(0.3)
+	sourceEditBox:SetRelativeWidth(0.3)
+	targetEditBox:SetRelativeWidth(0.3)
+	
 	conditionGroup:AddChild(eventDropDown)	
-	conditionGroup:AddChild(spellGroup)
+	conditionGroup:AddChild(spellIDEditBox)
+	conditionGroup:AddChild(spellIcon)
+	conditionGroup:AddChild(spellNameLabel)    	
 	conditionGroup:AddChild(targetEditBox)
 	conditionGroup:AddChild(sourceEditBox)
 
