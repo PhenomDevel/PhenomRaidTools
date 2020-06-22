@@ -141,6 +141,19 @@ PRT.FilterTableByName = function(t, name)
     end
 end
 
+PRT.FilterTableByID = function(t, id)
+    local value
+    if t then
+        for i, v in ipairs(t) do
+            if v.id == id then
+                if not value then                    
+                    return i, v
+                end
+            end
+        end
+    end
+end
+
 PRT.CompareByName = function(a, b)
     return a.name < b.name
 end

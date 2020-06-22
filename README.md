@@ -80,6 +80,7 @@ I have set up a discord server up and running for every kind of question. Feel f
  - [Backlog] Add "global" encounter which will always be merged with the current encounter for e.g. seconds pots or something
  - [Backlog] Be able to set a start condition for rotations so it does not start counting the first time a condition is met. It would only start counting after the start condition was met once
  - [Backlog] Have multiple overlays for messages like Important, normal and unimportant or something which alle can be positioned differently. The sender can configure the positions for the messages and those will be send to the receiver. The receiver can overwrite these positions if wanted.
+ - [Backlog] Dropdown for encounter select
 
 ## TODOs
  - Translate error messages and debug messages

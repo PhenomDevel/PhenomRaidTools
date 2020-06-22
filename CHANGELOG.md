@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 1.3.23.0-BETA
+## Bugfixes
+None
+
+## Features
+ - Add encounter select box to encounter options to easily select the encounter of the current raid tier
+
+
+===============================================================================
 # Release 1.3.22.0-BETA
 ## Bugfixes
 None

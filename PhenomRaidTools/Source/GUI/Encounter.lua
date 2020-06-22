@@ -1,6 +1,21 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
-local Encounter = {}
+local Encounter = {
+    currentEncounters = {
+        { id = 2329, name = "Wrathion" },
+        { id = 2327, name = "Maut" },
+        { id = 2334, name = "The Prophet Skitra" },
+        { id = 2328, name = "Dark Inquisitor Xanesh" },
+        { id = 2333, name = "The Hivemind" },
+        { id = 2335, name = "Shad'har the Insatiable" },
+        { id = 2343, name = "Drest'agath" },
+        { id = 2345, name = "Il'gynoth, Corruption Reborn" },
+        { id = 2336, name = "Vexiona" },
+        { id = 2331, name = "Ra-den the Despoiled" },
+        { id = 2337, name = "Carapace of N'Zoth" },
+        { id = 2344, name = "N'Zoth the Corruptor" },
+    }
+}
 
 local stringByCondition = function(name, condition)
     local s = name.."|n"
@@ -126,9 +141,17 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
     local encounterIndex, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
 
     local encounterOptionsGroup = PRT.InlineGroup("encounterHeading")
-    encounterOptionsGroup:SetLayout("Flow")
+    local enabledCheckBox = PRT.CheckBox("encounterEnabled", encounter.enabled)
+    local encounterIDEditBox = PRT.EditBox("encounterID", encounter.id, true)	
+    local encounterNameEditBox = PRT.EditBox("encounterName", encounter.name)	
+    local encounterSelectDropdown = PRT.Dropdown("encounterSelectDropdown", Encounter.currentEncounters, nil)
+    local exportButton = PRT.Button("exportEncounter")
+    local deleteButton = PRT.NewTriggerDeleteButton(container, profile.encounters, encounterIndex, "deleteEncounter", encounter.name)
+    local overviewGroup = Encounter.OverviewWidget(encounter)
 
-	local encounterIDEditBox = PRT.EditBox("encounterID", encounter.id, true)	
+    encounterOptionsGroup:SetLayout("Flow")
+    
+    encounterIDEditBox:SetRelativeWidth(0.3)
 	encounterIDEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
             local id = tonumber(widget:GetText()) 
@@ -151,9 +174,9 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
                 end
                 PRT.Error("The encounter id you entered was already taken by ", existingEncounter.name)
             end            
-		end)		
-        
-    local encounterNameEditBox = PRT.EditBox("encounterName", encounter.name)	
+        end)	                    
+    
+    encounterNameEditBox:SetRelativeWidth(0.3)
     encounterNameEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
             encounter.name = widget:GetText()
@@ -161,30 +184,56 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
             PRT.mainWindowContent:DoLayout()    
             PRT.Core.ReselectExchangeLast(encounter.id)
         end)
+    
+    encounterSelectDropdown:SetRelativeWidth(0.3)
+	encounterSelectDropdown:SetCallback("OnValueChanged", 
+        function(widget, event, id) 
+            local idx, entry = PRT.FilterTableByID(Encounter.currentEncounters, id)  
+            -- TODO: Refactor and put together with above id function
+            local _, existingEncounter = PRT.FilterEncounterTable(profile.encounters, id)
+            
+            if not existingEncounter then
+                if id ~= "" and id ~= nil then
+                    encounter.id = id    
+                    encounter.name = entry.name 
+                    PRT.Core.UpdateTree()
+                    PRT.Core.ReselectExchangeLast(id)
+                else
+                    PRT.Error("Encounter id can not be empty")
+                    if encounter.id then
+                        encounterIDEditBox:SetText(encounter.id)
+                        encounterNameEditBox:SetText(encounter.name)
+                    end
+                end
+            else
+                if encounter.id then
+                    encounterIDEditBox:SetText(encounter.id)
+                    encounterNameEditBox:SetText(encounter.name)
+                end
+                PRT.Error("The encounter id you entered was already taken by ", existingEncounter.name)
+            end
 
-    local exportButton = PRT.Button("exportEncounter")
+            widget:SetValue(nil)
+        end)	
+            
     exportButton:SetHeight(40)
     exportButton:SetRelativeWidth(1)
     exportButton:SetCallback("OnClick", 
         function(widget) 
             PRT.CreateExportEncounterFrame(encounter)
         end)
-
-    local enabledCheckBox = PRT.CheckBox("encounterEnabled", encounter.enabled)
+    
     enabledCheckBox:SetRelativeWidth(1)
     enabledCheckBox:SetCallback("OnValueChanged", 
         function(widget) 
             encounter.enabled = widget:GetValue()
             PRT.Core.UpdateTree() 
-        end)
-
-    local deleteButton = PRT.NewTriggerDeleteButton(container, profile.encounters, encounterIndex, "deleteEncounter", encounter.name)
+        end)    
 
     encounterOptionsGroup:AddChild(enabledCheckBox)
     encounterOptionsGroup:AddChild(encounterIDEditBox)
     encounterOptionsGroup:AddChild(encounterNameEditBox)
-
-    local overviewGroup = Encounter.OverviewWidget(encounter)
+    encounterOptionsGroup:AddChild(encounterSelectDropdown)    
 
     container:AddChild(encounterOptionsGroup)  
     container:AddChild(overviewGroup)

@@ -168,6 +168,7 @@ L = {
         "2337 - Carapace of N'Zoth\n"..
         "2344 - N'Zoth the Corruptor",
     ["encounterName"] = "Name",
+    ["encounterSelectDropdown"] = "Select Encounter",
     ["encounterDeleteButton"] = "Delete Encounter",
     ["encounterOptionsHeading"] = "Encounter Options",
     ["encounterEnabled"] = "Enabled",

@@ -164,6 +164,7 @@ if GetLocale() == "deDE" then
         "2337 - Panzer von N'Zoth\n"..
         "2344 - N'Zoth der Verderber"
     L["encounterName"] = "Name"
+    L["encounterSelectDropdown"] = "Boss auswählen"
     L["encounterDeleteButton"] = "Boss löschen"
     L["encounterOptionsHeading"] = "Boss Optionen"
     L["encounterEnabled"] = "Aktiviert?"
