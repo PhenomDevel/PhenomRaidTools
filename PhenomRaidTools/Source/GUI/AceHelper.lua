@@ -294,7 +294,7 @@ PRT.ColorPicker = function(textID, value)
 	return widget
 end
 
-PRT.Dropdown = function(textID, values, value, withEmpty)	
+PRT.Dropdown = function(textID, values, value, withEmpty, orderByKey)	
 	local text = L[textID]
 
 	local dropdownItems = {}
@@ -310,12 +310,40 @@ PRT.Dropdown = function(textID, values, value, withEmpty)
 		end
 	end
 
-	local widget = AceGUI:Create("Dropdown")
+	local widget = AceGUI:Create("Dropdown")	
+	
+	if orderByKey then
+		local order = {}
+
+		for i,v in ipairs(values) do
+			local value
+			if type(v) == "string" then
+				value = v
+			else			
+				value = v.id
+			end
+			tinsert(order, value)
+		end
+		widget:SetList(dropdownItems, order)
+	else
+		widget:SetList(dropdownItems)
+	end
 
 	widget:SetLabel(text)	
 	widget:SetText(dropdownItems[value])
 	widget:SetWidth(AceHelper.widgetDefaultWidth)
-	widget:SetList(dropdownItems)
+	
+	for i,v in ipairs(values) do
+		if v.disabled then
+			local id
+			if type(v) == "string" then
+				id = v
+			else			
+				id = v.id
+			end
+			widget:SetItemDisabled(id, true)
+		end
+	end
 
 	return widget
 end
