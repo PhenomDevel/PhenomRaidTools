@@ -245,10 +245,79 @@ L = {
     ["cloneRotation"] = "Clone Rotation",
     ["clonePercentage"] = "Clone Percentage",
 
+    -- Encounters
+    ["Castle Nathria"] = "Castle Nathria",
+    ["CN - Shriekwing" ] = "CN - Shriekwing",
+    ["CN - Altimor the Huntsman" ] = "CN - Altimor the Huntsman",
+    ["CN - Hungering Destroyer" ] = "CN - Hungering Destroyer",
+    ["CN - Artificer Xy'Mox" ] = "CN - Artificer Xy'Mox",
+    ["CN - Sun King's Salvation" ] = "CN - Sun King's Salvation",
+    ["CN - Lady Inerva Darkvein" ] = "CN - Lady Inerva Darkvein",
+    ["CN - The Council of Blood" ] = "CN - The Council of Blood",
+    ["CN - Il'gynoth, Corruption Reborn" ] = "CN - Il'gynoth, Corruption Reborn" ,
+    ["CN - Sludgefist" ] = "CN - Sludgefist",
+    ["CN - Stoneborne Generals" ] = "CN - Stoneborne Generals",
+    ["CN - Sire Denathrius" ] = "CN - Sire Denathrius",
 
+    -- De Other Side
+    ["De Other Side"] = "De Other Side",
+    ["DOS - Hakkar the Soulflayer" ] = "DOS - Hakkar the Soulflayer",
+    ["DOS - The Manastorms" ] = "DOS - The Manastorms",
+    ["DOS - Dealer Xy'exa" ] = "DOS - Dealer Xy'exa",
+    ["DOS - Mueh'zala" ] = "DOS - Mueh'zala",
+
+    -- Halls of Atonement
+    ["Halls of Atonement"] = "Halls of Atonement",
+    ["HOA - Halkias, the Sin-Stained Goliath" ] = "HOA - Halkias, the Sin-Stained Goliath",
+    ["HOA - Echelon" ] = "HOA - Echelon",
+    ["HOA - High Adjudicator Aleez" ] = "HOA - High Adjudicator Aleez",
+    ["HOA - Lord Chamberlain" ] = "HOA - Lord Chamberlain",
+
+    -- Mists of Tirna Scithe
+    ["Mists of Tirna Scithe"] = "Mists of Tirna Scithe",
+    ["MOTS - Ingra Maloch" ] = "MOTS - Ingra Maloch",
+    ["MOTS - Mistcaller" ] = "MOTS - Mistcaller",
+    ["MOTS - Tred'ova" ] = "MOTS - Tred'ova",
+
+    -- Necrotic Wake
+    ["Necrotic Wake"] = "Necrotic Wake",
+    ["NW - Blightbone" ] = "NW - Blightbone" ,
+    ["NW - Amarth, The Reanimator" ] = "NW - Amarth, The Reanimator",
+    ["NW - Surgeon Stitchflesh" ] = "NW - Surgeon Stitchflesh" ,
+    ["NW - Nalthor the Rimebinder" ] = "NW - Nalthor the Rimebinder" ,
+
+    -- Plaguefall
+    ["Plaguefall"] = "Plaguefall",
+    ["NW - Globgrog" ] = "NW - Globgrog",
+    ["NW - Doctor Ickus" ] = "NW - Doctor Ickus",
+    ["NW - Domina Venomblade" ] = "NW - Domina Venomblade",
+    ["NW - Margrave Stradama" ] = "NW - Margrave Stradama",
+
+    -- Sanguine Depths
+    ["Sanguine Depths"] = "Sanguine Depths",
+    ["SD - Kryxis the Voracious" ] = "SD - Kryxis the Voracious",
+    ["SD - Executor Tarvold" ] = "SD - Executor Tarvold" ,
+    ["SD - Grand Proctor Beryllia" ] = "SD - Grand Proctor Beryllia",
+    ["SD - General Kaal" ] = "SD - General Kaal",
+
+    -- Spires of Ascension
+    ["Spires of Ascension"] = "Spires of Ascension",
+    ["SOA - Kin-Tara" ] = "SOA - Kin-Tara",
+    ["SOA - Ventunax" ] = "SOA - Ventunax",
+    ["SOA - Oryphrion" ] = "SOA - Oryphrion",
+    ["SOA - Devo, Paragon of Doubt" ] = "SOA - Devo, Paragon of Doubt",
+
+    -- Theater of Pain
+    ["Theater of Pain"] = "Theater of Pain",
+    ["TOP - An Affront of Challengers" ] = "TOP - An Affront of Challengers",
+    ["TOP - Gorechop" ] = "TOP - Gorechop",
+    ["TOP - Xav the Unfallen" ] = "TOP - Xav the Unfallen",
+    ["TOP - Kul'tharok" ] = "TOP - Kul'tharok",
+    ["TOP - Mordretha, the Endless Empress"] = "TOP - Mordretha, the Endless Empress",
 }
 
-local function defaultFunc(L, key)   
+
+local function defaultFunc(L, key)
     return key
 end
 
