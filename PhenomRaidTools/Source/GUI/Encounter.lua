@@ -3,7 +3,7 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local Encounter = {
     currentEncounters = {
         -- Castle Nathria
-       { id = 9999, name = L["Castle Nathria"], disabled = true},
+       { id = 9999, name = L["--- Castle Nathria ---"], disabled = true},
        { id = 10001, name = L["CN - Shriekwing"] },
        { id = 10002, name = L["CN - Altimor the Huntsman"] },
        { id = 10003, name = L["CN - Hungering Destroyer"] },
@@ -17,55 +17,55 @@ local Encounter = {
        { id = 10011, name = L["CN - Sire Denathrius"] },
 
         -- De Other Side
-       { id = 20000, name = L["De Other Side"], disabled = true},
+       { id = 20000, name = L["--- De Other Side ---"], disabled = true},
        { id = 20001, name = L["DOS - Hakkar the Soulflayer"] },
        { id = 20002, name = L["DOS - The Manastorms"] },
        { id = 20003, name = L["DOS - Dealer Xy'exa"] },
        { id = 20004, name = L["DOS - Mueh'zala"] },
 
         -- Halls of Atonement
-        { id = 30000, name = L["Halls of Atonement"], disabled = true},
+        { id = 30000, name = L["--- Halls of Atonement ---"], disabled = true},
         { id = 30001, name = L["HOA - Halkias, the Sin-Stained Goliath"] },
         { id = 30002, name = L["HOA - Echelon"] },
         { id = 30003, name = L["HOA - High Adjudicator Aleez"] },
         { id = 30004, name = L["HOA - Lord Chamberlain"] },
 
         -- Mists of Tirna Scithe
-        { id = 40000, name = L["Mists of Tirna Scithe"], disabled = true},
+        { id = 40000, name = L["--- Mists of Tirna Scithe ---"], disabled = true},
         { id = 40001, name = L["MOTS - Ingra Maloch"] },
         { id = 40002, name = L["MOTS - Mistcaller"] },
         { id = 40003, name = L["MOTS - Tred'ova"] },
 
         -- Necrotic Wake
-        { id = 50000, name = L["Necrotic Wake"], disabled = true},
+        { id = 50000, name = L["--- Necrotic Wake ---"], disabled = true},
         { id = 50001, name = L["NW - Blightbone"] },
         { id = 50002, name = L["NW - Amarth, The Reanimator"] },
         { id = 50003, name = L["NW - Surgeon Stitchflesh"] },
         { id = 50004, name = L["NW - Nalthor the Rimebinder"] },
 
         -- Plaguefall
-        { id = 60000, name = L["Plaguefall"], disabled = true},
+        { id = 60000, name = L["--- Plaguefall ---"], disabled = true},
         { id = 60001, name = L["NW - Globgrog"] },
         { id = 60002, name = L["NW - Doctor Ickus"] },
         { id = 60003, name = L["NW - Domina Venomblade"] },
         { id = 60004, name = L["NW - Margrave Stradama"] },
 
         -- Sanguine Depths
-        { id = 70000, name = L["Sanguine Depths"], disabled = true},
+        { id = 70000, name = L["--- Sanguine Depths ---"], disabled = true},
         { id = 70001, name = L["SD - Kryxis the Voracious"] },
         { id = 70002, name = L["SD - Executor Tarvold"] },
         { id = 70003, name = L["SD - Grand Proctor Beryllia"] },
         { id = 70004, name = L["SD - General Kaal"] },
 
         -- Spires of Ascension
-        { id = 80000, name = L["Spires of Ascension"], disabled = true},
+        { id = 80000, name = L["--- Spires of Ascension ---"], disabled = true},
         { id = 80001, name = L["SOA - Kin-Tara"] },
         { id = 80002, name = L["SOA - Ventunax"] },
         { id = 80003, name = L["SOA - Oryphrion"] },
         { id = 80004, name = L["SOA - Devo, Paragon of Doubt"] },
 
         -- Theater of Pain
-        { id = 90000, name = L["Theater of Pain"], disabled = true},
+        { id = 90000, name = L["--- Theater of Pain ---"], disabled = true},
         { id = 90001, name = L["TOP - An Affront of Challengers"] },
         { id = 90002, name = L["TOP - Gorechop"] },
         { id = 90003, name = L["TOP - Xav the Unfallen"] },
@@ -242,7 +242,7 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
             PRT.Core.ReselectExchangeLast(encounter.id)
         end)
 
-    encounterSelectDropdown:SetRelativeWidth(0.3)
+    encounterSelectDropdown:SetRelativeWidth(0.6)
 	encounterSelectDropdown:SetCallback("OnValueChanged",
         function(widget, event, id)
             local idx, entry = PRT.FilterTableByID(Encounter.currentEncounters, id)

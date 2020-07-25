@@ -243,7 +243,7 @@ if GetLocale() == "deDE" then
 
 
     -- Encounters
-    L["Castle Nathria"] = "Castle Nathria"
+    L["--- Castle Nathria"] = "--- Castle Nathria ---"
     L["CN - Shriekwing" ] = "CN - Shriekwing"
     L["CN - Altimor the Huntsman" ] = "CN - Altimor the Huntsman"
     L["CN - Hungering Destroyer" ] = "CN - Hungering Destroyer"
@@ -257,55 +257,55 @@ if GetLocale() == "deDE" then
     L["CN - Sire Denathrius" ] = "CN - Sire Denathrius"
 
     -- De Other Side
-    L["De Other Side"] = "De Other Side"
+    L["--- De Other Side"] = "--- De Other Side ---"
     L["DOS - Hakkar the Soulflayer" ] = "DOS - Hakkar the Soulflayer"
     L["DOS - The Manastorms" ] = "DOS - The Manastorms"
     L["DOS - Dealer Xy'exa" ] = "DOS - Dealer Xy'exa"
     L["DOS - Mueh'zala" ] = "DOS - Mueh'zala"
 
     -- Halls of Atonement
-    L["Halls of Atonement"] = "Halls of Atonement"
+    L["--- Halls of Atonement"] = "--- Halls of Atonement ---"
     L["HOA - Halkias the Sin-Stained Goliath" ] = "HOA - Halkias the Sin-Stained Goliath"
     L["HOA - Echelon" ] = "HOA - Echelon"
     L["HOA - High Adjudicator Aleez" ] = "HOA - High Adjudicator Aleez"
     L["HOA - Lord Chamberlain" ] = "HOA - Lord Chamberlain"
 
     -- Mists of Tirna Scithe
-    L["Mists of Tirna Scithe"] = "Mists of Tirna Scithe"
+    L["--- Mists of Tirna Scithe"] = "--- Mists of Tirna Scithe ---"
     L["MOTS - Ingra Maloch" ] = "MOTS - Ingra Maloch"
     L["MOTS - Mistcaller" ] = "MOTS - Mistcaller"
     L["MOTS - Tred'ova" ] = "MOTS - Tred'ova"
 
     -- Necrotic Wake
-    L["Necrotic Wake"] = "Necrotic Wake"
+    L["--- Necrotic Wake"] = "--- Necrotic Wake ---"
     L["NW - Blightbone" ] = "NW - Blightbone" 
     L["NW - Amarth The Reanimator" ] = "NW - Amarth The Reanimator"
     L["NW - Surgeon Stitchflesh" ] = "NW - Surgeon Stitchflesh" 
     L["NW - Nalthor the Rimebinder" ] = "NW - Nalthor the Rimebinder" 
 
     -- Plaguefall
-    L["Plaguefall"] = "Plaguefall"
+    L["--- Plaguefall"] = "--- Plaguefall ---"
     L["NW - Globgrog" ] = "NW - Globgrog"
     L["NW - Doctor Ickus" ] = "NW - Doctor Ickus"
     L["NW - Domina Venomblade" ] = "NW - Domina Venomblade"
     L["NW - Margrave Stradama" ] = "NW - Margrave Stradama"
 
     -- Sanguine Depths
-    L["Sanguine Depths"] = "Sanguine Depths"
+    L["--- Sanguine Depths"] = "--- Sanguine Depths ---"
     L["SD - Kryxis the Voracious" ] = "SD - Kryxis the Voracious"
     L["SD - Executor Tarvold" ] = "SD - Executor Tarvold" 
     L["SD - Grand Proctor Beryllia" ] = "SD - Grand Proctor Beryllia"
     L["SD - General Kaal" ] = "SD - General Kaal"
 
     -- Spires of Ascension
-    L["Spires of Ascension"] = "Spires of Ascension"
+    L["--- Spires of Ascension"] = "--- Spires of Ascension ---"
     L["SOA - Kin-Tara" ] = "SOA - Kin-Tara"
     L["SOA - Ventunax" ] = "SOA - Ventunax"
     L["SOA - Oryphrion" ] = "SOA - Oryphrion"
     L["SOA - Devo Paragon of Doubt" ] = "SOA - Devo Paragon of Doubt"
 
     -- Theater of Pain
-    L["Theater of Pain"] = "Theater of Pain"
+    L["--- Theater of Pain"] = "--- Theater of Pain ---"
     L["TOP - An Affront of Challengers" ] = "TOP - An Affront of Challengers"
     L["TOP - Gorechop" ] = "TOP - Gorechop"
     L["TOP - Xav the Unfallen" ] = "TOP - Xav the Unfallen"
