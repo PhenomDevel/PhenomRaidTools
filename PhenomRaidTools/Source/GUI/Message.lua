@@ -131,7 +131,6 @@ PRT.MessageWidget = function (message, container)
 	local messagePreviewLabel = PRT.Label(L["messagePreview"]..PRT.PrepareMessageForDisplay(message.message))	
 	local messageEditBox = PRT.EditBox("messageMessage", message.message, true)		
 	messageEditBox:SetWidth(400)
-	messageEditBox:SetMaxLetters(180)
 	messageEditBox:SetCallback("OnEnterPressed", 
 		function(widget) 
 			local text = widget:GetText() 
