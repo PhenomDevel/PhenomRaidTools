@@ -16,6 +16,9 @@ PhenomRaidTools.lua
 Localization/Localization.lua
 Localization/Localization.deDE.lua
 
+# Media
+Source/Media.lua
+
 # Source
 Source/Utils.lua
 Source/EncounterHelper.lua
