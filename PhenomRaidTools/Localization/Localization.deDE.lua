@@ -21,6 +21,7 @@ if GetLocale() == "deDE" then
     L["optionsWeakAuraModeTooltip"] = 
         "Aktiviere diese Option, um den WeakAura Empfänger zu benutzen.\n"..
         "Wenn Du das Addon als Empfänger benutzen möchstest stelle sicher, dass die WeakAura |cFF69CCF0Phenom Raid Tools: Receiver|r deaktiviert ist.\n"..
+        "https://wago.io/HyieicnAz\n"..
         "|cFFcc7000WARNUNG|r: Nicht alle Funktionalitäten des Addons funktionieren mit der WeakAura!"
     L["optionsEnabled"] = "Aktiviert"
     L["optionsTestMode"] = "Testmodus"

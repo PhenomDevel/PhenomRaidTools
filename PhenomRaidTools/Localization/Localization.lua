@@ -21,6 +21,7 @@ L = {
     ["optionsWeakAuraModeTooltip"] = 
         "Activate this option if you want to use the WeakAura as receiver.\n"..
         "If you want to use the addon as receiver make sure you deactivate the WeakAura |cFF69CCF0Phenom Raid Tools: Receiver|r\n"..
+        "https://wago.io/HyieicnAz\n"..
         "|cFFcc7000WARNING|r: Not every feature of the addon is supported with the WeakAura!",
     ["optionsEnabled"] = "Enabled",
     ["optionsTestMode"] = "Test mode",
