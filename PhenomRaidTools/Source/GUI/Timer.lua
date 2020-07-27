@@ -121,6 +121,8 @@ PRT.AddTimerOptionsWidgets = function(container, profile, encounterID)
     local timerOptionsGroup = PRT.InlineGroup("Options")
     timerOptionsGroup:SetLayout("Flow")
 
+    -- Add copy select    
+
     local addButton = PRT.Button("newTimer")
     addButton:SetHeight(40)
     addButton:SetRelativeWidth(1)

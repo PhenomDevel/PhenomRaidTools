@@ -43,6 +43,7 @@ L = {
     ["optionsHideDisabledTriggers"] = "Hide disabled triggers",
     ["optionsRaidRosterImportByGroup"] = "Import raid roster by current group",
     ["optionsRaidRosterClear"] = "Clear raid roster",
+    ["optionsVersionCheck"] = "Perform version check",
 
     -- Dungeon Difficulty
     ["dungeonHeading"] = "Dungeon",

@@ -43,6 +43,7 @@ if GetLocale() == "deDE" then
     L["optionsHideDisabledTriggers"] = "Deaktivierte Auslöser verstecken"
     L["optionsRaidRosterImportByGroup"] = "Importiere Raidroster anhand der aktuellen Gruppe"
     L["optionsRaidRosterClear"] = "Raidroster leeren"
+    L["optionsVersionCheck"] = "Versionscheck ausführen"
 
     -- Dungeon Difficulty
     L["dungeonHeading"] = "Dungeon"

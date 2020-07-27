@@ -242,6 +242,7 @@ Options.AddGeneralWidgets = function(container, options)
     local runModeDropdown = PRT.Dropdown("runModeDropdown", Options.runModes, options.runMode)        
     local weakAuraModeCheckbox = PRT.CheckBox("optionsWeakAuraMode", options.weakAuraMode, true)
     local receiveMessagesFromEditBox = PRT.EditBox("optionsReceiveMessagesFrom", options.receiveMessagesFrom, true)
+    local versionCheckButton = PRT.Button("optionsVersionCheck")
 
     receiveMessagesFromEditBox:SetCallback("OnEnterPressed",
         function(widget)
@@ -308,6 +309,13 @@ Options.AddGeneralWidgets = function(container, options)
     if options.senderMode then
         container:AddChild(weakAuraModeCheckbox)    
     end
+
+    versionCheckButton:SetCallback("OnClick",
+        function()
+            PRT:VersionCheck()
+        end)
+
+    container:AddChild(versionCheckButton)
 end
 
 Options.AddSenderOverlayWidget = function(container, options)
