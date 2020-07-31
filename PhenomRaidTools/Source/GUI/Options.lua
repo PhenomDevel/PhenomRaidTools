@@ -80,13 +80,12 @@ end
 
 Options.AddRaidRosterWidget = function(container, options)
     local importByGroupButton = PRT.Button("optionsRaidRosterImportByGroup")
-    importByGroupButton:SetCallback("OnClick", function(_) PRT.ConfirmationDialog(L["importByGroupConfirmationText"], Options.ImportRaidRosterByGroup, options, container)  end)
-    importByGroupButton:SetWidth(300)
-
+    importByGroupButton:SetCallback("OnClick", function(_) PRT.ConfirmationDialog(L["importByGroupConfirmationText"], Options.ImportRaidRosterByGroup, options, container)  end)    
+    importByGroupButton:SetRelativeWidth(0.5)
     local clearRaidRosterButton = PRT.Button("optionsRaidRosterClear")
     clearRaidRosterButton:SetCallback("OnClick", function(_) PRT.ConfirmationDialog(L["clearRaidRosterConfirmationText"], Options.ClearRaidRoster, options, container) end)
-
-    local explanationLabel = PRT.Label("optionsRaidRosterExplanation")
+    clearRaidRosterButton:SetRelativeWidth(0.5)
+    local explanationLabel = PRT.Label("optionsRaidRosterExplanation", 14)
     explanationLabel:SetRelativeWidth(1)
 
     local tankGroup = PRT.InlineGroup("raidRosterTanksHeading")
@@ -148,9 +147,9 @@ Options.AddRaidRosterWidget = function(container, options)
         ddGroup:AddChild(healEditBox)
     end 
 
-    container:AddChild(importByGroupButton)
-    container:AddChild(clearRaidRosterButton)
     container:AddChild(explanationLabel)
+    container:AddChild(importByGroupButton)
+    container:AddChild(clearRaidRosterButton)    
     container:AddChild(tankGroup)
     container:AddChild(healGroup)
     container:AddChild(ddGroup)
@@ -191,7 +190,7 @@ Options.AddDefaultsWidgets = function(container, t)
 end
 
 Options.AddDefaultsGroups = function(container, options)
-    local explanationLabel = PRT.Label("optionsDefaultsExplanation")
+    local explanationLabel = PRT.Label("optionsDefaultsExplanation", 14)
     explanationLabel:SetRelativeWidth(1)
     container:AddChild(explanationLabel)
     
@@ -206,7 +205,7 @@ Options.AddDefaultsGroups = function(container, options)
 end
 
 Options.AddDifficultyWidgets = function(container, options)
-    local explanationLabel = PRT.Label("optionsDifficultyExplanation")
+    local explanationLabel = PRT.Label("optionsDifficultyExplanation", 14)
     explanationLabel:SetRelativeWidth(1)
 
     local dungeonGroup = PRT.InlineGroup("dungeonHeading")
@@ -293,7 +292,7 @@ Options.AddGeneralWidgets = function(container, options)
     container:AddChild(runModeDropdown)
     
     if not options.senderMode and options.receiverMode then
-        local helpLabel = PRT.Label("optionsReceiverModeHelp")
+        local helpLabel = PRT.Label("optionsReceiverModeHelp", 14)
         container:AddChild(helpLabel)
     end
 
@@ -420,6 +419,7 @@ Options.AddReceiverOverlayWidget = function(container, options)
         end)
 
     local lockedCheckBox = PRT.CheckBox("overlayLocked", options.locked)
+    lockedCheckBox:SetRelativeWidth(1)
     lockedCheckBox:SetCallback("OnValueChanged",
         function(widget)
             local v = widget:GetValue()
@@ -436,6 +436,7 @@ Options.AddReceiverOverlayWidget = function(container, options)
         end)
 
     local enableSoundCheckbox = PRT.CheckBox("overlayEnableSound", options.enableSound)
+    enableSoundCheckbox:SetRelativeWidth(1)
     enableSoundCheckbox:SetCallback("OnValueChanged", function(widget) options.enableSound = enableSoundCheckbox:GetValue() end)     
 
     container:AddChild(enableSoundCheckbox)

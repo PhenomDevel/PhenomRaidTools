@@ -4,26 +4,32 @@ local AceGUI = LibStub("AceGUI-3.0")
 local AceComm = LibStub("AceComm-3.0")
 local AceTimer = LibStub("AceTimer-3.0")
 
+local LibDBIcon = LibStub("LibDBIcon-1.0")
 local PhenomRaidToolsLDB = LibStub("LibDataBroker-1.1"):NewDataObject("PhenomRaidTools", {
 	type = "data source",
 	text = "PhenomRaidTools",
 	icon = "Interface\\AddOns\\PhenomRaidTools\\Media\\Icons\\PRT.blp",
-	OnClick = function() 
-		PRT:Open()
+	OnClick = function(self, button) 
+		if button == "LeftButton" then
+			PRT:Open()
+		elseif button == "MiddleButton" then			
+			LibDBIcon:Hide("PhenomRaidTools")
+			PRT.db.profile.minimap.hide = true
+			PRT.Info("Minimap icon is now hidden. If you want to show it again use /prt minimap")
+		end		
 	end,
 
 	OnEnter = function()
 		GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
-		GameTooltip:AddLine("|cFF69CCF0PhenomRaidTools|r") 
-		GameTooltip:AddLine("Left click to open config") 
+		GameTooltip:AddDoubleLine("|cFF69CCF0PhenomRaidTools|r", "v"..PRT.db.profile.version) 
+		GameTooltip:AddLine("|cFFdcabffLeft-Click|r Open Config")
+		GameTooltip:AddLine("|cFFdcabffMiddle-Click|r Hide minimap icon")
 		GameTooltip:Show() 
 	end,
 
 	OnLeave = function()
 		GameTooltip:Hide()
 	end})
-
-local LibDBIcon = LibStub("LibDBIcon-1.0")
 
 
 -------------------------------------------------------------------------------
@@ -204,6 +210,7 @@ function PRT:PrintHelp()
 	PRT.Info("You can use following commands:")
 	PRT.Info("/prt - Will open the PRT config")
 	PRT.Info("/prt versions - Will check PRT versions for each member of your group")
+	PRT.Info("/prt minimap - Will enable the minimap icon")
 end
 
 function PRT:PrintPartyOrRaidVersions()	
@@ -256,6 +263,11 @@ function PRT:VersionCheck(_)
 	end
 end
 
+function PRT:ToggleMinimapIcon()
+	LibDBIcon:Show("PhenomRaidTools")
+	PRT.db.profile.minimap.hide = false
+end
+
 function PRT:ExecuteChatCommand(input)
 	if input == "" or input == nil then
 		PRT:Open()
@@ -263,6 +275,8 @@ function PRT:ExecuteChatCommand(input)
 		PRT.PrintHelp()
 	elseif input == "version" or input == "versions" then
 		PRT:VersionCheck()
+	elseif input == "minimap" then
+		PRT:ToggleMinimapIcon()	
 	else		
 		PRT.PrintHelp()
 	end

@@ -41,7 +41,7 @@ if GetLocale() == "deDE" then
         "Du kannst auch |cFF69CCF0$me|r benutzen damit du Nachrichten von dir selbst immer erhälst.|n"
     L["optionsReceiveMessagesFromDropdown"] = "Namensauswahl"
     L["optionsHideDisabledTriggers"] = "Deaktivierte Auslöser verstecken"
-    L["optionsRaidRosterImportByGroup"] = "Importiere Raidroster anhand der aktuellen Gruppe"
+    L["optionsRaidRosterImportByGroup"] = "Aktuellen Schlachtzug importieren"
     L["optionsRaidRosterClear"] = "Raidroster leeren"
     L["optionsVersionCheck"] = "Versionscheck ausführen"
 
@@ -103,7 +103,7 @@ if GetLocale() == "deDE" then
     L["messageMessageTooltip"] =          
         "- Benutze |cFF69CCF0%.0f|r oder |cFF69CCF0%s|r um einen Countdown anzuzeigen (1 kann ebenso 1-2 sein, um Dezimalstellen anzuzeigen)\n"..
         "- Es können Platzhalter benutzt werden, welche später mit den entsprechenden Namen ausgetauscht werden z.B. |cFF69CCF0$source|r |cFF69CCF0$target|r |cFF69CCF0$heal1|r |cFF69CCF0$me|r\n"..
-        "- Benutzer den Platzhalter |cFF69CCF0{rt1-8}|r um Raidmarkierungen im Text zu benutzen ({rt1} = |TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:16|t, {rt2} = |TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:16|t, ...)\n"..
+        "- Benutzer den Platzhalter |cFF69CCF0{rt1-8}|r um Raidmarkierungen im Text zu benutzen (1=|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:16|t, 2=|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:16|t, 3=|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:16|t, 4=|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:16|t, 5=|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:16|t, 6=|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:16|t, 7=|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:16|t, 8=|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:16|t)\n"..
         "- Benutzer den Platzhalter |cFF69CCF0{spell:$ID}|r, um die Textur eines Zaubers anzuzeigen. Dabei ist $ID die Zauber-ID dessen Textur angezeigt werden soll. Z.b. {spell:17} = |T135940:16|t"
     L["messageDelay"] = "Verzögerung (s)"
     L["messageDelayTooltip"] = "Nach wie vielen Sekunden soll die Nachricht erst zum Empfänger geschickt werden?"
@@ -115,7 +115,7 @@ if GetLocale() == "deDE" then
     L["messageSound"] = "Sound"
 
     -- Rotations
-    L["rotationEnabled"] = "Enabled"
+    L["rotationEnabled"] = "Aktiviert"
     L["rotationHeading"] = "Rotationen"
     L["rotationName"] = "Name"
     L["rotationDeleteButton"] = "Rotation löschen"
@@ -130,7 +130,7 @@ if GetLocale() == "deDE" then
     L["rotationEntryDeleteButton"] = "Eintrag löschen"
 
     -- Percentages
-    L["percentageEnabled"] = "Enabled"
+    L["percentageEnabled"] = "Aktiviert"
     L["percentageDeleteButton"] = "Prozent löschen"
     L["percentageName"] = "Name"
     L["percentageUnitID"] = "Unit-ID"
@@ -151,20 +151,6 @@ if GetLocale() == "deDE" then
     L["encounterImport"] = "Boss importieren"
     L["encounterExport"] = "Boss exportieren"
     L["encounterID"] = "Boss-ID"
-    L["encounterIDTooltip"] = 
-        "Ny'alotha, die Erwachte Stadt\n"..
-        "2329 - Furorion\n"..
-        "2327 - Ma'ut\n"..
-        "2334 - Der Prophet Skitra\n"..
-        "2328 - Dunkle Inquisitorin Xanseh\n"..
-        "2333 - Das Schwarmbewusstsein\n"..
-        "2335 - Shad'har der Unersättliche\n"..
-        "2343 - Drest'agath\n"..
-        "2345 - Il'gynoth die Wiedergeborene Verderbnis\n"..
-        "2336 - Vexiona\n"..
-        "2331 - Ra-den der Entweihte\n"..
-        "2337 - Panzer von N'Zoth\n"..
-        "2344 - N'Zoth der Verderber"
     L["encounterName"] = "Name"
     L["encounterSelectDropdown"] = "Boss auswählen"
     L["encounterDeleteButton"] = "Boss löschen"
@@ -192,7 +178,7 @@ if GetLocale() == "deDE" then
     L["conditionAddStopCondition"] = "Stop Auslöser hinzufügen"
    
     -- Timers
-    L["timerEnabled"] = "Enabled"
+    L["timerEnabled"] = "Aktiviert"
     L["timerName"] = "Name"
     L["timerDeleteButton"] = "Timer löschen"
     L["timerOptionsHeading"] = "Timer Optionen"
@@ -245,18 +231,17 @@ if GetLocale() == "deDE" then
 
 
     -- Encounters
-    L["--- Castle Nathria"] = "--- Castle Nathria ---"
-    L["CN - Shriekwing" ] = "CN - Shriekwing"
-    L["CN - Altimor the Huntsman" ] = "CN - Altimor the Huntsman"
-    L["CN - Hungering Destroyer" ] = "CN - Hungering Destroyer"
-    L["CN - Artificer Xy'Mox" ] = "CN - Artificer Xy'Mox"
-    L["CN - Sun King's Salvation" ] = "CN - Sun King's Salvation"
-    L["CN - Lady Inerva Darkvein" ] = "CN - Lady Inerva Darkvein"
-    L["CN - The Council of Blood" ] = "CN - The Council of Blood"
-    L["CN - Il'gynoth Corruption Reborn" ] = "CN - Il'gynoth Corruption Reborn" 
-    L["CN - Sludgefist" ] = "CN - Sludgefist"
-    L["CN - Stoneborne Generals" ] = "CN - Stoneborne Generals"
-    L["CN - Sire Denathrius" ] = "CN - Sire Denathrius"
+    L["--- Castle Nathria ---"] = "--- Schloss Nathria ---"
+    L["CN - Shriekwing" ] = "SN - Schrillschwinge"
+    L["CN - Altimor the Huntsman" ] = "SN - Altimor der Jäger"
+    L["CN - Hungering Destroyer" ] = "SN - Hungernder Zerstörer"
+    L["CN - Artificer Xy'Mox" ] = "SN - Konstrukteur Xy'Mox"
+    L["CN - Sun King's Salvation" ] = "SN - Die Rettung des Sonnenkönig"
+    L["CN - Lady Inerva Darkvein" ] = "SN - Lady Inerva Dunkelader"
+    L["CN - The Council of Blood" ] = "SN - Der Rat des Blutes"
+    L["CN - Sludgefist" ] = "SN - Schlickfaust"
+    L["CN - Stoneborne Generals" ] = "SN - Generäle der Steingeborenen"
+    L["CN - Sire Denathrius" ] = "SN - Graf Denathrius"
 
     -- De Other Side
     L["--- De Other Side"] = "--- De Other Side ---"

@@ -65,7 +65,7 @@ end
 ReceiverOverlay.UpdateFrame = function()  
     if ReceiverOverlay.overlayFrame then
         local text = ""
-
+        
         for i, message in pairs(ReceiverOverlay.messageStack) do
             if message ~= "" then
                 if message.expirationTime > GetTime() then           

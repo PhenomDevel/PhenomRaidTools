@@ -6,4 +6,4 @@ end
 
 local folder = [[Interface\Addons\PhenomRaidTools\Media\Sounds\]]
 
--- LSM:Register("sound", "EN-Female-ConcentrateForOnce", folder .. [[en_female_concentrate_once_please.ogg]])
+LSM:Register("sound", "DancingQueen", folder .. [[DancingQueen.ogg]])

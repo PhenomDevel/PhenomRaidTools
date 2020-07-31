@@ -33,7 +33,7 @@ AceHelper.AddTooltip = function(widget, tooltip)
 		end)
 	end	
 end
-
+PRT.AceHelper = AceHelper
 AceHelper.AddNewTab = function(widget, t, item)
     if not t then
         t = {}
@@ -234,13 +234,13 @@ PRT.Heading = function(textID)
 	return widget
 end
  
-PRT.Label = function(textID)
+PRT.Label = function(textID, fontSize)
 	local text = L[textID]
 
 	local widget = AceGUI:Create("Label")
 
 	widget:SetText(text)
-	widget:SetFont(GameFontHighlightSmall:GetFont(), 12, "OUTLINE")
+	widget:SetFont(GameFontHighlightSmall:GetFont(), (fontSize or 12), "OUTLINE")
 	widget:SetWidth(500)
 
 	return widget
@@ -367,7 +367,7 @@ end
 
 PRT.Icon = function(value)	
 	local widget = AceGUI:Create("Icon")
-	widget:SetImage(value)
+	widget:SetImage(value, 0.1, 0.9, 0.1, 0.9)
  
 	return widget
 end

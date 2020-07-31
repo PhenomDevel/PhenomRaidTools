@@ -41,7 +41,7 @@ L = {
         "You also can use |cFF69CCF0$me|r to always receive messages from yourself.", 
     ["optionsReceiveMessagesFromDropdown"] = "Choose player", 
     ["optionsHideDisabledTriggers"] = "Hide disabled triggers",
-    ["optionsRaidRosterImportByGroup"] = "Import raid roster by current group",
+    ["optionsRaidRosterImportByGroup"] = "Import current raid",
     ["optionsRaidRosterClear"] = "Clear raid roster",
     ["optionsVersionCheck"] = "Perform version check",
 
@@ -103,7 +103,7 @@ L = {
     ["messageMessageTooltip"] =          
         "- Use |cFF69CCF0%.0f|r or |cFF69CCF0%s|r to display the countdown (the 1 can also changed to 0-2 for decimals)\n"..
         "- You can use tokens which will be replaced within the message e.g. |cFF69CCF0$source|r, |cFF69CCF0$target|r, |cFF69CCF0$heal1|r, |cFF69CCF0$me|r\n"..
-        "- Use placeholder |cFF69CCF0{rt1-8}|r for raid markers ({rt1} = |TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:16|t, {rt2} = |TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:16|t, ...)\n"..
+        "- Use placeholder |cFF69CCF0{rt1-8}|r for raid markers (1=|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:16|t, 2=|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:16|t, 3=|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:16|t, 4=|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:16|t, 5=|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:16|t, 6=|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:16|t, 7=|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:16|t, 8=|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:16|t)\n"..
         "- Use placeholder |cFF69CCF0{spell:$ID}|r where $ID is any spellID of the spell you want to display the texture of e.g. {spell:17} = |T135940:16|t",
     ["messageDelay"] = "Delay (s)",
     ["messageDelayTooltip"] = "After how many seconds the message should be send to the receiver?",
@@ -155,20 +155,6 @@ L = {
     ["encounterImport"] = "Import Encounter",
     ["encounterExport"] = "Export Encounter",
     ["encounterID"] = "Encounter-ID",
-    ["encounterIDTooltip"] = 
-        "Ny'alotha, the Waking City\n"..
-        "2329 - Wrathion\n"..
-        "2327 - Maut\n"..
-        "2334 - The Prophet Skitra\n"..
-        "2328 - Dark Inquisitor Xanesh\n"..
-        "2333 - The Hivemind\n"..
-        "2335 - Shad'har the Insatiable\n"..
-        "2343 - Drest'agath\n"..
-        "2345 - Il'gynoth, Corruption Reborn\n"..
-        "2336 - Vexiona\n"..
-        "2331 - Ra-den the Despoiled\n"..
-        "2337 - Carapace of N'Zoth\n"..
-        "2344 - N'Zoth the Corruptor",
     ["encounterName"] = "Name",
     ["encounterSelectDropdown"] = "Select Encounter",
     ["encounterDeleteButton"] = "Delete Encounter",
@@ -256,7 +242,6 @@ L = {
     ["CN - Sun King's Salvation" ] = "CN - Sun King's Salvation",
     ["CN - Lady Inerva Darkvein" ] = "CN - Lady Inerva Darkvein",
     ["CN - The Council of Blood" ] = "CN - The Council of Blood",
-    ["CN - Il'gynoth, Corruption Reborn" ] = "CN - Il'gynoth, Corruption Reborn" ,
     ["CN - Sludgefist" ] = "CN - Sludgefist",
     ["CN - Stoneborne Generals" ] = "CN - Stoneborne Generals",
     ["CN - Sire Denathrius" ] = "CN - Sire Denathrius",

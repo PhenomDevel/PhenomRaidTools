@@ -11,10 +11,9 @@ local Encounter = {
        { id = 10005, name = L["CN - Sun King's Salvation"] },
        { id = 10006, name = L["CN - Lady Inerva Darkvein"] },
        { id = 10007, name = L["CN - The Council of Blood"] },
-       { id = 10008, name = L["CN - Il'gynoth, Corruption Reborn"] },
-       { id = 10009, name = L["CN - Sludgefist"] },
-       { id = 10010, name = L["CN - Stoneborne Generals"] },
-       { id = 10011, name = L["CN - Sire Denathrius"] },
+       { id = 10008, name = L["CN - Sludgefist"] },
+       { id = 10009, name = L["CN - Stoneborne Generals"] },
+       { id = 10010, name = L["CN - Sire Denathrius"] },
 
         -- De Other Side
        { id = 20000, name = L["--- De Other Side ---"], disabled = true},
@@ -199,7 +198,7 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
 
     local encounterOptionsGroup = PRT.InlineGroup("encounterHeading")
     local enabledCheckBox = PRT.CheckBox("encounterEnabled", encounter.enabled)
-    local encounterIDEditBox = PRT.EditBox("encounterID", encounter.id, true)
+    local encounterIDEditBox = PRT.EditBox("encounterID", encounter.id)
     local encounterNameEditBox = PRT.EditBox("encounterName", encounter.name)
     local encounterSelectDropdown = PRT.Dropdown("encounterSelectDropdown", Encounter.currentEncounters, nil, nil, true)
     local exportButton = PRT.Button("exportEncounter")
@@ -229,7 +228,7 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
                 if encounter.id then
                     widget:SetText(encounter.id)
                 end
-                PRT.Error("The encounter id you entered was already taken by ", existingEncounter.name)
+                PRT.Error("The encounter id you entered was already taken by ", PRT.HighlightString(existingEncounter.name))
             end
         end)
 

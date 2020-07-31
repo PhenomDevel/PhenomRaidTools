@@ -47,9 +47,9 @@ PRT.ConditionWidget = function(condition, textID)
    spellNameLabel:SetWidth(150)
     
 	local spellIcon = PRT.Icon(condition.spellIcon)
-	spellIcon:SetHeight(20)
-	spellIcon:SetWidth(30)
-	spellIcon:SetImageSize(20,20)
+	spellIcon:SetHeight(40)	
+	spellIcon:SetWidth(40)	
+	spellIcon:SetImageSize(30,30)
 
 	eventDropDown:SetCallback("OnValueChanged", 
 		function(widget) 
@@ -87,8 +87,8 @@ PRT.ConditionWidget = function(condition, textID)
 				condition.spellIcon = nil
 				condition.spellID = nil		
 			end
-
-			spellIcon:SetImage(condition.spellIcon)
+			
+			spellIcon:SetImage(condition.spellIcon, 0.1, 0.9, 0.1, 0.9)
 			spellNameLabel:SetText(condition.spellName)
 			spellIDEditBox:SetText(condition.spellID)
 			PRT.Core.UpdateTree()

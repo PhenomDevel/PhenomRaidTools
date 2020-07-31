@@ -81,6 +81,7 @@ Core.GeneratePowerPercentagesTree = function(percentages)
     tree.value = "powerPercentages"
     tree.text = L["treePowerPercentage"]
     tree.icon = 132849
+    tree.iconCoords = {0.1, 0.9, 0.1, 0.9}
 
     return tree
 end
@@ -90,6 +91,7 @@ Core.GenerateHealthPercentagesTree = function(percentages)
     tree.value = "healthPercentages"
     tree.text = L["treeHealthPercentage"]
     tree.icon = 648207
+    tree.iconCoords = {0.1, 0.9, 0.1, 0.9}
 
     return tree
 end
@@ -103,6 +105,7 @@ Core.GenerateRotationTree = function(rotation)
     if rotation.triggerCondition then
         if rotation.triggerCondition.spellIcon then
             t.icon = rotation.triggerCondition.spellIcon
+            t.iconCoords = {0.1, 0.9, 0.1, 0.9}
         end
     end
     
@@ -114,7 +117,8 @@ Core.GenerateRotationsTree = function(rotations)
     local t = {
         value = "rotations",
         text = L["treeRotation"], 
-        icon = 450907
+        icon = 450907,
+        iconCoords = {0.1, 0.9, 0.1, 0.9}
     }
 
     if rotations then
@@ -138,6 +142,7 @@ Core.GenerateTimerTree = function(timer)
     if timer.startCondition then
         if timer.startCondition.spellIcon then
             t.icon = timer.startCondition.spellIcon
+            t.iconCoords = {0.1, 0.9, 0.1, 0.9}
         end
     end
     
@@ -150,6 +155,7 @@ Core.GenerateTimersTree = function(timers)
         value = "timers",
         text = L["treeTimer"],
         icon = 237538,
+        iconCoords = {0.1, 0.9, 0.1, 0.9}
     }
 
     if timers then
