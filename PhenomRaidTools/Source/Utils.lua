@@ -3,14 +3,15 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local AceSerializer = LibStub("AceSerializer-3.0")
 local LibDeflate = LibStub("LibDeflate")
 
+
 -------------------------------------------------------------------------------
 -- Public API
 
 -------------------------------------------------------------------------------
 -- Misc
 
-PRT.Round = function (num, numDecimalPlaces)
-    local mult = 10^(numDecimalPlaces or 0)
+PRT.Round = function (num, decimals)
+    local mult = 10^(decimals or 0)
     return math.floor(num * mult + 0.5) / mult
 end
 
@@ -59,7 +60,7 @@ PRT.TableToString = function(t)
 end
 
 PRT.StringToTable = function(s)
-    if s ~= nil and s ~= "" then
+    if s and s ~= "" then
         local decoded = LibDeflate:DecodeForPrint(s)
         if decoded then
             local decompressed = LibDeflate:DecompressDeflate(decoded)
