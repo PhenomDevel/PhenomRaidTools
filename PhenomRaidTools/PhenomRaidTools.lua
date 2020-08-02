@@ -53,6 +53,17 @@ local defaults =  {
 		senderMode = false,
 		receiverMode = true,
 
+		customNames = {
+			{
+				placeholder = "CustomName1",
+				names = {
+					"Phenom",
+					"Phenomdruid",
+					"Phenomladin"
+				}
+			}
+		},
+
 		overlay = {
 			receiver = {
 				locked = true,

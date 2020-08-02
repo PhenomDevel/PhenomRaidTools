@@ -274,11 +274,22 @@ PRT.ReplaceToken = function(token)
         playerName = UnitName("player")
     elseif PRT.db.profile.raidRoster[token] then
         playerName = PRT.db.profile.raidRoster[token]
+    elseif PRT.db.profile.customNames then
+        for i, customName in ipairs(PRT.db.profile.customNames) do
+            if customName.placeholder == token then
+                for nameIdx, name in ipairs(customName.names) do
+                    if PRT.UnitInParty(name) then
+                        playerName = name
+                        break
+                    end
+                end
+            end
+        end
     else
         playerName = "N/A"
     end
 
-    return playerName
+    return strtrim(playerName, " ")
 end
 
 PRT.ReplacePlayerNameTokens = function(s)

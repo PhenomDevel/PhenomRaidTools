@@ -84,3 +84,4 @@ I have set up a discord server up and running for every kind of question. Feel f
 ## TODOs
  - Translate error messages and debug messages
  - Hide receiver backdrop if player is in combat and `locked` is unchecked
+ - Add error log for current session

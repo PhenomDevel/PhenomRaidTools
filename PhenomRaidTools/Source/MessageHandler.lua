@@ -44,8 +44,8 @@ MessageHandler.ExecuteMessageAction = function(message)
         if targetMessage.target == "$target" then
             -- Set event target as message target
             targetMessage.target = message.eventTarget  
-        elseif targetMessage.target == "$me" or string.match(targetMessage.target, "$tank") or string.match(targetMessage.target, "$heal") then      
-            -- send message to token target  
+        else
+            -- Try to replace placeholder tokens otherwise
             targetMessage.target = PRT.ReplacePlayerNameTokens(targetMessage.target)
         end
         

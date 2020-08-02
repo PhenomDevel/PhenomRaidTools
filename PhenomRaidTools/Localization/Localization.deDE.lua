@@ -11,6 +11,7 @@ if GetLocale() == "deDE" then
     L["optionsTabGeneral"] = "Generell"
     L["optionsTabDifficulties"] = "Schwierigkeiten"
     L["optionsTabDefaults"] = "Auslöser Standards"
+    L["optionsTabCustomNames"] = "Benutzerdefinierte Platzhalter"
     L["optionsTabRaidRoster"] = "Raidkader"
     L["optionsTabOverlays"] = "Overlays"
 
@@ -44,6 +45,10 @@ if GetLocale() == "deDE" then
     L["optionsRaidRosterImportByGroup"] = "Aktuellen Schlachtzug importieren"
     L["optionsRaidRosterClear"] = "Raidroster leeren"
     L["optionsVersionCheck"] = "Versionscheck ausführen"
+
+    L["optionsCustomNameDeleteButton"] = "Löschen"
+    L["optionsCustomNamesDescription"] = "Hier können Platzhalter definiert werden die dann als Nachrichten-Empfänger genutzt werden können."
+    L["optionsCustomNamesAddButton"] = "Neuer Platzhalter"
 
     -- Dungeon Difficulty
     L["dungeonHeading"] = "Dungeon"

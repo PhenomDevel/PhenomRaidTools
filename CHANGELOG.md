@@ -1,4 +1,24 @@
 ===============================================================================
+# Release 1.4.1.0-ALPHA
+## Bugfixes
+None
+
+## Features
+ - Add custom placeholders for message targets
+
+
+===============================================================================
+# Release 1.4.0.0-ALPHA
+## Bugfixes
+ - Fix some locals
+
+## Features
+ - Remove 180 character limit for messages (shouldn't really matter)
+ - Added shared media files with more to come for the new expansion
+ - Prepare encounter select for Shadowlands
+ 
+
+===============================================================================
 # Release 1.3.23.0
 
 

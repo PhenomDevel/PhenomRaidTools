@@ -12,6 +12,7 @@ L = {
     ["optionsTabDifficulties"] = "Difficulties",
     ["optionsTabDefaults"] = "Trigger defaults",
     ["optionsTabRaidRoster"] = "Raid roster",
+    ["optionsTabCustomNames"] = "Custom Placeholders",
     ["optionsTabOverlays"] = "Overlays",
 
     ["optionsReceiverModeHelp"] = 
@@ -44,6 +45,10 @@ L = {
     ["optionsRaidRosterImportByGroup"] = "Import current raid",
     ["optionsRaidRosterClear"] = "Clear raid roster",
     ["optionsVersionCheck"] = "Perform version check",
+
+    ["optionsCustomNameDeleteButton"] = "Delete",
+    ["optionsCustomNamesDescription"] = "Here you can define custom placeholders which can be used as message targets.",
+    ["optionsCustomNamesAddButton"] = "Add Placeholder",
 
     -- Dungeon Difficulty
     ["dungeonHeading"] = "Dungeon",

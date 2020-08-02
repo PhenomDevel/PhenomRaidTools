@@ -33,7 +33,7 @@ AceHelper.AddTooltip = function(widget, tooltip)
 		end)
 	end	
 end
-PRT.AceHelper = AceHelper
+
 AceHelper.AddNewTab = function(widget, t, item)
     if not t then
         t = {}

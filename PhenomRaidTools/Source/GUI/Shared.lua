@@ -167,6 +167,12 @@ PRT.PartyNames = function(withServer)
     return names
 end
 
+PRT.UnitInParty = function(unit)
+    if unit then
+        return UnitInParty(unit) or UnitInRaid(unit)
+    end
+end
+
 PRT.PlayerInParty = function()
-    return UnitInParty("player") or UnitInRaid("player")
+    return PRT.UnitInParty("player")
 end

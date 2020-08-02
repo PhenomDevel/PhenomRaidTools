@@ -18,22 +18,11 @@ Message.TargetsPreviewString = function(targets)
 	if targets then
 		local previewNames = {}
 
-        for i, target in ipairs(targets) do
-			local trimmedName = strtrim(target, " ")
-			local raidRosterID = string.gsub(trimmedName, "[$]+", "")  
-			local raidRosterEntry
-			local coloredName
+		  for i, target in ipairs(targets) do
+			local name = PRT.ReplacePlayerNameTokens(target)
+			local trimmedName = strtrim(name, " ")
+			local coloredName = PRT.ClassColoredName(trimmedName)
 
-			if raidRosterID then
-				raidRosterEntry = PRT.db.profile.raidRoster[raidRosterID]
-			end
-
-			if raidRosterEntry then
-				coloredName = PRT.ClassColoredName(raidRosterEntry)
-			else
-				coloredName = PRT.ClassColoredName(trimmedName)
-			end
-			
 			tinsert(previewNames, coloredName)
 		end
 
@@ -55,6 +44,8 @@ end
 
 Message.GenerateRaidRosterDropdownItems = function()
 	local raidRosterItems = {}
+	
+	-- Add Raid Roster entries
 	for k, v in pairs(PRT.db.profile.raidRoster) do
 		local name = PRT.ClassColoredName(v)
 		
@@ -63,6 +54,19 @@ Message.GenerateRaidRosterDropdownItems = function()
 		tinsert(raidRosterItems, { id = "$"..k , name = name})
 	end
 
+	-- Add Custom Names
+	for i, customName in ipairs(PRT.db.profile.customNames) do
+		for nameIdx, name in ipairs(customName.names) do
+			if PRT.UnitInParty(name) then
+				local name = PRT.ClassColoredName(name)		
+				name = "$"..customName.placeholder.." ("..name..")"
+				tinsert(raidRosterItems, { id = "$"..customName.placeholder , name = name})
+				break 
+			end
+		end
+	end
+
+	-- Add default targets (HEALER, TANK etc.)
 	for i, name in ipairs(Message.defaultTargets) do
 		tinsert(raidRosterItems, { id = name, name = name})
 	end
