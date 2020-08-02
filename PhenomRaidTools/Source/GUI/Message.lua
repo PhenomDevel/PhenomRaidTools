@@ -56,14 +56,21 @@ Message.GenerateRaidRosterDropdownItems = function()
 
 	-- Add Custom Names
 	for i, customName in ipairs(PRT.db.profile.customNames) do
-		for nameIdx, name in ipairs(customName.names) do
-			if PRT.UnitInParty(name) then
-				local name = PRT.ClassColoredName(name)		
-				name = "$"..customName.placeholder.." ("..name..")"
-				tinsert(raidRosterItems, { id = "$"..customName.placeholder , name = name})
-				break 
-			end
+		local coloredNames = {}
+
+		for nameIdx, name in ipairs(customName.names) do 
+			tinsert(coloredNames, PRT.ClassColoredName(name))
 		end
+
+		local name = strjoin(", ", unpack(coloredNames))
+		name = "$"..customName.placeholder.." ("..name..")"
+		tinsert(raidRosterItems, { id = "$"..customName.placeholder , name = name})
+		--for nameIdx, name in ipairs(customName.names) do		
+			--if PRT.UnitInParty(name) then
+				
+				--break 
+			--end
+		--end
 	end
 
 	-- Add default targets (HEALER, TANK etc.)
@@ -86,8 +93,11 @@ PRT.MessageWidget = function (message, container)
 	local raidRosterItems = Message.GenerateRaidRosterDropdownItems()	
 	
 	local targetsEditBox = PRT.EditBox("messageTargets", targetsString, true)	
-   local targetsPreviewLabel = PRT.Label(L["messagePreview"]..PRT.PrepareMessageForDisplay(targetsPreviewString))
+	targetsEditBox:SetWidth(500)
+	local targetsPreviewLabel = PRT.Label(L["messagePreview"]..PRT.PrepareMessageForDisplay(targetsPreviewString))
+	targetsPreviewLabel:SetWidth(500)
 	local raidRosterDropdown = PRT.Dropdown("messageRaidRosterAddDropdown", raidRosterItems)
+	raidRosterDropdown:SetWidth(500)
 
 	local soundSelect = PRT.SoundSelect("messageSound", (message.soundFileName or L["messageStandardSound"]))	
 	soundSelect:SetCallback("OnValueChanged", 
@@ -133,8 +143,9 @@ PRT.MessageWidget = function (message, container)
 		end)    
 		
 	local messagePreviewLabel = PRT.Label(L["messagePreview"]..PRT.PrepareMessageForDisplay(message.message))	
+	messagePreviewLabel:SetWidth(500)
 	local messageEditBox = PRT.EditBox("messageMessage", message.message, true)		
-	messageEditBox:SetWidth(400)
+	messageEditBox:SetWidth(500)
 	messageEditBox:SetCallback("OnEnterPressed", 
 		function(widget) 
 			local text = widget:GetText() 

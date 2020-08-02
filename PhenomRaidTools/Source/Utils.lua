@@ -278,7 +278,7 @@ PRT.ReplaceToken = function(token)
         for i, customName in ipairs(PRT.db.profile.customNames) do
             if customName.placeholder == token then
                 for nameIdx, name in ipairs(customName.names) do
-                    if PRT.UnitInParty(name) then
+                    if PRT.UnitInParty(name) or UnitExists(name) then
                         playerName = name
                         break
                     end
