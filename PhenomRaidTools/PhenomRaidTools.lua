@@ -295,13 +295,21 @@ function PRT:ExecuteChatCommand(input)
 end
 
 function PRT:InvokeMessage(msg)
-	PRT.Debug("Sending new message invoked by chat")
-	local message = {
-		targets = {"ALL"},
-		message = msg,
-		withSound = true,
-	}
-	PRT.ExecuteMessage(message)
+	if PRT.db.profile.senderMode and PRT.db.profile.enabled and (PRT.db.profile.testMode or true) then
+		if PRT.currentEncounter then
+			if PRT.currentEncounter.inFight then
+				PRT.Debug("Sending new message invoked by chat command")
+				local message = {
+					targets = {"ALL"},
+					message = msg,
+					withSound = true,
+				}
+				PRT.ExecuteMessage(message)
+				return
+			end
+		end
+	end
+	PRT.Info("Message by chat command was not send. Either you are not in combat or not in sender mode.")
 end
 
 -------------------------------------------------------------------------------
