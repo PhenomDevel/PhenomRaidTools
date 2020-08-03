@@ -217,13 +217,6 @@ function PRT:Open()
 	end	
 end
 
-function PRT:PrintHelp()
-	PRT.Info("You can use following commands:")
-	PRT.Info("/prt - Will open the PRT config")
-	PRT.Info("/prt versions - Will check PRT versions for each member of your group")
-	PRT.Info("/prt minimap - Will enable the minimap icon")
-end
-
 function PRT:PrintPartyOrRaidVersions()	
 	local myVersion = string.gsub(PRT.db.profile.version, "[^%d]+", "")
 	local myVersionN = tonumber(myVersion)
@@ -279,6 +272,14 @@ function PRT:ToggleMinimapIcon()
 	PRT.db.profile.minimap.hide = false
 end
 
+function PRT:PrintHelp()
+	PRT.Info("You can use following commands:")
+	PRT.Info("/prt - Opens the config")
+	PRT.Info("/prt versions - Will perform a version check on the current group")
+	PRT.Info("/prt minimap - Will enable the minimap icon")
+	PRT.Info("/prtm $message - Will let you send a message to *ALL* players on the fly")
+end
+
 function PRT:ExecuteChatCommand(input)
 	if input == "" or input == nil then
 		PRT:Open()
@@ -293,9 +294,19 @@ function PRT:ExecuteChatCommand(input)
 	end
 end
 
+function PRT:InvokeMessage(msg)
+	PRT.Debug("Sending new message invoked by chat")
+	local message = {
+		targets = {"ALL"},
+		message = msg,
+		withSound = true,
+	}
+	PRT.ExecuteMessage(message)
+end
 
 -------------------------------------------------------------------------------
 -- Chat Commands
 
 PRT:RegisterChatCommand("prt", "ExecuteChatCommand")
 PRT:RegisterChatCommand("prtv", "VersionCheck")
+PRT:RegisterChatCommand("prtm", "InvokeMessage")
