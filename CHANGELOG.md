@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 1.4.2.0-ALPHA
+## Bugfixes
+None
+
+## Features
+ - Add chat command `/prtm $message` to send messages on the fly
+
+
+===============================================================================
 # Release 1.4.1.0-ALPHA
 ## Bugfixes
 None
