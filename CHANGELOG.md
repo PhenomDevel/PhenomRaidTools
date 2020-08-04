@@ -5,6 +5,9 @@ None
 
 ## Features
  - Add chat command `/prtm $message` to send messages on the fly
+ - You now can add a `Start condition` for rotations on which the rotation should start counting
+ - You now can add a `Stop condition` for rotations on which the rotation should stop counting
+   - Those can be defined without the need to define a `Start condition`. So it will "start" counting from `ENCOUNTER_START` and stop on `Stop condition`
 
 
 ===============================================================================

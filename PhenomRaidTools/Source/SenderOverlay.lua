@@ -85,7 +85,11 @@ SenderOverlay.UpdateFrame = function(encounter, options)
                     if rotation.enabled ~= true then
                         rotationString = PRT.ColoredString(rotationString.." - disabled|n", SenderOverlay.disabledColor)
                     else
-                        if rotation.counter then
+                        local isRotationActive = PRT.IsRotationActive(rotation)
+                        
+                        if not isRotationActive then
+                            rotationString = PRT.ColoredString(rotationString.." - inactive|n", SenderOverlay.disabledColor)
+                        elseif isRotationActive and rotation.counter then
                             rotationString = rotationString.." - "..PRT.ColoredString(rotation.counter, SenderOverlay.rotationColor).."|n"
                         else
                             rotationString = rotationString.." - 0|n"

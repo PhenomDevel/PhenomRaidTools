@@ -54,14 +54,6 @@ local defaults =  {
 		receiverMode = true,
 
 		customNames = {
-			{
-				placeholder = "CustomName1",
-				names = {
-					"Phenom",
-					"Phenomdruid",
-					"Phenomladin"
-				}
-			}
 		},
 
 		overlay = {
@@ -158,9 +150,6 @@ local defaults =  {
 		},
 
 		raidRoster = {
-			tank1 = "Tank1",
-			heal1 = "Heal1",
-			dd1 = "Damager1"
 		},
 
 		addonPrefixes = { 
@@ -171,7 +160,6 @@ local defaults =  {
 		},
 
 		versionCheck = {
-
 		}
 	}
 }
@@ -185,6 +173,9 @@ function PRT:OnInitialize()
 	if not encounterIdx and table.empty(self.db.profile.encounters) then
 		table.insert(self.db.profile.encounters, PRT.ExampleEncounter())
 	end	
+
+	-- Reset versions
+	PRT.db.profile.versionCheck = {}
 
 	-- We hold the main frame within the global addon variable 
 	-- because we sometimes have to do a re-layout of the complete content

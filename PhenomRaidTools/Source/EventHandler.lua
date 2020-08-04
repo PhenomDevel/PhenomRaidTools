@@ -165,6 +165,8 @@ function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 
 				-- Checking Rotation activation
 				if rotations then
+					PRT.CheckRotationStartConditions(rotations, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
+					PRT.CheckRotationStopConditions(rotations, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
 					PRT.CheckRotationTriggerCondition(rotations, event, combatEvent, eventSpellID, targetGUID, targetName, sourceGUID, sourceName)
 				end
 

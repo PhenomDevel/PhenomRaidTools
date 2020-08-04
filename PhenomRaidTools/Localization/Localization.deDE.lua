@@ -49,6 +49,7 @@ if GetLocale() == "deDE" then
     L["optionsCustomNameDeleteButton"] = "Löschen"
     L["optionsCustomNamesDescription"] = "Hier können Platzhalter definiert werden die dann als Nachrichten-Empfänger genutzt werden können."
     L["optionsCustomNamesAddButton"] = "Neuer Platzhalter"
+    L["optionsGeneralVersionHeading"] = "Installierte Versionen"
 
     -- Dungeon Difficulty
     L["dungeonHeading"] = "Dungeon"
@@ -181,6 +182,8 @@ if GetLocale() == "deDE" then
     L["conditionStopHeading"] = "Stop Auslöser"
     L["conditionRemoveStopCondition"] = "Stop Auslöser löschen"
     L["conditionAddStopCondition"] = "Stop Auslöser hinzufügen"
+    L["conditionRemoveStartCondition"] = "Start Auslöser löschen"
+    L["conditionAddStartCondition"] = "Start Auslöser hinzufügen"
    
     -- Timers
     L["timerEnabled"] = "Aktiviert"
@@ -228,6 +231,7 @@ if GetLocale() == "deDE" then
     L["deleteConfirmationText"] = "Bist Du sicher, dass Du folgenden Eintrag löschen willst:"
     L["clearRaidRosterConfirmationText"] = "Bist Du sicher, dass Du alle Raidroster Einträge löschen willst?"
     L["cloneConfirmationText"] = "Bist Du sicher, dass Du diesen Auslöser duplizieren möchtest?"
+    L["optionsCustomNameDeleteButtonConfirmation"] = "Bist Du sicher, dass du den benutzerdefinierten Platzhalter löschen willst?"
 
     -- Clone
     L["cloneTimer"] = "Timer duplizieren"

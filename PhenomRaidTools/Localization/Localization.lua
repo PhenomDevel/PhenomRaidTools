@@ -49,6 +49,7 @@ L = {
     ["optionsCustomNameDeleteButton"] = "Delete",
     ["optionsCustomNamesDescription"] = "Here you can define custom placeholders which can be used as message targets.",
     ["optionsCustomNamesAddButton"] = "Add Placeholder",
+    ["optionsGeneralVersionHeading"] = "Installed versions",
 
     -- Dungeon Difficulty
     ["dungeonHeading"] = "Dungeon",
@@ -184,7 +185,9 @@ L = {
     ["conditionStartHeading"] = "Start Condition",
     ["conditionStopHeading"] = "Stop Condition",
     ["conditionRemoveStopCondition"] = "Remove stop condition",
+    ["conditionRemoveStartCondition"] = "Remove start condition",
     ["conditionAddStopCondition"] = "Add stop condition",
+    ["conditionAddStartCondition"] = "Add start condition",
 
     -- Timers
     ["timerEnabled"] = "Enabled",
@@ -232,6 +235,7 @@ L = {
     ["deleteConfirmationText"] = "Are you sure you want to delete:",
     ["clearRaidRosterConfirmationText"] = "Are you sure you want to clear the raid roster settings?",
     ["cloneConfirmationText"] = "Are you sure you want to clone the trigger:",
+    ["optionsCustomNameDeleteButtonConfirmation"] = "Are you sure you want to delete custom placeholder?",
 
     -- Clone
     ["cloneTimer"] = "Clone Timer",
@@ -305,7 +309,7 @@ L = {
     ["TOP - Gorechop" ] = "TOP - Gorechop",
     ["TOP - Xav the Unfallen" ] = "TOP - Xav the Unfallen",
     ["TOP - Kul'tharok" ] = "TOP - Kul'tharok",
-    ["TOP - Mordretha, the Endless Empress"] = "TOP - Mordretha, the Endless Empress",
+    ["TOP - Mordretha, the Endless Empress"] = "TOP - Mordretha, the Endless Empress",    
 }
 
 

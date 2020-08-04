@@ -82,30 +82,8 @@ Timer.TimerWidget = function(timer, container)
     timerOptionsGroup:AddChild(triggerAtOccurenceSlider)
     container:AddChild(timerOptionsGroup)
     container:AddChild(startConditionGroup)
-
-    if timer.hasStopCondition then
-        local stopConditionGroup = PRT.ConditionWidget(timer.stopCondition, "conditionStopHeading")
-        stopConditionGroup:SetLayout("Flow")
-
-        local removeStopConditionButton = PRT.Button("conditionRemoveStopCondition")
-        removeStopConditionButton:SetCallback("OnClick",
-            function()
-                timer.hasStopCondition = false
-                timer.stopCondition = {}
-                PRT.Core.ReselectCurrentValue()
-            end)
-        stopConditionGroup:AddChild(removeStopConditionButton)
-        container:AddChild(stopConditionGroup)
-    else
-        local addStopConditionButton = PRT.Button("conditionAddStopCondition")
-        addStopConditionButton:SetCallback("OnClick",
-            function()
-                timer.hasStopCondition = true
-                timer.stopCondition = PRT.EmptyCondition()      
-                PRT.Core.ReselectCurrentValue()
-            end)
-        container:AddChild(addStopConditionButton)        
-    end
+    
+    PRT.MaybeAddStopCondition(container, timer)
 
     container:AddChild(timingsTabGroup)
 end

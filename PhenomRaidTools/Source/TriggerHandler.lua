@@ -219,6 +219,36 @@ PRT.CheckTimerStopConditions = function(timers, event, combatEvent, spellID, tar
     end
 end
 
+PRT.CheckRotationStartConditions = function(rotations, event, combatEvent, spellID, targetGUID, sourceGUID)
+    if rotations ~= nil then
+        for i, rotation in ipairs(rotations) do    
+            if rotation.enabled == true or rotation.enabled == nil then                       
+                if rotation.startCondition ~= nil and rotation.active ~= true then     
+                    if TriggerHandler.CheckCondition(rotation.startCondition, event, combatEvent, spellID, targetGUID, sourceGUID) then
+                        PRT.Debug("Started rotation `"..(rotation.name or "NO NAME").."`")
+                        rotation.active = true
+                    end
+                end
+            end
+        end
+    end 
+end
+
+PRT.CheckRotationStopConditions = function(rotations, event, combatEvent, spellID, targetGUID, sourceGUID)
+    if rotations ~= nil then
+        for i, rotation in ipairs(rotations) do
+            if rotation.enabled == true or rotation.enabled == nil then
+                if rotation.stopCondition ~= nil and (rotation.active == true or rotation.active == nil) then
+                    if TriggerHandler.CheckCondition(rotation.stopCondition, event, combatEvent, spellID, sourceGUID, targetGUID) then
+                        PRT.Debug("Stopped rotation `"..(rotation.name or "NO NAME").."`")
+                        rotation.active = false
+                    end
+                end
+            end
+        end
+    end
+end
+
 PRT.CheckTimerTimings = function(timers)
     local currentTime = GetTime()    
     if timers ~= nil then
@@ -250,8 +280,8 @@ end
 PRT.CheckRotationTriggerCondition = function(rotations, event, combatEvent, eventSpellID, targetGUID, targetName, sourceGUID, sourceName)  
     if rotations ~= nil then
         for i, rotation in ipairs(rotations) do
-            if rotation.enabled == true or rotation.enabled == nil then
-                if rotation.triggerCondition ~= nil then
+            if PRT.IsRotationActive(rotation) then                
+                    if rotation.triggerCondition ~= nil then
                     TriggerHandler.CheckStopIgnoreRotationCondition(rotation)
                     
                     if rotation.ignored ~= true then

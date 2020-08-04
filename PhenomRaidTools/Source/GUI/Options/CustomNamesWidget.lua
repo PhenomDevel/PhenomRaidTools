@@ -45,12 +45,19 @@ CustomNames.AddCustomName = function(container, customNames, idx, customName)
    
    local deleteButton = PRT.Button("optionsCustomNameDeleteButton")
    deleteButton:SetRelativeWidth(0.5)
-   deleteButton:SetCallback("OnClick",
-      function()
-         tremove(customNames, idx)
-         CustomNames.ReBuildContainer(container, customNames)
-      end
-   )
+
+   deleteButton:SetCallback("OnClick", 
+        function() 
+            local text = L["optionsCustomNameDeleteButtonConfirmation"]
+            if customName.placeholder then
+                text = text.."\n"..PRT.HighlightString(customName.placeholder)
+            end
+            PRT.ConfirmationDialog(text, 
+                function()                    
+                  tremove(customNames, idx)
+                  CustomNames.ReBuildContainer(container, customNames)
+                end)            
+        end)
 
    customNameInlineGroup:AddChild(deleteButton)   
    container:AddChild(customNameInlineGroup)

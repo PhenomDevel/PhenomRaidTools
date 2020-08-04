@@ -19,6 +19,58 @@ local classColors = {
 -------------------------------------------------------------------------------
 -- Public API
 
+PRT.MaybeAddStartCondition = function(container, trigger)
+    if trigger.hasStartCondition then
+        local startConditionGroup = PRT.ConditionWidget(trigger.startCondition, "conditionStartHeading")
+        startConditionGroup:SetLayout("Flow")
+
+        local removeStartConditionButton = PRT.Button("conditionRemoveStartCondition")
+        removeStartConditionButton:SetCallback("OnClick",
+            function()
+                trigger.hasStartCondition = false
+                trigger.startCondition = nil
+                PRT.Core.ReselectCurrentValue()
+            end)
+            startConditionGroup:AddChild(removeStartConditionButton)
+        container:AddChild(startConditionGroup)
+    else
+        local addStartConditionButton = PRT.Button("conditionAddStartCondition")  
+        addStartConditionButton:SetCallback("OnClick",
+            function()
+                trigger.hasStartCondition = true
+                trigger.startCondition = PRT.EmptyCondition()      
+                PRT.Core.ReselectCurrentValue()
+            end)
+        container:AddChild(addStartConditionButton)        
+    end
+end
+
+PRT.MaybeAddStopCondition = function(container, trigger)
+    if trigger.hasStopCondition then
+        local stopConditionGroup = PRT.ConditionWidget(trigger.stopCondition, "conditionStopHeading")
+        stopConditionGroup:SetLayout("Flow")
+
+        local removeStopConditionButton = PRT.Button("conditionRemoveStopCondition")
+        removeStopConditionButton:SetCallback("OnClick",
+            function()
+                trigger.hasStopCondition = false
+                trigger.stopCondition = nil
+                PRT.Core.ReselectCurrentValue()
+            end)
+        stopConditionGroup:AddChild(removeStopConditionButton)
+        container:AddChild(stopConditionGroup)
+    else
+        local addStopConditionButton = PRT.Button("conditionAddStopCondition")
+        addStopConditionButton:SetCallback("OnClick",
+            function()
+                trigger.hasStopCondition = true
+                trigger.stopCondition = PRT.EmptyCondition()      
+                PRT.Core.ReselectCurrentValue()
+            end)
+        container:AddChild(addStopConditionButton)        
+    end
+end
+
 PRT.NewTriggerDeleteButton = function(container, t, idx, textID, entityName)
     local deleteButton = PRT.Button(textID)
     deleteButton:SetHeight(40)
@@ -71,7 +123,11 @@ PRT.ConfirmationDialog = function(text, successFn, ...)
         local confirmationFrame = PRT.Window("confirmationWindow")
         confirmationFrame:SetLayout("Flow")
         confirmationFrame:SetHeight(130)
-        confirmationFrame:SetWidth(430)
+        
+
+
+
+
         confirmationFrame:EnableResize(false)
         confirmationFrame.frame:SetFrameStrata("DIALOG")   
         confirmationFrame:SetCallback("OnClose",
@@ -82,8 +138,9 @@ PRT.ConfirmationDialog = function(text, successFn, ...)
 
         local textLabel = PRT.Label(text)
 
+        confirmationFrame:SetWidth(max(430, textLabel.label:GetStringWidth() + 50))           
+
         local okButton = PRT.Button("confirmationDialogOk")
-        okButton:SetHeight(30) 
         okButton:SetCallback("OnClick", 
             function(_)
                 if successFn then
@@ -94,7 +151,6 @@ PRT.ConfirmationDialog = function(text, successFn, ...)
             end)
         
         local cancelButton = PRT.Button("confirmationDialogCancel")
-        cancelButton:SetHeight(30)  
         cancelButton:SetCallback("OnClick",
             function(_)
                 confirmationFrame:Hide()

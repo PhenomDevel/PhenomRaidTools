@@ -26,6 +26,9 @@ You can configure a lot of different things for a timer
 You can configure a lot of different things for a rotation
 
  - Trigger condition on which the counter for the rotation should increment e.g. spell cast of encounter
+ - Start condition on which the rotation should start counting
+ - Stop condition on which the rotation should stop counting
+   - You can define a stop condition without start condition if you want it to trigger from the encounter start but want to define a condition when it should stop counting
  - Should the rotation restart - so if all your rotation entries are successfully processed the rotation will start over again e.g. kick rotation
  - Ignore after activation - you can ignore the trigger condition for a set amount of time so the trigger won't activate e.g. if there are a lot of the same events happening at the given time and you only care about it once every 30 seconds
  - Ignore duration - sets the duration for how long the trigger condition should be ignored
@@ -78,10 +81,11 @@ I have set up a discord server up and running for every kind of question. Feel f
  - [Backlog] Be able to configure multiple conditions for each trigger. Like trigger on `ENCOUNTER_START` *or* `SPELL_CAST_SUCCESS/123`
  - [Backlog] Sync function to sync all encounters with someone else at once
  - [Backlog] Add "global" encounter which will always be merged with the current encounter for e.g. seconds pots or something
- - [Backlog] Be able to set a start condition for rotations so it does not start counting the first time a condition is met. It would only start counting after the start condition was met once
  - [Backlog] Have multiple overlays for messages like Important, normal and unimportant or something which alle can be positioned differently. The sender can configure the positions for the messages and those will be send to the receiver. The receiver can overwrite these positions if wanted.
 
 ## TODOs
  - Translate error messages and debug messages
  - Hide receiver backdrop if player is in combat and `locked` is unchecked
  - Add error log for current session
+ - Add small descriptions of triggers to the overview to help ppl use them
+ - Create YouTube tutorials for the different trigger types
