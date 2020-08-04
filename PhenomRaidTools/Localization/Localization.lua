@@ -284,10 +284,10 @@ L = {
 
     -- Plaguefall
     ["--- Plaguefall ---"] = "--- Plaguefall ---",
-    ["NW - Globgrog" ] = "NW - Globgrog",
-    ["NW - Doctor Ickus" ] = "NW - Doctor Ickus",
-    ["NW - Domina Venomblade" ] = "NW - Domina Venomblade",
-    ["NW - Margrave Stradama" ] = "NW - Margrave Stradama",
+    ["PF - Globgrog" ] = "PF - Globgrog",
+    ["PF - Doctor Ickus" ] = "PF - Doctor Ickus",
+    ["PF - Domina Venomblade" ] = "PF - Domina Venomblade",
+    ["PF - Margrave Stradama" ] = "PF - Margrave Stradama",
 
     -- Sanguine Depths
     ["--- Sanguine Depths ---"] = "--- Sanguine Depths ---",

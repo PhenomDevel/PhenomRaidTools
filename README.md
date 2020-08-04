@@ -89,3 +89,4 @@ I have set up a discord server up and running for every kind of question. Feel f
  - Add error log for current session
  - Add small descriptions of triggers to the overview to help ppl use them
  - Create YouTube tutorials for the different trigger types
+ - Translate encounter overview strings

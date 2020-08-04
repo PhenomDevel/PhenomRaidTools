@@ -248,9 +248,9 @@ PRT.HighlightString = function(s)
     return PRT.ColoredString(s, PRT.db.profile.colors.highlight)
 end
 
-PRT.TextureString = function(id)
+PRT.TextureString = function(id, size)
     if id then
-        return "|T"..id..":16:16:0:0:64:64:6:58:6:58|t"
+        return "|T"..id..":"..(size or 16)..":"..(size or 16)..":0:0:64:64:6:58:6:58|t"
     end
 end
 
@@ -268,8 +268,8 @@ end
 
 PRT.ReplaceToken = function(token)
     token = strtrim(token, " ")
-    local playerName = token
-    
+    local playerName = "N/A"
+
     if token == "me" then
         playerName = UnitName("player")
     elseif PRT.db.profile.raidRoster[token] then

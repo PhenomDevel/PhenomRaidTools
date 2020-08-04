@@ -281,10 +281,10 @@ if GetLocale() == "deDE" then
 
     -- Plaguefall
     L["--- Plaguefall"] = "--- Plaguefall ---"
-    L["NW - Globgrog" ] = "NW - Globgrog"
-    L["NW - Doctor Ickus" ] = "NW - Doctor Ickus"
-    L["NW - Domina Venomblade" ] = "NW - Domina Venomblade"
-    L["NW - Margrave Stradama" ] = "NW - Margrave Stradama"
+    L["PF - Globgrog" ] = "PF - Globgrog"
+    L["PF - Doctor Ickus" ] = "PF - Doctor Ickus"
+    L["PF - Domina Venomblade" ] = "PF - Domina Venomblade"
+    L["PF - Margrave Stradama" ] = "PF - Margrave Stradama"
 
     -- Sanguine Depths
     L["--- Sanguine Depths"] = "--- Sanguine Depths ---"

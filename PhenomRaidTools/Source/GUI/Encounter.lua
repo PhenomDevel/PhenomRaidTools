@@ -44,10 +44,10 @@ local Encounter = {
 
         -- Plaguefall
         { id = 60000, name = L["--- Plaguefall ---"], disabled = true},
-        { id = 60001, name = L["NW - Globgrog"] },
-        { id = 60002, name = L["NW - Doctor Ickus"] },
-        { id = 60003, name = L["NW - Domina Venomblade"] },
-        { id = 60004, name = L["NW - Margrave Stradama"] },
+        { id = 60001, name = L["PF - Globgrog"] },
+        { id = 60002, name = L["PF - Doctor Ickus"] },
+        { id = 60003, name = L["PF - Domina Venomblade"] },
+        { id = 60004, name = L["PF - Margrave Stradama"] },
 
         -- Sanguine Depths
         { id = 70000, name = L["--- Sanguine Depths ---"], disabled = true},
@@ -73,89 +73,130 @@ local Encounter = {
     }
 }
 
-local stringByCondition = function(name, condition)
-    local s = name.."|n"
+local addOverviewHeader = function(container, header, enabled)
+    local coloredText = ""
 
-    if condition.event then
-        s = s.."    Event: "..PRT.ColoredString(condition.event, PRT.db.profile.colors.highlight).."|n"
+    if not enabled then
+        coloredText = PRT.ColoredString(header.." (disabled)", PRT.db.profile.colors.disabled)
+    else
+        coloredText = PRT.ColoredString(header, PRT.db.profile.colors.debug)
     end
+
+    local headerLabel = PRT.Label(coloredText, 16)
+    headerLabel:SetRelativeWidth(1)
+
+    container:AddChild(headerLabel)
+end
+
+local addOverviewLine = function(container, text)
+    local textLabel = PRT.Label(text, 14)
+    textLabel:SetRelativeWidth(1)
+    
+    container:AddChild(textLabel)
+end
+
+local addOverviewEmptyLine = function(container)
+    local textLabel = PRT.Label(" ")
+    textLabel:SetRelativeWidth(1)
+    
+    container:AddChild(textLabel)
+end
+
+local addStringByCondition = function(container, name, condition)
+    local conditionString = name.." - "..PRT.HighlightString(condition.event).." of "
 
     if condition.spellName and condition.spellID then
         local _, _, texture = GetSpellInfo(condition.spellID)
-        s = s.."    Spell: "..PRT.TextureString(texture)..condition.spellName.." ( "..PRT.ColoredString(condition.spellID, PRT.db.profile.colors.highlight).." )|n"
+        conditionString = conditionString..PRT.TextureString(texture, 14)..condition.spellName.." ( "..PRT.HighlightString(condition.spellID).." )"
+    else
+        conditionString = conditionString.."N/A"
     end
 
-    return s
+    addOverviewLine(container, conditionString)
 end
 
-local stringByPercentage = function(name, percentage)
-    local s = name.."|n"
+local addTimerOverviewEntry = function(container, timer)
+    addOverviewHeader(container, timer.name, timer.enabled)
+    
+    addStringByCondition(container, "Start timer on", timer.startCondition)
 
-    if percentage.unitID then
-        s = s.."    UnitID: "..PRT.ColoredString(percentage.unitID, PRT.db.profile.colors.highlight).."|n"
+    if timer.hasStopCondition then
+        addStringByCondition(container, "Stop timer on", timer.stopCondition)
+    end
+    addOverviewLine(container, "Timings - "..PRT.HighlightString(#timer.timings))
+    addOverviewEmptyLine(container)
+end
+
+local addRotationOverviewEntry = function(container, rotation)
+    addOverviewHeader(container, rotation.name, rotation.enabled)
+
+    if rotation.hasStartCondition then
+        addStringByCondition(container, "Start tracking on", rotation.startCondition)
     end
 
-    return s
+    if rotation.hasStopCondition then
+        addStringByCondition(container, "Stop tracking on", rotation.stopCondition)
+    end
+
+    addStringByCondition(container, "Trigger on", rotation.triggerCondition)
+
+    addOverviewLine(container, "Entries - "..PRT.HighlightString(#rotation.entries))
+    addOverviewEmptyLine(container)
 end
+
+local addPercentageOverviewEntry = function(container, prefix, percentage)
+    addOverviewHeader(container, percentage.name, percentage.enabled)
+
+    for i, value in ipairs(percentage.values) do
+        addOverviewLine(container, "Trigger on "..prefix.." "..value.operator.." "..value.value)
+    end
+
+    addOverviewEmptyLine(container)
+end
+
 
 -------------------------------------------------------------------------------
 -- Local Helper
 
 Encounter.OverviewWidget = function(encounter)
     local overviewGroup = PRT.InlineGroup("encounterOverview")
+    local timerGroup = PRT.InlineGroup(PRT.TextureString(237538).." "..L["timerOverview"])
+    local rotationsGroup = PRT.InlineGroup(PRT.TextureString(450907).." "..L["rotationOverview"])
+    local healthPercentageGroup = PRT.InlineGroup(PRT.TextureString(648207).." "..L["healthPercentageOverview"])
+    local powerPercentageGroup = PRT.InlineGroup(PRT.TextureString(132849).." "..L["powerPercentageOverview"])
 
     -- Timers
-    if not table.empty(encounter.Timers) then
-        local group = PRT.InlineGroup(PRT.TextureString(237538).." "..L["timerOverview"])
+    if not table.empty(encounter.Timers) then        
         for i, v in ipairs(encounter.Timers) do
-            local s = stringByCondition(i..". "..v.name, v.startCondition)
-
-            local label = PRT.Label(s)
-            label:SetRelativeWidth(1)
-            group:AddChild(label)
-        end
-        overviewGroup:AddChild(group)
+            addTimerOverviewEntry(timerGroup, v)
+        end        
     end
 
     -- Rotations
-    if not table.empty(encounter.Rotations) then
-        local group = PRT.InlineGroup(PRT.TextureString(450907).." "..L["rotationOverview"])
-
+    if not table.empty(encounter.Rotations) then        
         for i, v in ipairs(encounter.Rotations) do
-            local s = stringByCondition(i..". "..v.name, v.triggerCondition)
-
-            local label = PRT.Label(s)
-            label:SetRelativeWidth(1)
-            group:AddChild(label)
-        end
-        overviewGroup:AddChild(group)
+            addRotationOverviewEntry(rotationsGroup, v)
+        end        
     end
 
     -- Health Percentages
-    if not table.empty(encounter.HealthPercentages) then
-        local group = PRT.InlineGroup(PRT.TextureString(648207).." "..L["healthPercentageOverview"])
+    if not table.empty(encounter.HealthPercentages) then        
         for i, v in ipairs(encounter.HealthPercentages) do
-            local s = stringByPercentage(i..". "..v.name, v)
-
-            local label = PRT.Label(s)
-            label:SetRelativeWidth(1)
-            group:AddChild(label)
-        end
-        overviewGroup:AddChild(group)
+            addPercentageOverviewEntry(healthPercentageGroup, "HP", v)
+        end        
     end
 
     -- Power Percentages
-    if not table.empty(encounter.PowerPercentages) then
-        local group = PRT.InlineGroup(PRT.TextureString(132849).." "..L["powerPercentageOverview"])
+    if not table.empty(encounter.PowerPercentages) then        
         for i, v in ipairs(encounter.PowerPercentages) do
-            local s = stringByPercentage(i..". "..v.name, v)
-
-            local label = PRT.Label(s)
-            label:SetRelativeWidth(1)
-            group:AddChild(label)
-        end
-        overviewGroup:AddChild(group)
+            addPercentageOverviewEntry(powerPercentageGroup, "POWER", v)
+        end        
     end
+
+    overviewGroup:AddChild(timerGroup)
+    overviewGroup:AddChild(rotationsGroup)
+    overviewGroup:AddChild(healthPercentageGroup)
+    overviewGroup:AddChild(powerPercentageGroup)
 
     return overviewGroup
 end

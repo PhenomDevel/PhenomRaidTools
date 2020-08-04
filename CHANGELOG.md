@@ -1,4 +1,14 @@
 ===============================================================================
+# Release 1.4.2.1-ALPHA
+## Bugfixes
+ - Fixed some Shadowlands locals
+ - Fixed an issue with the encounter overview and overhaul
+
+## Features
+None
+
+
+===============================================================================
 # Release 1.4.2.0-ALPHA
 ## Bugfixes
 None
