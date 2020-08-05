@@ -41,7 +41,7 @@ EventHandler.StartEncounter = function(event, encounterID, encounterName)
 					PRT:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 					PRT.currentEncounter = {}
 					PRT.currentEncounter.inFight = true
-							
+					
 					PRT.currentEncounter.encounter = PRT.CopyTable(encounter)				
 					PRT.currentEncounter.encounter.startedAt = GetTime()
 

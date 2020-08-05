@@ -1,11 +1,10 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
-local Defaults = {}
 
 -------------------------------------------------------------------------------
 -- Private Helper
 
-Defaults.AddDefaultsWidgets = function(container, t)
+local addDefaultsWidgets = function(container, t)
    if t then
        for k, v in pairs(t) do
            local widget = nil
@@ -52,7 +51,7 @@ PRT.AddDefaultsGroups = function(container, options)
        for k, v in pairs(options) do
            local groupWidget = PRT.InlineGroup(k)
            groupWidget:SetLayout("Flow")
-           Defaults.AddDefaultsWidgets(groupWidget, v)
+           addDefaultsWidgets(groupWidget, v)
            container:AddChild(groupWidget)
        end
    end    

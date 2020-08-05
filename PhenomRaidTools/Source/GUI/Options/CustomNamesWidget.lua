@@ -1,21 +1,27 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
-local CustomNames = {}
-
 
 -------------------------------------------------------------------------------
 -- Local Helper
 
-CustomNames.NewCustomName = function()
+local reBuildContainer = function(container, customNames)
+   container:ReleaseChildren()
+   PRT.AddCustomNamesWidget(container, customNames)
+   PRT.mainWindowContent.scrollFrame:DoLayout()
+end
+
+local newCustomName = function()
    return {
       placeholder = "Placeholder",
       names = {
-         "", "", ""
+         "", 
+         "", 
+         ""
       }
    }
 end
 
-CustomNames.AddCustomName = function(container, customNames, idx, customName)
+local addCustomName = function(container, customNames, idx, customName)
    local customNameInlineGroup = PRT.InlineGroup(customName.placeholder)
    customNameInlineGroup:SetLayout("Flow")
    local placeholderEditBox = PRT.EditBox((customName.placeholder or "Placeholder"), customName.placeholder)
@@ -45,7 +51,6 @@ CustomNames.AddCustomName = function(container, customNames, idx, customName)
    
    local deleteButton = PRT.Button("optionsCustomNameDeleteButton")
    deleteButton:SetRelativeWidth(0.5)
-
    deleteButton:SetCallback("OnClick", 
         function() 
             local text = L["optionsCustomNameDeleteButtonConfirmation"]
@@ -55,7 +60,7 @@ CustomNames.AddCustomName = function(container, customNames, idx, customName)
             PRT.ConfirmationDialog(text, 
                 function()                    
                   tremove(customNames, idx)
-                  CustomNames.ReBuildContainer(container, customNames)
+                  reBuildContainer(container, customNames)
                 end)            
         end)
 
@@ -63,11 +68,6 @@ CustomNames.AddCustomName = function(container, customNames, idx, customName)
    container:AddChild(customNameInlineGroup)
 end
 
-CustomNames.ReBuildContainer = function(container, customNames)
-   container:ReleaseChildren()
-   PRT.AddCustomNamesWidget(container, customNames)
-   PRT.mainWindowContent.scrollFrame:DoLayout()
-end
 
 -------------------------------------------------------------------------------
 -- Public API
@@ -78,14 +78,14 @@ PRT.AddCustomNamesWidget = function(container, customNames)
    container:AddChild(description)
 
    for idx, customName in ipairs(customNames) do
-      CustomNames.AddCustomName(container, customNames, idx, customName)
+      addCustomName(container, customNames, idx, customName)
    end
 
    local addButton = PRT.Button("optionsCustomNamesAddButton")
    addButton:SetCallback("OnClick", 
       function()
-         tinsert(customNames, CustomNames.NewCustomName())
-         CustomNames.ReBuildContainer(container, customNames)
+         tinsert(customNames, newCustomName())
+         reBuildContainer(container, customNames)
       end
    )
    container:AddChild(addButton)

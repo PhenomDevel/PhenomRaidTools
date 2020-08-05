@@ -20,8 +20,7 @@ PRT.AddDifficultyWidgets = function(container, options)
    
    for i, difficulty in ipairs(Difficulties.difficultyStrings) do
        local widget = PRT.CheckBox("dungeonDifficulty"..difficulty, options["dungeon"][difficulty])
-       widget:SetCallback("OnValueChanged", function(widget, event, key) options["dungeon"][difficulty] = widget:GetValue() end)
-       widget:SetWidth(100)                
+       widget:SetCallback("OnValueChanged", function(widget, event, key) options["dungeon"][difficulty] = widget:GetValue() end)           
        dungeonGroup:AddChild(widget)
    end
 
@@ -30,8 +29,7 @@ PRT.AddDifficultyWidgets = function(container, options)
 
    for i, difficulty in ipairs(Difficulties.difficultyStrings) do
        local widget = PRT.CheckBox("raidDifficulty"..difficulty, options["raid"][difficulty])
-       widget:SetCallback("OnValueChanged", function(widget, event, key) options["raid"][difficulty] = widget:GetValue() end)
-       widget:SetWidth(100)
+       widget:SetCallback("OnValueChanged", function(widget, event, key) options["raid"][difficulty] = widget:GetValue() end)       
        raidGroup:AddChild(widget)
    end
 
