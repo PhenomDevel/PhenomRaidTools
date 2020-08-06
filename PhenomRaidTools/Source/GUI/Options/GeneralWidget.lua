@@ -111,8 +111,6 @@ PRT.AddGeneralWidgets = function(container, options)
     versionCheckButton:SetCallback("OnClick",
         function()
             PRT:VersionCheck()
-            PRT.Core.ReselectCurrentValue()
-            AceTimer:ScheduleTimer(function() PRT.Core.ReselectCurrentValue() end, 5)
         end)
 
     container:AddChild(versionCheckButton)

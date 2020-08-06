@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 1.4.2.3-ALPHA
+## Bugfixes
+ - Do not jump to general settings after version check
+
+## Features
+None
+
+
+===============================================================================
 # Release 1.4.2.2-ALPHA
 ## Bugfixes
  - Fixed some Shadowlands locals

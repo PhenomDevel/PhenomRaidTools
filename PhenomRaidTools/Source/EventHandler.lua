@@ -195,7 +195,8 @@ function PRT:PLAYER_ENTERING_WORLD(event)
 
 	AceTimer:ScheduleTimer(
 		function()
-			local name, type, _, difficulty = GetInstanceInfo()						
+			local name, type, _, difficulty = GetInstanceInfo()
+							
 			if type == "party" then
 				PRT.Debug("Player entered dungeon - checking difficulty")
 				PRT.Debug("Current difficulty is", PRT.HighlightString(difficulty))
@@ -212,7 +213,7 @@ function PRT:PLAYER_ENTERING_WORLD(event)
 				PRT.Debug("Current difficulty is", PRT.HighlightString(difficulty))
 				
 				if self.db.profile.enabledDifficulties["raid"][difficulty] then
-					PRT.Debug("Enabling PhenomRaidTools for", PRT.HighlightString(name), "on difficulty", PRT.HighlightString(difficulty))
+					PRT.Debug("Enabling PhenomRaidTools for", PRT.HighlightString(name), "on", PRT.HighlightString(difficulty), "difficulty")
 					PRT.enabled = true
 				else
 					PRT.Debug("Difficulty not configured. PhenomRaidTools disabled.")
