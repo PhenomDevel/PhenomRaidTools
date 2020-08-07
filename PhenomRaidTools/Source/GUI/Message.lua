@@ -55,16 +55,16 @@ Message.GenerateRaidRosterDropdownItems = function()
 	end
 
 	-- Add Custom Names
-	for i, customName in ipairs(PRT.db.profile.customNames) do
+	for i, customPlaceholder in ipairs(PRT.db.profile.customPlaceholders) do
 		local coloredNames = {}
 
-		for nameIdx, name in ipairs(customName.names) do 
+		for nameIdx, name in ipairs(customPlaceholder.names) do 
 			tinsert(coloredNames, PRT.ClassColoredName(name))
 		end
 
 		local name = strjoin(", ", unpack(coloredNames))
-		name = "$"..customName.placeholder.." ("..name..")"
-		tinsert(raidRosterItems, { id = "$"..customName.placeholder , name = name})
+		name = "$"..customPlaceholder.name.." ("..name..")"
+		tinsert(raidRosterItems, { id = "$"..customPlaceholder.name , name = name})
 	end
 
 	-- Add groups

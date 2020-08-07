@@ -474,15 +474,21 @@ PRT.PlayerNamesByToken = function(token)
                 tinsert(playerNames, strtrim(name, " "))
             end
         end
-    elseif PRT.db.profile.customNames then
-        for i, customName in ipairs(PRT.db.profile.customNames) do
-            if customName.placeholder == token then
-                for nameIdx, name in ipairs(customName.names) do
-                    if PRT.UnitInParty(name) or UnitExists(name) then
-                        tinsert(playerNames, strtrim(name, " "))
-                        break
+    elseif PRT.db.profile.customPlaceholders then
+        for i, customPlaceholder in ipairs(PRT.db.profile.customPlaceholders) do
+            if customPlaceholder.name == token then
+                if customPlaceholder.type == "Group" then
+                    for i = #customPlaceholder.names, 1, -1 do
+                        tinsert(playerNames, strtrim(customPlaceholder.names[i], " "))
                     end
-                end
+                else
+                    for nameIdx, name in ipairs(customPlaceholder.names) do
+                        if PRT.UnitInParty(name) or UnitExists(name) then
+                            tinsert(playerNames, strtrim(name, " "))
+                            break
+                        end
+                    end
+                end                
             end
         end
     else

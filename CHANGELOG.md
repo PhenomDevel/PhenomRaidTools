@@ -1,4 +1,21 @@
 ===============================================================================
+# Release 1.5.1.0-ALPHA
+## Bugfixes
+None
+
+## Features
+ - You now can differentiate between custom placeholder types `player` and `group`
+   - `player` will only message one player which is configured (ment for alts)
+   - `group` will message every player configured (ment for custom groups assigned to a specific task)
+
+## CAUTION
+ - `customNames` was completly removed from the state
+   - You might have to redo your placeholders. Sorry.
+
+
+
+
+===============================================================================
 # Release 1.5.0.0-ALPHA
 ## Bugfixes
  - Do not show empty triggers on encounter overview

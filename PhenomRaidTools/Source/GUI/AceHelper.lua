@@ -153,6 +153,18 @@ PRT.InlineGroup = function(textID)
    return container
 end
 
+-- TODO: Actually make this transparent even when using elvui
+PRT.TransparentGroup = function()
+	local text = L[textID]
+	local container = AceGUI:Create("SimpleGroup")    
+	container.frame:SetBackdrop(nil)
+
+	container:SetFullWidth(true)
+	container:SetLayout("List")
+
+   return container
+end
+
 PRT.SimpleGroup = function()
 	local container = AceGUI:Create("SimpleGroup")    
 	

@@ -31,8 +31,7 @@ PRT.AddOptionWidgets = function(container, profile)
             elseif key == "overlay" then
                 PRT.AddOverlayWidget(container, PRT.db.profile.overlay)
             elseif key =="customPlaceholders" then
-                -- Merge customNames for backwards compatibility
-                PRT.AddCustomPlaceholdersWidget(container, table.mergemany(PRT.db.profile.customPlaceholders, PRT.db.profile.customNames))
+                PRT.AddCustomPlaceholdersWidget(container, PRT.db.profile.customPlaceholders)
             end
 
             if PRT.mainWindowContent.scrollFrame then

@@ -53,9 +53,6 @@ local defaults =  {
 		senderMode = false,
 		receiverMode = true,
 
-		customNames = {
-		},
-
 		customPlaceholders = {
 
 		},
