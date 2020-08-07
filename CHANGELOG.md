@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 1.6.2.0-ALPHA
+## Bugfixes
+None
+
+## Features
+ - Some UI improvements
+
+
+===============================================================================
 # Release 1.6.1.0-ALPHA
 ## Bugfixes
  - Do not scroll to top if not needed
