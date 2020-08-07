@@ -13,8 +13,6 @@ None
    - You might have to redo your placeholders. Sorry.
 
 
-
-
 ===============================================================================
 # Release 1.5.0.0-ALPHA
 ## Bugfixes

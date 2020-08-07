@@ -12,7 +12,7 @@ end
 
 local newCustomPlaceholder = function()
    return {
-      type = "Player",
+      type = "player",
       name = "Placeholder",
       names = {
          "Change me"
@@ -24,16 +24,19 @@ local addCustomPlaceholderWidget = function(container, customPlaceholders, idx, 
    local customPlaceholderInlineGroup = PRT.InlineGroup(customPlaceholder.name)
    customPlaceholderInlineGroup:SetLayout("Flow")
 
-   local placeholderTypeSelect = PRT.Dropdown("Placeholder-Type", {"Player", "Group"}, (customPlaceholder.type or "Player"))   
-   placeholderTypeSelect:SetRelativeWidth(0.5)
+   local placeholderTypesDropdownItems = {
+      { id = "group", name = L["optionsCustomPlaceholderTypeGroup"]},
+      { id = "player", name = L["optionsCustomPlaceholderTypePlayer"]}
+   }
+
+   local placeholderTypeSelect = PRT.Dropdown("optionsCustomPlaceholderType", placeholderTypesDropdownItems, (customPlaceholder.type or "Player"))   
    placeholderTypeSelect:SetCallback("OnValueChanged",
       function(widget)
          local text = widget:GetValue()
          customPlaceholder.type = text
       end)  
 
-   local nameEditBox = PRT.EditBox("Placeholder-Name", customPlaceholder.name)
-   nameEditBox:SetRelativeWidth(0.5)
+   local nameEditBox = PRT.EditBox("optionsCustomPlaceholderName", customPlaceholder.name)
    nameEditBox:SetCallback("OnEnterPressed", 
       function(widget)
          local text = widget:GetText()
@@ -41,16 +44,14 @@ local addCustomPlaceholderWidget = function(container, customPlaceholders, idx, 
          widget:ClearFocus()
       end)  
 
-   local clearEmptyNamesButton = PRT.Button("Remove empty names")
-   clearEmptyNamesButton:SetRelativeWidth(0.333)
+   local clearEmptyNamesButton = PRT.Button("optionsCustomPlaceholderRemoveEmptyNames")
    clearEmptyNamesButton:SetCallback("OnClick",
       function()
          PRT.TableRemove(customPlaceholder.names, PRT.EmptyString)
          reBuildContainer(container, customPlaceholders)
       end)
 
-   local addNameButton = PRT.Button("Addd new Name")
-   addNameButton:SetRelativeWidth(0.333)
+   local addNameButton = PRT.Button("optionsCustomPlaceholderAddNameButton")
    addNameButton:SetCallback("OnClick",
       function()
          tinsert(customPlaceholder.names, "")
@@ -58,7 +59,6 @@ local addCustomPlaceholderWidget = function(container, customPlaceholders, idx, 
       end)
 
    local deleteButton = PRT.Button("optionsCustomPlaceholderDeleteButton")
-   deleteButton:SetRelativeWidth(0.333)
    deleteButton:SetCallback("OnClick", 
          function() 
             local text = L["optionsCustomPlaceholderDeleteButtonConfirmation"]
@@ -66,16 +66,17 @@ local addCustomPlaceholderWidget = function(container, customPlaceholders, idx, 
                   text = text.."\n"..PRT.HighlightString(customPlaceholder.name)
             end
             PRT.ConfirmationDialog(text, 
-                  function()                    
+               function()                    
                   tremove(customPlaceholders, idx)
                   reBuildContainer(container, customPlaceholders)
-                  end)            
+               end)            
          end)            
    
    local namesGroup = PRT.InlineGroup("Names")
    namesGroup:SetLayout("Flow")
    for idx, name in ipairs(customPlaceholder.names) do
       local nameEditBox = PRT.EditBox("name"..idx, name)
+      nameEditBox:SetRelativeWidth(0.333)
       nameEditBox:SetCallback("OnEnterPressed", 
          function(widget)
             local text = widget:GetText()
@@ -101,8 +102,11 @@ end
 
 PRT.AddCustomPlaceholdersWidget = function(container, customPlaceholders)
    local description = PRT.Label("optionsCustomPlaceholdersDescription", 14)
+   local subDescription = PRT.Label("optionsCustomPlaceholdersSubDescription")   
    description:SetRelativeWidth(1)
+   subDescription:SetRelativeWidth(1)   
    container:AddChild(description)
+   container:AddChild(subDescription)
 
    for idx, customPlaceholder in ipairs(customPlaceholders) do
       addCustomPlaceholderWidget(container, customPlaceholders, idx, customPlaceholder)

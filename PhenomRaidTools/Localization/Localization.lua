@@ -46,8 +46,17 @@ L = {
     ["optionsRaidRosterClear"] = "Clear raid roster",
     ["optionsVersionCheck"] = "Perform version check",
 
-    ["optionsCustomPlaceholderDeleteButton"] = "Delete",
+    ["optionsCustomPlaceholderTypePlayer"] = "Player",
+    ["optionsCustomPlaceholderTypeGroup"] = "Group",
+    ["optionsCustomPlaceholderType"] = "Type",
+    ["optionsCustomPlaceholderName"] = "Name",
+    ["optionsCustomPlaceholderRemoveEmptyNames"] = "Remove empty names",
+    ["optionsCustomPlaceholderAddNameButton"] = "Add name",
+    ["optionsCustomPlaceholderDeleteButton"] = "Delete",    
     ["optionsCustomPlaceholdersDescription"] = "Here you can define custom placeholders which can be used as message targets.",
+    ["optionsCustomPlaceholdersSubDescription"] = "Types:\n"..
+        "|cFF69CCF0Player|r - Only the first player found within the group will be messaged.\n"..
+        "|cFF69CCF0Gruppe|r - All configured players will be messaged.",
     ["optionsCustomPlaceholdersAddButton"] = "Add Placeholder",
     ["optionsGeneralVersionHeading"] = "Installed versions",
 
