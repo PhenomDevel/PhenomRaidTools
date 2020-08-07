@@ -1,4 +1,23 @@
 ===============================================================================
+# Release 1.6.0.0-ALPHA
+## Bugfixes
+None
+
+## Features
+ - Add possibility to add start condition for health and percentage triggers
+ - Add possibility to add stop condition for health and percentage triggers
+
+
+===============================================================================
+# Release 1.5.3.0-ALPHA
+## Bugfixes
+None
+
+## Features
+ - Show spell tooltip for spell icons in conditions
+
+
+===============================================================================
 # Release 1.5.2.0-ALPHA
 ## Bugfixes
 None

@@ -88,8 +88,8 @@ I have set up a discord server up and running for every kind of question. Feel f
  - Hide receiver backdrop if player is in combat and `locked` is unchecked
  - Add error log for current session
  - Add small descriptions of triggers to the overview to help ppl use them
- - Create YouTube tutorials for the different trigger types
  - Translate encounter overview strings
  - Be able to export encounter as exorsus note? 
  - Start / Stop Condition for Power/Health Percentage
  - Trigger disabled based on raid difficulty
+ - Create YouTube tutorials for the different trigger types

@@ -8,6 +8,37 @@ local TriggerHandler = {}
 -------------------------------------------------------------------------------
 -- Local Helper
 
+TriggerHandler.IsTriggerActive = function(trigger)    
+    return 
+    (
+        (
+            trigger.enabled == true or trigger.enabled == nil
+        ) 
+        and
+        (
+            trigger.active == true
+            or 
+            (
+                not trigger.hasStartCondition and 
+                not trigger.hasStopCondition and 
+                (
+                    trigger.active or 
+                    trigger.active == nil
+                )
+            )
+            or 
+            (
+                not trigger.hasStartCondition and 
+                trigger.hasStopCondition and 
+                (
+                    trigger.active or 
+                    trigger.active == nil
+                )
+            )
+        )
+    )
+end
+
 TriggerHandler.CheckCondition = function(condition, event, combatEvent, spellID, targetGUID, sourceGUID)
     if condition ~= nil then
         if condition.event ~= nil and (condition.event == event or condition.event == combatEvent) then   
@@ -219,14 +250,14 @@ PRT.CheckTimerStopConditions = function(timers, event, combatEvent, spellID, tar
     end
 end
 
-PRT.CheckRotationStartConditions = function(rotations, event, combatEvent, spellID, targetGUID, sourceGUID)
-    if rotations ~= nil then
-        for i, rotation in ipairs(rotations) do    
-            if rotation.enabled == true or rotation.enabled == nil then                       
-                if rotation.startCondition ~= nil and rotation.active ~= true then     
-                    if TriggerHandler.CheckCondition(rotation.startCondition, event, combatEvent, spellID, targetGUID, sourceGUID) then
-                        PRT.Debug("Started rotation `"..(rotation.name or "NO NAME").."`")
-                        rotation.active = true
+PRT.CheckTriggersStartConditions = function(triggers, event, combatEvent, spellID, targetGUID, sourceGUID)
+    if triggers ~= nil then
+        for i, trigger in ipairs(triggers) do                
+            if trigger.enabled == true or trigger.enabled == nil then                                       
+                if trigger.startCondition ~= nil and trigger.active ~= true then    
+                    if TriggerHandler.CheckCondition(trigger.startCondition, event, combatEvent, spellID, targetGUID, sourceGUID) then
+                        PRT.Debug("Started trigger `"..(trigger.name or "NO NAME").."`")
+                        trigger.active = true
                     end
                 end
             end
@@ -234,14 +265,14 @@ PRT.CheckRotationStartConditions = function(rotations, event, combatEvent, spell
     end 
 end
 
-PRT.CheckRotationStopConditions = function(rotations, event, combatEvent, spellID, targetGUID, sourceGUID)
-    if rotations ~= nil then
-        for i, rotation in ipairs(rotations) do
-            if rotation.enabled == true or rotation.enabled == nil then
-                if rotation.stopCondition ~= nil and (rotation.active == true or rotation.active == nil) then
-                    if TriggerHandler.CheckCondition(rotation.stopCondition, event, combatEvent, spellID, sourceGUID, targetGUID) then
-                        PRT.Debug("Stopped rotation `"..(rotation.name or "NO NAME").."`")
-                        rotation.active = false
+PRT.CheckTriggersStopConditions = function(triggers, event, combatEvent, spellID, targetGUID, sourceGUID)
+    if triggers ~= nil then
+        for i, trigger in ipairs(triggers) do
+            if trigger.enabled == true or trigger.enabled == nil then
+                if trigger.stopCondition ~= nil and (trigger.active == true or trigger.active == nil) then                    
+                    if TriggerHandler.CheckCondition(trigger.stopCondition, event, combatEvent, spellID, sourceGUID, targetGUID) then
+                        PRT.Debug("Stopped trigger `"..(trigger.name or "NO NAME").."`")
+                        trigger.active = false
                     end
                 end
             end
@@ -280,7 +311,7 @@ end
 PRT.CheckRotationTriggerCondition = function(rotations, event, combatEvent, eventSpellID, targetGUID, targetName, sourceGUID, sourceName)  
     if rotations ~= nil then
         for i, rotation in ipairs(rotations) do
-            if PRT.IsRotationActive(rotation) then                
+            if TriggerHandler.IsTriggerActive(rotation) then                
                     if rotation.triggerCondition ~= nil then
                     TriggerHandler.CheckStopIgnoreRotationCondition(rotation)
                     
@@ -305,36 +336,39 @@ PRT.CheckRotationTriggerCondition = function(rotations, event, combatEvent, even
     end
 end
 
+-- TODO Use same method for health and power just use another calc fn
 -- Health Percentages
 PRT.CheckUnitHealthPercentages = function(percentages)
     if percentages ~= nil then
         for i, percentage in ipairs(percentages) do
-            if percentage.enabled == true or percentage.enabled == nil then
-                TriggerHandler.CheckStopIgnoreRotationCondition(percentage)
+            if TriggerHandler.IsTriggerActive(percentage) then
+                if percentage.enabled == true or percentage.enabled == nil then
+                    TriggerHandler.CheckStopIgnorePercentageCondition(percentage)
 
-                if percentage.ignored ~= true and percentage.executed ~= true then
-                    if UnitExists(percentage.unitID) then
-                        local unitCurrentHP = UnitHealth(percentage.unitID)
-                        local unitMaxHP = UnitHealthMax(percentage.unitID)
-                        local unitHPPercent = PRT.Round(unitCurrentHP / unitMaxHP * 100, 0)                
-                        local messagesByHP = TriggerHandler.FilterPercentagesTable(percentage.values, unitHPPercent)
+                    if percentage.ignored ~= true and percentage.executed ~= true then
+                        if UnitExists(percentage.unitID) then
+                            local unitCurrentHP = UnitHealth(percentage.unitID)
+                            local unitMaxHP = UnitHealthMax(percentage.unitID)
+                            local unitHPPercent = PRT.Round(unitCurrentHP / unitMaxHP * 100, 0)                
+                            local messagesByHP = TriggerHandler.FilterPercentagesTable(percentage.values, unitHPPercent)
 
-                        if messagesByHP then
-                            if messagesByHP.messages ~= nil then
-                                TriggerHandler.SendMessagesAfterDelay(messagesByHP.messages)
-                                
-                                percentage.lastActivation = GetTime()
-                                if percentage.checkAgain ~= true then
-                                    percentage.ignored = true
-                                    PRT.Debug("Started ignoring percentage", percentage.name, "for", percentage.checkAgainAfter)
-                                else
-                                    percentage.executed = true
+                            if messagesByHP then
+                                if messagesByHP.messages ~= nil then
+                                    TriggerHandler.SendMessagesAfterDelay(messagesByHP.messages)
+
+                                    percentage.lastActivation = GetTime()
+                                    if percentage.checkAgain == true then
+                                        percentage.ignored = true
+                                        PRT.Debug("Started ignoring percentage", percentage.name, "for", percentage.checkAgainAfter)
+                                    else
+                                        percentage.executed = true
+                                    end
                                 end
                             end
-                        end
+                        end 
                     end 
-                end 
-            end          
+                end          
+            end
         end
     end
 end
@@ -342,32 +376,34 @@ end
 PRT.CheckUnitPowerPercentages = function(percentages)
     if percentages ~= nil then
         for i, percentage in ipairs(percentages) do
-            if percentage.enabled == true or percentage.enabled == nil then
-                TriggerHandler.CheckStopIgnorePercentageCondition(percentage)
+            if TriggerHandler.IsTriggerActive(percentage) then
+                if percentage.enabled == true or percentage.enabled == nil then
+                    TriggerHandler.CheckStopIgnorePercentageCondition(percentage)
 
-                if percentage.ignored ~= true then
-                    if UnitExists(percentage.unitID) then
-                        local unitCurrentPower = UnitPower(percentage.unitID)
-                        local unitMaxPower = UnitPowerMax(percentage.unitID)
-                        local unitPowerPercent = PRT.Round(unitCurrentPower / unitMaxPower * 100, 0)                
-                        local messagesByPower = TriggerHandler.FilterPercentagesTable(percentage.values, unitPowerPercent)
+                    if percentage.ignored ~= true then
+                        if UnitExists(percentage.unitID) then
+                            local unitCurrentPower = UnitPower(percentage.unitID)
+                            local unitMaxPower = UnitPowerMax(percentage.unitID)
+                            local unitPowerPercent = PRT.Round(unitCurrentPower / unitMaxPower * 100, 0)                
+                            local messagesByPower = TriggerHandler.FilterPercentagesTable(percentage.values, unitPowerPercent)
 
-                        if messagesByPower then
-                            if messagesByPower.messages ~= nil and not messagesByPower.executed == true then
-                                TriggerHandler.SendMessagesAfterDelay(messagesByPower.messages)
-                                
-                                percentage.lastActivation = GetTime()
-                                if percentage.ignoreAfterActivation == true then
-                                    percentage.ignored = true
-                                    PRT.Debug("Started ignoring percentage", percentage.name, "for", percentage.ignoreDuration)
-                                else
-                                    messagesByPower.executed = true
+                            if messagesByPower then
+                                if messagesByPower.messages ~= nil and not messagesByPower.executed == true then
+                                    TriggerHandler.SendMessagesAfterDelay(messagesByPower.messages)
+                                    
+                                    percentage.lastActivation = GetTime()
+                                    if percentage.ignoreAfterActivation == true then
+                                        percentage.ignored = true
+                                        PRT.Debug("Started ignoring percentage", percentage.name, "for", percentage.ignoreDuration)
+                                    else
+                                        messagesByPower.executed = true
+                                    end
                                 end
                             end
-                        end
-                    end 
-                end   
-            end        
+                        end 
+                    end   
+                end        
+            end
         end
     end
 end

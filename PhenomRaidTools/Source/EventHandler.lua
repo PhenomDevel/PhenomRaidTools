@@ -165,18 +165,22 @@ function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 
 				-- Checking Rotation activation
 				if rotations then
-					PRT.CheckRotationStartConditions(rotations, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
-					PRT.CheckRotationStopConditions(rotations, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
+					PRT.CheckTriggersStartConditions(rotations, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
+					PRT.CheckTriggersStopConditions(rotations, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
 					PRT.CheckRotationTriggerCondition(rotations, event, combatEvent, eventSpellID, targetGUID, targetName, sourceGUID, sourceName)
 				end
 
 				-- Checking Health Percentage activation
 				if healthPercentages then
+					PRT.CheckTriggersStartConditions(healthPercentages, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
+					PRT.CheckTriggersStopConditions(healthPercentages, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
 					PRT.CheckUnitHealthPercentages(healthPercentages)
 				end
 
 				-- Checking Resource Percentage activation
 				if powerPercentages then
+					PRT.CheckTriggersStartConditions(powerPercentages, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
+					PRT.CheckTriggersStopConditions(powerPercentages, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
 					PRT.CheckUnitPowerPercentages(powerPercentages)
 				end
 

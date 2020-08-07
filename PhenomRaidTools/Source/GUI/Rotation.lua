@@ -123,34 +123,3 @@ PRT.AddRotationWidget = function(container, profile, encounterID, triggerName)
     container:AddChild(deleteButton)
     container:AddChild(cloneButton)
 end
-
-PRT.IsRotationActive = function(rotation)    
-    return 
-    (
-        (
-            rotation.enabled == true or rotation.enabled == nil
-        ) 
-        and
-        (
-            rotation.active == true
-            or 
-            (
-                not rotation.hasStartCondition and 
-                not rotation.hasStopCondition and 
-                (
-                    rotation.active or 
-                    rotation.active == nil
-                )
-            )
-            or 
-            (
-                not rotation.hasStartCondition and 
-                rotation.hasStopCondition and 
-                (
-                    rotation.active or 
-                    rotation.active == nil
-                )
-            )
-        )
-    )
-end

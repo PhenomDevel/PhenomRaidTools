@@ -117,8 +117,10 @@ Percentage.PercentageWidget = function(percentage, container)
     percentageOptionsGroup:AddChild(unitIDEditBox)
     percentageOptionsGroup:AddChild(checkAgainCheckBox)
     percentageOptionsGroup:AddChild(checkAgainAfterSlider)
-
+    
     container:AddChild(percentageOptionsGroup)
+    PRT.MaybeAddStartCondition(container, percentage)
+    PRT.MaybeAddStopCondition(container, percentage) 
     container:AddChild(valuesTabGroupWidget)
 end
 
