@@ -220,8 +220,6 @@ PRT.AddEncountersWidgets = function(container, profile)
     local encounterOptionsGroup = PRT.InlineGroup("encounterHeading")
 
     local addButton = PRT.Button("newEncounter")
-    addButton:SetHeight(40)
-    addButton:SetRelativeWidth(1)
     addButton:SetCallback("OnClick",
     function(widget)
         local newEncounter = PRT.EmptyEncounter()
@@ -231,8 +229,6 @@ PRT.AddEncountersWidgets = function(container, profile)
     end)
 
     local importButton = PRT.Button("importEncounter")
-    importButton:SetHeight(40)
-    importButton:SetRelativeWidth(1)
 	importButton:SetCallback("OnClick",
 		function(widget)
 			PRT.CreateImportEncounterFrame(profile.encounters)
@@ -259,7 +255,7 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
 
     encounterOptionsGroup:SetLayout("Flow")
 
-    encounterIDEditBox:SetRelativeWidth(0.3)
+    encounterIDEditBox:SetRelativeWidth(0.5)
 	encounterIDEditBox:SetCallback("OnEnterPressed",
         function(widget)
             local id = tonumber(widget:GetText())
@@ -283,8 +279,7 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
                 PRT.Error("The encounter id you entered was already taken by ", PRT.HighlightString(existingEncounter.name))
             end
         end)
-
-    encounterNameEditBox:SetRelativeWidth(0.3)
+    encounterNameEditBox:SetRelativeWidth(0.5)
     encounterNameEditBox:SetCallback("OnEnterPressed",
         function(widget)
             encounter.name = widget:GetText()
@@ -293,7 +288,7 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
             PRT.Core.ReselectExchangeLast(encounter.id)
         end)
 
-    encounterSelectDropdown:SetRelativeWidth(0.6)
+    encounterSelectDropdown:SetRelativeWidth(0.5)
 	encounterSelectDropdown:SetCallback("OnValueChanged",
         function(widget, event, id)
             local idx, entry = PRT.FilterTableByID(Encounter.currentEncounters, id)
@@ -324,8 +319,6 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
             widget:SetValue(nil)
         end)
 
-    exportButton:SetHeight(40)
-    exportButton:SetRelativeWidth(1)
     exportButton:SetCallback("OnClick",
         function(widget)
             PRT.CreateExportEncounterFrame(encounter)
@@ -338,13 +331,16 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
             PRT.Core.UpdateTree()
         end)
 
+        exportButton:SetRelativeWidth(0.25)
+        deleteButton:SetRelativeWidth(0.25)
+
     encounterOptionsGroup:AddChild(enabledCheckBox)
     encounterOptionsGroup:AddChild(encounterIDEditBox)
     encounterOptionsGroup:AddChild(encounterNameEditBox)
     encounterOptionsGroup:AddChild(encounterSelectDropdown)
+    encounterOptionsGroup:AddChild(exportButton)
+    encounterOptionsGroup:AddChild(deleteButton)
 
     container:AddChild(encounterOptionsGroup)
-    container:AddChild(overviewGroup)
-    container:AddChild(exportButton)
-    container:AddChild(deleteButton)
+    container:AddChild(overviewGroup)    
 end

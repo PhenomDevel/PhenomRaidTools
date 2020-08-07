@@ -80,8 +80,6 @@ end
 
 PRT.NewTriggerDeleteButton = function(container, t, idx, textID, entityName)
     local deleteButton = PRT.Button(textID)
-    deleteButton:SetHeight(40)
-    deleteButton:SetRelativeWidth(1)
     deleteButton:SetCallback("OnClick", 
         function() 
             local text = L["deleteConfirmationText"]
@@ -102,8 +100,6 @@ end
 
 PRT.NewCloneButton = function(container, t, idx, textID, entityName)
     local cloneButton = PRT.Button(textID)
-    cloneButton:SetHeight(40)
-    cloneButton:SetRelativeWidth(1)
     cloneButton:SetCallback("OnClick", 
         function() 
             local text = L["cloneConfirmationText"]
@@ -141,7 +137,7 @@ PRT.ConfirmationDialog = function(text, successFn, ...)
         local textLabel = PRT.Label(text)
 
         confirmationFrame:SetWidth(max(430, textLabel.label:GetStringWidth() + 50))           
-
+        
         local okButton = PRT.Button("confirmationDialogOk")
         okButton:SetCallback("OnClick", 
             function(_)
@@ -158,10 +154,8 @@ PRT.ConfirmationDialog = function(text, successFn, ...)
                 confirmationFrame:Hide()
                 PRT.Core.UnregisterFrame(text)
             end)
-
-        local heading = PRT.Heading(nil)
+        confirmationFrame:SetHeight(max(100, textLabel.label:GetStringHeight() + textLabel.frame:GetHeight()))
         confirmationFrame:AddChild(textLabel)
-        confirmationFrame:AddChild(heading)
         confirmationFrame:AddChild(okButton)
         confirmationFrame:AddChild(cancelButton)
 

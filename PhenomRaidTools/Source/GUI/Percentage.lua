@@ -136,8 +136,6 @@ PRT.AddPowerPercentageOptions = function(container, profile, encounterID)
     percentageOptionsGroup:SetLayout("Flow")
 
     local addButton = PRT.Button("newPowerPercentage")
-    addButton:SetHeight(40)
-    addButton:SetRelativeWidth(1)
     addButton:SetCallback("OnClick", 
         function(widget, event, key)
             local newPercentage = PRT.EmptyPercentage()
@@ -175,8 +173,6 @@ PRT.AddHealthPercentageOptions = function(container, profile, encounterID)
     percentageOptionsGroup:SetLayout("Flow")
 
     local addButton = PRT.Button("newHealthPercentage")
-    addButton:SetHeight(40)
-    addButton:SetRelativeWidth(1)
     addButton:SetCallback("OnClick", 
         function(widget, event, key)
             local newPercentage = PRT.EmptyPercentage()

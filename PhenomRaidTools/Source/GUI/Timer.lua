@@ -102,8 +102,6 @@ PRT.AddTimerOptionsWidgets = function(container, profile, encounterID)
     -- Add copy select    
 
     local addButton = PRT.Button("newTimer")
-    addButton:SetHeight(40)
-    addButton:SetRelativeWidth(1)
     addButton:SetCallback("OnClick", 
         function(widget, event, key)
             local newTimer = PRT.EmptyTimer()
