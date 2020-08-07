@@ -90,8 +90,9 @@ I have set up a discord server up and running for every kind of question. Feel f
  - Add small descriptions of triggers to the overview to help ppl use them
  - Translate encounter overview strings
  - Be able to export encounter as exorsus note? 
- - Start / Stop Condition for Power/Health Percentage
  - Trigger disabled based on raid difficulty
  - Create YouTube tutorials for the different trigger types
  - Implement generic handling of start/stop condition handlers
  - Implement generic handling of start/stop condition counter handler
+ - Actually make transparent group transparent when using elvui
+ - Distinct targets on messages so everyone only gets the messages once... No need to send multiple times (flag?)
