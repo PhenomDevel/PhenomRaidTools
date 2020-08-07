@@ -377,9 +377,23 @@ PRT.CheckBox = function(textID, value, addTooltip)
 	return widget
 end
 
-PRT.Icon = function(value)	
+PRT.Icon = function(value, spellID)	
 	local widget = AceGUI:Create("Icon")
 	widget:SetImage(value, 0.1, 0.9, 0.1, 0.9)
+	
+	if spellID then
+		widget:SetCallback("OnEnter", 
+			function()
+				GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
+				GameTooltip:SetHyperlink("spell:"..spellID)			
+				GameTooltip:Show()
+			end)
+
+		widget:SetCallback("OnLeave", 
+			function()
+				GameTooltip:Hide()
+			end)
+	end
  
 	return widget
 end

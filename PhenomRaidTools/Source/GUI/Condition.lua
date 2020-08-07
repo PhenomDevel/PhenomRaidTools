@@ -46,7 +46,7 @@ PRT.ConditionWidget = function(condition, textID)
 	local spellNameLabel = PRT.Label(condition.spellName)
    spellNameLabel:SetWidth(150)
     
-	local spellIcon = PRT.Icon(condition.spellIcon)
+	local spellIcon = PRT.Icon(condition.spellIcon, condition.spellID)
 	spellIcon:SetHeight(40)	
 	spellIcon:SetWidth(40)	
 	spellIcon:SetImageSize(30,30)
