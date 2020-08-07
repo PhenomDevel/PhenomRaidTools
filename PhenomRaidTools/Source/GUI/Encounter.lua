@@ -147,6 +147,14 @@ end
 local addPercentageOverviewEntry = function(container, prefix, percentage)
     addOverviewHeader(container, percentage.name, percentage.enabled)
 
+    if percentage.hasStartCondition then
+        addStringByCondition(container, "Start tracking on", percentage.startCondition)
+    end
+
+    if percentage.hasStopCondition then
+        addStringByCondition(container, "Stop tracking on", percentage.stopCondition)
+    end
+
     for i, value in ipairs(percentage.values) do
         addOverviewLine(container, "Trigger on "..prefix.." "..value.operator.." "..value.value)
     end

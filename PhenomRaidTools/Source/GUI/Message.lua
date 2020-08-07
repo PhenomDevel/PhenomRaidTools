@@ -128,7 +128,7 @@ PRT.MessageWidget = function (message, container)
 			message.useCustomSound = value
 			container:ReleaseChildren()
 			PRT.MessageWidget(message, container)
-			PRT.mainWindowContent.scrollFrame:DoLayout()
+			PRT.Core.UpdateScrollFrame()
 		end)
 
 	targetsEditBox:SetCallback("OnEnterPressed", 

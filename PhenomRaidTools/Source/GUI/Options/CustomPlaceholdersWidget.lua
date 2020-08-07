@@ -7,7 +7,7 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local reBuildContainer = function(container, customPlaceholders)
    container:ReleaseChildren()
    PRT.AddCustomPlaceholdersWidget(container, customPlaceholders)
-   PRT.mainWindowContent.scrollFrame:DoLayout()   
+   PRT.Core.UpdateScrollFrame() 
 end
 
 local newCustomPlaceholder = function()
@@ -87,11 +87,11 @@ local addCustomPlaceholderWidget = function(container, customPlaceholders, idx, 
    end       
 
    customPlaceholderInlineGroup:AddChild(nameEditBox) 
-   customPlaceholderInlineGroup:AddChild(placeholderTypeSelect)    
+   customPlaceholderInlineGroup:AddChild(placeholderTypeSelect)       
+   customPlaceholderInlineGroup:AddChild(namesGroup)
    customPlaceholderInlineGroup:AddChild(addNameButton) 
    customPlaceholderInlineGroup:AddChild(clearEmptyNamesButton)
    customPlaceholderInlineGroup:AddChild(deleteButton) 
-   customPlaceholderInlineGroup:AddChild(namesGroup)
 
    container:AddChild(customPlaceholderInlineGroup)
 end

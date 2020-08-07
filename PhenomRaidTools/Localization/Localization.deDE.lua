@@ -55,8 +55,8 @@ if GetLocale() == "deDE" then
     L["optionsCustomNameDeleteButton"] = "Löschen"
     L["optionsCustomNamesDescription"] = "Hier können Platzhalter definiert werden die dann als Nachrichten-Empfänger genutzt werden können.\n"
     L["optionsCustomNamesSubDescription"] = "Typen:\n"..
-        "Spieler - Nur der erste Spieler, der in der Gruppe gefunden wird, wird eine Nachricht erhalten\n"..
-        "Gruppe - Alle konfigurierten Charaktere werden eine Nachricht erhalten"
+        "|cFF69CCF0Spieler|r - Nur der erste Spieler, der in der Gruppe gefunden wird, wird eine Nachricht erhalten\n"..
+        "|cFF69CCF0Gruppe|r - Alle konfigurierten Charaktere werden eine Nachricht erhalten"
         
     L["optionsCustomNamesAddButton"] = "Neuer Platzhalter"
     L["optionsGeneralVersionHeading"] = "Installierte Versionen"

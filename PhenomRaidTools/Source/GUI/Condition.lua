@@ -43,8 +43,6 @@ PRT.ConditionWidget = function(condition, textID)
 	spellGroup:SetRelativeWidth(1)
 
 	local spellIDEditBox = PRT.EditBox("conditionSpellID", condition.spellID, true)
-	local spellNameLabel = PRT.Label(condition.spellName)
-   spellNameLabel:SetWidth(150)
     
 	local spellIcon = PRT.Icon(condition.spellIcon, condition.spellID)
 	spellIcon:SetHeight(40)	
@@ -89,7 +87,7 @@ PRT.ConditionWidget = function(condition, textID)
 			end
 			
 			spellIcon:SetImage(condition.spellIcon, 0.1, 0.9, 0.1, 0.9)
-			spellNameLabel:SetText(condition.spellName)
+			PRT.AddSpellTooltip(spellIcon, condition.spellID)
 			spellIDEditBox:SetText(condition.spellID)
 			PRT.Core.UpdateTree()
 			widget:ClearFocus()
@@ -116,16 +114,10 @@ PRT.ConditionWidget = function(condition, textID)
 			end	
 			widget:ClearFocus()
 		end)
-
-	eventDropDown:SetRelativeWidth(0.3)
-	spellIDEditBox:SetRelativeWidth(0.3)
-	sourceEditBox:SetRelativeWidth(0.3)
-	targetEditBox:SetRelativeWidth(0.3)
 	
 	conditionGroup:AddChild(eventDropDown)	
 	conditionGroup:AddChild(spellIDEditBox)
-	conditionGroup:AddChild(spellIcon)
-	conditionGroup:AddChild(spellNameLabel)    	
+	conditionGroup:AddChild(spellIcon) 	
 	conditionGroup:AddChild(targetEditBox)
 	conditionGroup:AddChild(sourceEditBox)
 

@@ -35,7 +35,7 @@ PRT.AddOptionWidgets = function(container, profile)
             end
 
             if PRT.mainWindowContent.scrollFrame then
-                PRT.mainWindowContent.scrollFrame:DoLayout()
+                PRT.Core.UpdateScrollFrame()
             end
         end)
 

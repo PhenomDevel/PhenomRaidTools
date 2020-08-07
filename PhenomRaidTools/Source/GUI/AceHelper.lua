@@ -43,7 +43,7 @@ AceHelper.AddNewTab = function(widget, t, item)
 	widget:DoLayout()
     widget:SelectTab(getn(t))
     
-    PRT.mainWindowContent.scrollFrame:DoLayout()
+	 PRT.Core.UpdateScrollFrame()
 end
 
 AceHelper.RemoveTab = function(widget, t, item)
@@ -56,12 +56,29 @@ AceHelper.RemoveTab = function(widget, t, item)
 		widget:ReleaseChildren()
     end
     
-    PRT.mainWindowContent.scrollFrame:DoLayout()
+	 PRT.Core.UpdateScrollFrame()
 end
 
 
 -------------------------------------------------------------------------------
 -- Public API
+
+PRT.AddSpellTooltip = function(widget, spellID)
+	if spellID then
+		widget:SetCallback("OnEnter", 
+			function()
+				GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
+				GameTooltip:SetHyperlink("spell:"..spellID)			
+				GameTooltip:Show()
+			end)
+
+		widget:SetCallback("OnLeave", 
+			function()
+				GameTooltip:Hide()
+			end)
+	end
+	return widget
+end
 
 PRT.SelectFirstTab = function(container, t)		
 	container:SelectTab(nil)
@@ -116,7 +133,7 @@ PRT.TabGroupSelected = function(widget, t, key, itemFunction, emptyItemFunction,
 		widget:AddChild(deleteButton)
 	end
 	
-	PRT.mainWindowContent.scrollFrame:DoLayout()
+	PRT.Core.UpdateScrollFrame()
 end
 
 PRT.Release = function(widget)
@@ -380,20 +397,7 @@ end
 PRT.Icon = function(value, spellID)	
 	local widget = AceGUI:Create("Icon")
 	widget:SetImage(value, 0.1, 0.9, 0.1, 0.9)
-	
-	if spellID then
-		widget:SetCallback("OnEnter", 
-			function()
-				GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
-				GameTooltip:SetHyperlink("spell:"..spellID)			
-				GameTooltip:Show()
-			end)
-
-		widget:SetCallback("OnLeave", 
-			function()
-				GameTooltip:Hide()
-			end)
-	end
+	PRT.AddSpellTooltip(widget, spellID)
  
 	return widget
 end

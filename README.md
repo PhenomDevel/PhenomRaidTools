@@ -93,3 +93,5 @@ I have set up a discord server up and running for every kind of question. Feel f
  - Start / Stop Condition for Power/Health Percentage
  - Trigger disabled based on raid difficulty
  - Create YouTube tutorials for the different trigger types
+ - Implement generic handling of start/stop condition handlers
+ - Implement generic handling of start/stop condition counter handler

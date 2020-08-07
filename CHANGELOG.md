@@ -1,4 +1,17 @@
 ===============================================================================
+# Release 1.6.1.0-ALPHA
+## Bugfixes
+ - Do not scroll to top if not needed
+   - Will still happen on some pages due to needed rerendering
+ - Fixed some locals
+
+## Features
+ - Show health/power percentage start/stop condition on encounter overview
+ - No longer print spell name next to spell icon on condition, because we now have a spell tooltip
+
+
+
+===============================================================================
 # Release 1.6.0.0-ALPHA
 ## Bugfixes
 None

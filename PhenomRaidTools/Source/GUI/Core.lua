@@ -297,6 +297,11 @@ Core.UpdateTree = function()
     PRT.mainWindowContent:SetTree(Core.GenerateTreeByProfile(PRT.db.profile))
 end
 
+Core.UpdateScrollFrame = function()
+    PRT.mainWindowContent.scrollFrame:FixScroll()
+    PRT.mainWindowContent.scrollFrame:DoLayout()
+end
+
 Core.CreateMainWindowContent = function(profile)
     -- Create a sroll frame for the tree group content
     local treeContentScrollFrame = PRT.ScrollFrame()
