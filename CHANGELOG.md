@@ -1,4 +1,14 @@
 ===============================================================================
+# Release 1.5.2.0-ALPHA
+## Bugfixes
+None
+
+## Features
+ - Reorderd options tab group
+ - Added custom placeholder locals
+
+
+===============================================================================
 # Release 1.5.1.0-ALPHA
 ## Bugfixes
 None
