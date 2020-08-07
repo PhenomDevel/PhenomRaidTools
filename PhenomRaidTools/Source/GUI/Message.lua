@@ -65,18 +65,27 @@ Message.GenerateRaidRosterDropdownItems = function()
 		local name = strjoin(", ", unpack(coloredNames))
 		name = "$"..customName.placeholder.." ("..name..")"
 		tinsert(raidRosterItems, { id = "$"..customName.placeholder , name = name})
-		--for nameIdx, name in ipairs(customName.names) do		
-			--if PRT.UnitInParty(name) then
-				
-				--break 
-			--end
-		--end
+	end
+
+	-- Add groups
+	local groupItems = {}
+	for i = 1, 8, 1 do  
+		local identifier = "$group"..i
+		if not tContains(groupItems, identifier) then
+			tinsert(groupItems, identifier)
+		end
+	end
+	
+	for i, v in ipairs(groupItems) do
+		tinsert(raidRosterItems, { id = v, name = v})
 	end
 
 	-- Add default targets (HEALER, TANK etc.)
 	for i, name in ipairs(Message.defaultTargets) do
 		tinsert(raidRosterItems, { id = name, name = name})
 	end
+
+	tinsert(raidRosterItems, { id = "$target", name = "$conditionTarget"})
 	
 	raidRosterItems = table.mergecopy(raidRosterItems, Message.ColoredRaidPlayerNames())
 
@@ -126,7 +135,11 @@ PRT.MessageWidget = function (message, container)
 		function(widget) 
 			local text = widget:GetText()
 			if text ~= "" then
-				message.targets = { strsplit(",", text) }				
+				-- Support space and comma
+				local split1 = {strsplit(" ", text)}
+				local split2 = {strsplit(",", strjoin(",", unpack(split1)))}
+
+				message.targets = PRT.TableRemove(split2, PRT.EmptyString)			
 			else
 				message.targets = {}
 			end

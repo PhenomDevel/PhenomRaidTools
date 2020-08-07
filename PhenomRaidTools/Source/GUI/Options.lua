@@ -10,7 +10,7 @@ PRT.AddOptionWidgets = function(container, profile)
         { value = "difficulties", text = L["optionsTabDifficulties"] },
         { value = "defaults", text = L["optionsTabDefaults"] , disabled = not profile.senderMode},
         { value = "raidRoster", text = L["optionsTabRaidRoster"] , disabled = not profile.senderMode},
-        { value = "customNames", text = L["optionsTabCustomNames"] , disabled = not profile.senderMode},
+        { value = "customPlaceholders", text = L["optionsTabCustomPlaceholders"] , disabled = not profile.senderMode},
         { value = "overlay", text = L["optionsTabOverlays"] }
     }
 
@@ -30,8 +30,9 @@ PRT.AddOptionWidgets = function(container, profile)
                 PRT.AddRaidRosterWidget(container, PRT.db.profile.raidRoster) 
             elseif key == "overlay" then
                 PRT.AddOverlayWidget(container, PRT.db.profile.overlay)
-            elseif key =="customNames" then
-                PRT.AddCustomNamesWidget(container, PRT.db.profile.customNames)
+            elseif key =="customPlaceholders" then
+                -- Merge customNames for backwards compatibility
+                PRT.AddCustomPlaceholdersWidget(container, table.mergemany(PRT.db.profile.customPlaceholders, PRT.db.profile.customNames))
             end
 
             if PRT.mainWindowContent.scrollFrame then

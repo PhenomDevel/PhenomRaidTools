@@ -56,6 +56,10 @@ local defaults =  {
 		customNames = {
 		},
 
+		customPlaceholders = {
+
+		},
+
 		overlay = {
 			receiver = {
 				locked = true,
@@ -146,7 +150,8 @@ local defaults =  {
 			warn = "FFffc526",
 			highlight = "FF69CCF0",
 			disabled = "FFff1100",
-			enabled = "FF00c234"
+			enabled = "FF00c234",
+			success = "FF76ff68"
 		},
 
 		raidRoster = {

@@ -104,6 +104,7 @@ if GetLocale() == "deDE" then
         "- |cFF69CCF0$me|r -> Wird mit dem Namen der aktuellen Charakters ausgetauscht\n"..
         "- |cFF69CCF0$target|r -> Wird mit dem Ziel des Kampfevents ausgetauscht\n"..
         "- |cFF69CCF0$healN|r or |cFF69CCF0$tankN|r or |cFF69CCF0$ddN|r -> N ist eine Zahl zwischen 1-21. Wird mit dem konfigurierten Namen im Raidkader ausgetauscht.\n"..
+        "- |cFF69CCF0$groupN|r -> N ist eine Zahl zwischen 1-8. Wird mit *allen* Spielern der entsprechenden Gruppe ausgetauscht.\n"..
         "- |cFF69CCF0ALL|r |cFF69CCF0HEALER|r |cFF69CCF0TANK|r |cFF69CCF0DAMAGER|r\n"
     L["messageMessage"] = "Nachricht"
     L["messageMessageTooltip"] =          

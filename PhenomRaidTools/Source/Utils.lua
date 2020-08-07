@@ -276,6 +276,19 @@ table.empty = function(t)
     return false
 end
 
+PRT.TableRemove = function(t, pred)
+    for i = #t, 1, -1 do
+        if pred(t[i], i) then
+            table.remove(t, i)
+        end
+    end
+    return t
+end
+
+PRT.EmptyString = function(v)
+    return (v == "" or v == nil)
+end
+
 PRT.FilterEncounterTable = function(encounters, id)
     local value
     if encounters then
@@ -443,30 +456,49 @@ PRT.ExchangeSpellIcons = function(s)
         end)
 end
 
-PRT.ReplaceToken = function(token)
+PRT.PlayerNamesByToken = function(token)
     token = strtrim(token, " ")
-    local playerName = "N/A"
+    local playerNames = {}    
 
     if token == "me" then
-        playerName = UnitName("player")
+        tinsert(playerNames, strtrim(UnitName("player"), " "))
     elseif PRT.db.profile.raidRoster[token] then
-        playerName = PRT.db.profile.raidRoster[token]
+        local name = PRT.db.profile.raidRoster[token]
+        tinsert(playerNames, strtrim(name, " "))
+    elseif string.find(token, "group") then
+        local groupNumber = tonumber(string.match(token, "%d+"))
+
+        for i = 1, 40, 1 do 
+            local name, _, group = GetRaidRosterInfo(i)            
+            if name and group and (groupNumber == group) then
+                tinsert(playerNames, strtrim(name, " "))
+            end
+        end
     elseif PRT.db.profile.customNames then
         for i, customName in ipairs(PRT.db.profile.customNames) do
             if customName.placeholder == token then
                 for nameIdx, name in ipairs(customName.names) do
                     if PRT.UnitInParty(name) or UnitExists(name) then
-                        playerName = name
+                        tinsert(playerNames, strtrim(name, " "))
                         break
                     end
                 end
             end
         end
     else
-        playerName = "N/A"
+        tinsert(playerNames, "N/A")
     end
 
-    return strtrim(playerName, " ")
+    if table.empty(playerNames) then
+        tinsert(playerNames, "N/A")
+    end
+
+    return playerNames
+end
+
+PRT.ReplaceToken = function(token)
+    local playerNames = PRT.PlayerNamesByToken(token)
+    return strjoin(", ", unpack(playerNames))
 end
 
 PRT.ReplacePlayerNameTokens = function(s)
@@ -497,15 +529,9 @@ PRT.PartyNames = function(withServer)
     if withServer then
         myName = PRT.UnitFullName("player")
     end
-    
-    if UnitInRaid("player") then
-        unitString = "raid%d"
-    elseif UnitInParty("player") then
-        unitString = "party%d"
-    end
 
     for i = 1, GetNumGroupMembers() do
-        local index = unitString:format(i)
+        local index = PRT.UnitIDByGroupType(i)
         local playerName = UnitName(index)
         
         if withServer then
@@ -531,4 +557,12 @@ end
 
 PRT.PlayerInParty = function()
     return PRT.UnitInParty("player")
+end
+
+PRT.UnitIDByGroupType = function(idx)
+    if UnitInRaid("player") then
+        return "raid"..idx
+    elseif UnitInParty("player") then
+        return "party"..idx
+    end
 end

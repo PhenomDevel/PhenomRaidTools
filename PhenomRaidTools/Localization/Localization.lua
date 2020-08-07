@@ -12,7 +12,7 @@ L = {
     ["optionsTabDifficulties"] = "Difficulties",
     ["optionsTabDefaults"] = "Trigger defaults",
     ["optionsTabRaidRoster"] = "Raid roster",
-    ["optionsTabCustomNames"] = "Custom Placeholders",
+    ["optionsTabCustomPlaceholders"] = "Custom Placeholders",
     ["optionsTabOverlays"] = "Overlays",
 
     ["optionsReceiverModeHelp"] = 
@@ -46,9 +46,9 @@ L = {
     ["optionsRaidRosterClear"] = "Clear raid roster",
     ["optionsVersionCheck"] = "Perform version check",
 
-    ["optionsCustomNameDeleteButton"] = "Delete",
-    ["optionsCustomNamesDescription"] = "Here you can define custom placeholders which can be used as message targets.",
-    ["optionsCustomNamesAddButton"] = "Add Placeholder",
+    ["optionsCustomPlaceholderDeleteButton"] = "Delete",
+    ["optionsCustomPlaceholdersDescription"] = "Here you can define custom placeholders which can be used as message targets.",
+    ["optionsCustomPlaceholdersAddButton"] = "Add Placeholder",
     ["optionsGeneralVersionHeading"] = "Installed versions",
 
     -- Dungeon Difficulty
@@ -104,6 +104,7 @@ L = {
         "- |cFF69CCF0$me|r -> Will be exchanged with the current characters name\n"..
         "- |cFF69CCF0$target|r -> Will be exchanged with the target of the event\n"..
         "- |cFF69CCF0$healN|r or |cFF69CCF0$tankN|r or |cFF69CCF0$ddN|r -> N is a number between 1-21. Will be exchanged with the configured raid roster name.\n"..
+        "- |cFF69CCF0$groupN|r -> N is a number between 1-8. Will be exchanged with *all* members of the group.\n"..
         "- |cFF69CCF0ALL|r, |cFF69CCF0HEALER|r, |cFF69CCF0TANK|r, |cFF69CCF0DAMAGER|r\n",
     ["messageMessage"] = "Message",
     ["messageMessageTooltip"] =          
@@ -235,7 +236,7 @@ L = {
     ["deleteConfirmationText"] = "Are you sure you want to delete:",
     ["clearRaidRosterConfirmationText"] = "Are you sure you want to clear the raid roster settings?",
     ["cloneConfirmationText"] = "Are you sure you want to clone the trigger:",
-    ["optionsCustomNameDeleteButtonConfirmation"] = "Are you sure you want to delete custom placeholder?",
+    ["optionsCustomPlaceholderDeleteButtonConfirmation"] = "Are you sure you want to delete custom placeholder?",
 
     -- Clone
     ["cloneTimer"] = "Clone Timer",

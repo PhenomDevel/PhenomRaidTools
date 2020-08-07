@@ -3,57 +3,43 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local AceTimer = LibStub("AceTimer-3.0")
 
 local ReceiverOverlay = {
-    messageStack = {},
-    validTargets = {
-        "ALL", 
-        UnitName("player"),
-        GetUnitName("player", true)
-    }
+    messageStack = {}
 }
+
 
 -------------------------------------------------------------------------------
 -- Local Helper
-
-ReceiverOverlay.IsMessageForMe = function(message)
-    if tContains(ReceiverOverlay.validTargets, message.target) or message.target == UnitGroupRolesAssigned("player") then        
-        return true
-    end        
-    
-    return false
-end
 
 ReceiverOverlay.ClearMessageStack = function()
     ReceiverOverlay.messageStack = {}
 end
 
 ReceiverOverlay.AddMessage = function(messageTable)
-    if ReceiverOverlay.IsMessageForMe(messageTable) then
-        messageTable.expirationTime = GetTime() + (messageTable.duration or 5)
-        if messageTable.withSound == true and PRT.db.profile.overlay.receiver.enableSound then
-            local soundFile = messageTable.soundFile   
-            local customWillPlay 
+    messageTable.expirationTime = GetTime() + (messageTable.duration or 5)
+    if messageTable.withSound == true and PRT.db.profile.overlay.receiver.enableSound then
+        local soundFile = messageTable.soundFile   
+        local customWillPlay 
 
-            if soundFile and messageTable.useCustomSound then      
-                customWillPlay, _ = PlaySoundFile(soundFile, "Master")
-            end
-
-            if not customWillPlay then
-                -- Play default soundfile if configured sound does not exist
-                PlaySoundFile(PRT.db.profile.overlay.receiver.soundFile, "Master")
-            end            
+        if soundFile and messageTable.useCustomSound then      
+            customWillPlay, _ = PlaySoundFile(soundFile, "Master")
         end
-        messageTable.message = PRT.PrepareMessageForDisplay(messageTable.message) 
-        local index = #ReceiverOverlay.messageStack+1
-        ReceiverOverlay.messageStack[index] = messageTable
-        AceTimer:ScheduleTimer(
-            function() 
-                ReceiverOverlay.messageStack[index] = ""
-                ReceiverOverlay.UpdateFrame()
-            end, 
-            (messageTable.duration or 5))
 
-        ReceiverOverlay.UpdateFrame()    
+        if not customWillPlay then
+            -- Play default soundfile if configured sound does not exist
+            PlaySoundFile(PRT.db.profile.overlay.receiver.soundFile, "Master")
+        end            
     end
+    messageTable.message = PRT.PrepareMessageForDisplay(messageTable.message) 
+    local index = #ReceiverOverlay.messageStack+1
+    ReceiverOverlay.messageStack[index] = messageTable
+    AceTimer:ScheduleTimer(
+        function() 
+            ReceiverOverlay.messageStack[index] = ""
+            ReceiverOverlay.UpdateFrame()
+        end, 
+        (messageTable.duration or 5))
+
+    ReceiverOverlay.UpdateFrame()  
 end
 
 ReceiverOverlay.ShowPlaceholder = function()

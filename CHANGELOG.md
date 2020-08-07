@@ -1,4 +1,18 @@
 ===============================================================================
+# Release 1.5.0.0-ALPHA
+## Bugfixes
+ - Do not show empty triggers on encounter overview
+ - Better handling of messages not ment for the player
+
+## Features
+ - Be able to use $group1-8 as placeholder in message targets (will be exchanged with the player names dynamically)
+ - Add more options to target select for messages
+ - Support `space` as delimiter in message targets for more stability
+ - Renamed `customNames` to `customPlaceholders` 
+   - This change was made in preparation to add more placeholder types like `group` (all players will be messaged instead of one)
+
+
+===============================================================================
 # Release 1.4.2.3-ALPHA
 ## Bugfixes
  - Do not jump to general settings after version check

@@ -90,3 +90,6 @@ I have set up a discord server up and running for every kind of question. Feel f
  - Add small descriptions of triggers to the overview to help ppl use them
  - Create YouTube tutorials for the different trigger types
  - Translate encounter overview strings
+ - Add dropdown for custom placeholders to change type (player alts / group)
+ - Be able to export encounter as exorsus note? 
+ - Start / Stop Condition for Power/Health Percentage

@@ -79,7 +79,7 @@ local addOverviewHeader = function(container, header, enabled)
     if not enabled then
         coloredText = PRT.ColoredString(header.." (disabled)", PRT.db.profile.colors.disabled)
     else
-        coloredText = PRT.ColoredString(header, PRT.db.profile.colors.debug)
+        coloredText = PRT.ColoredString(header, PRT.db.profile.colors.success)
     end
 
     local headerLabel = PRT.Label(coloredText, 16)
@@ -169,21 +169,27 @@ Encounter.OverviewWidget = function(encounter)
     if not table.empty(encounter.Timers) then        
         for i, v in ipairs(encounter.Timers) do
             addTimerOverviewEntry(timerGroup, v)
-        end        
+        end   
+        
+        overviewGroup:AddChild(timerGroup)     
     end
 
     -- Rotations
     if not table.empty(encounter.Rotations) then        
         for i, v in ipairs(encounter.Rotations) do
             addRotationOverviewEntry(rotationsGroup, v)
-        end        
+        end  
+        
+        overviewGroup:AddChild(rotationsGroup)
     end
 
     -- Health Percentages
     if not table.empty(encounter.HealthPercentages) then        
         for i, v in ipairs(encounter.HealthPercentages) do
             addPercentageOverviewEntry(healthPercentageGroup, "HP", v)
-        end        
+        end       
+        
+        overviewGroup:AddChild(healthPercentageGroup)
     end
 
     -- Power Percentages
@@ -191,13 +197,10 @@ Encounter.OverviewWidget = function(encounter)
         for i, v in ipairs(encounter.PowerPercentages) do
             addPercentageOverviewEntry(powerPercentageGroup, "POWER", v)
         end        
+        
+        overviewGroup:AddChild(powerPercentageGroup)    
     end
-
-    overviewGroup:AddChild(timerGroup)
-    overviewGroup:AddChild(rotationsGroup)
-    overviewGroup:AddChild(healthPercentageGroup)
-    overviewGroup:AddChild(powerPercentageGroup)
-
+            
     return overviewGroup
 end
 

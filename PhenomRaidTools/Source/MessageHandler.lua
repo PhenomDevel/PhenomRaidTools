@@ -2,14 +2,17 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 local AceComm = LibStub("AceComm-3.0")
 
-local MessageHandler = {}
-
-local validTargets = {    
-    "ALL", 
-    "HEALER",
-    "TANK",
-    "DAMAGER"
+local MessageHandler = {
+    validTargets = {
+        "ALL", 
+        "DAMAGER",
+        "HEALER",
+        "TANK",
+        UnitName("player"),
+        GetUnitName("player", true)
+    }
 }
+
 
 -------------------------------------------------------------------------------
 -- Local Helper
@@ -32,24 +35,37 @@ MessageHandler.MessageToReceiverMessage = function(message)
     return target.."?"..spellID.."#"..duration.."&"..message.."~"..withSound
 end
 
+MessageHandler.ExpandMessageTargets = function(message)
+    local splittetTargets = {}
+    
+    for i, v in ipairs(message.targets) do 
+        if v == "$target" then
+            -- Set event target as message target
+            tinsert(splittetTargets, { message.eventTarget }) 
+        else
+            local names = PRT.ReplacePlayerNameTokens(v)
+            -- Try to replace placeholder tokens otherwise
+            tinsert(splittetTargets, { strsplit(",", names) })
+        end
+    end
+
+    -- TODO: Distinct targets?
+    return table.mergemany(unpack(splittetTargets))
+end
+
 MessageHandler.ExecuteMessageAction = function(message)
-    for i, target in ipairs(message.targets) do
+    
+    local messageTargets = MessageHandler.ExpandMessageTargets(message)
+
+    for i, target in ipairs(messageTargets) do
         local targetMessage = PRT.CopyTable(message)
         targetMessage.target = strtrim(target, " ")
         targetMessage.message = PRT.ReplacePlayerNameTokens(targetMessage.message)
 
         -- Cleanup unused fields
-        targetMessage.targets = nil                
+        targetMessage.targets = nil 
 
-        if targetMessage.target == "$target" then
-            -- Set event target as message target
-            targetMessage.target = message.eventTarget  
-        else
-            -- Try to replace placeholder tokens otherwise
-            targetMessage.target = PRT.ReplacePlayerNameTokens(targetMessage.target)
-        end
-        
-        if UnitExists(targetMessage.target) or tContains(validTargets, targetMessage.target) then
+        if UnitExists(targetMessage.target) or tContains(MessageHandler.validTargets, targetMessage.target) then
             if not PRT.db.profile.weakAuraMode then
                 PRT.Debug("Sending new message to", targetMessage.target)
                 targetMessage.sender = PRT.db.profile.myName
@@ -73,9 +89,20 @@ MessageHandler.ExecuteMessageAction = function(message)
                 MessageHandler.SendMessageToReceiver(weakAuraReceiverMessage) 
             end
         else
-            PRT.Error("Target", targetMessage.target, "does not exist. Skipping message.")
+            -- Don't spam chat if a configured user is not in the raid. We expect those to happen sometimes
+            if targetMessage.target ~= "N/A" then
+                PRT.Error("Target", targetMessage.target, "does not exist. Skipping message.")
+            end
         end        
     end    
+end
+
+MessageHandler.IsMessageForMe = function(message)
+    if tContains(MessageHandler.validTargets, message.target) or message.target == UnitGroupRolesAssigned("player") then        
+        return true
+    else 
+        return false
+    end
 end
 
 function PRT:OnAddonMessage(message)
@@ -83,16 +110,22 @@ function PRT:OnAddonMessage(message)
         if UnitAffectingCombat("player") then
             if not PRT.db.profile.weakAuraMode then
                 local worked, messageTable = PRT.StringToTable(message)
-                if PRT.db.profile.receiverMode then 
+                
+                if PRT.db.profile.receiverMode then                     
                     if (messageTable.sender == PRT.db.profile.receiveMessagesFrom or 
                         PRT.db.profile.receiveMessagesFrom == "$me" or
                         PRT.db.profile.receiveMessagesFrom == nil or
                         PRT.db.profile.receiveMessagesFrom == "") then
-                        PRT.Debug("Received message from", PRT.ClassColoredName(messageTable.sender))
-                        PRT.ReceiverOverlay.AddMessage(messageTable)
-                    else
-                        PRT.Debug("We received a message from", PRT.ClassColoredName(messageTable.sender), "and only accept messages from", PRT.ClassColoredName(PRT.db.profile.receiveMessagesFrom), "therefore skipping the message.")
+
+                        if MessageHandler.IsMessageForMe(messageTable) then
+                            PRT.Debug("Received message from", PRT.ClassColoredName(messageTable.sender))
+                            PRT.ReceiverOverlay.AddMessage(messageTable)
+                        else
+                            PRT.Debug("Received a message from", PRT.ClassColoredName(messageTable.sender), "but it was not ment for you. Ignoring message.")
+                        end
                     end
+                else
+                    PRT.Debug("Received a message from", PRT.ClassColoredName(messageTable.sender), "and only accept messages from", PRT.ClassColoredName(PRT.db.profile.receiveMessagesFrom), "therefore skipping the message.")
                 end
             end
         end
