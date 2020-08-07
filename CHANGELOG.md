@@ -4,8 +4,8 @@
 None
 
 ## Features
- - Add possibility to add start condition for health and percentage triggers
- - Add possibility to add stop condition for health and percentage triggers
+ - Add possibility to add start condition for health and power triggers
+ - Add possibility to add stop condition for health and power triggers
 
 
 ===============================================================================
