@@ -1,9 +1,9 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 local SenderOverlay = {
-    timerColor = "ff009dff",
-    rotationColor = "ff80ff00",   
-    disabledColor = "FFb30c00",
+    timerColor = "FFffc526",
+    rotationColor = "FF76ff68",   
+    disabledColor = "FFed3939",
     inactiveColor = "FF8f8f8f"
 }
 
@@ -85,10 +85,10 @@ SenderOverlay.UpdateFrame = function(encounter, options)
                     if rotation.enabled ~= true then
                         rotationString = PRT.ColoredString(rotationString.." - disabled|n", SenderOverlay.disabledColor)
                     else
-                        local isRotationActive = PRT.IsRotationActive(rotation)
+                        local isRotationActive = rotation.active or nil
                         
                         if not isRotationActive then
-                            rotationString = PRT.ColoredString(rotationString.." - inactive|n", SenderOverlay.disabledColor)
+                            rotationString = PRT.ColoredString(rotationString.." - inactive|n", SenderOverlay.inactiveColor)
                         elseif isRotationActive and rotation.counter then
                             rotationString = rotationString.." - "..PRT.ColoredString(rotation.counter, SenderOverlay.rotationColor).."|n"
                         else
