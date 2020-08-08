@@ -1,7 +1,7 @@
 ===============================================================================
 # Release 1.6.2.0-ALPHA
 ## Bugfixes
-None
+ - Make sure sender overlay uses correct field to determine of trigger is inactive
 
 ## Features
  - Some UI improvements
