@@ -38,7 +38,7 @@ Timer.TimingWidget = function(timing, container)
     container:AddChild(messagesTabGroup)
 end
 
-Timer.TimerWidget = function(timer, container)    
+Timer.TimerWidget = function(timer, container, deleteButton, cloneButton)    
     local timerOptionsGroup = PRT.InlineGroup("timerOptionsHeading")
     timerOptionsGroup:SetLayout("Flow")
 
@@ -80,6 +80,8 @@ Timer.TimerWidget = function(timer, container)
     timerOptionsGroup:AddChild(enabledCheckbox)
     timerOptionsGroup:AddChild(nameEditBox)
     timerOptionsGroup:AddChild(triggerAtOccurenceSlider)
+    timerOptionsGroup:AddChild(cloneButton)
+    timerOptionsGroup:AddChild(deleteButton)    
     container:AddChild(timerOptionsGroup)
     container:AddChild(startConditionGroup)
     
@@ -121,7 +123,5 @@ PRT.AddTimerWidget = function(container, profile, encounterID, triggerName)
     local deleteButton = PRT.NewTriggerDeleteButton(container, timers, timerIndex, "deleteTimer", timer.name)
     local cloneButton = PRT.NewCloneButton(container, timers, timerIndex, "cloneTimer", timer.name)
 
-    Timer.TimerWidget(timer, container)    
-    container:AddChild(deleteButton)
-    container:AddChild(cloneButton)
+    Timer.TimerWidget(timer, container, deleteButton, cloneButton)        
 end

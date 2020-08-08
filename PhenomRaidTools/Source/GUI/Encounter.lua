@@ -77,7 +77,7 @@ local addOverviewHeader = function(container, header, enabled)
     local coloredText = ""
 
     if not enabled then
-        coloredText = PRT.ColoredString(header.." (disabled)", PRT.db.profile.colors.disabled)
+        coloredText = PRT.ColoredString(header..L["encounterOverviewDisabled"], PRT.db.profile.colors.disabled)
     else
         coloredText = PRT.ColoredString(header, PRT.db.profile.colors.success)
     end
@@ -103,7 +103,7 @@ local addOverviewEmptyLine = function(container)
 end
 
 local addStringByCondition = function(container, name, condition)
-    local conditionString = name.." - "..PRT.HighlightString(condition.event).." of "
+    local conditionString = name.." "..PRT.HighlightString(condition.event)..L["encounterOverviewOf"].." "
 
     if condition.spellName and condition.spellID then
         local _, _, texture = GetSpellInfo(condition.spellID)
@@ -118,12 +118,12 @@ end
 local addTimerOverviewEntry = function(container, timer)
     addOverviewHeader(container, timer.name, timer.enabled)
     
-    addStringByCondition(container, "Start timer on", timer.startCondition)
+    addStringByCondition(container, L["encounterOverviewStartTimerOn"], timer.startCondition)
 
     if timer.hasStopCondition then
-        addStringByCondition(container, "Stop timer on", timer.stopCondition)
+        addStringByCondition(container, L["encounterOverviewStopTimerOn"], timer.stopCondition)
     end
-    addOverviewLine(container, "Timings - "..PRT.HighlightString(#timer.timings))
+    addOverviewLine(container, L["encounterOverviewTimings"]..PRT.HighlightString(#timer.timings))
     addOverviewEmptyLine(container)
 end
 
@@ -131,16 +131,16 @@ local addRotationOverviewEntry = function(container, rotation)
     addOverviewHeader(container, rotation.name, rotation.enabled)
 
     if rotation.hasStartCondition then
-        addStringByCondition(container, "Start tracking on", rotation.startCondition)
+        addStringByCondition(container, L["encounterOverviewStartTriggerOn"], rotation.startCondition)
     end
 
     if rotation.hasStopCondition then
-        addStringByCondition(container, "Stop tracking on", rotation.stopCondition)
+        addStringByCondition(container, L["encounterOverviewStopTriggerOn"], rotation.stopCondition)
     end
 
-    addStringByCondition(container, "Trigger on", rotation.triggerCondition)
+    addStringByCondition(container, L["encounterOverviewTriggerOn"], rotation.triggerCondition)
 
-    addOverviewLine(container, "Entries - "..PRT.HighlightString(#rotation.entries))
+    addOverviewLine(container, L["encounterOverviewEntries"]..PRT.HighlightString(#rotation.entries))
     addOverviewEmptyLine(container)
 end
 
@@ -148,15 +148,15 @@ local addPercentageOverviewEntry = function(container, prefix, percentage)
     addOverviewHeader(container, percentage.name, percentage.enabled)
 
     if percentage.hasStartCondition then
-        addStringByCondition(container, "Start tracking on", percentage.startCondition)
+        addStringByCondition(container, L["encounterOverviewStartTriggerOn"], percentage.startCondition)
     end
 
     if percentage.hasStopCondition then
-        addStringByCondition(container, "Stop tracking on", percentage.stopCondition)
+        addStringByCondition(container, L["encounterOverviewStopTriggerOn"], percentage.stopCondition)
     end
 
     for i, value in ipairs(percentage.values) do
-        addOverviewLine(container, "Trigger on "..prefix.." "..value.operator.." "..value.value)
+        addOverviewLine(container, L["encounterOverviewTriggerOn"].." "..prefix.." "..value.operator.." "..value.value)
     end
 
     addOverviewEmptyLine(container)
@@ -194,7 +194,7 @@ Encounter.OverviewWidget = function(encounter)
     -- Health Percentages
     if not table.empty(encounter.HealthPercentages) then        
         for i, v in ipairs(encounter.HealthPercentages) do
-            addPercentageOverviewEntry(healthPercentageGroup, "HP", v)
+            addPercentageOverviewEntry(healthPercentageGroup, L["encounterOverviewPercentagePrefixHealth"], v)
         end       
         
         overviewGroup:AddChild(healthPercentageGroup)
@@ -203,7 +203,7 @@ Encounter.OverviewWidget = function(encounter)
     -- Power Percentages
     if not table.empty(encounter.PowerPercentages) then        
         for i, v in ipairs(encounter.PowerPercentages) do
-            addPercentageOverviewEntry(powerPercentageGroup, "POWER", v)
+            addPercentageOverviewEntry(powerPercentageGroup, L["encounterOverviewPercentagePrefixPower"], v)
         end        
         
         overviewGroup:AddChild(powerPercentageGroup)    

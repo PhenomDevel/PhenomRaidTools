@@ -51,13 +51,13 @@ L = {
     ["optionsCustomPlaceholderType"] = "Type",
     ["optionsCustomPlaceholderName"] = "Name",
     ["optionsCustomPlaceholderRemoveEmptyNames"] = "Remove empty names",
-    ["optionsCustomPlaceholderAddNameButton"] = "Add name",
-    ["optionsCustomPlaceholderDeleteButton"] = "Delete",    
+    ["optionsCustomPlaceholderAddNameButton"] = "|cFF76ff68Add name|r",
+    ["optionsCustomPlaceholderDeleteButton"] = "|cFFed3939Delete|r",    
     ["optionsCustomPlaceholdersDescription"] = "Here you can define custom placeholders which can be used as message targets.",
     ["optionsCustomPlaceholdersSubDescription"] = "Types:\n"..
         "|cFF69CCF0Player|r - Only the first player found within the group will be messaged.\n"..
         "|cFF69CCF0Group|r - All configured players will be messaged.",
-    ["optionsCustomPlaceholdersAddButton"] = "Add Placeholder",
+    ["optionsCustomPlaceholdersAddButton"] = "|cFF76ff68Add Placeholder|r",
     ["optionsGeneralVersionHeading"] = "Installed versions",
 
     -- Dungeon Difficulty
@@ -104,7 +104,7 @@ L = {
     -- Messages
     ["messagePreview"] = "Preview: ",
     ["messageHeading"] = "Messages",
-    ["messageDeleteButton"] = "Delete Message",
+    ["messageDeleteButton"] = "|cFFed3939Delete Message|r",
     ["messageWithSound"] = "Activate sound on receiver",
     ["messageTargets"] = "Targets",
     ["messageTargetsTooltip"] =
@@ -135,7 +135,7 @@ L = {
     ["rotationEnabled"] = "Enabled",
     ["rotationHeading"] = "Rotations",
     ["rotationName"] = "Name",
-    ["rotationDeleteButton"] = "Delete Rotation",
+    ["rotationDeleteButton"] = "|cFFed3939Delete Rotation|r",
     ["rotationShouldRestart"] = "Should trigger restart?",
     ["rotationIgnoreAfterActivation"] = "Ignore after activation?",
     ["rotationIgnoreDuration"] = "Ignore trigger for (s)",
@@ -145,11 +145,11 @@ L = {
 
     -- RotationEntries
     ["rotationEntryHeading"] = "Rotation Entries",
-    ["rotationEntryDeleteButton"] = "Delete Rotation Entry",
+    ["rotationEntryDeleteButton"] = "|cFFed3939Delete Rotation Entry|r",
 
     -- Percentages
     ["percentageEnabled"] = "Enabled",
-    ["percentageDeleteButton"] = "Delete Percentage",
+    ["percentageDeleteButton"] = "|cFFed3939Delete Percentage|r",
     ["percentageName"] = "Name",
     ["percentageUnitID"] = "Unit-ID",
     ["percentageUnitIDTooltip"] = "Unit-ID which percentage should be tracked (|cFF69CCF0boss1|r, |cFF69CCF0player|r, |cFF69CCF0PlayerName|r etc.)",
@@ -160,7 +160,7 @@ L = {
     ["percentageCheckAgain"] = "Check multiple times",
 
     -- Percentage Entries
-    ["percentageEntryDeleteButton"] = "Delete Percentage Entry",
+    ["percentageEntryDeleteButton"] = "|cFFed3939Delete Percentage Entry|r",
     ["percentageEntryPercent"] = "Percentage (%)",
     ["percentageEntryOperatorDropdown"] = "Operator",
     ["percentageEntryOptionsHeading"] = "Percentage Entry Options",
@@ -173,7 +173,7 @@ L = {
     ["encounterID"] = "Encounter-ID",
     ["encounterName"] = "Name",
     ["encounterSelectDropdown"] = "Select Encounter",
-    ["encounterDeleteButton"] = "Delete Encounter",
+    ["encounterDeleteButton"] = "|cFFed3939Delete Encounter|r",
     ["encounterOptionsHeading"] = "Encounter Options",
     ["encounterEnabled"] = "Enabled",
     ["encounterOverview"] = "Trigger Overview",
@@ -181,6 +181,20 @@ L = {
     ["rotationOverview"] = "Rotations",
     ["healthPercentageOverview"] = "Health Percentages",
     ["powerPercentageOverview"] = "Power Percentages",
+
+    
+    ["encounterOverviewDisabled"] = "disabled",
+    ["encounterOverviewOf"] = "of",
+    ["encounterOverviewStartTimerOn"] = "Start timer on",
+    ["encounterOverviewStopTimerOn"] = "Stop timer on",
+    ["encounterOverviewTimings"] = "Timings", 
+    ["encounterOverviewStartTriggerOn"] = "Start trigger on",
+    ["encounterOverviewStopTriggerOn"] = "Stop trigger on",
+    ["encounterOverviewTriggerOn"] = "Trigger on",
+    ["encounterOverviewEntries"] = "Entries",
+    ["encounterOverviewPercentagePrefixHealth"] = "Health",
+    ["encounterOverviewPercentagePrefixPower"] = "Power",
+
 
     -- Conditions
     ["conditionEvent"] = "Event",
@@ -202,7 +216,7 @@ L = {
     -- Timers
     ["timerEnabled"] = "Enabled",
     ["timerName"] = "Name",
-    ["timerDeleteButton"] = "Delete Timer",
+    ["timerDeleteButton"] = "|cFFed3939Delete Timer|r",
     ["timerOptionsHeading"] = "Timer Options",
     ["timerOptionsTriggerAtOccurence"] = "Trigger at occurence",
 
@@ -210,7 +224,7 @@ L = {
     ["timingOptions"] = "Timing Options",
     ["timingSeconds"] = "Trigger Times",
     ["timingSecondsTooltip"] = "Times at which this trigger should be executed (comma separated list of seconds e.g. 1, 5, 20)",
-    ["timingDeleteButton"] = "Delete Timing",
+    ["timingDeleteButton"] = "|cFFed3939Delete Timing|r",
     ["timingOptionsHeading"] = "Options",
 
 
@@ -223,17 +237,17 @@ L = {
     ["overlayLocked"] = "Locked",
     ["overlayEnableSound"] = "Enable sounds",
 
-    ["deleteTimer"] = "Delete Timer",
-    ["deleteRotation"] = "Delete Rotation",
-    ["deletePercentage"] = "Delete Percentage",
-    ["deleteEncounter"] = "Delete Encounter",
+    ["deleteTimer"] = "|cFFed3939Delete Timer|r",
+    ["deleteRotation"] = "|cFFed3939Delete Rotation|r",
+    ["deletePercentage"] = "|cFFed3939Delete Percentage|r",
+    ["deleteEncounter"] = "|cFFed3939Delete Encounter|r",
     ["exportEncounter"] = "Export Encounter",
     ["importEncounter"] = "Import Encounter",
-    ["newEncounter"] = "New Encounter",
-    ["newTimer"] = "New Timer",
-    ["newRotation"] = "New Rotation",
-    ["newHealthPercentage"] = "New Health Percentage",
-    ["newPowerPercentage"] = "New Power Percentage",
+    ["newEncounter"] = "|cFF76ff68New Encounter|r",
+    ["newTimer"] = "|cFF76ff68New Timer|r",
+    ["newRotation"] = "|cFF76ff68New Rotation|r",
+    ["newHealthPercentage"] = "|cFF76ff68New Health Percentage|r",
+    ["newPowerPercentage"] = "|cFF76ff68New Power Percentage|r",
 
     -- Confirmation
     ["confirmationWindow"] = "Confirmation",

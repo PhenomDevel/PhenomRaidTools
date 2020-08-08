@@ -146,7 +146,7 @@ local defaults =  {
 			info = "FF6bfdff", 
 			warn = "FFffc526",
 			highlight = "FF69CCF0",
-			disabled = "FFff1100",
+			disabled = "FFed3939",
 			enabled = "FF00c234",
 			success = "FF76ff68"
 		},

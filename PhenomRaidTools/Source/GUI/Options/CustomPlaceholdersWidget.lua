@@ -108,10 +108,6 @@ PRT.AddCustomPlaceholdersWidget = function(container, customPlaceholders)
    container:AddChild(description)
    container:AddChild(subDescription)
 
-   for idx, customPlaceholder in ipairs(customPlaceholders) do
-      addCustomPlaceholderWidget(container, customPlaceholders, idx, customPlaceholder)
-   end
-
    local addButton = PRT.Button("optionsCustomPlaceholdersAddButton")
    addButton:SetCallback("OnClick", 
       function()
@@ -120,4 +116,8 @@ PRT.AddCustomPlaceholdersWidget = function(container, customPlaceholders)
       end
    )
    container:AddChild(addButton)
+
+   for idx, customPlaceholder in ipairs(customPlaceholders) do
+      addCustomPlaceholderWidget(container, customPlaceholders, idx, customPlaceholder)
+   end
 end

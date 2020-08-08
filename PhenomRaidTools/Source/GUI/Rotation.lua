@@ -20,7 +20,7 @@ Rotation.RotationEntryWidget = function(entry, container)
     container:AddChild(messagesTabGroup)
 end
 
-Rotation.RotationWidget = function(rotation, container)
+Rotation.RotationWidget = function(rotation, container, deleteButton, cloneButton)
     local rotationOptionsGroup = PRT.InlineGroup("rotationOptionsHeading")
     rotationOptionsGroup:SetLayout("Flow")
 
@@ -78,6 +78,8 @@ Rotation.RotationWidget = function(rotation, container)
     rotationOptionsGroup:AddChild(ignoreAfterActivationCheckBox)
     rotationOptionsGroup:AddChild(ignoreDurationSlider)    
     rotationOptionsGroup:AddChild(shouldRestartCheckBox)
+    rotationOptionsGroup:AddChild(cloneButton)
+    rotationOptionsGroup:AddChild(deleteButton)    
     container:AddChild(rotationOptionsGroup)
     container:AddChild(triggerConditionGroup)    
     PRT.MaybeAddStartCondition(container, rotation)
@@ -117,7 +119,7 @@ PRT.AddRotationWidget = function(container, profile, encounterID, triggerName)
     local deleteButton = PRT.NewTriggerDeleteButton(container, rotations, rotationIndex, "deleteRotation", rotation.name)
     local cloneButton = PRT.NewCloneButton(container, rotations, rotationIndex, "cloneRotation", rotation.name)
 
-    Rotation.RotationWidget(rotation, container)
-    container:AddChild(deleteButton)
-    container:AddChild(cloneButton)
+    Rotation.RotationWidget(rotation, container, deleteButton, cloneButton)
+    --container:AddChild(deleteButton)
+    --container:AddChild(cloneButton)
 end

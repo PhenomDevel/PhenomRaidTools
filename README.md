@@ -96,3 +96,5 @@ I have set up a discord server up and running for every kind of question. Feel f
  - Implement generic handling of start/stop condition counter handler
  - Actually make transparent group transparent when using elvui
  - Distinct targets on messages so everyone only gets the messages once... No need to send multiple times (flag?)
+ - Add images to readme 
+ - Overhaul readme in general and add all features on the list

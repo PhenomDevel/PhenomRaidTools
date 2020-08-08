@@ -58,7 +58,7 @@ Percentage.PercentageEntryWidget = function(entry, container)
     container:AddChild(messagesTabGroup)
 end
 
-Percentage.PercentageWidget = function(percentage, container)
+Percentage.PercentageWidget = function(percentage, container, deleteButton, cloneButton)
     local percentageOptionsGroup = PRT.InlineGroup("percentageOptionsHeading")
 
     local enabledCheckbox = PRT.CheckBox("percentageEnabled", percentage.enabled)
@@ -88,7 +88,6 @@ Percentage.PercentageWidget = function(percentage, container)
 			widget:ClearFocus()
         end)
     
-    checkAgainCheckBox:SetRelativeWidth(1)
     checkAgainCheckBox:SetCallback("OnValueChanged", 
         function(widget) 
             local value = widget:GetValue() 
@@ -116,8 +115,10 @@ Percentage.PercentageWidget = function(percentage, container)
     percentageOptionsGroup:AddChild(nameEditBox)
     percentageOptionsGroup:AddChild(unitIDEditBox)
     percentageOptionsGroup:AddChild(checkAgainCheckBox)
-    percentageOptionsGroup:AddChild(checkAgainAfterSlider)
-    
+    percentageOptionsGroup:AddChild(checkAgainAfterSlider)    
+    percentageOptionsGroup:AddChild(cloneButton)
+    percentageOptionsGroup:AddChild(deleteButton)
+
     container:AddChild(percentageOptionsGroup)
     PRT.MaybeAddStartCondition(container, percentage)
     PRT.MaybeAddStopCondition(container, percentage) 
@@ -156,9 +157,7 @@ PRT.AddPowerPercentageWidget = function(container, profile, encounterID, trigger
     local deleteButton = PRT.NewTriggerDeleteButton(container, percentages, percentageIndex, "deletePercentage", percentage.name)
     local cloneButton = PRT.NewCloneButton(container, percentages, percentageIndex, "clonePercentage", percentage.name)
 
-    Percentage.PercentageWidget(percentage, container)
-    container:AddChild(deleteButton)
-    container:AddChild(cloneButton)
+    Percentage.PercentageWidget(percentage, container, deleteButton, cloneButton)
 end
 
 
@@ -193,7 +192,5 @@ PRT.AddHealthPercentageWidget = function(container, profile, encounterID, trigge
     local deleteButton = PRT.NewTriggerDeleteButton(container, percentages, percentageIndex, "deletePercentage", percentage.name)
     local cloneButton = PRT.NewCloneButton(container, percentages, percentageIndex, "clonePercentage", percentage.name)
 
-    Percentage.PercentageWidget(percentage, container)
-    container:AddChild(deleteButton)
-    container:AddChild(cloneButton)
+    Percentage.PercentageWidget(percentage, container, deleteButton, cloneButton)
 end

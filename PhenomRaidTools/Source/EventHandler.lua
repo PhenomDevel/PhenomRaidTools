@@ -130,7 +130,7 @@ function PRT:PLAYER_REGEN_DISABLED(event)
 			if encounter.enabled then
 				EventHandler.StartEncounter(event, encounter.id, encounter.name)
 			else
-				PRT.Warn("The selected encounter is disabled. Please enabled it before testing.")
+				PRT.Warn("The selected encounter is disabled. Please enable it before testing.")
 			end
 		else
 			PRT.Warn("You are in test mode and have no encounter selected.")

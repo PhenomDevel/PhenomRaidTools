@@ -52,13 +52,13 @@ if GetLocale() == "deDE" then
     L["optionsCustomPlaceholderName"] = "Name"
     L["optionsCustomPlaceholderRemoveEmptyNames"] = "Leere Namen entfernen"
     L["optionsCustomPlaceholderAddNameButton"] = "Name hinzufügen"
-    L["optionsCustomNameDeleteButton"] = "Löschen"
+    L["optionsCustomNameDeleteButton"] = "|cFFed3939Entfernen|r"
     L["optionsCustomNamesDescription"] = "Hier können Platzhalter definiert werden die dann als Nachrichten-Empfänger genutzt werden können.\n"
     L["optionsCustomNamesSubDescription"] = "Typen:\n"..
         "|cFF69CCF0Spieler|r - Nur der erste Spieler, der in der Gruppe gefunden wird, wird eine Nachricht erhalten\n"..
         "|cFF69CCF0Gruppe|r - Alle konfigurierten Charaktere werden eine Nachricht erhalten"
         
-    L["optionsCustomNamesAddButton"] = "Neuer Platzhalter"
+    L["optionsCustomNamesAddButton"] = "|cFF76ff68Neuer Platzhalter|r"
     L["optionsGeneralVersionHeading"] = "Installierte Versionen"
 
     -- Dungeon Difficulty
@@ -105,7 +105,7 @@ if GetLocale() == "deDE" then
     -- Messages
     L["messagePreview"] = "Vorschau: "
     L["messageHeading"] = "Nachrichten"
-    L["messageDeleteButton"] = "Nachricht löschen"
+    L["messageDeleteButton"] = "|cFFed3939Nachricht entfernen|r"
     L["messageWithSound"] = "Sound für Empfänger aktivieren"
     L["messageTargets"] = "Empfänger"
     L["messageTargetsTooltip"] =
@@ -135,7 +135,7 @@ if GetLocale() == "deDE" then
     L["rotationEnabled"] = "Aktiviert"
     L["rotationHeading"] = "Rotationen"
     L["rotationName"] = "Name"
-    L["rotationDeleteButton"] = "Rotation löschen"
+    L["rotationDeleteButton"] = "|cFFed3939Rotation entfernen|r"
     L["rotationShouldRestart"] = "Soll der Auslöser neustarten?"
     L["rotationIgnoreAfterActivation"] = "Nach der Aktivierung ignorieren"
     L["rotationIgnoreDuration"] = "Ignorieren für (s)"
@@ -144,11 +144,11 @@ if GetLocale() == "deDE" then
 
     -- RotationEntries
     L["rotationEntryHeading"] = "Rotationseinträge"
-    L["rotationEntryDeleteButton"] = "Eintrag löschen"
+    L["rotationEntryDeleteButton"] = "|cFFed3939Eintrag entfernen|r"
 
     -- Percentages
     L["percentageEnabled"] = "Aktiviert"
-    L["percentageDeleteButton"] = "Prozent löschen"
+    L["percentageDeleteButton"] = "|cFFed3939Prozent entfernen|r"
     L["percentageName"] = "Name"
     L["percentageUnitID"] = "Unit-ID"
     L["percentageUnitIDTooltip"] = "Unit-ID welche geprüft werden soll (|cFF69CCF0boss1|r |cFF69CCF0player|r |cFF69CCF0PlayerName|r etc.)"
@@ -157,7 +157,7 @@ if GetLocale() == "deDE" then
     L["percentageCheckAgainAfter"] = "Nochmal prüfen nach (s)"
 
     -- Percentage Entries
-    L["percentageEntryDeleteButton"] = "Prozenteintrag löschen"
+    L["percentageEntryDeleteButton"] = "|cFFed3939Prozenteintrag entfernen|r"
     L["percentageEntryPercent"] = "Prozent"
     L["percentageEntryOperatorDropdown"] = "Operator"
     L["percentageEntryOptionsHeading"] = "Optionen"
@@ -170,7 +170,7 @@ if GetLocale() == "deDE" then
     L["encounterID"] = "Boss-ID"
     L["encounterName"] = "Name"
     L["encounterSelectDropdown"] = "Boss auswählen"
-    L["encounterDeleteButton"] = "Boss löschen"
+    L["encounterDeleteButton"] = "|cFFed3939Boss entfernen|r"
     L["encounterOptionsHeading"] = "Boss Optionen"
     L["encounterEnabled"] = "Aktiviert?"
     L["encounterOverview"] = "Übersicht der Auslöser"
@@ -178,6 +178,16 @@ if GetLocale() == "deDE" then
     L["rotationOverview"] = "Rotationen"
     L["healthPercentageOverview"] = "Lebens-Prozente"
     L["powerPercentageOverview"] = "Energie-Prozente"
+
+    L["encounterOverviewDisabled"] = "deaktiviert"
+    L["encounterOverviewOf"] = "von"
+    L["encounterOverviewStartTimerOn"] = "Starte Timer wenn"
+    L["encounterOverviewStopTimerOn"] = "Stoppe Timer wenn"
+    L["encounterOverviewTimings"] = "Auslösungszeiten"
+    L["encounterOverviewStartTriggerOn"] = "Starte Auslöser wenn"
+    L["encounterOverviewStopTriggerOn"] = "Starte Auslöser wenn"
+    L["encounterOverviewTriggerOn"] = "Löse aus wenn"
+    L["encounterOverviewEntries"] = "Rotationseinträge"
 
     -- Conditions
     L["conditionEvent"] = "Event"
@@ -191,15 +201,16 @@ if GetLocale() == "deDE" then
     L["conditionHeading"] = "Auslöser"
     L["conditionStartHeading"] = "Start Auslöser"
     L["conditionStopHeading"] = "Stop Auslöser"
-    L["conditionRemoveStopCondition"] = "Stop Auslöser löschen"
+    L["conditionRemoveStopCondition"] = "|cFFed3939Stop Auslöser entfernen|r"
     L["conditionAddStopCondition"] = "Stop Auslöser hinzufügen"
-    L["conditionRemoveStartCondition"] = "Start Auslöser löschen"
+    L["conditionRemoveStartCondition"] = "|cFFed3939Start Auslöser entfernen|r"
     L["conditionAddStartCondition"] = "Start Auslöser hinzufügen"
-   
+    L["encounterOverviewPercentagePrefixHealth"] = "Leben"
+    L["encounterOverviewPercentagePrefixPower"] = "Energie"
     -- Timers
     L["timerEnabled"] = "Aktiviert"
     L["timerName"] = "Name"
-    L["timerDeleteButton"] = "Timer löschen"
+    L["timerDeleteButton"] = "|cFFed3939Timer entfernen|r"
     L["timerOptionsHeading"] = "Timer Optionen"
     L["timerOptionsTriggerAtOccurence"] = "Nach n Start Auslösern starten"
 
@@ -207,7 +218,7 @@ if GetLocale() == "deDE" then
     L["timingOptions"] = "Zeiteinträge"
     L["timingSeconds"] = "Auslösungszeiten"
     L["timingSecondsTooltip"] = "Die Zeiten bei denen die Nachrichten an die Empfänger geschickt werden. (Gezählt ab der Aktivierung des Timers; Kommaseparierte Liste z.B. 1, 3, 10)"
-    L["timingDeleteButton"] = "Auslösungszeit löschen"
+    L["timingDeleteButton"] = "|cFFed3939Auslösungszeit entfernen|r"
     L["timingOptionsHeading"] = "Optionen"
 
 
@@ -220,17 +231,17 @@ if GetLocale() == "deDE" then
     L["overlayLocked"] = "Gesperrt"
     L["overlayEnableSound"] = "Töne aktivieren"
 
-    L["deleteTimer"] = "Timer löschen"
-    L["deleteRotation"] = "Rotation löschen"
-    L["deletePercentage"] = "Prozent löschen"
-    L["deleteEncounter"] = "Boss löschen"
+    L["deleteTimer"] = "|cFFed3939Timer entfernen|r"
+    L["deleteRotation"] = "|cFFed3939Rotation entfernen|r"
+    L["deletePercentage"] = "|cFFed3939Prozent entfernen|r"
+    L["deleteEncounter"] = "|cFFed3939Boss entfernen|r"
     L["exportEncounter"] = "Boss exportieren"
     L["importEncounter"] = "Boss importieren"
-    L["newEncounter"] = "Neuer Boss"
-    L["newTimer"] = "Neuer Timer"
-    L["newRotation"] = "Neue Rotation"
-    L["newHealthPercentage"] = "Neues Lebens-Prozent"
-    L["newPowerPercentage"] = "Neues Energie-Prozent"
+    L["newEncounter"] = "|cFF76ff68Neuer Boss|r"
+    L["newTimer"] = "|cFF76ff68Neuer Timer|r"
+    L["newRotation"] = "|cFF76ff68Neue Rotation|r"
+    L["newHealthPercentage"] = "|cFF76ff68Neues Lebens-Prozent|r"
+    L["newPowerPercentage"] = "|cFF76ff68Neues Energie-Prozent|r"
 
     -- Confirmation
     L["confirmationWindow"] = "Bestätigung"
@@ -239,10 +250,10 @@ if GetLocale() == "deDE" then
     L["importByGroupConfirmationText"] = 
         "Bist Du sicher, dass Du das Raid-Roster anhand der aktuellen Gruppe importieren willst?|n"..
         "|cFF69CCF0Notiz: |rDieser Vorgang wird alle aktuell eingetragenen Namen überschreiben."
-    L["deleteConfirmationText"] = "Bist Du sicher, dass Du folgenden Eintrag löschen willst:"
-    L["clearRaidRosterConfirmationText"] = "Bist Du sicher, dass Du alle Raidroster Einträge löschen willst?"
+    L["deleteConfirmationText"] = "Bist Du sicher, dass Du folgenden Eintrag entfernen willst:"
+    L["clearRaidRosterConfirmationText"] = "Bist Du sicher, dass Du alle Raidroster Einträge entfernen willst?"
     L["cloneConfirmationText"] = "Bist Du sicher, dass Du diesen Auslöser duplizieren möchtest?"
-    L["optionsCustomNameDeleteButtonConfirmation"] = "Bist Du sicher, dass du den benutzerdefinierten Platzhalter löschen willst?"
+    L["optionsCustomNameDeleteButtonConfirmation"] = "Bist Du sicher, dass du den benutzerdefinierten Platzhalter entfernen willst?"
 
     -- Clone
     L["cloneTimer"] = "Timer duplizieren"

@@ -134,7 +134,7 @@ PRT.ConfirmationDialog = function(text, successFn, ...)
                 PRT.Core.UnregisterFrame(text)
             end)
 
-        local textLabel = PRT.Label(text)
+        local textLabel = PRT.Label(text, 14)
 
         confirmationFrame:SetWidth(max(430, textLabel.label:GetStringWidth() + 50))           
         
