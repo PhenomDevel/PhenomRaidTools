@@ -76,6 +76,9 @@ Message consists of the following
 ## Help
 I have set up a discord server up and running for every kind of question. Feel free to enter and ask what you have trouble with. [Discord](https://discord.gg/GAYDjBF)
 
+## Support
+If you like the addon and want to support it's development you can simply support me by giving ideas, bug reports, and stuff.
+
 ## Feature Requests (Planned, Backlog, Questionable)
  - [Questionable] Add trigger for `DBM` / `BW`
  - [Backlog] Be able to configure multiple conditions for each trigger. Like trigger on `ENCOUNTER_START` *or* `SPELL_CAST_SUCCESS/123`
