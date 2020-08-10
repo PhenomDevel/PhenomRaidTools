@@ -236,6 +236,7 @@ L = {
     ["overlayBackdropColor"] = "Backdrop color",
     ["overlayLocked"] = "Locked",
     ["overlayEnableSound"] = "Enable sounds",
+    ["overlayDefaultSoundFile"] = "Default Sound",
 
     ["deleteTimer"] = "|cFFed3939Delete Timer|r",
     ["deleteRotation"] = "|cFFed3939Delete Rotation|r",

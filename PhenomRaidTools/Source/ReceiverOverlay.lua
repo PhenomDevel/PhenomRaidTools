@@ -25,8 +25,12 @@ ReceiverOverlay.AddMessage = function(messageTable)
         end
 
         if not customWillPlay then
-            -- Play default soundfile if configured sound does not exist
-            PlaySoundFile(PRT.db.profile.overlay.receiver.soundFile, "Master")
+            if PRT.db.profile.overlay.receiver.defaultSoundFile then
+                -- Play default soundfile if configured sound does not exist
+                PlaySoundFile(PRT.db.profile.overlay.receiver.defaultSoundFile, "Master")
+            else
+                PRT.Warn("Tried to play default sound but there was a problem. Try selecting another sound as default sound.")
+            end
         end            
     end
     messageTable.message = PRT.PrepareMessageForDisplay(messageTable.message) 

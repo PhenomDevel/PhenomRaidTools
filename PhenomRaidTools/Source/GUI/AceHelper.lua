@@ -317,7 +317,7 @@ PRT.ColorPicker = function(textID, value)
 	widget:SetLabel(text)
 	widget:SetColor((value.r or 0), (value.g or 0), (value.b or 0), (value.a or 0))	
 	widget:SetHasAlpha(false)
-	widget:SetRelativeWidth(1)
+	--widget:SetRelativeWidth(1)
 	widget:SetWidth(AceHelper.widgetDefaultWidth)
 
 	return widget

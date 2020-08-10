@@ -345,7 +345,7 @@ PRT.CreateMainWindow = function(profile)
             Core.CloseAllOpenFrames()
         end)
         
-    mainWindow:SetWidth(950)
+    mainWindow:SetWidth(970)
     mainWindow:SetHeight(600)
     mainWindow.frame:SetMinResize(800, 400)
     RegisterESCHandler("mainWindow", mainWindow)

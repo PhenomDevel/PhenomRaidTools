@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 1.6.3.0-ALPHA
+## Bugfixes
+ - Make sure rotations without start/stop condition don't show up as inactive
+
+## Features
+ - Add default sound select to receiver overlay options
+
+
+===============================================================================
 # Release 1.6.2.0-ALPHA
 ## Bugfixes
  - Make sure sender overlay uses correct field to determine of trigger is inactive

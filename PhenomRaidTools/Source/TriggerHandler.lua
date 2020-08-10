@@ -8,37 +8,6 @@ local TriggerHandler = {}
 -------------------------------------------------------------------------------
 -- Local Helper
 
-TriggerHandler.IsTriggerActive = function(trigger)    
-    return 
-    (
-        (
-            trigger.enabled == true or trigger.enabled == nil
-        ) 
-        and
-        (
-            trigger.active == true
-            or 
-            (
-                not trigger.hasStartCondition and 
-                not trigger.hasStopCondition and 
-                (
-                    trigger.active or 
-                    trigger.active == nil
-                )
-            )
-            or 
-            (
-                not trigger.hasStartCondition and 
-                trigger.hasStopCondition and 
-                (
-                    trigger.active or 
-                    trigger.active == nil
-                )
-            )
-        )
-    )
-end
-
 TriggerHandler.CheckCondition = function(condition, event, combatEvent, spellID, targetGUID, sourceGUID)
     if condition ~= nil then
         if condition.event ~= nil and (condition.event == event or condition.event == combatEvent) then   
@@ -208,6 +177,37 @@ end
 -------------------------------------------------------------------------------
 -- Public API
 
+PRT.IsTriggerActive = function(trigger)    
+    return 
+    (
+        (
+            trigger.enabled == true or trigger.enabled == nil
+        ) 
+        and
+        (
+            trigger.active == true
+            or 
+            (
+                not trigger.hasStartCondition and 
+                not trigger.hasStopCondition and 
+                (
+                    trigger.active or 
+                    trigger.active == nil
+                )
+            )
+            or 
+            (
+                not trigger.hasStartCondition and 
+                trigger.hasStopCondition and 
+                (
+                    trigger.active or 
+                    trigger.active == nil
+                )
+            )
+        )
+    )
+end
+
 -- Timer
 
 PRT.CheckTimerStartConditions = function(timers, event, combatEvent, spellID, targetGUID, sourceGUID)   
@@ -311,7 +311,7 @@ end
 PRT.CheckRotationTriggerCondition = function(rotations, event, combatEvent, eventSpellID, targetGUID, targetName, sourceGUID, sourceName)  
     if rotations ~= nil then
         for i, rotation in ipairs(rotations) do
-            if TriggerHandler.IsTriggerActive(rotation) then                
+            if PRT.IsTriggerActive(rotation) then                
                     if rotation.triggerCondition ~= nil then
                     TriggerHandler.CheckStopIgnoreRotationCondition(rotation)
                     
@@ -341,7 +341,7 @@ end
 PRT.CheckUnitHealthPercentages = function(percentages)
     if percentages ~= nil then
         for i, percentage in ipairs(percentages) do
-            if TriggerHandler.IsTriggerActive(percentage) then
+            if PRT.IsTriggerActive(percentage) then
                 if percentage.enabled == true or percentage.enabled == nil then
                     TriggerHandler.CheckStopIgnorePercentageCondition(percentage)
 
@@ -376,7 +376,7 @@ end
 PRT.CheckUnitPowerPercentages = function(percentages)
     if percentages ~= nil then
         for i, percentage in ipairs(percentages) do
-            if TriggerHandler.IsTriggerActive(percentage) then
+            if PRT.IsTriggerActive(percentage) then
                 if percentage.enabled == true or percentage.enabled == nil then
                     TriggerHandler.CheckStopIgnorePercentageCondition(percentage)
 

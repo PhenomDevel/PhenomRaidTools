@@ -230,6 +230,7 @@ if GetLocale() == "deDE" then
     L["overlayBackdropColor"] = "Hintergrundfarbe"
     L["overlayLocked"] = "Gesperrt"
     L["overlayEnableSound"] = "Töne aktivieren"
+    L["overlayDefaultSoundFile"] = "Standard Sound"
 
     L["deleteTimer"] = "|cFFed3939Timer entfernen|r"
     L["deleteRotation"] = "|cFFed3939Rotation entfernen|r"

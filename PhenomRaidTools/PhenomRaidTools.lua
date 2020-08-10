@@ -77,7 +77,8 @@ local defaults =  {
 					b = 0,
 					a = 0
 				},
-				soundFile = "Interface\\AddOns\\PhenomRaidTools\\Media\\Sounds\\ReceiveMessage.ogg",
+				defaultSoundFile = "Interface\\AddOns\\PhenomRaidTools\\Media\\Sounds\\ReceiveMessage.ogg",
+				defaultSoundFileName = "ReceiveMessage"
 			},
 
 			sender = {

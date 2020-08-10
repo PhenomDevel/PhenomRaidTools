@@ -7,12 +7,12 @@ local Overlay = {}
 -- Private Helper
 
 Overlay.AddSenderOverlayWidget = function(container, options)
-   local hideDisabledTriggersCheckbox = PRT.CheckBox("optionsHideDisabledTriggers", options.hideDisabledTriggers)
-   local showOverlayCheckbox = PRT.CheckBox("optionsShowOverlay", options.enabled)
-   local fontSelect = PRT.FontSelect("optionsFontSelect", options.fontName)
-   local hideOverlayAfterCombatCheckbox = PRT.CheckBox("optionsHideOverlayAfterCombat", options.hideAfterCombat)
-   local fontSizeSlider = PRT.Slider("overlayFontSize", options.fontSize)
-   local backdropColor =  PRT.ColorPicker("overlayBackdropColor", options.backdropColor)
+    local hideDisabledTriggersCheckbox = PRT.CheckBox("optionsHideDisabledTriggers", options.hideDisabledTriggers)
+    local showOverlayCheckbox = PRT.CheckBox("optionsShowOverlay", options.enabled)
+    local fontSelect = PRT.FontSelect("optionsFontSelect", options.fontName)
+    local hideOverlayAfterCombatCheckbox = PRT.CheckBox("optionsHideOverlayAfterCombat", options.hideAfterCombat)
+    local fontSizeSlider = PRT.Slider("overlayFontSize", options.fontSize)
+    local backdropColor =  PRT.ColorPicker("overlayBackdropColor", options.backdropColor)
 
    -- Initialize widgets
    hideDisabledTriggersCheckbox:SetRelativeWidth(1)
@@ -95,7 +95,7 @@ Overlay.AddReceiverOverlayWidget = function(container, options)
            PRT.ReceiverOverlay.ShowPlaceholder()
        end)
 
-   local fontColor =  PRT.ColorPicker("overlayFontColor", options.fontColor)
+   local fontColor =  PRT.ColorPicker("overlayFontColor", options.fontColor)   
    fontColor:SetCallback("OnValueConfirmed", 
        function(widget, event, r, g, b, a) 
            options.fontColor.hex = format("%2x%2x%2x", r * 255, g * 255, b * 255)  
@@ -127,12 +127,26 @@ Overlay.AddReceiverOverlayWidget = function(container, options)
    local enableSoundCheckbox = PRT.CheckBox("overlayEnableSound", options.enableSound)
    enableSoundCheckbox:SetRelativeWidth(1)
    enableSoundCheckbox:SetCallback("OnValueChanged", function(widget) options.enableSound = enableSoundCheckbox:GetValue() end)     
+    
+   local defaultSoundFileSelect = PRT.SoundSelect("overlayDefaultSoundFile", (options.defaultSoundFileName or options.defaultSoundFile))
+   defaultSoundFileSelect:SetCallback("OnValueChanged", 
+    function(widget, event, value)
+        local defaultSoundFile = AceGUIWidgetLSMlists.sound[value]
+        options.defaultSoundFile = defaultSoundFile
+        options.defaultSoundFileName = value
+        widget:SetText(value)
+        if defaultSoundFile then
+            PlaySoundFile(defaultSoundFile, "Master")
+        end
+    end)
 
-   container:AddChild(enableSoundCheckbox)
    container:AddChild(lockedCheckBox)
    container:AddChild(fontSelect)
    container:AddChild(fontSizeSlider)
-   container:AddChild(fontColor)    
+   container:AddChild(fontColor)
+   container:AddChild(enableSoundCheckbox)
+   container:AddChild(defaultSoundFileSelect)   
+      
 end
 
 
