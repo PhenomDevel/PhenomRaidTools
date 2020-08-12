@@ -103,7 +103,7 @@ local addOverviewEmptyLine = function(container)
 end
 
 local addStringByCondition = function(container, name, condition)
-    local conditionString = name.." "..PRT.HighlightString(condition.event)..L["encounterOverviewOf"].." "
+    local conditionString = name.." "..PRT.HighlightString(condition.event).." "..L["encounterOverviewOf"].." "
 
     if condition.spellName and condition.spellID then
         local _, _, texture = GetSpellInfo(condition.spellID)
@@ -123,7 +123,7 @@ local addTimerOverviewEntry = function(container, timer)
     if timer.hasStopCondition then
         addStringByCondition(container, L["encounterOverviewStopTimerOn"], timer.stopCondition)
     end
-    addOverviewLine(container, L["encounterOverviewTimings"]..PRT.HighlightString(#timer.timings))
+    addOverviewLine(container, L["encounterOverviewTimings"].." "..PRT.HighlightString(#timer.timings))
     addOverviewEmptyLine(container)
 end
 
@@ -140,7 +140,7 @@ local addRotationOverviewEntry = function(container, rotation)
 
     addStringByCondition(container, L["encounterOverviewTriggerOn"], rotation.triggerCondition)
 
-    addOverviewLine(container, L["encounterOverviewEntries"]..PRT.HighlightString(#rotation.entries))
+    addOverviewLine(container, L["encounterOverviewEntries"].." "..PRT.HighlightString(#rotation.entries))
     addOverviewEmptyLine(container)
 end
 

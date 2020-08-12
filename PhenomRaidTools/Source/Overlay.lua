@@ -51,7 +51,7 @@ Overlay.SetFont = function(container, options)
 end
 
 Overlay.CreateOverlay = function(options, withBackdrop)    
-    local overlayFrame = CreateFrame("Frame", nil, UIParent)
+    local overlayFrame = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
     overlayFrame:EnableMouse(true)
     overlayFrame:SetMovable(true)
     overlayFrame:SetClampedToScreen(true)

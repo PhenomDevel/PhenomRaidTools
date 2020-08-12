@@ -174,7 +174,6 @@ end
 PRT.TransparentGroup = function()
 	local text = L[textID]
 	local container = AceGUI:Create("SimpleGroup")    
-	container.frame:SetBackdrop(nil)
 
 	container:SetFullWidth(true)
 	container:SetLayout("List")
