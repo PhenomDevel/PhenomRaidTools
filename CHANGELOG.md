@@ -1,4 +1,8 @@
 ===============================================================================
+# Release 1.6.3.1
+
+
+===============================================================================
 # Release 1.6.3.0-ALPHA
 ## Bugfixes
  - Make sure rotations without start/stop condition don't show up as inactive
