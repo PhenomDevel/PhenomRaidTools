@@ -1,4 +1,22 @@
 ===============================================================================
+# Release 2.0.0.1-SL-ALPHA
+## Bugfixes
+ - Fixed interface version so it will correctly show the wow version the addon is for
+
+## Features
+None
+
+
+===============================================================================
+# Release 2.0.0.0-SL-ALPHA
+## Bugfixes
+ - Updated all used libraries and fixed some ui bugs occuring in SL
+
+## Features
+None
+
+
+===============================================================================
 # Release 1.6.3.0-ALPHA
 ## Bugfixes
  - Make sure rotations without start/stop condition don't show up as inactive
