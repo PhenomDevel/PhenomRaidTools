@@ -106,3 +106,4 @@ If you like the addon and want to support it's development you can simply do so 
  - Overhaul readme in general and add all features on the list
  - Support profiles (https://www.wowace.com/projects/ace3/pages/api/ace-db-3-0)
  - Add Slider for X and Y positions of overlays
+ - The addon should not stop sending messages on death. Just on ENCOUNTER_STOP

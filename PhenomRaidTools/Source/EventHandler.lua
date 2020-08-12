@@ -7,6 +7,7 @@ local EventHandler = {
 		"PLAYER_REGEN_DISABLED", 
 		"PLAYER_REGEN_ENABLED",
 		"ENCOUNTER_START",
+		"ENCOUNTER_STOP",
 		"PLAYER_ENTERING_WORLD"
 	}
 }
@@ -141,8 +142,14 @@ function PRT:PLAYER_REGEN_DISABLED(event)
 	EventHandler.StartReceiveMessages()
 end
 
-function PRT:PLAYER_REGEN_ENABLED(event)
+function PRT:ENCOUNTER_END(event)
 	EventHandler.StopEncounter(event)
+end
+
+function PRT:PLAYER_REGEN_ENABLED(event)
+	if not PRT.PlayerInParty() or self.db.profile.testMode then	
+		EventHandler.StopEncounter(event)
+	end
 end
 
 function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
