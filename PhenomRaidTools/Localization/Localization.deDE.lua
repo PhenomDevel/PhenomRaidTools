@@ -11,7 +11,7 @@ if GetLocale() == "deDE" then
     L["optionsTabGeneral"] = "Generell"
     L["optionsTabDifficulties"] = "Schwierigkeiten"
     L["optionsTabDefaults"] = "Auslöser Standards"
-    L["optionsTabCustomNames"] = "Benutzerdefinierte Platzhalter"
+    L["optionsTabCustomPlaceholders"] = "Benutzerdefinierte Platzhalter"
     L["optionsTabRaidRoster"] = "Raidkader"
     L["optionsTabOverlays"] = "Overlays"
 
