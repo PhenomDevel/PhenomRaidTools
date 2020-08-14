@@ -105,9 +105,9 @@ end
 local addStringByCondition = function(container, name, condition)
     local conditionString = name.." "..PRT.HighlightString(condition.event)..L["encounterOverviewOf"].." "
 
-    if condition.spellName and condition.spellID then
-        local _, _, texture = GetSpellInfo(condition.spellID)
-        conditionString = conditionString..PRT.TextureString(texture, 14)..condition.spellName.." ( "..PRT.HighlightString(condition.spellID).." )"
+    if condition.spellID then
+        local spellName, _, texture = GetSpellInfo(condition.spellID)
+        conditionString = conditionString..PRT.TextureString(texture, 14)..spellName.." ( "..PRT.HighlightString(condition.spellID).." )"
     else
         conditionString = conditionString.."N/A"
     end

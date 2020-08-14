@@ -66,11 +66,7 @@ PRT.ConditionWidget = function(condition, textID)
 		function(widget) 
 			local text = tonumber(widget:GetText()) 
 
-			local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo(text)
-			
-			if name then
-				condition.spellName = name								
-			end
+			local name, _, icon, _, _, _, spellId = GetSpellInfo(text)
 
 			if spellId then
 				condition.spellID = spellId				
@@ -80,8 +76,7 @@ PRT.ConditionWidget = function(condition, textID)
 				condition.spellIcon = icon				
 			end
 
-			if not (name and spellId and icon) then
-				condition.spellName = nil
+			if not (spellId and icon) then
 				condition.spellIcon = nil
 				condition.spellID = nil		
 			end
