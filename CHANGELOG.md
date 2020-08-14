@@ -1,4 +1,14 @@
 ===============================================================================
+# Release 1.6.4.0-ALPHA
+## Bugfixes
+ - Make sure spell names on encounter overview are queried when needed and 
+   not ahead of time
+
+## Features
+None
+
+
+===============================================================================
 # Release 1.6.3.1
 
 
