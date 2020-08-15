@@ -101,5 +101,4 @@ If you like the addon and want to support it's development you can simply suppor
  - Distinct targets on messages so everyone only gets the messages once... No need to send multiple times (flag?)
  - Add images to readme 
  - Overhaul readme in general and add all features on the list
- - Be able to select default sound for received messages
- - Delete message button is gone if you select/unselect custom sound
+ - Support profiles (https://www.wowace.com/projects/ace3/pages/api/ace-db-3-0)
