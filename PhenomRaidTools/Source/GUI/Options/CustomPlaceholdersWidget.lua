@@ -84,7 +84,8 @@ PRT.AddCustomPlaceholdersWidget = function(container, customPlaceholders)
    container:AddChild(subDescription)
 
    local placeholderTabs = PRT.TableToTabs(customPlaceholders, true)
-   local placeholdersTabGroup = PRT.TabGroup("optionsCustomPlaceholdersHeading", placeholderTabs)    
+   local placeholdersTabGroup = PRT.TabGroup("optionsCustomPlaceholdersHeading", placeholderTabs)   
+   placeholdersTabGroup:SetTitle(nil) 
    placeholdersTabGroup:SetLayout("Flow")
    placeholdersTabGroup:SetCallback("OnGroupSelected", 
         function(widget, event, key) 
