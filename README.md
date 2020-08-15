@@ -77,7 +77,10 @@ Message consists of the following
 I have set up a discord server up and running for every kind of question. Feel free to enter and ask what you have trouble with. [Discord](https://discord.gg/GAYDjBF)
 
 ## Support
-If you like the addon and want to support it's development you can simply support me by giving ideas, bug reports, and stuff.
+If you like the addon and want to support it's development you can simply do so with one of the following
+ - Leave feedback, suggestions or bug reports
+ - Star the project on github 
+ - Post your encounter strings in discord so others can profit
 
 ## Feature Requests (Planned, Backlog, Questionable)
  - [Questionable] Add trigger for `DBM` / `BW`
