@@ -1,4 +1,14 @@
 ===============================================================================
+# Release 1.6.5.0-ALPHA
+## Bugfixes
+ - Make sure delete button is not removed when re rendering tab item
+
+## Features
+ - Custom placeholders are now rendered as tab group for more overview and easier
+   usage
+
+
+===============================================================================
 # Release 1.6.4.0-ALPHA
 ## Bugfixes
  - Make sure spell names on encounter overview are queried when needed and 

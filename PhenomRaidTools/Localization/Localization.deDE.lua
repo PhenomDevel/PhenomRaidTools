@@ -46,6 +46,8 @@ if GetLocale() == "deDE" then
     L["optionsRaidRosterClear"] = "Raidroster leeren"
     L["optionsVersionCheck"] = "Versionscheck ausführen"
 
+    L["optionsCustomPlaceholdersHeading"] = "Benutzerdefinierte Platzhalter"
+    L["optionsCustomPlaceholderDeleteButton"] = "|cFFed3939Löschen|r"
     L["optionsCustomPlaceholderTypePlayer"] = "Spieler"
     L["optionsCustomPlaceholderTypeGroup"] = "Gruppe"
     L["optionsCustomPlaceholderType"] = "Typ"
@@ -261,6 +263,7 @@ if GetLocale() == "deDE" then
     L["cloneRotation"] = "Rotation duplizieren"
     L["clonePercentage"] = "Prozent duplizieren"
 
+    L["deleteTabEntryConfirmationText"] = "Bist Du sicher, dass du diesen Eintrag löschen willst?"
 
     -- Encounters
     L["--- Castle Nathria ---"] = "--- Schloss Nathria ---"

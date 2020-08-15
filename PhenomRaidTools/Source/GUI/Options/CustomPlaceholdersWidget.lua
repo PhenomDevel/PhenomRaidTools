@@ -1,14 +1,10 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
+local CustomPlaceholder = {}
+
 
 -------------------------------------------------------------------------------
 -- Local Helper
-
-local reBuildContainer = function(container, customPlaceholders)
-   container:ReleaseChildren()
-   PRT.AddCustomPlaceholdersWidget(container, customPlaceholders)
-   PRT.Core.UpdateScrollFrame() 
-end
 
 local newCustomPlaceholder = function()
    return {
@@ -20,10 +16,7 @@ local newCustomPlaceholder = function()
    }
 end
 
-local addCustomPlaceholderWidget = function(container, customPlaceholders, idx, customPlaceholder)
-   local customPlaceholderInlineGroup = PRT.InlineGroup(customPlaceholder.name)
-   customPlaceholderInlineGroup:SetLayout("Flow")
-
+local addCustomPlaceholderWidget = function(customPlaceholder, container, tabKey)
    local placeholderTypesDropdownItems = {
       { id = "group", name = L["optionsCustomPlaceholderTypeGroup"]},
       { id = "player", name = L["optionsCustomPlaceholderTypePlayer"]}
@@ -48,29 +41,15 @@ local addCustomPlaceholderWidget = function(container, customPlaceholders, idx, 
    clearEmptyNamesButton:SetCallback("OnClick",
       function()
          PRT.TableRemove(customPlaceholder.names, PRT.EmptyString)
-         reBuildContainer(container, customPlaceholders)
+         PRT.ReSelectTab(container)
       end)
 
    local addNameButton = PRT.Button("optionsCustomPlaceholderAddNameButton")
    addNameButton:SetCallback("OnClick",
       function()
-         tinsert(customPlaceholder.names, "")
-         reBuildContainer(container, customPlaceholders)
-      end)
-
-   local deleteButton = PRT.Button("optionsCustomPlaceholderDeleteButton")
-   deleteButton:SetCallback("OnClick", 
-         function() 
-            local text = L["optionsCustomPlaceholderDeleteButtonConfirmation"]
-            if customPlaceholder.name then
-                  text = text.."\n"..PRT.HighlightString(customPlaceholder.name)
-            end
-            PRT.ConfirmationDialog(text, 
-               function()                    
-                  tremove(customPlaceholders, idx)
-                  reBuildContainer(container, customPlaceholders)
-               end)            
-         end)            
+         tinsert(customPlaceholder.names, "")         
+         PRT.ReSelectTab(container)
+      end)          
    
    local namesGroup = PRT.InlineGroup("Names")
    namesGroup:SetLayout("Flow")
@@ -86,16 +65,12 @@ local addCustomPlaceholderWidget = function(container, customPlaceholders, idx, 
       namesGroup:AddChild(nameEditBox)
    end       
 
-   customPlaceholderInlineGroup:AddChild(nameEditBox) 
-   customPlaceholderInlineGroup:AddChild(placeholderTypeSelect)       
-   customPlaceholderInlineGroup:AddChild(namesGroup)
-   customPlaceholderInlineGroup:AddChild(addNameButton) 
-   customPlaceholderInlineGroup:AddChild(clearEmptyNamesButton)
-   customPlaceholderInlineGroup:AddChild(deleteButton) 
-
-   container:AddChild(customPlaceholderInlineGroup)
+   container:AddChild(nameEditBox) 
+   container:AddChild(placeholderTypeSelect)       
+   container:AddChild(namesGroup)
+   container:AddChild(addNameButton) 
+   container:AddChild(clearEmptyNamesButton)
 end
-
 
 -------------------------------------------------------------------------------
 -- Public API
@@ -108,16 +83,15 @@ PRT.AddCustomPlaceholdersWidget = function(container, customPlaceholders)
    container:AddChild(description)
    container:AddChild(subDescription)
 
-   local addButton = PRT.Button("optionsCustomPlaceholdersAddButton")
-   addButton:SetCallback("OnClick", 
-      function()
-         tinsert(customPlaceholders, newCustomPlaceholder())
-         reBuildContainer(container, customPlaceholders)
-      end
-   )
-   container:AddChild(addButton)
+   local placeholderTabs = PRT.TableToTabs(customPlaceholders, true)
+   local placeholdersTabGroup = PRT.TabGroup("optionsCustomPlaceholdersHeading", placeholderTabs)    
+   placeholdersTabGroup:SetLayout("Flow")
+   placeholdersTabGroup:SetCallback("OnGroupSelected", 
+        function(widget, event, key) 
+            PRT.TabGroupSelected(widget, customPlaceholders, key, addCustomPlaceholderWidget , newCustomPlaceholder, "optionsCustomPlaceholderDeleteButton") 
+        end)
 
-   for idx, customPlaceholder in ipairs(customPlaceholders) do
-      addCustomPlaceholderWidget(container, customPlaceholders, idx, customPlaceholder)
-   end
+   PRT.SelectFirstTab(placeholdersTabGroup, customPlaceholders) 
+
+   container:AddChild(placeholdersTabGroup)
 end

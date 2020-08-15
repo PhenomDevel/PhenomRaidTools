@@ -46,6 +46,8 @@ L = {
     ["optionsRaidRosterClear"] = "Clear raid roster",
     ["optionsVersionCheck"] = "Perform version check",
 
+    ["optionsCustomPlaceholdersHeading"] = "Custom Placeholders",
+    ["optionsCustomPlaceholderDeleteButton"] = "|cFFed3939Delete Custom Placeholder|r",
     ["optionsCustomPlaceholderTypePlayer"] = "Player",
     ["optionsCustomPlaceholderTypeGroup"] = "Group",
     ["optionsCustomPlaceholderType"] = "Type",
@@ -59,6 +61,8 @@ L = {
         "|cFF69CCF0Group|r - All configured players will be messaged.",
     ["optionsCustomPlaceholdersAddButton"] = "|cFF76ff68Add Placeholder|r",
     ["optionsGeneralVersionHeading"] = "Installed versions",
+
+    ["deleteTabEntryConfirmationText"] = "Are you sure you want to delete this item?",
 
     -- Dungeon Difficulty
     ["dungeonHeading"] = "Dungeon",

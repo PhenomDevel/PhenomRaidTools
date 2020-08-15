@@ -120,6 +120,4 @@ PRT.AddRotationWidget = function(container, profile, encounterID, triggerName)
     local cloneButton = PRT.NewCloneButton(container, rotations, rotationIndex, "cloneRotation", rotation.name)
 
     Rotation.RotationWidget(rotation, container, deleteButton, cloneButton)
-    --container:AddChild(deleteButton)
-    --container:AddChild(cloneButton)
 end

@@ -126,9 +126,7 @@ PRT.MessageWidget = function (message, container)
 		function(widget)
 			local value = widget:GetValue()
 			message.useCustomSound = value
-			container:ReleaseChildren()
-			PRT.MessageWidget(message, container)
-			PRT.Core.UpdateScrollFrame()
+			PRT.ReSelectTab(container)
 		end)
 
 	targetsEditBox:SetCallback("OnEnterPressed", 
