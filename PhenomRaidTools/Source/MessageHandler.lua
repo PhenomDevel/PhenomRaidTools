@@ -49,8 +49,20 @@ MessageHandler.ExpandMessageTargets = function(message)
         end
     end
 
+    local targets = table.mergemany(unpack(splittetTargets))
+    local existingTarget = {}
+    local distinctTargets = {}
+
+    for i, target in ipairs(targets) do
+        local target = strtrim(target, " ")
+        if (not existingTarget[target]) then
+            table.insert(distinctTargets, target)
+            existingTarget[target] = true
+        end
+    end
+
     -- TODO: Distinct targets?
-    return table.mergemany(unpack(splittetTargets))
+    return distinctTargets
 end
 
 MessageHandler.ExecuteMessageAction = function(message)
@@ -59,7 +71,7 @@ MessageHandler.ExecuteMessageAction = function(message)
 
     for i, target in ipairs(messageTargets) do
         local targetMessage = PRT.CopyTable(message)
-        targetMessage.target = strtrim(target, " ")
+        targetMessage.target = target
         targetMessage.message = PRT.ReplacePlayerNameTokens(targetMessage.message)
 
         -- Cleanup unused fields
