@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 1.6.6.0-BETA
+## Bugfixes
+ - Do not stop on player death. Instead stop on ENCOUNTER_STOP event.
+
+## Features
+None
+
+
+===============================================================================
 # Release 1.6.5.1
 ## Bugfixes
  - Make sure custom placeholder groups work like intended
