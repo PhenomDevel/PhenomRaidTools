@@ -20,10 +20,14 @@ Message.TargetsPreviewString = function(targets)
 
 		  for i, target in ipairs(targets) do
 			local name = PRT.ReplacePlayerNameTokens(target)
-			local trimmedName = strtrim(name, " ")
-			local coloredName = PRT.ClassColoredName(trimmedName)
+			local names = {strsplit(",", name)}
+			
+			for i, name in ipairs(names) do
+				local trimmedName = strtrim(name, " ")
+				local coloredName = PRT.ClassColoredName(trimmedName)
 
-			tinsert(previewNames, coloredName)
+				tinsert(previewNames, coloredName)
+			end
 		end
 
 		return strjoin(", ", unpack(previewNames))
