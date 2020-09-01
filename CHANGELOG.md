@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 1.6.7.0-BETA
+## Bugfixes
+None
+
+## Features
+ - Send each message just once to every player configured (distinct targets)
+
+
+===============================================================================
 # Release 1.6.6.0-BETA
 ## Bugfixes
  - Make sure every target in target preview is class colored
