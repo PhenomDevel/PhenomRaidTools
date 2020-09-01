@@ -1,7 +1,9 @@
 ===============================================================================
 # Release 1.6.6.0-BETA
 ## Bugfixes
- - Do not stop on player death. Instead stop on ENCOUNTER_STOP event.
+ - Make sure every target in target preview is class colored
+ - Make sure default sound is loaded correctly
+ - Use the correct `ENCOUNTER_END` event to determine if combat stopped
 
 ## Features
 None
