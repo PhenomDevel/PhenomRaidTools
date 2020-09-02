@@ -7,11 +7,11 @@ local Overlay = {}
 -- Private Helper
 
 Overlay.AddPositionSliders = function(container, frame, options)
-    local screenWidth = GetScreenWidth()
-    local screenHeight = GetScreenHeight()
+    local screenWidth = PRT.Round(GetScreenWidth())
+    local screenHeight = PRT.Round(GetScreenHeight())
 
     local positionXSlider = PRT.Slider("optionsPositionX", PRT.Round(options.left, 1))
-    positionXSlider:SetSliderValues(0, PRT.Round(screenWidth, 1), 0.1)
+    positionXSlider:SetSliderValues(0, screenWidth, 0.1)
     positionXSlider:SetCallback("OnValueChanged", 
     function(widget) 
         local positionX = widget:GetValue() 
@@ -20,7 +20,7 @@ Overlay.AddPositionSliders = function(container, frame, options)
     end)
 
     local positionYSlider = PRT.Slider("optionsPositionY", PRT.Round(options.top, 1))
-    positionYSlider:SetSliderValues(0, PRT.Round(screenHeight, 1), 0.1)
+    positionYSlider:SetSliderValues(0, screenHeight, 0.1)
     positionYSlider:SetCallback("OnValueChanged", 
     function(widget) 
         local positionY = widget:GetValue() 
