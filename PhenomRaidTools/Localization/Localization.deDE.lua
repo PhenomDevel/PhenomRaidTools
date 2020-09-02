@@ -14,6 +14,8 @@ if GetLocale() == "deDE" then
     L["optionsTabCustomPlaceholders"] = "Benutzerdefinierte Platzhalter"
     L["optionsTabRaidRoster"] = "Raidkader"
     L["optionsTabOverlays"] = "Overlays"
+    L["optionsPositionX"] = "Position X"
+    L["optionsPositionY"] = "Position Y"
 
     L["optionsReceiverModeHelp"] = 
         "|cFF69CCF0Notiz|r: Alle Optionen, welche mit dem Sender-Modus zusammenhängen sind entweder ausgeblendet oder deaktiviert.\n"..

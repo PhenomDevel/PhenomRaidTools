@@ -79,13 +79,13 @@ end
 ReceiverOverlay.CreateOverlay = function(options)
     ReceiverOverlay.overlayFrame = PRT.Overlay.CreateOverlay(options, true)
     PRT.Overlay.SetMoveable(ReceiverOverlay.overlayFrame, false)
-    ReceiverOverlay.overlayFrame.text:SetPoint("TOPLEFT")
     ReceiverOverlay.overlayFrame.text:SetJustifyH("CENTER")
-    ReceiverOverlay.overlayFrame:SetPoint("TOPLEFT", "UIParent", "TOPLEFT", options.left, -options.top)    
+    ReceiverOverlay.overlayFrame:SetPoint("TOPLEFT", "UIParent", "CENTER", options.left, -options.top)    
     ReceiverOverlay.overlayFrame.text:SetWidth(700)
     ReceiverOverlay.overlayFrame:SetHeight(80)
     ReceiverOverlay.overlayFrame:SetWidth(700)
     ReceiverOverlay.overlayFrame.text:SetFont((options.font or GameFontHighlightSmall:GetFont()), options.fontSize, "OUTLINE")
+    ReceiverOverlay.overlayFrame.text:SetPoint("CENTER")
 end
 
 ReceiverOverlay.Hide = function()

@@ -14,6 +14,13 @@ Overlay.SavePosition = function(widget, options)
     options.left = left
 end
 
+Overlay.UpdatePosition = function(container, options)
+    if options then        
+        container:ClearAllPoints()
+        container:SetPoint("CENTER", "UIParent", "TOPLEFT", options.left, -options.top)
+    end
+end
+
 Overlay.UpdateSize = function(container, options)
     local width = container.text:GetStringWidth()
     container:SetWidth(width + (2 * padding))
@@ -21,13 +28,7 @@ Overlay.UpdateSize = function(container, options)
     local height = container.text:GetStringHeight()
     container:SetHeight(height + (2 * padding))    
 
-    if options then        
-        local left = min((options.left + width), UIParent:GetWidth()) - width
-        local top = min((options.top + height), UIParent:GetHeight()) - height
-
-        container:ClearAllPoints()
-        container:SetPoint("TOPLEFT", "UIParent", "TOPLEFT", left, -top)
-    end
+    Overlay.UpdatePosition(container, options)
 end
 
 Overlay.UpdateFont = function(container, options)
@@ -80,7 +81,7 @@ Overlay.CreateOverlay = function(options, withBackdrop)
     end
 
     overlayFrame:SetFrameStrata("MEDIUM")
-    overlayFrame:SetPoint("TOPLEFT", "UIParent", "TOPLEFT", options.left, -options.top)
+    overlayFrame:SetPoint("CENTER", "UIParent", "TOPLEFT", options.left, -options.top)
 
     overlayFrame.text = overlayFrame:CreateFontString(nil, "ARTWORK") 
     overlayFrame.text:SetJustifyH("CENTER")

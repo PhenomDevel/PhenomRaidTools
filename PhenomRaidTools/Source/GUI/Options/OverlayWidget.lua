@@ -6,13 +6,39 @@ local Overlay = {}
 -------------------------------------------------------------------------------
 -- Private Helper
 
+Overlay.AddPositionSliders = function(container, frame, options)
+    local screenWidth = GetScreenWidth()
+    local screenHeight = GetScreenHeight()
+
+    local positionXSlider = PRT.Slider("optionsPositionX", PRT.Round(options.left, 1))
+    positionXSlider:SetSliderValues(0, PRT.Round(screenWidth, 1), 0.1)
+    positionXSlider:SetCallback("OnValueChanged", 
+    function(widget) 
+        local positionX = widget:GetValue() 
+        options.left = positionX            
+        PRT.Overlay.UpdatePosition(frame, options)
+    end)
+
+    local positionYSlider = PRT.Slider("optionsPositionY", PRT.Round(options.top, 1))
+    positionYSlider:SetSliderValues(0, PRT.Round(screenHeight, 1), 0.1)
+    positionYSlider:SetCallback("OnValueChanged", 
+    function(widget) 
+        local positionY = widget:GetValue() 
+        options.top = positionY            
+        PRT.Overlay.UpdatePosition(frame, options)
+    end) 
+
+    container:AddChild(positionXSlider)
+    container:AddChild(positionYSlider)
+end
+
 Overlay.AddSenderOverlayWidget = function(container, options)
     local hideDisabledTriggersCheckbox = PRT.CheckBox("optionsHideDisabledTriggers", options.hideDisabledTriggers)
     local showOverlayCheckbox = PRT.CheckBox("optionsShowOverlay", options.enabled)
     local fontSelect = PRT.FontSelect("optionsFontSelect", options.fontName)
     local hideOverlayAfterCombatCheckbox = PRT.CheckBox("optionsHideOverlayAfterCombat", options.hideAfterCombat)
     local fontSizeSlider = PRT.Slider("overlayFontSize", options.fontSize)
-    local backdropColor =  PRT.ColorPicker("overlayBackdropColor", options.backdropColor)
+    local backdropColor =  PRT.ColorPicker("overlayBackdropColor", options.backdropColor)   
 
    -- Initialize widgets
    hideDisabledTriggersCheckbox:SetRelativeWidth(1)
@@ -72,6 +98,7 @@ Overlay.AddSenderOverlayWidget = function(container, options)
    container:AddChild(fontSelect)
    container:AddChild(fontSizeSlider)
    container:AddChild(backdropColor)
+   Overlay.AddPositionSliders(container, PRT.SenderOverlay.overlayFrame, options)
 end
 
 Overlay.AddReceiverOverlayWidget = function(container, options)
@@ -146,7 +173,7 @@ Overlay.AddReceiverOverlayWidget = function(container, options)
    container:AddChild(fontColor)
    container:AddChild(enableSoundCheckbox)
    container:AddChild(defaultSoundFileSelect)   
-      
+   Overlay.AddPositionSliders(container, PRT.ReceiverOverlay.overlayFrame, options)
 end
 
 

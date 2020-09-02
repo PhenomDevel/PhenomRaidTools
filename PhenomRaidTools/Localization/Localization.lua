@@ -14,6 +14,8 @@ L = {
     ["optionsTabRaidRoster"] = "Raid roster",
     ["optionsTabCustomPlaceholders"] = "Custom Placeholders",
     ["optionsTabOverlays"] = "Overlays",
+    ["optionsPositionX"] = "Position X",
+    ["optionsPositionY"] = "Position Y",
 
     ["optionsReceiverModeHelp"] = 
         "|cFF69CCF0Note|r: All options regarding the sender mode are hidden or disabled.\n"..
