@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 1.6.8.0-BETA
+## Bugfixes
+None
+
+## Features
+ - Add sliders to adjust positon of overlays
+
+
+===============================================================================
 # Release 1.6.7.0-BETA
 ## Bugfixes
 None
