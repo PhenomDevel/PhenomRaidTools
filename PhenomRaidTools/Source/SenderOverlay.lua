@@ -118,7 +118,7 @@ end
 SenderOverlay.CreateOverlay = function(options)
     SenderOverlay.overlayFrame = PRT.Overlay.CreateOverlay(options, true)
     SenderOverlay.overlayFrame.text:SetJustifyH("LEFT")
-    SenderOverlay.overlayFrame:SetPoint("TOPLEFT", "UIParent", "CENTER", options.left, -options.top)
+    SenderOverlay.overlayFrame:SetPoint("TOPLEFT", "UIParent", "TOPLEFT", options.left, -options.top)
     SenderOverlay.overlayFrame.text:SetFont((options.font or GameFontHighlightSmall:GetFont()), options.fontSize, "OUTLINE")
 end
 
