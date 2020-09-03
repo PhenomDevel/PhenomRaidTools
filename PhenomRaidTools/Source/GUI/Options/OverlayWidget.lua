@@ -16,7 +16,7 @@ Overlay.AddPositionSliders = function(container, frame, options)
     function(widget) 
         local positionX = widget:GetValue() 
         options.left = positionX            
-        PRT.Overlay.UpdatePosition(frame, options)
+        PRT.Overlay.UpdateSize(frame, options)
     end)
 
     local positionYSlider = PRT.Slider("optionsPositionY", PRT.Round(options.top, 1))
@@ -25,7 +25,7 @@ Overlay.AddPositionSliders = function(container, frame, options)
     function(widget) 
         local positionY = widget:GetValue() 
         options.top = positionY            
-        PRT.Overlay.UpdatePosition(frame, options)
+        PRT.Overlay.UpdateSize(frame, options)
     end) 
 
     container:AddChild(positionXSlider)

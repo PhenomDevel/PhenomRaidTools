@@ -43,11 +43,13 @@ ReceiverOverlay.AddMessage = function(messageTable)
         end, 
         (messageTable.duration or 5))
 
-    ReceiverOverlay.UpdateFrame()  
+    ReceiverOverlay.UpdateFrame()   
 end
 
 ReceiverOverlay.ShowPlaceholder = function()
-    ReceiverOverlay.overlayFrame.text:SetText(PRT.ColoredString("All received messages will show here", "FF"..PRT.db.profile.overlay.receiver.fontColor.hex))    
+    ReceiverOverlay.overlayFrame.text:SetText(PRT.ColoredString("All received messages will show here", "FF"..PRT.db.profile.overlay.receiver.fontColor.hex))  
+    
+    PRT.Overlay.UpdateSize(ReceiverOverlay.overlayFrame)
 end
 
 ReceiverOverlay.UpdateFrame = function()  
@@ -78,7 +80,7 @@ end
 ReceiverOverlay.CreateOverlay = function(options)
     ReceiverOverlay.overlayFrame = PRT.Overlay.CreateOverlay(options, true)
     ReceiverOverlay.overlayFrame:ClearAllPoints()        
-    ReceiverOverlay.overlayFrame:SetPoint("CENTER", "UIParent", "TOPLEFT", options.left, -options.top)    
+    ReceiverOverlay.overlayFrame:SetPoint("CENTER", "UIParent", "CENTER", options.left, -options.top)    
     
     ReceiverOverlay.overlayFrame.text:SetJustifyH("CENTER")
     ReceiverOverlay.overlayFrame.text:SetPoint("CENTER")
