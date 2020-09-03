@@ -47,9 +47,7 @@ ReceiverOverlay.AddMessage = function(messageTable)
 end
 
 ReceiverOverlay.ShowPlaceholder = function()
-    ReceiverOverlay.overlayFrame.text:SetText(PRT.ColoredString("All received messages will show here", "FF"..PRT.db.profile.overlay.receiver.fontColor.hex))
-    ReceiverOverlay.overlayFrame:SetHeight(80)
-    ReceiverOverlay.overlayFrame:SetWidth(700)
+    ReceiverOverlay.overlayFrame.text:SetText(PRT.ColoredString("All received messages will show here", "FF"..PRT.db.profile.overlay.receiver.fontColor.hex))    
 end
 
 ReceiverOverlay.UpdateFrame = function()  
@@ -73,18 +71,20 @@ ReceiverOverlay.UpdateFrame = function()
         end
 
         ReceiverOverlay.overlayFrame.text:SetText(text)
+        PRT.Overlay.UpdateSize(ReceiverOverlay.overlayFrame)
     end
 end
 
 ReceiverOverlay.CreateOverlay = function(options)
     ReceiverOverlay.overlayFrame = PRT.Overlay.CreateOverlay(options, true)
-    PRT.Overlay.SetMoveable(ReceiverOverlay.overlayFrame, false)
+    ReceiverOverlay.overlayFrame:ClearAllPoints()        
+    ReceiverOverlay.overlayFrame:SetPoint("CENTER", "UIParent", "TOPLEFT", options.left, -options.top)    
+    
     ReceiverOverlay.overlayFrame.text:SetJustifyH("CENTER")
-    ReceiverOverlay.overlayFrame:SetPoint("TOPLEFT", "UIParent", "CENTER", options.left, -options.top)    
-    ReceiverOverlay.overlayFrame.text:SetWidth(700)
+    ReceiverOverlay.overlayFrame.text:SetPoint("CENTER")
     ReceiverOverlay.overlayFrame.text:SetFont((options.font or GameFontHighlightSmall:GetFont()), options.fontSize, "OUTLINE")
-    ReceiverOverlay.overlayFrame.text:SetPoint("CENTER")    
-    PRT.Overlay.UpdatePosition(ReceiverOverlay.overlayFrame, options)
+
+    PRT.Overlay.SetMoveable(ReceiverOverlay.overlayFrame, false)   
 end
 
 ReceiverOverlay.Hide = function()
@@ -106,6 +106,8 @@ ReceiverOverlay.Initialize = function(options)
         PRT.Overlay.SetMoveable(ReceiverOverlay.overlayFrame, true)
         ReceiverOverlay.overlayFrame.text:SetText("Placeholder")
     end
+
+    PRT.Overlay.UpdateSize(ReceiverOverlay.overlayFrame, options)
 end
 
 
