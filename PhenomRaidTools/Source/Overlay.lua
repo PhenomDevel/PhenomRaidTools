@@ -17,7 +17,7 @@ end
 Overlay.UpdatePosition = function(container, options)
     if options then        
         container:ClearAllPoints()
-        container:SetPoint("CENTER", "UIParent", "TOPLEFT", options.left, -options.top)
+        container:SetPoint(options.anchor or "CENTER", "UIParent", "TOPLEFT", options.left, -options.top)
     end
 end
 
@@ -81,7 +81,7 @@ Overlay.CreateOverlay = function(options, withBackdrop)
     end
 
     overlayFrame:SetFrameStrata("MEDIUM")
-    overlayFrame:SetPoint("CENTER", "UIParent", "TOPLEFT", options.left, -options.top)
+    overlayFrame:SetPoint("TOPLEFT", "UIParent", "TOPLEFT", options.left, -options.top)
 
     overlayFrame.text = overlayFrame:CreateFontString(nil, "ARTWORK") 
     overlayFrame.text:SetJustifyH("CENTER")

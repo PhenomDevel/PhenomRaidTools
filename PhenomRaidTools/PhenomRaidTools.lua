@@ -59,6 +59,7 @@ local defaults =  {
 
 		overlay = {
 			receiver = {
+				anchor = "CENTER",
 				locked = true,
 				top = 450,
 				left = 615,
@@ -82,6 +83,7 @@ local defaults =  {
 			},
 
 			sender = {
+				anchor = "TOPLEFT",
 				top = 50,
 				left = 615,
 				fontSize = 14,
