@@ -1,4 +1,14 @@
 ===============================================================================
+# Release 2.0.0.0-SL-ALPHA
+## Bugfixes
+ - Make sure overlays will render from the beginning without opening options once
+ - Make sure everything renders correctly for Shadowlands
+
+## Features
+ - Updated Libs
+
+
+===============================================================================
 # Release 1.6.8.0-BETA
 ## Bugfixes
 None
