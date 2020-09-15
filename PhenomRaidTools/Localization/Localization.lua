@@ -111,7 +111,7 @@ L = {
     ["messageHeading"] = "Messages",
     ["messageDeleteButton"] = "|cFFed3939Delete Message|r",
     ["messageTargets"] = "Targets",
-    ["messageTargetOverlay"] "Target Overlay",
+    ["messageTargetOverlay"] = "Target Overlay",
     ["messageTargetsTooltip"] =
         "Comma separated list of targets\n"..
         "Examples:\n"..
