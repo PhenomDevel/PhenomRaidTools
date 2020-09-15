@@ -54,8 +54,7 @@ Overlay.FontGroup = function(options, overlayFrame)
         local fontSize = widget:GetValue() 
         options.fontSize = fontSize            
         
-        PRT.ReceiverOverlay.ShowPlaceholder(overlayFrame, options)
-        PRT.ReceiverOverlay.UpdateFrame(overlayFrame, options)
+        PRT.Overlay.UpdateFrame(overlayFrame, options)
     end)
      
     fontSelect:SetCallback("OnValueChanged", 
@@ -65,8 +64,7 @@ Overlay.FontGroup = function(options, overlayFrame)
             options.fontName = value
             widget:SetText(value)
             
-            PRT.ReceiverOverlay.ShowPlaceholder(overlayFrame, options)
-            PRT.ReceiverOverlay.UpdateFrame(overlayFrame, options)
+            PRT.Overlay.UpdateFrame(overlayFrame, options)
         end)
 
     fontGroup:AddChild(fontSizeSlider)
@@ -137,8 +135,7 @@ Overlay.AddSenderOverlayWidget = function(container, options)
            options.backdropColor.g = g
            options.backdropColor.b = b
            
-           PRT.ReceiverOverlay.ShowPlaceholder(PRT.SenderOverlay.overlayFrame, options)
-           PRT.ReceiverOverlay.UpdateFrame(PRT.SenderOverlay.overlayFrame, options)
+           PRT.Overlay.UpdateBackdrop(PRT.SenderOverlay.overlayFrame, options)
        end)   
    
 
@@ -146,7 +143,7 @@ Overlay.AddSenderOverlayWidget = function(container, options)
    container:AddChild(hideOverlayAfterCombatCheckbox)
    container:AddChild(hideDisabledTriggersCheckbox)
    container:AddChild(backdropColor)
-   container:AddChild(Overlay.FontGroup(options))
+   container:AddChild(Overlay.FontGroup(options, PRT.SenderOverlay.overlayFrame))
    Overlay.AddPositionSliderGroup(container, PRT.SenderOverlay.overlayFrame, options)
 end
 

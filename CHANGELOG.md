@@ -1,4 +1,14 @@
 ===============================================================================
+# Release 2.0.2.1-SL-ALPHA
+## Bugfixes
+ - Be able to set sender overlay font again
+ - Be able to set sender overlay backdrop color again
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.0.2.0-SL-ALPHA
 ## Bugfixes
 None

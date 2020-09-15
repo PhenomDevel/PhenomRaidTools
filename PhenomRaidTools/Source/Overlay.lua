@@ -56,9 +56,9 @@ Overlay.UpdateBackdrop = function(frame, options)
 end
 
 Overlay.UpdateFrame = function(frame, options)
-    Overlay.UpdateSize(frame, options)
-    Overlay.UpdateBackdrop(frame, options)
     Overlay.UpdateFont(frame, options)
+    Overlay.UpdateSize(frame, options)
+    Overlay.UpdateBackdrop(frame, options)    
     Overlay.UpdatePosition(frame, options)
 end
 
