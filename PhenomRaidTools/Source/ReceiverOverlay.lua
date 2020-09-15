@@ -15,8 +15,10 @@ ReceiverOverlay.ClearMessageStack = function()
 end
 
 ReceiverOverlay.AddMessage = function(messageTable)
+    local receiverOverlayFrame = PRT.db.profile.overlay.receivers[(messageTable.targetOverlay or 1)]
+
     messageTable.expirationTime = GetTime() + (messageTable.duration or 5)
-    if messageTable.withSound == true and PRT.db.profile.overlay.receiver.enableSound then
+    if messageTable.withSound == true and receiverOverlayFrame.enableSound then
         local soundFile = messageTable.soundFile   
         local customWillPlay 
 
@@ -25,9 +27,9 @@ ReceiverOverlay.AddMessage = function(messageTable)
         end
 
         if not customWillPlay then
-            if PRT.db.profile.overlay.receiver.defaultSoundFile then
+            if receiverOverlayFrame.defaultSoundFile then
                 -- Play default soundfile if configured sound does not exist
-                PlaySoundFile(PRT.db.profile.overlay.receiver.defaultSoundFile, "Master")
+                PlaySoundFile(receiverOverlayFrame.defaultSoundFile, "Master")
             else
                 PRT.Warn("Tried to play default sound but there was a problem. Try selecting another sound as default sound.")
             end
@@ -39,77 +41,121 @@ ReceiverOverlay.AddMessage = function(messageTable)
     AceTimer:ScheduleTimer(
         function() 
             ReceiverOverlay.messageStack[index] = ""
-            ReceiverOverlay.UpdateFrame()
+            ReceiverOverlay.UpdateFrameText()
         end, 
         (messageTable.duration or 5))
 
-    ReceiverOverlay.UpdateFrame()   
+    ReceiverOverlay.UpdateFrameText()   
 end
 
-ReceiverOverlay.ShowPlaceholder = function()
-    ReceiverOverlay.overlayFrame.text:SetText(PRT.ColoredString("All received messages will show here", "FF"..PRT.db.profile.overlay.receiver.fontColor.hex))  
-    
-    PRT.Overlay.UpdateSize(ReceiverOverlay.overlayFrame)
-end
-
-ReceiverOverlay.UpdateFrame = function()  
-    if ReceiverOverlay.overlayFrame then
-        local text = ""
-        
-        for i, message in pairs(ReceiverOverlay.messageStack) do
-            if message ~= "" then
-                if message.expirationTime > GetTime() then           
-                    local timeLeftRaw = message.expirationTime - GetTime()
-                    local timeLeft = PRT.Round(timeLeftRaw, 2)                    
-                    local color = "FF"..PRT.db.profile.overlay.receiver.fontColor.hex
-
-                    if text == "" then                        
-                        text = PRT.ColoredString(string.format(message.message, timeLeft), color)                        
-                    else
-                        text = text.."|n"..PRT.ColoredString(string.format(message.message, timeLeft), color)
-                    end
-                end 
-            end
-        end
-
-        ReceiverOverlay.overlayFrame.text:SetText(text)
-        PRT.Overlay.UpdateSize(ReceiverOverlay.overlayFrame)
-    end
-end
-
-ReceiverOverlay.CreateOverlay = function(options)
-    ReceiverOverlay.overlayFrame = PRT.Overlay.CreateOverlay(options, true)
-    ReceiverOverlay.overlayFrame:ClearAllPoints()        
-    ReceiverOverlay.overlayFrame:SetPoint("CENTER", "UIParent", "CENTER", options.left, -options.top)    
-    
-    ReceiverOverlay.overlayFrame.text:SetJustifyH("CENTER")
-    ReceiverOverlay.overlayFrame.text:SetPoint("CENTER")
-    ReceiverOverlay.overlayFrame.text:SetFont((options.font or GameFontHighlightSmall:GetFont()), options.fontSize, "OUTLINE")
-
-    PRT.Overlay.SetMoveable(ReceiverOverlay.overlayFrame, false)   
-end
-
-ReceiverOverlay.Hide = function()
-    PRT.Overlay.Hide(ReceiverOverlay.overlayFrame)
-end
-
-ReceiverOverlay.Show = function()    
-    PRT.Overlay.Show(ReceiverOverlay.overlayFrame)
-end
-
-ReceiverOverlay.Initialize = function(options)
-    if not ReceiverOverlay.overlayFrame then
-        PRT.Debug("Initializing receiver overlay")
-        ReceiverOverlay.CreateOverlay(options)	        
+ReceiverOverlay.ShowPlaceholder = function(frame, options, text)
+    local text = ""
+    if options then
+        text = options.name..": "..(options.label or "LABEL")
+    else
+        text = (text or "Placeholder")
     end
 
     if not options.locked then
-        PRT.Overlay.UpdateBackdrop(ReceiverOverlay.overlayFrame, 0, 0, 0, 0.7)
-        PRT.Overlay.SetMoveable(ReceiverOverlay.overlayFrame, true)
-        ReceiverOverlay.overlayFrame.text:SetText("Placeholder")
+        text = text.."\nDrag to move"
     end
 
-    PRT.Overlay.UpdateSize(ReceiverOverlay.overlayFrame, options)
+    frame.text:SetText(PRT.ColoredString(text, "FF"..options.fontColor.hex))  
+    PRT.Overlay.UpdateSize(frame)
+end
+
+ReceiverOverlay.UpdateFrameText = function() 
+    for frameIndex, frame in ipairs(ReceiverOverlay.overlayFrames) do
+        local text = ""
+
+        for i, message in pairs(ReceiverOverlay.messageStack) do
+            if message ~= "" then                             
+                -- Add text only to corresponding frame   
+                if (message.targetOverlay or 1) == frameIndex then
+                    if message.expirationTime > GetTime() then           
+                        local timeLeftRaw = message.expirationTime - GetTime()
+                        local timeLeft = PRT.Round(timeLeftRaw, 2)                    
+                        local color = "FF"..(PRT.db.profile.overlay.receivers[frameIndex].fontColor.hex or "FFFFFF")
+        
+                        if text == "" then                        
+                            text = PRT.ColoredString(string.format(message.message, timeLeft), color)                        
+                        else
+                            text = text.."|n"..PRT.ColoredString(string.format(message.message, timeLeft), color)
+                        end
+                    end 
+                end
+            end
+        end
+
+        frame.text:SetText(text)
+        PRT.Overlay.UpdateSize(frame)
+    end                
+end
+
+ReceiverOverlay.UpdateFrame = function(frame, options)
+    PRT.Overlay.UpdateSize(frame, options)
+    PRT.Overlay.UpdateBackdrop(frame, options)
+    PRT.Overlay.UpdateFont(frame, options)
+    PRT.Overlay.UpdatePosition(frame, options)
+end
+
+ReceiverOverlay.CreateOverlay = function(options)
+    local overlayFrame = PRT.Overlay.CreateOverlay(options, true)
+    overlayFrame:ClearAllPoints()        
+    overlayFrame:SetPoint("CENTER", "UIParent", "CENTER", options.left, -options.top)    
+    
+    overlayFrame.text:SetJustifyH("CENTER")
+    overlayFrame.text:SetPoint("CENTER")
+    overlayFrame.text:SetFont((options.font or GameFontHighlightSmall:GetFont()), options.fontSize, "OUTLINE")
+
+    PRT.Overlay.SetMoveable(overlayFrame, false)  
+    
+    return overlayFrame
+end
+
+ReceiverOverlay.Hide = function(frame)
+    PRT.Overlay.Hide(frame)
+end
+
+ReceiverOverlay.Show = function(frame)
+    PRT.Overlay.Show(frame)
+end
+
+ReceiverOverlay.HideAll = function()
+    if ReceiverOverlay.overlayFrames then
+        for i, overlayFrame in ipairs(ReceiverOverlay.overlayFrames) do
+            PRT.Overlay.Hide(overlayFrame)
+        end
+    end
+end
+
+ReceiverOverlay.ShowAll = function()    
+    if ReceiverOverlay.overlayFrames then
+        for i, overlayFrame in ipairs(ReceiverOverlay.overlayFrames) do
+            PRT.Overlay.Show(overlayFrame)
+        end
+    end
+end
+
+ReceiverOverlay.Initialize = function(receivers)
+    if not ReceiverOverlay.overlayFrames then
+        ReceiverOverlay.overlayFrames = {}
+        
+        for i, receiver in ipairs(receivers) do
+            PRT.Debug("Initializing receiver overlay"..i)
+            local receiverOverlay = ReceiverOverlay.CreateOverlay(receiver)	  
+
+            if not receiver.locked then
+                PRT.Overlay.UpdateBackdrop(receiverOverlay, receiver)
+                PRT.Overlay.SetMoveable(receiverOverlay, true)
+                receiverOverlay.text:SetText("Placeholder")
+            end
+            
+            PRT.Overlay.UpdateSize(receiverOverlay, receiver)   
+
+            tinsert(ReceiverOverlay.overlayFrames, receiverOverlay)
+        end       
+    end    
 end
 
 

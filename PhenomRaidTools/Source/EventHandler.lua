@@ -19,8 +19,8 @@ local EventHandler = {
 EventHandler.StartReceiveMessages = function()
 	if PRT.db.profile.enabled then
 		if PRT.db.profile.receiverMode then
-			PRT.ReceiverOverlay.Show()
-			AceTimer:ScheduleRepeatingTimer(PRT.ReceiverOverlay.UpdateFrame, 0.01)
+			PRT.ReceiverOverlay.ShowAll()
+			AceTimer:ScheduleRepeatingTimer(PRT.ReceiverOverlay.UpdateFrameText, 0.01)
 		else
 			PRT.Debug("You are not in receiver mode. We won't track messages.")
 		end
@@ -87,8 +87,8 @@ EventHandler.StopEncounter = function(event)
 	-- Clear ReceiverFrame
 	if PRT.db.profile.receiverMode then
 		PRT.ReceiverOverlay.ClearMessageStack()
-		PRT.ReceiverOverlay.UpdateFrame()
-		PRT.ReceiverOverlay.Hide()
+		PRT.ReceiverOverlay.UpdateFrameText()
+		PRT.ReceiverOverlay.HideAll()
 	end
 
 	AceTimer:CancelAllTimers()	

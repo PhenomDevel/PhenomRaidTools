@@ -109,7 +109,7 @@ PRT.TableToTabs = function(t, withNewTab, newTabText)
 	return tabs
 end
 
-PRT.TabGroupSelected = function(widget, t, key, itemFunction, emptyItemFunction, deleteTextID)
+PRT.TabGroupSelected = function(widget, t, key, itemFunction, emptyItemFunction, deleteButton, deleteTextID)
 	widget:ReleaseChildren()
 
 	if key == "new" then
@@ -123,21 +123,23 @@ PRT.TabGroupSelected = function(widget, t, key, itemFunction, emptyItemFunction,
             item = t[key]
 		  end
 		
-		itemFunction(item, widget, tabKey) 
+		itemFunction(item, widget, key) 
 
-		local deleteButtonText = L[deleteTextID]
-		local deleteButton = AceGUI:Create("Button")
-		deleteButton:SetText(deleteButtonText)
-		deleteButton:SetCallback("OnClick", 
-			function() 
-				local text = L["deleteTabEntryConfirmationText"]
-				PRT.ConfirmationDialog(text, 
-					function()
-						AceHelper.RemoveTab(widget, t, key)	
-					end)            
-		end)
-	
-		widget:AddChild(deleteButton)
+		if deleteButton then
+			local deleteButtonText = L[deleteTextID]
+			local deleteButton = AceGUI:Create("Button")
+			deleteButton:SetText(deleteButtonText)
+			deleteButton:SetCallback("OnClick", 
+				function() 
+					local text = L["deleteTabEntryConfirmationText"]
+					PRT.ConfirmationDialog(text, 
+						function()
+							AceHelper.RemoveTab(widget, t, key)	
+						end)            
+			end)
+		
+			widget:AddChild(deleteButton)
+		end
 	end
 	
 	PRT.Core.UpdateScrollFrame()

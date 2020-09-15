@@ -93,7 +93,6 @@ L = {
     ["defaultShouldRestart"] = "Ignore after activation",
     ["defaultIgnoreDuration"] = "Should restart",
     ["defaultIgnoreAfterActivation"] = "Ignore duration",
-    ["defaultWithSound"] = "Activate sound on receiver",
     ["defaultEvent"] = "Event",
     ["defaultUnitID"] = "Unit-ID",
     ["defaultCheckAgain"] = "Check multiple times",
@@ -111,8 +110,8 @@ L = {
     ["messagePreview"] = "Preview: ",
     ["messageHeading"] = "Messages",
     ["messageDeleteButton"] = "|cFFed3939Delete Message|r",
-    ["messageWithSound"] = "Activate sound on receiver",
     ["messageTargets"] = "Targets",
+    ["messageTargetOverlay"] "Target Overlay",
     ["messageTargetsTooltip"] =
         "Comma separated list of targets\n"..
         "Examples:\n"..
@@ -236,7 +235,10 @@ L = {
 
     -- Overlay
     ["senderGroup"] = "Sender",
-    ["receiverGroup"] = "Receiver",
+    ["receiversGroup"] = "Receiver",
+    ["overlaySoundGroup"] = "Sound",
+    ["overlayFontGroup"] = "Font",
+    ["overlayPositionGroup"] = "Position",
     ["overlayFontColor"] = "Font color",
     ["overlayFontSize"] = "Font size",
     ["overlayBackdropColor"] = "Backdrop color",

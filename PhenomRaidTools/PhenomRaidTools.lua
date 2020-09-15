@@ -34,6 +34,28 @@ local PhenomRaidToolsLDB = LibStub("LibDataBroker-1.1"):NewDataObject("PhenomRai
 
 -------------------------------------------------------------------------------
 -- Ace standard functions
+local function NewDefaultReceiverOverlay(id, name, fontSize)
+	return {
+		id = id, 
+		label = name, 
+		name = id,
+		anchor = "CENTER",
+		locked = true,
+		top = 540 - ((id - 1) * 60),
+		left = 960,
+		fontSize = fontSize,
+		fontColor = {
+			hex = "FFFFFF", 
+			r = 0,
+			g = 0,
+			b = 0,
+			a = 1
+		},
+		enableSound = true,
+		defaultSoundFile = "Interface\\AddOns\\PhenomRaidTools\\Media\\Sounds\\ReceiveMessage.ogg",
+		defaultSoundFileName = "ReceiveMessage"
+	}
+end
 
 local defaults =  {
 	profile = {
@@ -58,28 +80,11 @@ local defaults =  {
 		},
 
 		overlay = {
-			receiver = {
-				anchor = "CENTER",
-				locked = true,
-				top = 450,
-				left = 615,
-				fontSize = 32,
-				fontColor = {
-					hex = "FFFFFF",
-					r = 0,
-					g = 0,
-					b = 0,
-					a = 1
-				},
-				enableSound = true,
-				backdropColor = {
-					r = 0,
-					g = 0,
-					b = 0,
-					a = 0
-				},
-				defaultSoundFile = "Interface\\AddOns\\PhenomRaidTools\\Media\\Sounds\\ReceiveMessage.ogg",
-				defaultSoundFileName = "ReceiveMessage"
+			receivers = {
+				[1] = NewDefaultReceiverOverlay(1, "Default", 16),
+				[2] = NewDefaultReceiverOverlay(2, "Important", 32),
+				[3] = NewDefaultReceiverOverlay(3, "Unimportant", 24),
+				[4] = NewDefaultReceiverOverlay(4, "Special", 12)
 			},
 
 			sender = {
@@ -92,6 +97,13 @@ local defaults =  {
 					g = 0,
 					b = 0,
 					a = 0.7
+				},
+				fontColor = {
+					hex = "FFFFFF",
+					r = 0,
+					g = 0,
+					b = 0,
+					a = 1
 				},
 				enabled = true,
 				hideAfterCombat = false,
@@ -117,9 +129,6 @@ local defaults =  {
 		},
 
 		triggerDefaults = {
-			messageDefaults = {
-				defaultWithSound = true,
-			},
 			rotationDefaults = {
 				defaultShouldRestart = true,
 				defaultIgnoreAfterActivation = false,
@@ -186,6 +195,11 @@ function PRT:OnInitialize()
 	-- because we sometimes have to do a re-layout of the complete content
 	PRT.mainWindow = nil
 	PRT.mainWindowContent = nil
+
+	PRT.SenderOverlay.Initialize(PRT.db.profile.overlay.sender)
+	PRT.ReceiverOverlay.Initialize(PRT.db.profile.overlay.receivers)
+	PRT.SenderOverlay.Hide()
+	PRT.ReceiverOverlay.HideAll()
 end
 
 function PRT:OnEnable()
@@ -206,8 +220,7 @@ function PRT:Open()
 		PRT.Info("Can't open during combat")
 	else
 		if (PRT.mainWindow and not PRT.mainWindow:IsShown()) or not PRT.mainWindow then
-			PRT.SenderOverlay.Initialize(PRT.db.profile.overlay.sender)
-			PRT.ReceiverOverlay.Initialize(PRT.db.profile.overlay.receiver)
+			
 			PRT.CreateMainWindow(self.db.profile)		
 		end	
 	end	

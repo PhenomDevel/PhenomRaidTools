@@ -89,7 +89,7 @@ PRT.AddCustomPlaceholdersWidget = function(container, customPlaceholders)
    placeholdersTabGroup:SetLayout("Flow")
    placeholdersTabGroup:SetCallback("OnGroupSelected", 
         function(widget, event, key) 
-            PRT.TabGroupSelected(widget, customPlaceholders, key, addCustomPlaceholderWidget , newCustomPlaceholder, "optionsCustomPlaceholderDeleteButton") 
+            PRT.TabGroupSelected(widget, customPlaceholders, key, addCustomPlaceholderWidget , newCustomPlaceholder, true, "optionsCustomPlaceholderDeleteButton") 
         end)
 
    PRT.SelectFirstTab(placeholdersTabGroup, customPlaceholders) 

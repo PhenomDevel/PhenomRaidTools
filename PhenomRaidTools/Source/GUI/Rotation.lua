@@ -12,7 +12,7 @@ Rotation.RotationEntryWidget = function(entry, container)
     messagesTabGroup:SetLayout("List")
     messagesTabGroup:SetCallback("OnGroupSelected", 
         function(widget, event, key) 
-            PRT.TabGroupSelected(widget, entry.messages, key, PRT.MessageWidget, PRT.EmptyMessage, "messageDeleteButton") 
+            PRT.TabGroupSelected(widget, entry.messages, key, PRT.MessageWidget, PRT.EmptyMessage, true, "messageDeleteButton") 
         end)
 
     PRT.SelectFirstTab(messagesTabGroup, entry.messages)    	
@@ -68,7 +68,7 @@ Rotation.RotationWidget = function(rotation, container, deleteButton, cloneButto
 	local entriesTabGroupWidget = PRT.TabGroup("rotationEntryHeading", tabs)
     entriesTabGroupWidget:SetCallback("OnGroupSelected", 
         function(widget, event,key) 
-            PRT.TabGroupSelected(widget, rotation.entries, key, Rotation.RotationEntryWidget, PRT.EmptyRotationEntry, "rotationEntryDeleteButton") 
+            PRT.TabGroupSelected(widget, rotation.entries, key, Rotation.RotationEntryWidget, PRT.EmptyRotationEntry, true, "rotationEntryDeleteButton") 
         end)    
 
     PRT.SelectFirstTab(entriesTabGroupWidget, rotation.entries)

@@ -92,7 +92,6 @@ if GetLocale() == "deDE" then
     L["defaultShouldRestart"] = "Soll neustarten"
     L["defaultIgnoreDuration"] = "Ignorieren für"
     L["defaultIgnoreAfterActivation"] = "Nach der Aktivierung ignorieren"
-    L["defaultWithSound"] = "Sound für Empfänger aktivieren"
     L["defaultEvent"] = "Event"
     L["defaultUnitID"] = "Unit-ID"
     L["defaultCheckAgain"] = "Mehrfach prüfen"
@@ -109,8 +108,8 @@ if GetLocale() == "deDE" then
     -- Messages
     L["messagePreview"] = "Vorschau: "
     L["messageHeading"] = "Nachrichten"
+    L["messageTargetOverlay"] "Ziel Overlay"
     L["messageDeleteButton"] = "|cFFed3939Nachricht entfernen|r"
-    L["messageWithSound"] = "Sound für Empfänger aktivieren"
     L["messageTargets"] = "Empfänger"
     L["messageTargetsTooltip"] =
         "Kommaseparierte Liste von Empfängern\n"..
@@ -228,7 +227,10 @@ if GetLocale() == "deDE" then
 
     -- Overlay
     L["senderGroup"] = "Absender"
-    L["receiverGroup"] = "Empfänger"
+    L["receiversGroup"] = "Empfänger"
+    L["overlaySoundGroup"] = "Sound"
+    L["overlayFontGroup"] = "Schrift"
+    L["overlayPositionGroup"] = "Position"
     L["overlayFontColor"] = "Schriftfarbe"
     L["overlayFontSize"] = "Schriftgröße"
     L["overlayBackdropColor"] = "Hintergrundfarbe"

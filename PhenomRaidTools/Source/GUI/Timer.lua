@@ -29,7 +29,7 @@ Timer.TimingWidget = function(timing, container)
     messagesTabGroup:SetLayout("List")
     messagesTabGroup:SetCallback("OnGroupSelected", 
         function(widget, event, key) 
-            PRT.TabGroupSelected(widget, timing.messages, key, PRT.MessageWidget, PRT.EmptyMessage, "messageDeleteButton") 
+            PRT.TabGroupSelected(widget, timing.messages, key, PRT.MessageWidget, PRT.EmptyMessage, true, "messageDeleteButton") 
         end)
 
     PRT.SelectFirstTab(messagesTabGroup, timing.messages)  
@@ -73,7 +73,7 @@ Timer.TimerWidget = function(timer, container, deleteButton, cloneButton)
     local timingsTabGroup = PRT.TabGroup("timingOptions", timingsTabs)
     timingsTabGroup:SetCallback("OnGroupSelected", 
     function(widget, event, key) 
-        PRT.TabGroupSelected(widget, timer.timings, key, Timer.TimingWidget, PRT.EmptyTiming, "timingDeleteButton") 
+        PRT.TabGroupSelected(widget, timer.timings, key, Timer.TimingWidget, PRT.EmptyTiming, true, "timingDeleteButton") 
     end)        
     PRT.SelectFirstTab(timingsTabGroup, timer.timings)  
 

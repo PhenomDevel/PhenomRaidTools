@@ -107,8 +107,10 @@ PRT.MessageWidget = function (message, container)
 	
 	local targetsEditBox = PRT.EditBox("messageTargets", targetsString, true)	
 	targetsEditBox:SetWidth(500)
+
 	local targetsPreviewLabel = PRT.Label(L["messagePreview"]..PRT.PrepareMessageForDisplay(targetsPreviewString))
 	targetsPreviewLabel:SetWidth(500)
+
 	local raidRosterDropdown = PRT.Dropdown("messageRaidRosterAddDropdown", raidRosterItems)
 	raidRosterDropdown:SetWidth(500)
 
@@ -182,11 +184,18 @@ PRT.MessageWidget = function (message, container)
 			message.duration = tonumber(widget:GetValue()) 
 		end)
 
-	local withSoundCheckbox = PRT.CheckBox("messageWithSound", message.withSound)
-	withSoundCheckbox:SetCallback("OnValueChanged", 
-		function(widget) 
-			message.withSound = widget:GetValue() 
-		end)
+
+	local targetOverlayDropdownItems = {}
+	for i, overlay in ipairs(PRT.db.profile.overlay.receivers) do
+		tinsert(targetOverlayDropdownItems, { id = overlay.id, name = overlay.id..": "..overlay.label})
+	end
+	
+	local targetOverlayDropdown = PRT.Dropdown("messageTargetOverlay", targetOverlayDropdownItems, (message.targetOverlay or 1))
+	targetOverlayDropdown:SetCallback("OnValueChanged", 
+	function(widget) 	
+		message.targetOverlay = widget:GetValue()
+	end)  
+
 
 	container:AddChild(targetsEditBox)
 	container:AddChild(targetsPreviewLabel)	
@@ -196,7 +205,7 @@ PRT.MessageWidget = function (message, container)
 	container:AddChild(messagePreviewLabel)
 	container:AddChild(delayEditBox)
 	container:AddChild(durationEditBox)	
-	container:AddChild(withSoundCheckbox)
+	container:AddChild(targetOverlayDropdown)
 	container:AddChild(useCustomSoundCheckbox)	
 
 	if message.useCustomSound then

@@ -7,48 +7,71 @@ local padding = 15
 -------------------------------------------------------------------------------
 -- Public API
 
-Overlay.SavePosition = function(widget, options)
-    local left, top = widget:GetLeft(), widget:GetTop()
-
+Overlay.SavePosition = function(frame, options)
+    local left, top = frame:GetLeft(), frame:GetTop()
+    
     options.top = UIParent:GetHeight() - top
     options.left = left
 end
 
-Overlay.UpdatePosition = function(container, options)
+Overlay.UpdatePosition = function(frame, options)
     if options then        
-        container:ClearAllPoints()
-        container:SetPoint(options.anchor or "CENTER", "UIParent", "TOPLEFT", options.left, -options.top)
+        frame:ClearAllPoints()
+        frame:SetPoint(options.anchor or "CENTER", "UIParent", "TOPLEFT", options.left, -options.top)
     end
 end
 
-Overlay.UpdateSize = function(container, options)
-    local width = container.text:GetStringWidth()
-    container:SetWidth(width + (2 * padding))
+Overlay.UpdateSize = function(frame, options)
+    local width = frame.text:GetStringWidth()
+    frame:SetWidth(width + (2 * padding))
 
-    local height = container.text:GetStringHeight()
-    container:SetHeight(height + (2 * padding))    
+    local height = frame.text:GetStringHeight()
+    frame:SetHeight(height + (2 * padding))    
 
-    Overlay.UpdatePosition(container, options)
+    Overlay.UpdatePosition(frame, options)
 end
 
-Overlay.UpdateFont = function(container, options)
-    container.text:SetFont((options.font or GameFontHighlightSmall:GetFont()), options.fontSize, "OUTLINE")    
+Overlay.UpdateFont = function(frame, options)
+    frame.text:SetFont((options.font or GameFontHighlightSmall:GetFont()), options.fontSize, "OUTLINE")    
 end
 
-Overlay.UpdateBackdrop = function(container, r, g, b, a)
-    container:SetBackdropColor(r, g, b, a);
-end
-
-Overlay.SetMoveable = function(widget, v)
-    if widget then
-        widget:EnableMouse(v)
-        widget:SetMovable(v)
+Overlay.UpdateBackdrop = function(frame, options)
+    if options then
+        if options.locked then
+            frame:SetBackdropColor(0, 0, 0, 0);
+        else
+            if options.backdropColor then
+                frame:SetBackdropColor(
+                    (options.backdropColor.r or 0), 
+                    (options.backdropColor.g or 0), 
+                    (options.backdropColor.b or 0), 
+                    (options.backdropColor.a or 0.7)
+                )
+            else
+                frame:SetBackdropColor(0, 0, 0, 0.7);
+            end
+            
+        end
     end
 end
 
-Overlay.SetFont = function(container, options)
-    container.text:SetFont((options.font or GameFontHighlightSmall:GetFont()), options.fontSize, "OUTLINE")
-    Overlay.UpdateSize(container, options)
+Overlay.UpdateFrame = function(frame, options)
+    Overlay.UpdateSize(frame, options)
+    Overlay.UpdateBackdrop(frame, options)
+    Overlay.UpdateFont(frame, options)
+    Overlay.UpdatePosition(frame, options)
+end
+
+Overlay.SetMoveable = function(frame, v)
+    if frame then
+        frame:EnableMouse(v)
+        frame:SetMovable(v)
+    end
+end
+
+Overlay.SetFont = function(frame, options)
+    frame.text:SetFont((options.font or GameFontHighlightSmall:GetFont()), options.fontSize, "OUTLINE")
+    Overlay.UpdateSize(frame, options)
 end
 
 Overlay.CreateOverlay = function(options, withBackdrop)    
@@ -59,8 +82,8 @@ Overlay.CreateOverlay = function(options, withBackdrop)
     overlayFrame:RegisterForDrag("LeftButton")
     overlayFrame:SetScript("OnDragStart", overlayFrame.StartMoving)
     overlayFrame:SetScript("OnDragStop", 
-        function(widget) 
-            Overlay.SavePosition(widget, options) 
+        function(frame) 
+            Overlay.SavePosition(frame, options) 
             overlayFrame:StopMovingOrSizing() 
         end)
 
@@ -77,7 +100,7 @@ Overlay.CreateOverlay = function(options, withBackdrop)
                     bottom = 4 
             }});
 
-        overlayFrame:SetBackdropColor((options.backdropColor.r or 0), (options.backdropColor.g or 0), (options.backdropColor.b or 0), (options.backdropColor.a or 0));
+        Overlay.UpdateBackdrop(overlayFrame, options)
     end
 
     overlayFrame:SetFrameStrata("MEDIUM")
@@ -92,23 +115,23 @@ Overlay.CreateOverlay = function(options, withBackdrop)
     return overlayFrame
 end
 
-Overlay.ClearText = function(widget)
-    if widget then
-        widget.text:SetText("")
+Overlay.ClearText = function(frame)
+    if frame then
+        frame.text:SetText("")
     end
 end
 
-Overlay.Hide = function(widget)
-    if widget then           
-		Overlay.ClearText(widget)
-        widget:Hide()
+Overlay.Hide = function(frame)
+    if frame then           
+		Overlay.ClearText(frame)
+        frame:Hide()
     end
 end
 
-Overlay.Show = function(widget)
-    if widget then              
-        Overlay.ClearText(widget)
-        widget:Show()
+Overlay.Show = function(frame)
+    if frame then              
+        Overlay.ClearText(frame)
+        frame:Show()
     end
 end
 

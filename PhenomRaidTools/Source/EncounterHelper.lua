@@ -25,6 +25,7 @@ PRT.EmptyMessage = function()
         targets = {
             "ALL"
         },
+        targetOverlay = 1,
         delay = 0,
         withSound = PRT.db.profile.triggerDefaults.messageDefaults.defaultWithSound
     }

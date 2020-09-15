@@ -45,7 +45,7 @@ Percentage.PercentageEntryWidget = function(entry, container)
     messagesTabGroup:SetLayout("List")
     messagesTabGroup:SetCallback("OnGroupSelected", 
         function(widget, event, key) 
-            PRT.TabGroupSelected(widget, entry.messages, key, PRT.MessageWidget, PRT.EmptyMessage, "messageDeleteButton") 
+            PRT.TabGroupSelected(widget, entry.messages, key, PRT.MessageWidget, PRT.EmptyMessage, true, "messageDeleteButton") 
         end)
 
     PRT.SelectFirstTab(messagesTabGroup, entry.messages)    	
@@ -104,7 +104,7 @@ Percentage.PercentageWidget = function(percentage, container, deleteButton, clon
 	local valuesTabGroupWidget = PRT.TabGroup(nil, tabs)
     valuesTabGroupWidget:SetCallback("OnGroupSelected", 
         function(widget, event,key) 
-            PRT.TabGroupSelected(widget, percentage.values, key, Percentage.PercentageEntryWidget, PRT.EmptyPercentageEntry, "percentageEntryDeleteButton") 
+            PRT.TabGroupSelected(widget, percentage.values, key, Percentage.PercentageEntryWidget, PRT.EmptyPercentageEntry, true, "percentageEntryDeleteButton") 
         end)    
 
     PRT.SelectFirstTab(valuesTabGroupWidget, percentage.values)

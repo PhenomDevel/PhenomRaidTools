@@ -340,7 +340,7 @@ PRT.CreateMainWindow = function(profile)
 	mainWindow:SetCallback("OnClose",
 		function(widget) 
             PRT.Release(widget)
-            PRT.ReceiverOverlay.Hide()
+            PRT.ReceiverOverlay.HideAll()
             PRT.SenderOverlay.Hide()
             Core.CloseAllOpenFrames()
         end)
@@ -351,10 +351,14 @@ PRT.CreateMainWindow = function(profile)
     RegisterESCHandler("mainWindow", mainWindow)
 
     -- Initialize sender and receiver frames
-    PRT.ReceiverOverlay.Show()
+    PRT.ReceiverOverlay.ShowAll()
     PRT.SenderOverlay.Show()    
     PRT.SenderOverlay.ShowPlaceholder(profile.overlay.sender)
-    PRT.ReceiverOverlay.ShowPlaceholder(profile.overlay.receiver)
+    
+    for i, receiverOverlay in ipairs(profile.overlay.receivers) do
+        local frame = PRT.ReceiverOverlay.overlayFrames[i]
+        PRT.ReceiverOverlay.ShowPlaceholder(frame, receiverOverlay)
+    end
 
     mainWindow:AddChild(mainWindowContent)
     
