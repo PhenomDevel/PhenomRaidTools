@@ -1,4 +1,14 @@
 ===============================================================================
+# Release 2.0.1.0-SL-ALPHA
+## Bugfixes
+None
+
+## Features
+ - Be able to configure multiple receiver overlays
+   - You can change the target overlay on each message (defaults to "1")
+
+
+===============================================================================
 # Release 2.0.0.0-SL-ALPHA
 ## Bugfixes
  - Make sure overlays will render from the beginning without opening options once
