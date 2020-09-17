@@ -45,7 +45,7 @@ local function NewDefaultReceiverOverlay(id, name, fontSize, r, g, b)
 		left = 960,
 		fontSize = fontSize,
 		fontColor = {
-			hex = "FFFFFF", 
+			hex = format("%02x%02x%02x%02x", 255, (r * 255), (g * 255), (b * 255)), 
 			r = r,
 			g = g,
 			b = b,
