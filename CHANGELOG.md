@@ -1,4 +1,14 @@
 ===============================================================================
+# Release 2.0.2.2-SL-ALPHA
+## Bugfixes
+ - Make sure default colors are set correctly
+ - Use correct receiver colors to display messages
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.0.2.1-SL-ALPHA
 ## Bugfixes
  - Be able to set sender overlay font again
