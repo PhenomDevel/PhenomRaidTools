@@ -60,7 +60,9 @@ ReceiverOverlay.ShowPlaceholder = function(frame, options, text)
         text = text.."\nDrag to move"
     end
 
-    frame.text:SetText(PRT.ColoredString(text, "FF"..options.fontColor.hex))  
+    local color = PRT.RGBAToHex(options.fontColor.r, options.fontColor.g, options.fontColor.b, options.fontColor.a)
+
+    frame.text:SetText(PRT.ColoredString(text, color))  
     PRT.Overlay.UpdateSize(frame)
 end
 
@@ -75,7 +77,7 @@ ReceiverOverlay.UpdateFrameText = function()
                     if message.expirationTime > GetTime() then           
                         local timeLeftRaw = message.expirationTime - GetTime()
                         local timeLeft = PRT.Round(timeLeftRaw, 2)                    
-                        local color = "FF"..(PRT.db.profile.overlay.receivers[frameIndex].fontColor.hex or "FFFFFF")
+                        local color = (PRT.db.profile.overlay.receivers[frameIndex].fontColor.hex or "FFFFFFFF")
         
                         if text == "" then                        
                             text = PRT.ColoredString(string.format(message.message, timeLeft), color)                        

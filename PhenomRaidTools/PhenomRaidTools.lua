@@ -34,7 +34,7 @@ local PhenomRaidToolsLDB = LibStub("LibDataBroker-1.1"):NewDataObject("PhenomRai
 
 -------------------------------------------------------------------------------
 -- Ace standard functions
-local function NewDefaultReceiverOverlay(id, name, fontSize)
+local function NewDefaultReceiverOverlay(id, name, fontSize, r, g, b)
 	return {
 		id = id, 
 		label = name, 
@@ -46,9 +46,9 @@ local function NewDefaultReceiverOverlay(id, name, fontSize)
 		fontSize = fontSize,
 		fontColor = {
 			hex = "FFFFFF", 
-			r = 0,
-			g = 0,
-			b = 0,
+			r = r,
+			g = g,
+			b = b,
 			a = 1
 		},
 		enableSound = true,
@@ -81,10 +81,10 @@ local defaults =  {
 
 		overlay = {
 			receivers = {
-				[1] = NewDefaultReceiverOverlay(1, "Default", 16),
-				[2] = NewDefaultReceiverOverlay(2, "Important", 32),
-				[3] = NewDefaultReceiverOverlay(3, "Unimportant", 24),
-				[4] = NewDefaultReceiverOverlay(4, "Special", 12)
+				[1] = NewDefaultReceiverOverlay(1, "Default", 16, 1, 1, 1),
+				[2] = NewDefaultReceiverOverlay(2, "Important", 32, 1, 0, 0),
+				[3] = NewDefaultReceiverOverlay(3, "Unimportant", 24, 0, 1, 0),
+				[4] = NewDefaultReceiverOverlay(4, "Special", 12, 0, 0, 1)
 			},
 
 			sender = {

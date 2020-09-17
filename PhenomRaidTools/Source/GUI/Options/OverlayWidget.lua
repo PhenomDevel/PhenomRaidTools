@@ -159,10 +159,10 @@ Overlay.AddReceiverOverlayWidget = function(options, container, index)
             widget:ClearFocus()
         end) 
 
-   local fontColor =  PRT.ColorPicker("overlayFontColor", options.fontColor)   
+   local fontColor =  PRT.ColorPicker("overlayFontColor", options.fontColor) 
    fontColor:SetCallback("OnValueConfirmed", 
        function(widget, event, r, g, b, a) 
-           options.fontColor.hex = format("%2x%2x%2x", r * 255, g * 255, b * 255)  
+           options.fontColor.hex = PRT.RGBAToHex(r, g, b, a)
            options.fontColor.r = r
            options.fontColor.g = g
            options.fontColor.b = b

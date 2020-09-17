@@ -513,6 +513,10 @@ PRT.PrepareMessageForDisplay = function(s)
     end
 end
 
+PRT.RGBAToHex = function(r,g,b,a)
+    return format("%02x%02x%02x%02x", (a * 255), (r * 255), (g * 255), (b * 255))
+end
+
 
 -------------------------------------------------------------------------------
 -- Unit Helper
