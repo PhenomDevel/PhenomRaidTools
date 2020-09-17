@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.0.2.3-SL-ALPHA
+## Bugfixes
+ - Make sure receiver overlay colors are set correctly on first start
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.0.2.2-SL-ALPHA
 ## Bugfixes
  - Make sure default colors are set correctly
