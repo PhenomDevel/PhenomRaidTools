@@ -10,6 +10,11 @@ local padding = 15
 Overlay.SavePosition = function(frame, options)
     local left, top = frame:GetLeft(), frame:GetTop()
     
+    if options.anchor == "CENTER" then
+        left = left + (frame.text:GetStringWidth() / 2) + padding
+        top = top - (frame.text:GetStringHeight() / 2) - padding
+    end
+
     options.top = UIParent:GetHeight() - top
     options.left = left
 end
