@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.0.2.4-SL-ALPHA
+## Bugfixes
+ - Make sure receiver overlay is positioned correctly after drag with mouse
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.0.2.3-SL-ALPHA
 ## Bugfixes
  - Make sure receiver overlay colors are set correctly on first start
