@@ -26,8 +26,7 @@ PRT.EmptyMessage = function()
             "ALL"
         },
         targetOverlay = 1,
-        delay = 0,
-        withSound = PRT.db.profile.triggerDefaults.messageDefaults.defaultWithSound
+        delay = 0
     }
 end
 
@@ -167,8 +166,7 @@ PRT.ExampleEncounter = function()
                                 targets = {
                                     "ALL"
                                 },
-                                delay = 0,
-                                withSound = true
+                                delay = 0
                             }
                         }
                     },
@@ -181,8 +179,7 @@ PRT.ExampleEncounter = function()
                                 targets = {
                                     "ALL"
                                 },
-                                delay = 0,
-                                withSound = true
+                                delay = 0
                             }
                         }
                     }
@@ -211,8 +208,7 @@ PRT.ExampleEncounter = function()
                                 targets = {
                                     "ALL"
                                 },
-                                delay = 0,
-                                withSound = true
+                                delay = 0
                             }
                         }
                     }
@@ -257,8 +253,7 @@ PRT.ExampleEncounter = function()
                                 targets = {
                                     "ALL"
                                 },
-                                delay = 0,
-                                withSound = true
+                                delay = 0
                             }
                         }
                     }
@@ -284,8 +279,7 @@ PRT.ExampleEncounter = function()
                                 targets = {
                                     "ALL"
                                 },
-                                delay = 0,
-                                withSound = true
+                                delay = 0
                             }
                         }
                     }

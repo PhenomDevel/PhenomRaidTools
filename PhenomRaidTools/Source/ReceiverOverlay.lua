@@ -18,7 +18,7 @@ ReceiverOverlay.AddMessage = function(messageTable)
     local receiverOverlayFrame = PRT.db.profile.overlay.receivers[(messageTable.targetOverlay or 1)]
 
     messageTable.expirationTime = GetTime() + (messageTable.duration or 5)
-    if messageTable.withSound == true and receiverOverlayFrame.enableSound then
+    if receiverOverlayFrame.enableSound then
         local soundFile = messageTable.soundFile   
         local customWillPlay 
 

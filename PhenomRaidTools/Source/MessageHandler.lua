@@ -29,10 +29,9 @@ MessageHandler.MessageToReceiverMessage = function(message)
     local target = message.target or ""
     local spellID = message.spellID or ""
     local duration = message.duration or ""
-    local withSound = message.withSound or ""
     local message = message.message or ""
     
-    return target.."?"..spellID.."#"..duration.."&"..message.."~"..withSound
+    return target.."?"..spellID.."#"..duration.."&"..message
 end
 
 MessageHandler.ExpandMessageTargets = function(message)
@@ -90,12 +89,7 @@ MessageHandler.ExecuteMessageAction = function(message)
                 AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.addonMessage, PRT.TableToString(targetMessage), "RAID") 
             elseif PRT.db.profile.weakAuraMode then
                 local weakAuraReceiverMessage = nil
-                -- Determine if the message should play a sound on the receiver side
-                if message.withSound then 
-                    targetMessage.withSound = "t"
-                else 
-                    targetMessage.withSound = "f"
-                end
+
                 weakAuraReceiverMessage = MessageHandler.MessageToReceiverMessage(targetMessage) 
                 PRT.Debug("Sending new weakaura message", weakAuraReceiverMessage)
                 MessageHandler.SendMessageToReceiver(weakAuraReceiverMessage) 
