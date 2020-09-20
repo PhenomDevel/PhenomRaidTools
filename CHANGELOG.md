@@ -1,4 +1,15 @@
 ===============================================================================
+# Release 2.0.2.5-SL-ALPHA
+## Bugfixes
+ - Be able to create new triggers again
+   - You're no longer able to mute single messages. This change is due to the 
+     facts that each player can mute certain reicever overlays
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.0.2.4-SL-ALPHA
 ## Bugfixes
  - Make sure receiver overlay is positioned correctly after drag with mouse
