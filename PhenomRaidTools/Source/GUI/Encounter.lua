@@ -2,38 +2,38 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 local Encounter = {
     currentEncounters = {
-        -- Castle Nathria
-       { id = 9999, name = L["--- Castle Nathria ---"], disabled = true},
-       { id = 10001, name = L["CN - Shriekwing"] },
-       { id = 10002, name = L["CN - Altimor the Huntsman"] },
-       { id = 10003, name = L["CN - Hungering Destroyer"] },
-       { id = 10004, name = L["CN - Artificer Xy'Mox"] },
-       { id = 10005, name = L["CN - Sun King's Salvation"] },
-       { id = 10006, name = L["CN - Lady Inerva Darkvein"] },
-       { id = 10007, name = L["CN - The Council of Blood"] },
-       { id = 10008, name = L["CN - Sludgefist"] },
-       { id = 10009, name = L["CN - Stoneborne Generals"] },
-       { id = 10010, name = L["CN - Sire Denathrius"] },
+            -- Castle Nathria
+        { id = 9999, name = L["--- Castle Nathria ---"], disabled = true},
+        { id = 2398, name = L["CN - Shriekwing"] },
+        { id = 2418, name = L["CN - Altimor the Huntsman"] },
+        { id = 2383, name = L["CN - Hungering Destroyer"] },
+        { id = 2405, name = L["CN - Artificer Xy'Mox"] },
+        { id = 2402, name = L["CN - Sun King's Salvation"] },
+        { id = 2406, name = L["CN - Lady Inerva Darkvein"] },
+        { id = 2412, name = L["CN - The Council of Blood"] },
+        { id = 2399, name = L["CN - Sludgefist"] },
+        { id = 2417, name = L["CN - Stoneborne Generals"] },
+        { id = 2407, name = L["CN - Sire Denathrius"] },
 
-        -- De Other Side
-       { id = 20000, name = L["--- De Other Side ---"], disabled = true},
-       { id = 20001, name = L["DOS - Hakkar the Soulflayer"] },
-       { id = 20002, name = L["DOS - The Manastorms"] },
-       { id = 20003, name = L["DOS - Dealer Xy'exa"] },
-       { id = 20004, name = L["DOS - Mueh'zala"] },
+            -- De Other Side
+        { id = 20000, name = L["--- De Other Side ---"], disabled = true},
+        { id = 2395, name = L["DOS - Hakkar the Soulflayer"] },
+        { id = 2394, name = L["DOS - The Manastorms"] },
+        { id = 2400, name = L["DOS - Dealer Xy'exa"] },
+        { id = 2396, name = L["DOS - Mueh'zala"] },
 
         -- Halls of Atonement
         { id = 30000, name = L["--- Halls of Atonement ---"], disabled = true},
-        { id = 30001, name = L["HOA - Halkias, the Sin-Stained Goliath"] },
-        { id = 30002, name = L["HOA - Echelon"] },
-        { id = 30003, name = L["HOA - High Adjudicator Aleez"] },
-        { id = 30004, name = L["HOA - Lord Chamberlain"] },
+        { id = 2401, name = L["HOA - Halkias, the Sin-Stained Goliath"] },
+        { id = 2380, name = L["HOA - Echelon"] },
+        { id = 2403, name = L["HOA - High Adjudicator Aleez"] },
+        { id = 2381, name = L["HOA - Lord Chamberlain"] },
 
         -- Mists of Tirna Scithe
         { id = 40000, name = L["--- Mists of Tirna Scithe ---"], disabled = true},
-        { id = 40001, name = L["MOTS - Ingra Maloch"] },
-        { id = 40002, name = L["MOTS - Mistcaller"] },
-        { id = 40003, name = L["MOTS - Tred'ova"] },
+        { id = 2397, name = L["MOTS - Ingra Maloch"] },
+        { id = 2392, name = L["MOTS - Mistcaller"] },
+        { id = 2393, name = L["MOTS - Tred'ova"] },
 
         -- Necrotic Wake
         { id = 50000, name = L["--- Necrotic Wake ---"], disabled = true},
@@ -44,10 +44,10 @@ local Encounter = {
 
         -- Plaguefall
         { id = 60000, name = L["--- Plaguefall ---"], disabled = true},
-        { id = 60001, name = L["PF - Globgrog"] },
-        { id = 60002, name = L["PF - Doctor Ickus"] },
-        { id = 60003, name = L["PF - Domina Venomblade"] },
-        { id = 60004, name = L["PF - Margrave Stradama"] },
+        { id = 2382, name = L["PF - Globgrog"] },
+        { id = 2384, name = L["PF - Doctor Ickus"] },
+        { id = 2385, name = L["PF - Domina Venomblade"] },
+        { id = 2386, name = L["PF - Margrave Stradama"] },
 
         -- Sanguine Depths
         { id = 70000, name = L["--- Sanguine Depths ---"], disabled = true},
