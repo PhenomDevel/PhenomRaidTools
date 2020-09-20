@@ -1,6 +1,15 @@
 ===============================================================================
 # Release 2.0.2.5-SL-ALPHA
 ## Bugfixes
+None
+
+## Features
+ - Added shadowlands encounter ids for encounter select
+
+
+===============================================================================
+# Release 2.0.2.5-SL-ALPHA
+## Bugfixes
  - Be able to create new triggers again
    - You're no longer able to mute single messages. This change is due to the 
      facts that each player can mute certain reicever overlays
