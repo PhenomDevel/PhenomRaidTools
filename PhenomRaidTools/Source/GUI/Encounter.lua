@@ -37,10 +37,10 @@ local Encounter = {
 
         -- Necrotic Wake
         { id = 50000, name = L["--- Necrotic Wake ---"], disabled = true},
-        { id = 50001, name = L["NW - Blightbone"] },
-        { id = 50002, name = L["NW - Amarth, The Reanimator"] },
-        { id = 50003, name = L["NW - Surgeon Stitchflesh"] },
-        { id = 50004, name = L["NW - Nalthor the Rimebinder"] },
+        { id = 2387, name = L["NW - Blightbone"] },
+        { id = 2388, name = L["NW - Amarth, The Reanimator"] },
+        { id = 2389, name = L["NW - Surgeon Stitchflesh"] },
+        { id = 2390, name = L["NW - Nalthor the Rimebinder"] },
 
         -- Plaguefall
         { id = 60000, name = L["--- Plaguefall ---"], disabled = true},
@@ -51,25 +51,25 @@ local Encounter = {
 
         -- Sanguine Depths
         { id = 70000, name = L["--- Sanguine Depths ---"], disabled = true},
-        { id = 70001, name = L["SD - Kryxis the Voracious"] },
-        { id = 70002, name = L["SD - Executor Tarvold"] },
-        { id = 70003, name = L["SD - Grand Proctor Beryllia"] },
-        { id = 70004, name = L["SD - General Kaal"] },
+        { id = 2360, name = L["SD - Kryxis the Voracious"] },
+        { id = 2361, name = L["SD - Executor Tarvold"] },
+        { id = 2362, name = L["SD - Grand Proctor Beryllia"] },
+        { id = 2363, name = L["SD - General Kaal"] },
 
         -- Spires of Ascension
         { id = 80000, name = L["--- Spires of Ascension ---"], disabled = true},
-        { id = 80001, name = L["SOA - Kin-Tara"] },
-        { id = 80002, name = L["SOA - Ventunax"] },
-        { id = 80003, name = L["SOA - Oryphrion"] },
-        { id = 80004, name = L["SOA - Devo, Paragon of Doubt"] },
+        { id = 2357, name = L["SOA - Kin-Tara"] },
+        { id = 2356, name = L["SOA - Ventunax"] },
+        { id = 2358, name = L["SOA - Oryphrion"] },
+        { id = 2359, name = L["SOA - Devos, Paragon of Doubt"] },
 
         -- Theater of Pain
         { id = 90000, name = L["--- Theater of Pain ---"], disabled = true},
-        { id = 90001, name = L["TOP - An Affront of Challengers"] },
-        { id = 90002, name = L["TOP - Gorechop"] },
-        { id = 90003, name = L["TOP - Xav the Unfallen"] },
-        { id = 90004, name = L["TOP - Kul'tharok"] },
-        { id = 90003, name = L["TOP - Mordretha, the Endless Empress"] },
+        { id = 2391, name = L["TOP - An Affront of Challengers"] },
+        { id = 2365, name = L["TOP - Gorechop"] },
+        { id = 2366, name = L["TOP - Xav the Unfallen"] },
+        { id = 2364, name = L["TOP - Kul'tharok"] },
+        { id = 2404, name = L["TOP - Mordretha, the Endless Empress"] },
     }
 }
 
