@@ -148,6 +148,7 @@ if GetLocale() == "deDE" then
     -- RotationEntries
     L["rotationEntryHeading"] = "Rotationseinträge"
     L["rotationEntryDeleteButton"] = "|cFFed3939Eintrag entfernen|r"
+    L["cloneRotationEntry"] = "Rotationseintrag duplizieren"        
 
     -- Percentages
     L["percentageEnabled"] = "Aktiviert"
@@ -158,6 +159,7 @@ if GetLocale() == "deDE" then
     L["percentageCheckAgain"] = "Mehrfach prüfen?"
     L["percentageOptionsHeading"] = "Optionen"
     L["percentageCheckAgainAfter"] = "Nochmal prüfen nach (s)"
+    L["clonePercentageEntry"] = "Prozenteintrag duplizieren"
 
     -- Percentage Entries
     L["percentageEntryDeleteButton"] = "|cFFed3939Prozenteintrag entfernen|r"
@@ -223,7 +225,7 @@ if GetLocale() == "deDE" then
     L["timingSecondsTooltip"] = "Die Zeiten bei denen die Nachrichten an die Empfänger geschickt werden. (Gezählt ab der Aktivierung des Timers; Kommaseparierte Liste z.B. 1, 3, 10)"
     L["timingDeleteButton"] = "|cFFed3939Auslösungszeit entfernen|r"
     L["timingOptionsHeading"] = "Optionen"
-
+    L["cloneTiming"] = "Timing duplizieren"
 
     -- Overlay
     L["senderGroup"] = "Absender"

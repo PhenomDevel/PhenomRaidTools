@@ -6,7 +6,7 @@ local Rotation = {}
 -------------------------------------------------------------------------------
 -- Local Helper
 
-Rotation.RotationEntryWidget = function(entry, container)
+Rotation.RotationEntryWidget = function(entry, container, key, entries)
     local messagesTabs = PRT.TableToTabs(entry.messages, true)
     local messagesTabGroup = PRT.TabGroup("messageHeading", messagesTabs)    
     messagesTabGroup:SetLayout("List")
@@ -18,6 +18,15 @@ Rotation.RotationEntryWidget = function(entry, container)
     PRT.SelectFirstTab(messagesTabGroup, entry.messages)    	
 
     container:AddChild(messagesTabGroup)
+
+    local cloneButton = PRT.Button("cloneRotationEntry")
+    cloneButton:SetCallback("OnClick",
+        function()
+            local clone = PRT.CopyTable(entry)
+            tinsert(entries, clone)
+            PRT.Core.ReselectCurrentValue()
+        end)
+    container:AddChild(cloneButton)        
 end
 
 Rotation.RotationWidget = function(rotation, container, deleteButton, cloneButton)

@@ -6,7 +6,7 @@ local Timer = {}
 -------------------------------------------------------------------------------
 -- Local Helper
 
-Timer.TimingWidget = function(timing, container)
+Timer.TimingWidget = function(timing, container, key, timings)
     local timingOptionsGroup = PRT.InlineGroup("timingOptionsHeading")
 
     sort(timing.seconds)
@@ -36,6 +36,15 @@ Timer.TimingWidget = function(timing, container)
     timingOptionsGroup:AddChild(secondsEditBox)
     container:AddChild(timingOptionsGroup)
     container:AddChild(messagesTabGroup)
+
+    local cloneButton = PRT.Button("cloneTiming")
+    cloneButton:SetCallback("OnClick",
+        function()
+            local clone = PRT.CopyTable(timing)
+            tinsert(timings, clone)
+            PRT.Core.ReselectCurrentValue()
+        end)
+    container:AddChild(cloneButton)  
 end
 
 Timer.TimerWidget = function(timer, container, deleteButton, cloneButton)    

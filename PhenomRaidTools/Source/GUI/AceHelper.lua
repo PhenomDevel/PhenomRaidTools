@@ -54,9 +54,9 @@ AceHelper.RemoveTab = function(widget, t, item)
 
 	if getn(t) == 0 then
 		widget:ReleaseChildren()
-    end
+   end
     
-	 PRT.Core.UpdateScrollFrame()
+	PRT.Core.UpdateScrollFrame()
 end
 
 
@@ -123,7 +123,7 @@ PRT.TabGroupSelected = function(widget, t, key, itemFunction, emptyItemFunction,
             item = t[key]
 		  end
 		
-		itemFunction(item, widget, key) 
+		itemFunction(item, widget, key, t) 
 
 		if deleteButton then
 			local deleteButtonText = L[deleteTextID]

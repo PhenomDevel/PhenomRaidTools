@@ -151,6 +151,7 @@ L = {
     -- RotationEntries
     ["rotationEntryHeading"] = "Rotation Entries",
     ["rotationEntryDeleteButton"] = "|cFFed3939Delete Rotation Entry|r",
+    ["cloneRotationEntry"] = "Clone Rotation Entry",       
 
     -- Percentages
     ["percentageEnabled"] = "Enabled",
@@ -163,6 +164,7 @@ L = {
     ["percentageOptionsHeading"] = "Percentage Options",
     ["percentageCheckAgainAfter"] = "Check again after (s)",
     ["percentageCheckAgain"] = "Check multiple times",
+    ["clonePercentageEntry"] = "Clone Percentage Entry",
 
     -- Percentage Entries
     ["percentageEntryDeleteButton"] = "|cFFed3939Delete Percentage Entry|r",
@@ -231,7 +233,7 @@ L = {
     ["timingSecondsTooltip"] = "Times at which this trigger should be executed (comma separated list of seconds e.g. 1, 5, 20)",
     ["timingDeleteButton"] = "|cFFed3939Delete Timing|r",
     ["timingOptionsHeading"] = "Options",
-
+    ["cloneTiming"] = "Clone Timing",
 
     -- Overlay
     ["senderGroup"] = "Sender",

@@ -100,6 +100,7 @@ end
 
 PRT.NewCloneButton = function(container, t, idx, textID, entityName)
     local cloneButton = PRT.Button(textID)
+    
     cloneButton:SetCallback("OnClick", 
         function() 
             local text = L["cloneConfirmationText"]

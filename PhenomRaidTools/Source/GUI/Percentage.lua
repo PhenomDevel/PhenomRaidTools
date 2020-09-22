@@ -21,7 +21,7 @@ local Percentage = {
 -------------------------------------------------------------------------------
 -- Local Helper
 
-Percentage.PercentageEntryWidget = function(entry, container)
+Percentage.PercentageEntryWidget = function(entry, container, key, entries)
     local percentageEntryOptionsGroup = PRT.InlineGroup("percentageEntryOptionsHeading")
 
     local operatorDropdown = PRT.Dropdown("percentageEntryOperatorDropdown", Percentage.operatorValues, entry.operator)
@@ -56,6 +56,15 @@ Percentage.PercentageEntryWidget = function(entry, container)
 
     container:AddChild(percentageEntryOptionsGroup)
     container:AddChild(messagesTabGroup)
+
+    local cloneButton = PRT.Button("clonePercentageEntry")
+    cloneButton:SetCallback("OnClick",
+        function()
+            local clone = PRT.CopyTable(entry)
+            tinsert(entries, clone)
+            PRT.Core.ReselectCurrentValue()
+        end)
+    container:AddChild(cloneButton)  
 end
 
 Percentage.PercentageWidget = function(percentage, container, deleteButton, cloneButton)

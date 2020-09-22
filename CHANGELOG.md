@@ -1,4 +1,15 @@
 ===============================================================================
+# Release 2.0.4.0-SL-ALPHA
+## Bugfixes
+None
+
+## Features
+ - Be able to clone rotation entries
+ - Be able to clone timings
+ - Be able to clone percentages
+
+
+===============================================================================
 # Release 2.0.3.0-SL-ALPHA
 ## Bugfixes
 None
