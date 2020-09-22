@@ -230,6 +230,7 @@ if GetLocale() == "deDE" then
     -- Overlay
     L["senderGroup"] = "Absender"
     L["receiversGroup"] = "Empfänger"
+    L["overlayLabel"] = "Name"
     L["overlaySoundGroup"] = "Sound"
     L["overlayFontGroup"] = "Schrift"
     L["overlayPositionGroup"] = "Position"

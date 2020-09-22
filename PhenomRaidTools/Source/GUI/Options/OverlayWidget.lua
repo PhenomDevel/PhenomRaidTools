@@ -149,7 +149,7 @@ end
 
 Overlay.AddReceiverOverlayWidget = function(options, container, index)
     local overlayFrame = PRT.ReceiverOverlay.overlayFrames[index]
-    local labelEditBox = PRT.EditBox("", options.label)
+    local labelEditBox = PRT.EditBox("overlayLabel", options.label)
     labelEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
             local text = widget:GetText()

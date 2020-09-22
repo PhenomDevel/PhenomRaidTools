@@ -238,6 +238,7 @@ L = {
     -- Overlay
     ["senderGroup"] = "Sender",
     ["receiversGroup"] = "Receiver",
+    ["overlayLabel"] = "Label",
     ["overlaySoundGroup"] = "Sound",
     ["overlayFontGroup"] = "Font",
     ["overlayPositionGroup"] = "Position",
