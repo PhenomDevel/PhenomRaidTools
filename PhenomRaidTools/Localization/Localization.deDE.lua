@@ -262,6 +262,12 @@ if GetLocale() == "deDE" then
     L["cloneConfirmationText"] = "Bist Du sicher, dass Du diesen Auslöser duplizieren möchtest?"
     L["optionsCustomNameDeleteButtonConfirmation"] = "Bist Du sicher, dass du den benutzerdefinierten Platzhalter entfernen willst?"
 
+    -- Import/Export
+    L["exportFrame"] = "Export"
+    L["importFrame"] = "Import"
+    L["exportButton"] = "Export"
+    L["importButton"] = "Import"
+
     -- Clone
     L["cloneTimer"] = "Timer duplizieren"
     L["cloneRotation"] = "Rotation duplizieren"

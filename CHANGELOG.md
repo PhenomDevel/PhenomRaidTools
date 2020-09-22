@@ -1,4 +1,16 @@
 ===============================================================================
+# Release 2.0.3.0-SL-ALPHA
+## Bugfixes
+None
+
+## Features
+ - Be able to export custom placeholders
+ - Be able to import custom placeholders
+   - Newly imported placeholders will be *added* to the existing ones. They
+     won't overwrite the existing ones
+
+
+===============================================================================
 # Release 2.0.2.6-SL-ALPHA
 ## Bugfixes
 None

@@ -270,6 +270,12 @@ L = {
     ["cloneConfirmationText"] = "Are you sure you want to clone the trigger:",
     ["optionsCustomPlaceholderDeleteButtonConfirmation"] = "Are you sure you want to delete custom placeholder?",
 
+    -- Import/Export
+    ["exportFrame"] = "Export",
+    ["importFrame"] = "Import",
+    ["exportButton"] = "Export",
+    ["importButton"] = "Import",
+
     -- Clone
     ["cloneTimer"] = "Clone Timer",
     ["cloneRotation"] = "Clone Rotation",

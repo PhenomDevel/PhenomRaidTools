@@ -72,6 +72,20 @@ local addCustomPlaceholderWidget = function(customPlaceholder, container, tabKey
    container:AddChild(clearEmptyNamesButton)
 end
 
+local importSuccess = function(container, customPlaceholders, importedCustomPlaceholders)
+   if customPlaceholders then
+      for i, customPlaceholder in ipairs(importedCustomPlaceholders) do
+         tinsert(customPlaceholders, customPlaceholder)
+      end
+      container:ReleaseChildren()
+      PRT.AddCustomPlaceholdersWidget(container, customPlaceholders)
+      PRT.Info("Custom placeholders imported successfully.")         
+   else
+      PRT.Error("Something went wrong while importing custom placeholders.")
+   end
+end
+
+
 -------------------------------------------------------------------------------
 -- Public API
 
@@ -82,6 +96,21 @@ PRT.AddCustomPlaceholdersWidget = function(container, customPlaceholders)
    subDescription:SetRelativeWidth(1)   
    container:AddChild(description)
    container:AddChild(subDescription)
+
+   local importButton = PRT.Button("importButton")
+   importButton:SetCallback("OnClick",
+      function()
+         PRT.CreateImportFrame(
+            function(t) 
+               importSuccess(container, customPlaceholders, t) 
+            end)
+      end)
+
+   local exportButton = PRT.Button("exportButton")
+   exportButton:SetCallback("OnClick",
+      function()
+         PRT.CreateExportFrame(customPlaceholders)
+      end)
 
    local placeholderTabs = PRT.TableToTabs(customPlaceholders, true)
    local placeholdersTabGroup = PRT.TabGroup("optionsCustomPlaceholdersHeading", placeholderTabs)   
@@ -94,5 +123,7 @@ PRT.AddCustomPlaceholdersWidget = function(container, customPlaceholders)
 
    PRT.SelectFirstTab(placeholdersTabGroup, customPlaceholders) 
 
+   container:AddChild(importButton)
+   container:AddChild(exportButton)
    container:AddChild(placeholdersTabGroup)
 end

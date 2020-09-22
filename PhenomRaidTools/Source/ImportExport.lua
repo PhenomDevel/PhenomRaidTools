@@ -6,9 +6,9 @@ local ImportExport = {}
 -------------------------------------------------------------------------------
 -- Public API
 
-PRT.CreateImportEncounterFrame = function(encounters)
+PRT.CreateImportFrame = function(successFunction)
     if not PRT.Core.FrameExists("importFrame") then
-        local importFrame = PRT.Frame("importEncounter")
+        local importFrame = PRT.Frame("importFrame")
         importFrame:SetLayout("Fill")
         
         local importDataBox = PRT.MultiLineEditBox()
@@ -19,17 +19,10 @@ PRT.CreateImportEncounterFrame = function(encounters)
 
         importFrame:SetCallback("OnClose", function(widget)
             local text = importDataBox:GetText()
-            local worked, encounter = PRT.StringToTable(text)     
+            local worked, t = PRT.StringToTable(text)     
             
-            if worked == true then
-                local idx, existingEncounter = PRT.FilterEncounterTable(encounters, encounter.id)
-                if not existingEncounter then
-                    tinsert(encounters, encounter)
-                    PRT.mainWindow:ReleaseChildren()
-                    PRT.mainWindow:AddChild(PRT.Core.CreateMainWindowContent(PRT.db.profile))            
-                else
-                    PRT.Error("Stopped import due to already existing encounter with the same id:", existingEncounter.name)
-                end
+            if worked == true then             
+                successFunction(t)
             else
                 if not (text == "") then
                     PRT.Error("Import was not successfull.")
@@ -44,16 +37,16 @@ PRT.CreateImportEncounterFrame = function(encounters)
     end
 end
 
-PRT.CreateExportEncounterFrame = function(encounter)
+PRT.CreateExportFrame = function(t)
     if not PRT.Core.FrameExists("exportFrame") then
-        local exportFrame = PRT.Frame("exportEncounter")  
+        local exportFrame = PRT.Frame("exportFrame")  
         exportFrame:SetLayout("Fill")
         exportFrame:SetCallback("OnClose", 
             function(widget)
                 PRT.Core.UnregisterFrame("exportFrame")
             end)
 
-        local exportDataBox = PRT.MultiLineEditBox(nil, PRT.TableToString(encounter))
+        local exportDataBox = PRT.MultiLineEditBox(nil, PRT.TableToString(t))
         exportDataBox:SetLabel("String")
         exportDataBox:SetFocus()
         exportDataBox:DisableButton(true)

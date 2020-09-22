@@ -162,6 +162,18 @@ local addPercentageOverviewEntry = function(container, prefix, percentage)
     addOverviewEmptyLine(container)
 end
 
+local importSuccess = function(encounter)
+    local idx, existingEncounter = PRT.FilterEncounterTable(PRT.db.profile.encounters, encounter.id)
+    if not existingEncounter then
+        tinsert(PRT.db.profile.encounters, encounter)
+        PRT.mainWindow:ReleaseChildren()
+        PRT.mainWindow:AddChild(PRT.Core.CreateMainWindowContent(PRT.db.profile))   
+        PRT.Info("Encounter imported successfully.")         
+    else
+        PRT.Error("Stopped import due to already existing encounter with the same id:", existingEncounter.name)
+    end
+end
+
 
 -------------------------------------------------------------------------------
 -- Local Helper
@@ -230,8 +242,8 @@ PRT.AddEncountersWidgets = function(container, profile)
 
     local importButton = PRT.Button("importEncounter")
 	importButton:SetCallback("OnClick",
-		function(widget)
-			PRT.CreateImportEncounterFrame(profile.encounters)
+        function(widget)            
+			PRT.CreateImportFrame(importSuccess)
         end)
 
     encounterOptionsGroup:SetLayout("Flow")
@@ -321,7 +333,7 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
 
     exportButton:SetCallback("OnClick",
         function(widget)
-            PRT.CreateExportEncounterFrame(encounter)
+            PRT.CreateExportFrame(encounter)
         end)
 
     enabledCheckBox:SetRelativeWidth(1)
