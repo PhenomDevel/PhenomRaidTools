@@ -60,7 +60,6 @@ MessageHandler.ExpandMessageTargets = function(message)
         end
     end
 
-    -- TODO: Distinct targets?
     return distinctTargets
 end
 

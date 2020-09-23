@@ -87,21 +87,15 @@ If you like the addon and want to support it's development you can simply do so 
  - [Backlog] Be able to configure multiple conditions for each trigger. Like trigger on `ENCOUNTER_START` *or* `SPELL_CAST_SUCCESS/123`
  - [Backlog] Sync function to sync all encounters with someone else at once
  - [Backlog] Add "global" encounter which will always be merged with the current encounter for e.g. seconds pots or something
- - [Backlog] Have multiple overlays for messages like Important, normal and unimportant or something which alle can be positioned differently. The sender can configure the positions for the messages and those will be send to the receiver. The receiver can overwrite these positions if wanted.
 
 ## TODOs
  - Translate error messages and debug messages
- - Hide receiver backdrop if player is in combat and `locked` is unchecked
  - Add error log for current session
  - Add small descriptions of triggers to the overview to help ppl use them
  - Translate encounter overview strings
- - Be able to export encounter as exorsus note? 
- - Trigger disabled based on raid difficulty
  - Create YouTube tutorials for the different trigger types
  - Implement generic handling of start/stop condition handlers
  - Implement generic handling of start/stop condition counter handler
- - Actually make transparent group transparent when using elvui
  - Add images to readme 
  - Overhaul readme in general and add all features on the list
  - Support profiles (https://www.wowace.com/projects/ace3/pages/api/ace-db-3-0)
- - Be able to clone entries of a given trigger

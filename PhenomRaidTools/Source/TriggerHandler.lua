@@ -336,7 +336,6 @@ PRT.CheckRotationTriggerCondition = function(rotations, event, combatEvent, even
     end
 end
 
--- TODO Use same method for health and power just use another calc fn
 -- Health Percentages
 PRT.CheckUnitHealthPercentages = function(percentages)
     if percentages ~= nil then

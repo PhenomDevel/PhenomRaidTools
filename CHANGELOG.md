@@ -1,4 +1,14 @@
 ===============================================================================
+# Release 2.0.4.1-SL-ALPHA
+## Bugfixes
+ - Added label to overlay name input
+ - Changed media file names to reflect origin
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.0.4.0-SL-ALPHA
 ## Bugfixes
 None
