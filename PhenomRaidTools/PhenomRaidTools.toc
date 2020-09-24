@@ -1,4 +1,4 @@
-## Interface: 80300
+## Interface: 90002
 ## Title: PhenomRaidTools
 ## Version: @project-version@
 ## Author: @project-author@
