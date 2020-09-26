@@ -1,4 +1,9 @@
 ===============================================================================
+# Release 2.0.4.1
+This release supports the upcoming shadowlands beta / pre-patch.
+
+
+===============================================================================
 # Release 2.0.4.1-SL-ALPHA
 ## Bugfixes
  - Added label to overlay name input
