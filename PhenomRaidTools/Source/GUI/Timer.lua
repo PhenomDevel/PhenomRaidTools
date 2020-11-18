@@ -32,10 +32,18 @@ Timer.TimingWidget = function(timing, container, key, timings)
             PRT.TabGroupSelected(widget, timing.messages, key, PRT.MessageWidget, PRT.EmptyMessage, true, "messageDeleteButton") 
         end)
 
+    local offsetSlider = PRT.Slider("timingsOffset", timing.offset, true)	
+    offsetSlider:SetSliderValues(-60, 60, 1)
+    offsetSlider:SetCallback("OnValueChanged", 
+        function(widget)
+            timing.offset = tonumber(widget:GetValue()) 
+        end)
+
     PRT.SelectFirstTab(messagesTabGroup, timing.messages)  
     timingOptionsGroup:AddChild(secondsEditBox)
+    timingOptionsGroup:AddChild(offsetSlider)
     container:AddChild(timingOptionsGroup)
-    container:AddChild(messagesTabGroup)
+    container:AddChild(messagesTabGroup)    
 
     local cloneButton = PRT.Button("cloneTiming")
     cloneButton:SetCallback("OnClick",

@@ -24,10 +24,21 @@ TriggerHandler.CheckCondition = function(condition, event, combatEvent, spellID,
 end
 
 TriggerHandler.FilterTimingsTable = function(timings, timeOffset)
-    local value
-    if timings then
+    local value        
+    if timings then        
         for i, v in ipairs(timings) do
-            if tContains(v.seconds, timeOffset) then
+            local secondsWithOffset
+            
+            if v.offset then
+                secondsWithOffset = {}
+                for i, second in ipairs(v.seconds) do 
+                    tinsert(secondsWithOffset, second + (v.offset or 0))
+                end
+            else
+                secondsWithOffset = v.seconds
+            end
+
+            if tContains(secondsWithOffset, timeOffset) then
                 if not value then
                     value = v
                 end

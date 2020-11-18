@@ -37,6 +37,7 @@ end
 PRT.EmptyTiming = function()
     return {
         seconds = {1},
+        offset = 0,
         messages = {
             PRT.EmptyMessage()
         }
@@ -287,6 +288,10 @@ PRT.ExampleEncounter = function()
                 ignoreAfterActivation = false,
                 ignoreDuration = nil
             }
+        },
+
+        CustomPlaceholders = {
+            
         }
     }
 end
