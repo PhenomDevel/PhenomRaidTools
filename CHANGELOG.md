@@ -1,4 +1,16 @@
 ===============================================================================
+# Release 2.0.5.0-BETA
+## Bugfixes
+None
+
+## Features
+ - Add custom placeholders for each encounter
+  - Those will be exported / imported along with the given encounter
+ - Add offset slider for timings which will be substracted from the timings
+  - Can be used to offset all timings of a timer  
+
+
+===============================================================================
 # Release 2.0.4.1
 This release supports the upcoming shadowlands beta / pre-patch.
 

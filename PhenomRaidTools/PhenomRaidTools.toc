@@ -35,6 +35,7 @@ Source/GUI/AceHelper.lua
 Source/GUI/Condition.lua
 Source/GUI/Message.lua
 Source/GUI/Timer.lua
+Source/GUI/CustomPlaceholder.lua
 Source/GUI/Rotation.lua
 Source/GUI/Percentage.lua
 Source/GUI/Encounter.lua

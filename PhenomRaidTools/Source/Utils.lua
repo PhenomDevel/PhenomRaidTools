@@ -451,6 +451,25 @@ PRT.ExchangeSpellIcons = function(s)
         end)
 end
 
+PRT.AddCustomPlaceholdersToPlayerNames = function(token, t, customPlaceholders)
+    for i, customPlaceholder in ipairs(customPlaceholders) do
+        if customPlaceholder.name == token then
+            if customPlaceholder.type == "group" then
+                for i = #customPlaceholder.names, 1, -1 do
+                    tinsert(t, strtrim(customPlaceholder.names[i], " "))
+                end
+            else
+                for nameIdx, name in ipairs(customPlaceholder.names) do
+                    if PRT.UnitInParty(name) or UnitExists(name) then
+                        tinsert(t, strtrim(name, " "))
+                        break
+                    end
+                end
+            end                
+        end
+    end
+end
+
 PRT.PlayerNamesByToken = function(token)
     token = strtrim(token, " ")
     local playerNames = {}    
@@ -469,30 +488,16 @@ PRT.PlayerNamesByToken = function(token)
                 tinsert(playerNames, strtrim(name, " "))
             end
         end
-    elseif PRT.db.profile.customPlaceholders then
-        for i, customPlaceholder in ipairs(PRT.db.profile.customPlaceholders) do
-            if customPlaceholder.name == token then
-                if customPlaceholder.type == "group" then
-                    for i = #customPlaceholder.names, 1, -1 do
-                        tinsert(playerNames, strtrim(customPlaceholder.names[i], " "))
-                    end
-                else
-                    for nameIdx, name in ipairs(customPlaceholder.names) do
-                        if PRT.UnitInParty(name) or UnitExists(name) then
-                            tinsert(playerNames, strtrim(name, " "))
-                            break
-                        end
-                    end
-                end                
-            end
-        end
+    elseif PRT.db.profile.customPlaceholders or PRT.currentEncounter.encounter.CustomPlaceholders then
+        PRT.AddCustomPlaceholdersToPlayerNames(token, playerNames, PRT.db.profile.customPlaceholders)        
+        PRT.AddCustomPlaceholdersToPlayerNames(token, playerNames, PRT.currentEncounter.encounter.CustomPlaceholders)
     else
         tinsert(playerNames, "N/A")
     end
 
     if table.empty(playerNames) then
         tinsert(playerNames, "N/A")
-    end
+    end    
 
     return playerNames
 end

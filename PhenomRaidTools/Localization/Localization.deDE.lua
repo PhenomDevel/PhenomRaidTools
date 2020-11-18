@@ -84,6 +84,7 @@ if GetLocale() == "deDE" then
     L["treeRotation"] = "Rotationen"
     L["treeHealthPercentage"] = "Lebens-Prozente"
     L["treePowerPercentage"] = "Energie-Prozente"
+    L["treeCustomPlaceholder"] = "Platzhalter"
 
     -- Defaults
     L["rotationDefaults"] = "Rotation"

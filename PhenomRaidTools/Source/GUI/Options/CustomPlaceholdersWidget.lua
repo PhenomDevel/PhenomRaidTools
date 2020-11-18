@@ -89,6 +89,20 @@ end
 -------------------------------------------------------------------------------
 -- Public API
 
+PRT.AddCustomPlaceholdersTabGroup = function(container, customPlaceholders)
+   local placeholderTabs = PRT.TableToTabs(customPlaceholders, true)
+   local placeholdersTabGroup = PRT.TabGroup("optionsCustomPlaceholdersHeading", placeholderTabs)   
+   placeholdersTabGroup:SetTitle(nil) 
+   placeholdersTabGroup:SetLayout("Flow")
+   placeholdersTabGroup:SetCallback("OnGroupSelected", 
+        function(widget, event, key) 
+            PRT.TabGroupSelected(widget, customPlaceholders, key, addCustomPlaceholderWidget , newCustomPlaceholder, true, "optionsCustomPlaceholderDeleteButton") 
+        end)
+
+   PRT.SelectFirstTab(placeholdersTabGroup, customPlaceholders) 
+   container:AddChild(placeholdersTabGroup)
+end
+
 PRT.AddCustomPlaceholdersWidget = function(container, customPlaceholders)
    local description = PRT.Label("optionsCustomPlaceholdersDescription", 14)
    local subDescription = PRT.Label("optionsCustomPlaceholdersSubDescription")   
@@ -112,18 +126,7 @@ PRT.AddCustomPlaceholdersWidget = function(container, customPlaceholders)
          PRT.CreateExportFrame(customPlaceholders)
       end)
 
-   local placeholderTabs = PRT.TableToTabs(customPlaceholders, true)
-   local placeholdersTabGroup = PRT.TabGroup("optionsCustomPlaceholdersHeading", placeholderTabs)   
-   placeholdersTabGroup:SetTitle(nil) 
-   placeholdersTabGroup:SetLayout("Flow")
-   placeholdersTabGroup:SetCallback("OnGroupSelected", 
-        function(widget, event, key) 
-            PRT.TabGroupSelected(widget, customPlaceholders, key, addCustomPlaceholderWidget , newCustomPlaceholder, true, "optionsCustomPlaceholderDeleteButton") 
-        end)
-
-   PRT.SelectFirstTab(placeholdersTabGroup, customPlaceholders) 
-
    container:AddChild(importButton)
    container:AddChild(exportButton)
-   container:AddChild(placeholdersTabGroup)
+   PRT.AddCustomPlaceholdersTabGroup(container, customPlaceholders)
 end

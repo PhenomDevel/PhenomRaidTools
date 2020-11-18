@@ -58,7 +58,23 @@ Message.GenerateRaidRosterDropdownItems = function()
 		tinsert(raidRosterItems, { id = "$"..k , name = name})
 	end
 
-	-- Add Custom Names
+	-- Add Custom Encounter Placeholder
+	-- Hacky because we do not have the encounter here...
+	if PRT.currentEncounter.encounter then
+		for i, customEncounterPlaceholder in ipairs(PRT.currentEncounter.encounter.CustomPlaceholders) do
+			local coloredNames = {}
+
+			for nameIdx, name in ipairs(customEncounterPlaceholder.names) do 
+				tinsert(coloredNames, PRT.ClassColoredName(name))
+			end
+	
+			local name = strjoin(", ", unpack(coloredNames))
+			name = "$"..customEncounterPlaceholder.name.." ("..name..")"
+			tinsert(raidRosterItems, { id = "$"..customEncounterPlaceholder.name , name = name})
+		end
+	end
+
+	-- Add Custom Placeholder
 	for i, customPlaceholder in ipairs(PRT.db.profile.customPlaceholders) do
 		local coloredNames = {}
 

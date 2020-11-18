@@ -76,6 +76,22 @@ Core.GeneratePercentagesTree = function(percentages)
     return t
 end
 
+Core.GenerateCustomPlaceholderTree = function(placeholders)
+    local children = {}
+
+    if placeholders then
+        if getn(placeholders) > 0 then
+            PRT.SortTableByName(placeholders)
+            t.children = children
+            for i, placeholder in ipairs(placeholders) do
+                tinsert(children, Core.GeneratePercentageTree(percentage))
+            end
+        end
+    end
+    
+    return t
+end
+
 Core.GeneratePowerPercentagesTree = function(percentages)
     local tree = Core.GeneratePercentagesTree(percentages)
     tree.value = "powerPercentages"
@@ -171,6 +187,18 @@ Core.GenerateTimersTree = function(timers)
     return t
 end
 
+Core.GenerateCustomPlaceholdersTree = function(placeholders)
+    local children = {}
+    local t = {
+        value = "customPlaceholders",
+        text = L["treeCustomPlaceholder"],
+        icon = 134400,
+        iconCoords = {0.1, 0.9, 0.1, 0.9}
+    }
+    
+    return t
+end
+
 Core.GenerateEncounterTree = function(encounter)
     -- Ensure that encounter has all trigger tables!
     PRT.EnsureEncounterTrigger(encounter)
@@ -183,7 +211,8 @@ Core.GenerateEncounterTree = function(encounter)
             Core.GenerateTimersTree(encounter.Timers),
             Core.GenerateRotationsTree(encounter.Rotations),
             Core.GenerateHealthPercentagesTree(encounter.HealthPercentages),
-            Core.GeneratePowerPercentagesTree(encounter.PowerPercentages)
+            Core.GeneratePowerPercentagesTree(encounter.PowerPercentages),
+            Core.GenerateCustomPlaceholdersTree(encounter.customPlaceholders)
         }
     }
 
@@ -231,6 +260,12 @@ Core.OnGroupSelected = function(container, key, profile)
     
     local mainKey, encounterID, triggerType, triggerName = strsplit("\001", key)
     
+    if encounterID then
+        local idx, selectedEncounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
+        PRT.currentEncounter = {}
+        PRT.currentEncounter.encounter = selectedEncounter
+    end
+
     -- options selected
     if mainKey == "options" then        
         PRT.AddOptionWidgets(container, profile)
@@ -253,6 +288,8 @@ Core.OnGroupSelected = function(container, key, profile)
             PRT.AddHealthPercentageOptions(container, profile, encounterID)
         elseif triggerType == "powerPercentages" then
             PRT.AddPowerPercentageOptions(container, profile, encounterID)
+        elseif triggerType == "customPlaceholders" then
+            PRT.AddCustomPlaceholderOptions(container, profile, encounterID)
         end
     
     -- single timer selected

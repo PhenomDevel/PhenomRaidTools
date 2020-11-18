@@ -85,6 +85,7 @@ L = {
     ["treeRotation"] = "Rotations",
     ["treeHealthPercentage"] = "Health Percentages",
     ["treePowerPercentage"] = "Power Percentages",
+    ["treeCustomPlaceholder"] = "Placeholder",
 
     -- Defaults
     ["rotationDefaults"] = "Rotation",
