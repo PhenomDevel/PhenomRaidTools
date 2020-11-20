@@ -8,8 +8,18 @@ local Timer = {}
 
 Timer.TimingWidget = function(timing, container, key, timings)
     local timingOptionsGroup = PRT.InlineGroup("timingOptionsHeading")
+    timingOptionsGroup:SetLayout("Flow")
 
     sort(timing.seconds)
+
+    local nameEditBox = PRT.EditBox("timingName", (timing.name or ""))
+    nameEditBox:SetCallback("OnEnterPressed",
+        function(widget)
+            local text = widget:GetText()
+            timing.name = text
+            widget:ClearFocus()
+        end)
+
     local secondsEditBox = PRT.EditBox("timingSeconds", strjoin(", ", unpack(timing.seconds)), true)    
     secondsEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
@@ -20,7 +30,11 @@ Timer.TimingWidget = function(timing, container, key, timings)
             for i, second in ipairs(times) do
                 tinsert(timing.seconds, tonumber(second))
             end
-            timing.name = strjoin(", ", strsplit(",", text))
+
+            if not timing.name then
+                timing.name = strjoin(", ", strsplit(",", text))
+            end
+            
 			widget:ClearFocus()
         end)
 
@@ -32,7 +46,7 @@ Timer.TimingWidget = function(timing, container, key, timings)
             PRT.TabGroupSelected(widget, timing.messages, key, PRT.MessageWidget, PRT.EmptyMessage, true, "messageDeleteButton") 
         end)
 
-    local offsetSlider = PRT.Slider("timingsOffset", timing.offset, true)	
+    local offsetSlider = PRT.Slider("timingOffset", timing.offset, true)	
     offsetSlider:SetSliderValues(-60, 60, 1)
     offsetSlider:SetCallback("OnValueChanged", 
         function(widget)
@@ -40,6 +54,7 @@ Timer.TimingWidget = function(timing, container, key, timings)
         end)
 
     PRT.SelectFirstTab(messagesTabGroup, timing.messages)  
+    timingOptionsGroup:AddChild(nameEditBox)
     timingOptionsGroup:AddChild(secondsEditBox)
     timingOptionsGroup:AddChild(offsetSlider)
     container:AddChild(timingOptionsGroup)

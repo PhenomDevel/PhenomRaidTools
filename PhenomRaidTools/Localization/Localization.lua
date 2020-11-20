@@ -231,6 +231,8 @@ L = {
     -- Timings
     ["timingOptions"] = "Timing Options",
     ["timingSeconds"] = "Trigger Times",
+    ["timingOffset"] = "Offset",
+    ["timingName"] = "Name",
     ["timingSecondsTooltip"] = "Times at which this trigger should be executed (comma separated list of seconds e.g. 1, 5, 20)",
     ["timingDeleteButton"] = "|cFFed3939Delete Timing|r",
     ["timingOptionsHeading"] = "Options",

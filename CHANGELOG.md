@@ -1,5 +1,14 @@
 ===============================================================================
-# Release 2.0.5.0-BETA
+# Release 2.0.5.1
+## Bugfixes
+None
+
+## Features
+- Added name editbox for timings so you have the ability to overwrite the default
+
+
+===============================================================================
+# Release 2.0.5.0
 ## Bugfixes
 None
 

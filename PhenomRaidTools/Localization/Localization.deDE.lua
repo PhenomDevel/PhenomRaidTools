@@ -223,6 +223,8 @@ if GetLocale() == "deDE" then
     -- Timings
     L["timingOptions"] = "Zeiteinträge"
     L["timingSeconds"] = "Auslösungszeiten"
+    L["timingOffset"] = "Versatz"
+    L["timingName"] = "Name"
     L["timingSecondsTooltip"] = "Die Zeiten bei denen die Nachrichten an die Empfänger geschickt werden. (Gezählt ab der Aktivierung des Timers; Kommaseparierte Liste z.B. 1, 3, 10)"
     L["timingDeleteButton"] = "|cFFed3939Auslösungszeit entfernen|r"
     L["timingOptionsHeading"] = "Optionen"
