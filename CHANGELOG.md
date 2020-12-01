@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.0.5.4
+## Bugfixes
+ - Prevent users from using spaces within placeholder names
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.0.5.3
 ## Bugfixes
 None
