@@ -1,4 +1,15 @@
 ===============================================================================
+# Release 2.0.5.3
+## Bugfixes
+None
+
+## Features
+ - The addon now will save and restore the position of the main window
+ - The addon now will save and restore the size of the main window
+ - The addon now will save and restore the size of the tree group
+
+
+===============================================================================
 # Release 2.0.5.2
 ## Bugfixes
  - Only iterate custom placeholders if present
