@@ -346,6 +346,7 @@ Core.CreateMainWindowContent = function(profile)
     -- Generate tree group for the main menue structure
     local tree = Core.GenerateTreeByProfile(profile)
     local treeGroup = PRT.TreeGroup(tree)
+    treeGroup:SetTreeWidth(600)
     PRT.mainWindowContent = treeGroup 
     treeGroup:SetCallback("OnGroupSelected", 
         function(widget, event, key) 
@@ -380,10 +381,22 @@ PRT.CreateMainWindow = function(profile)
             PRT.ReceiverOverlay.HideAll()
             PRT.SenderOverlay.Hide()
             Core.CloseAllOpenFrames()
-        end)
-        
-    mainWindow:SetWidth(970)
-    mainWindow:SetHeight(600)
+
+            local frame = mainWindow.frame
+            local height, width, left, top = frame:GetHeight(), frame:GetWidth(), frame:GetLeft(), frame:GetTop()
+            profile.mainWindow.height = height
+            profile.mainWindow.width = width
+            profile.mainWindow.left = left
+            profile.mainWindow.top = UIParent:GetHeight() - top
+
+            profile.mainWindowContent.treeGroup.width = mainWindowContent.treeframe:GetWidth()
+        end)            
+
+    mainWindow:SetWidth(profile.mainWindow.width or 970)
+    mainWindow:SetHeight(profile.mainWindow.height or 600)
+    if profile.mainWindow.left or profile.mainWindow.top then
+        mainWindow.frame:SetPoint("TOPLEFT",UIParent,"TOPLEFT", profile.mainWindow.left or 0, -(profile.mainWindow.top or 0))
+    end
     mainWindow.frame:SetMinResize(800, 400)
     RegisterESCHandler("mainWindow", mainWindow)
 
@@ -402,6 +415,8 @@ PRT.CreateMainWindow = function(profile)
     -- We hold the frame reference for some hacky rerendering usages :(
     PRT.mainWindow = mainWindow
     PRT.mainWindowContent = mainWindowContent
+
+    mainWindowContent.treeframe:SetWidth(profile.mainWindowContent.treeGroup.width or 175)
 end	
 
 -- Make functions publicly available

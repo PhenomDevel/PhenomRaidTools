@@ -59,6 +59,17 @@ end
 
 local defaults =  {
 	profile = {
+		mainWindow = {
+			width = nil,
+			height = nil,
+			top = nil,
+			left = nil
+		},
+		mainWindowContent = {
+			treeGroup = {
+				width = nil
+			}
+		},
 		myName = UnitName("player"),
 		version = "@project-version@", --"1.3.15.2-BETA",
 		receiveMessagesFrom = "",
