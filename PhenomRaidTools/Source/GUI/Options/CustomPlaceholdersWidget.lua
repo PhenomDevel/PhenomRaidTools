@@ -29,11 +29,13 @@ local addCustomPlaceholderWidget = function(customPlaceholder, container, tabKey
          customPlaceholder.type = text
       end)  
 
-   local nameEditBox = PRT.EditBox("optionsCustomPlaceholderName", customPlaceholder.name)
+   local nameEditBox = PRT.EditBox("optionsCustomPlaceholderName", customPlaceholder.name, true)
    nameEditBox:SetCallback("OnEnterPressed", 
       function(widget)
          local text = widget:GetText()
-         customPlaceholder.name = text        
+         local cleanedText = string.gsub(text, " ", "") 
+         customPlaceholder.name = cleanedText
+         widget:SetText(cleanedText)
          widget:ClearFocus()
       end)  
 

@@ -54,6 +54,7 @@ if GetLocale() == "deDE" then
     L["optionsCustomPlaceholderTypeGroup"] = "Gruppe"
     L["optionsCustomPlaceholderType"] = "Typ"
     L["optionsCustomPlaceholderName"] = "Name"
+    L["optionsCustomPlaceholderNameTooltip"] = "Platzhalter dürfen keine Leerzeichen enthalten"
     L["optionsCustomPlaceholderRemoveEmptyNames"] = "Leere Namen entfernen"
     L["optionsCustomPlaceholderAddNameButton"] = "Name hinzufügen"
     L["optionsCustomNameDeleteButton"] = "|cFFed3939Entfernen|r"

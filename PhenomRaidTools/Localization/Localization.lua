@@ -54,6 +54,7 @@ L = {
     ["optionsCustomPlaceholderTypeGroup"] = "Group",
     ["optionsCustomPlaceholderType"] = "Type",
     ["optionsCustomPlaceholderName"] = "Name",
+    ["optionsCustomPlaceholderNameTooltip"] = "Placeholders can't contain spaces",
     ["optionsCustomPlaceholderRemoveEmptyNames"] = "Remove empty names",
     ["optionsCustomPlaceholderAddNameButton"] = "|cFF76ff68Add name|r",
     ["optionsCustomPlaceholderDeleteButton"] = "|cFFed3939Delete|r",    
