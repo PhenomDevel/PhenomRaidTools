@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.0.5.5
+## Bugfixes
+ - Be able to use $target in message targets again
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.0.5.4
 ## Bugfixes
  - Prevent users from using spaces within placeholder names
