@@ -1,4 +1,14 @@
 ===============================================================================
+# Release 2.0.5.8
+## Bugfixes
+ - Clear executions on reactivation of timers
+ - Be able to reactivate timers with the same spell (check stop and then start)
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.0.5.7
 ## Bugfixes
  - Fix typo
