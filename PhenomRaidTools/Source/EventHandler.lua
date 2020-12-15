@@ -155,7 +155,7 @@ end
 function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 	if PRT.currentEncounter and PRT.db.profile.senderMode then
 		local timestamp, combatEvent, _, sourceGUID, sourceName, _, _, targetGUID, targetName, _, _, eventSpellID,_,_, eventExtraSpellID = CombatLogGetCurrentEventInfo()
-		
+
 		if PRT.currentEncounter.inFight then
 			if PRT.currentEncounter.encounter then
 				local timers = PRT.currentEncounter.encounter.Timers
@@ -165,15 +165,15 @@ function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 
 				-- Checking Timer activation
 				if timers then
-					PRT.CheckTimerStartConditions(timers, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
 					PRT.CheckTimerStopConditions(timers, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
+					PRT.CheckTimerStartConditions(timers, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
 					PRT.CheckTimerTimings(timers)
 				end
 
 				-- Checking Rotation activation
 				if rotations then
-					PRT.CheckTriggersStartConditions(rotations, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
 					PRT.CheckTriggersStopConditions(rotations, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
+					PRT.CheckTriggersStartConditions(rotations, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
 					PRT.CheckRotationTriggerCondition(rotations, event, combatEvent, eventSpellID, targetGUID, targetName, sourceGUID, sourceName)
 				end
 

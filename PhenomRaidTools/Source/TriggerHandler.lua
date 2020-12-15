@@ -233,6 +233,7 @@ PRT.CheckTimerStartConditions = function(timers, event, combatEvent, spellID, ta
                             timer.started = true
                             timer.startedAt = GetTime()
                         end
+                        return true
                     end
                 end
             end
@@ -253,7 +254,12 @@ PRT.CheckTimerStopConditions = function(timers, event, combatEvent, spellID, tar
                         
                         for i, timing in pairs(timer.timings) do
                             timing.executed = false  
+
+                            if timing.messages then
+                                timing.messages.executionTimes = {}
+                            end
                         end   
+                        return true
                     end
                 end
             end
@@ -269,6 +275,7 @@ PRT.CheckTriggersStartConditions = function(triggers, event, combatEvent, spellI
                     if TriggerHandler.CheckCondition(trigger.startCondition, event, combatEvent, spellID, targetGUID, sourceGUID) then
                         PRT.Debug("Started trigger `"..(trigger.name or "NO NAME").."`")
                         trigger.active = true
+                        return true
                     end
                 end
             end
@@ -284,6 +291,7 @@ PRT.CheckTriggersStopConditions = function(triggers, event, combatEvent, spellID
                     if TriggerHandler.CheckCondition(trigger.stopCondition, event, combatEvent, spellID, sourceGUID, targetGUID) then
                         PRT.Debug("Stopped trigger `"..(trigger.name or "NO NAME").."`")
                         trigger.active = false
+                        return true
                     end
                 end
             end
