@@ -133,6 +133,9 @@ PRT.EmptyEncounter = function()
         },
 
         PowerPercentages = {
+        },
+        CustomPlaceholders = {
+            
         }
     }
 end

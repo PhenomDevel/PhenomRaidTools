@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.0.5.9
+## Bugfixes
+ - Make sure custom encounter placeholders do not disappear on first navigation
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.0.5.8
 ## Bugfixes
  - Clear executions on reactivation of timers
