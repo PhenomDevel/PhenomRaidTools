@@ -2,6 +2,7 @@
 # Release 2.0.5.9
 ## Bugfixes
  - Make sure custom encounter placeholders do not disappear on first navigation
+ - Debug message changes
 
 ## Features
 None
