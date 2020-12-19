@@ -96,7 +96,7 @@ MessageHandler.ExecuteMessageAction = function(message)
         else
             -- Don't spam chat if a configured user is not in the raid. We expect those to happen sometimes
             if targetMessage.target ~= "N/A" then
-                PRT.Error("Target", targetMessage.target, "does not exist. Skipping message.")
+                PRT.Error("Target", PRT.HighlightString(targetMessage.target), "does not exist. Skipping message.")
             end
         end        
     end    
