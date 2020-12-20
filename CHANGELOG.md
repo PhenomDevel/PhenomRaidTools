@@ -1,4 +1,15 @@
 ===============================================================================
+# Release 2.0.7.0
+## Bugfixes
+None
+
+## Features
+ - Be able to adjust default message targets
+ - Be able to adjust default message for messages
+ - Add icons for easy cooldown access in messages
+
+
+===============================================================================
 # Release 2.0.6.1
 ## Bugfixes
  - Fix typo
