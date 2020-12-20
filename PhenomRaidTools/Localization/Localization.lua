@@ -159,8 +159,9 @@ L = {
     ["percentageEnabled"] = "Enabled",
     ["percentageDeleteButton"] = "|cFFed3939Delete Percentage|r",
     ["percentageName"] = "Name",
-    ["percentageUnitID"] = "Unit-ID",
-    ["percentageUnitIDTooltip"] = "Unit-ID which percentage should be tracked (|cFF69CCF0boss1|r, |cFF69CCF0player|r, |cFF69CCF0PlayerName|r etc.)",
+    ["percentageUnitID"] = "Unit-ID / Unit-Name",
+    ["percentageUnitIDTooltip"] = "Unit-ID which percentage should be tracked (|cFF69CCF0boss1|r, |cFF69CCF0player|r, |cFF69CCF0PlayerName|r etc.)\n"..
+        "You also can use the units name. IT will only work if there is only one unit in combat which will be used.",
     ["percentageCheckAgain"] = "Check multiple times?",
     ["percentageCheckDelay"] = "Check again after (s)",
     ["percentageOptionsHeading"] = "Percentage Options",

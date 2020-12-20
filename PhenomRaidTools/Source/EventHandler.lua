@@ -8,7 +8,13 @@ local EventHandler = {
 		"PLAYER_REGEN_ENABLED",
 		"ENCOUNTER_START",
 		"ENCOUNTER_END",
-		"PLAYER_ENTERING_WORLD"
+		"PLAYER_ENTERING_WORLD",
+		
+	},
+
+	combatEvents = {
+		"UNIT_TARGET",
+		"NAME_PLATE_UNIT_ADDED"
 	}
 }
 
@@ -98,21 +104,30 @@ end
 -------------------------------------------------------------------------------
 -- Public API
 
-PRT.RegisterEssentialEvents = function()
-	for i, event in ipairs(EventHandler.essentialEvents) do
+PRT.RegisterEvents = function(events)
+	for i, event in ipairs(events) do
 		PRT:RegisterEvent(event)
 	end
 end
 
-PRT.UnregisterEssentialEvents = function()
-	for i, event in ipairs(EventHandler.essentialEvents) do
+PRT.UnregsiterEvents = function(events)
+	for i, event in ipairs(events) do
 		PRT:UnregisterEvent(event)
 	end
+end
+
+PRT.RegisterEssentialEvents = function()
+	PRT.RegisterEvents(EventHandler.essentialEvents)
+end
+
+PRT.UnregisterEssentialEvents = function()
+	PRT.UnregsiterEvents(EventHandler.essentialEvents)
 end
 
 function PRT:ENCOUNTER_START(event, encounterID, encounterName)	
 	-- We only start a real encounter if PRT is enabled (correct dungeon/raid difficulty) and we're not in test mode
 	if PRT.enabled and not self.db.profile.testMode then
+		PRT.RegisterEvents(EventHandler.combatEvents)
 		EventHandler.StartEncounter(event, encounterID, encounterName)
 	end
 end
@@ -128,7 +143,8 @@ function PRT:PLAYER_REGEN_DISABLED(event)
 		local _, encounter = PRT.FilterEncounterTable(self.db.profile.encounters, self.db.profile.testEncounterID)
 
 		if encounter then
-			if encounter.enabled then
+			if encounter.enabled then		
+				PRT.RegisterEvents(EventHandler.combatEvents)		
 				EventHandler.StartEncounter(event, encounter.id, encounter.name)
 			else
 				PRT.Warn("The selected encounter is disabled. Please enable it before testing.")
@@ -142,13 +158,15 @@ function PRT:PLAYER_REGEN_DISABLED(event)
 	EventHandler.StartReceiveMessages()
 end
 
-function PRT:ENCOUNTER_END(event)
+function PRT:ENCOUNTER_END(event)	
 	EventHandler.StopEncounter(event)
+	PRT.UnregsiterEvents(EventHandler.combatEvents)
 end
 
 function PRT:PLAYER_REGEN_ENABLED(event)
 	if not PRT.PlayerInParty() or self.db.profile.testMode then	
 		EventHandler.StopEncounter(event)
+		PRT.UnregsiterEvents(EventHandler.combatEvents)
 	end
 end
 
@@ -198,6 +216,31 @@ function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 			end
 		end
 	end
+end
+
+PRT.AddUnitToTrackedUnits = function(unitID)
+	local unitName = GetUnitName(unitID)
+	local guid = UnitGUID(unitID)
+	
+	if PRT.currentEncounter then
+		if not PRT.currentEncounter.trackedUnits then
+			PRT.currentEncounter.trackedUnits = {}
+		end
+
+		PRT.currentEncounter.trackedUnits[guid] = {
+			unitID = unitID,
+			name = unitName,
+			guid = guid
+		}
+	end
+end
+
+function PRT:NAME_PLATE_UNIT_ADDED(event, unitID)
+	PRT.AddUnitToTrackedUnits(unitID)
+end
+
+function PRT:UNIT_TARGET(event, unitID)
+	PRT.AddUnitToTrackedUnits(unitID)
 end
 
 function PRT:PLAYER_ENTERING_WORLD(event)

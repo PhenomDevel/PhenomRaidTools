@@ -156,8 +156,9 @@ if GetLocale() == "deDE" then
     L["percentageEnabled"] = "Aktiviert"
     L["percentageDeleteButton"] = "|cFFed3939Prozent entfernen|r"
     L["percentageName"] = "Name"
-    L["percentageUnitID"] = "Unit-ID"
-    L["percentageUnitIDTooltip"] = "Unit-ID welche geprüft werden soll (|cFF69CCF0boss1|r |cFF69CCF0player|r |cFF69CCF0PlayerName|r etc.)"
+    L["percentageUnitID"] = "Unit-ID / Unit-Name"
+    L["percentageUnitIDTooltip"] = "Unit-ID welche geprüft werden soll (|cFF69CCF0boss1|r |cFF69CCF0player|r |cFF69CCF0PlayerName|r etc.)\n"..
+        "Es kann ebenfalls ein Unit-Name genutzt werden. Dabei ist wichtig, dass nur die erste Unit geprüft wird, welche im Kampf ist und nicht tot ist."
     L["percentageCheckAgain"] = "Mehrfach prüfen?"
     L["percentageOptionsHeading"] = "Optionen"
     L["percentageCheckAgainAfter"] = "Nochmal prüfen nach (s)"
