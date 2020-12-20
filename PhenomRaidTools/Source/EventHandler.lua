@@ -227,11 +227,13 @@ PRT.AddUnitToTrackedUnits = function(unitID)
 			PRT.currentEncounter.trackedUnits = {}
 		end
 
-		PRT.currentEncounter.trackedUnits[guid] = {
-			unitID = unitID,
-			name = unitName,
-			guid = guid
-		}
+		if guid then
+			PRT.currentEncounter.trackedUnits[guid] = {
+				unitID = unitID,
+				name = unitName,
+				guid = guid
+			}
+		end
 	end
 end
 
