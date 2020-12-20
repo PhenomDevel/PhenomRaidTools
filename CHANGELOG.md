@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.0.6.0
+## Bugfixes
+None
+
+## Features
+ - First Iteration: Be able to use unit names for percentage trigger
+
+
+===============================================================================
 # Release 2.0.5.9
 ## Bugfixes
  - Make sure custom encounter placeholders do not disappear on first navigation
