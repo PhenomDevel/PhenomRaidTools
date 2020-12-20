@@ -71,7 +71,7 @@ local defaults =  {
 			}
 		},
 		myName = UnitName("player"),
-		version = "@project-version@", --"1.3.15.2-BETA",
+		version = "@project-version@",
 		receiveMessagesFrom = "",
 		enabled = true,
 		testMode = false,
@@ -153,6 +153,12 @@ local defaults =  {
 			conditionDefaults = {
 				additionalEvents = {},
 				defaultEvent = "SPELL_CAST_START"
+			},
+			messageDefaults = {
+				defaultMessage = "TODO",
+				defaultTargets = {
+					"ALL"
+				}
 			}
 		}, 
 

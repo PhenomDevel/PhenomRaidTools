@@ -19,10 +19,10 @@ end
 
 PRT.EmptyMessage = function()
     return {
-        message = "TODO",
+        message = PRT.db.profile.triggerDefaults.messageDefaults.defaultMessage or "TODO",
         useCustomSound = false,
         duration = 5,
-        targets = {
+        targets = PRT.db.profile.triggerDefaults.messageDefaults.defaultTargets or {
             "ALL"
         },
         targetOverlay = 1,
