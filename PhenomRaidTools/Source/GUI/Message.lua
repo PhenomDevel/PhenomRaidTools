@@ -10,6 +10,43 @@ local Message = {
     }
 }
 
+local Cooldowns = {
+	externals = {
+		33206, -- Pain Suppression
+		47788, -- Guardian Spirit
+
+		102342, -- Iron Bark
+
+		6940, -- Blessing of Sacrifice
+		1022, -- Blessing of Protection
+		204018, -- Blessing of Spellwarding
+
+		116849, -- Life Cocoon
+	},
+	raidHeal = {
+		64843, -- Divine Hymn
+		265202, -- Holy Word: Salvation
+
+		740, -- Tranquility
+
+		108280, -- Healing Tide Totem
+
+		115310, -- Revival
+	},
+	raidDamageReduction = {
+		62618, -- Power Word: Barrier
+
+		98008, -- Spirit Link Totem
+
+		31821, -- Aura Mastery
+	},
+	utility = {
+		106898, -- Stampeding Roar
+	}
+}
+
+local cooldownIconSize = 20
+
 
 -------------------------------------------------------------------------------
 -- Local Helper
@@ -177,7 +214,7 @@ PRT.MessageWidget = function (message, container)
 			widget:SetValue(nil)
 		end)    
 		
-	local messagePreviewLabel = PRT.Label(L["messagePreview"]..PRT.PrepareMessageForDisplay(message.message))	
+	local messagePreviewLabel = PRT.Label(L["messagePreview"]..PRT.PrepareMessageForDisplay(message.message), 16)	
 	messagePreviewLabel:SetWidth(500)
 	local messageEditBox = PRT.EditBox("messageMessage", message.message, true)		
 	messageEditBox:SetWidth(500)
@@ -221,6 +258,30 @@ PRT.MessageWidget = function (message, container)
 
 	container:AddChild(messageEditBox)
 	container:AddChild(messagePreviewLabel)
+
+	for k, cooldownGroup in pairs(Cooldowns) do
+		local cooldownIconsGroup = PRT.SimpleGroup()
+		cooldownIconsGroup:SetLayout("Flow")
+
+		for i, spellID in ipairs(cooldownGroup) do 
+			local name, _, icon = GetSpellInfo(spellID)
+			local spellIcon = PRT.Icon(icon, spellID)
+			spellIcon:SetHeight(cooldownIconSize + 4)	
+			spellIcon:SetWidth(cooldownIconSize + 4)	
+			spellIcon:SetImageSize(cooldownIconSize, cooldownIconSize)
+	
+			spellIcon:SetCallback("OnClick", 
+				function(widget)
+					message.message = message.message.."{spell:"..spellID.."}"
+					messageEditBox:SetText(message.message)
+					messagePreviewLabel:SetText(L["messagePreview"]..PRT.PrepareMessageForDisplay(message.message))
+				end)	
+			cooldownIconsGroup:AddChild(spellIcon)
+		end
+		
+		container:AddChild(cooldownIconsGroup)
+	end
+
 	container:AddChild(delayEditBox)
 	container:AddChild(durationEditBox)	
 	container:AddChild(targetOverlayDropdown)
