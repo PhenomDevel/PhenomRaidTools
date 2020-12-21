@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.0.8.2
+## Bugfixes
+ - Make sure you can restart multiple timers with the same event
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.0.8.1
 ## Bugfixes
  - Fix some tooltips
