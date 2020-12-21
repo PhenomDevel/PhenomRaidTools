@@ -50,6 +50,7 @@ end
 
 TriggerHandler.FilterPercentagesTable = function(percentages, percent)
     local value
+    
     if percentages then
         for i, v in ipairs(percentages) do
             if v.operator == "greater" then
@@ -382,7 +383,7 @@ PRT.CheckUnitHealthPercentages = function(percentages)
                     if percentage.ignored ~= true and percentage.executed ~= true then
                         local unitID = PRT.GetEffectiveUnitID(percentage.unitID)
                         
-                        if UnitExists(unitID) and not UnitIsDead(unitID) then
+                        if UnitExists(unitID) and (not UnitIsDead(unitID)) then
                             local unitCurrentHP = UnitHealth(unitID)
                             local unitMaxHP = UnitHealthMax(unitID)
                             local unitHPPercent = PRT.Round(unitCurrentHP / unitMaxHP * 100, 0)                
@@ -417,7 +418,9 @@ PRT.CheckUnitPowerPercentages = function(percentages)
                     TriggerHandler.CheckStopIgnorePercentageCondition(percentage)
 
                     if percentage.ignored ~= true then
-                        if UnitExists(percentage.unitID) then
+                        local unitID = PRT.GetEffectiveUnitID(percentage.unitID)
+
+                        if UnitExists(unitID) and (not UnitIsDead(unitID)) then
                             local unitCurrentPower = UnitPower(percentage.unitID)
                             local unitMaxPower = UnitPowerMax(percentage.unitID)
                             local unitPowerPercent = PRT.Round(unitCurrentPower / unitMaxPower * 100, 0)                
