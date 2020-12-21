@@ -235,7 +235,12 @@ L = {
     ["timingSeconds"] = "Trigger Times",
     ["timingOffset"] = "Offset",
     ["timingName"] = "Name",
-    ["timingSecondsTooltip"] = "Times at which this trigger should be executed (comma separated list of seconds e.g. 1, 5, 20)",
+    ["timingSecondsTooltip"] = "Times at which this trigger should be executed (comma separated list)\n"..
+        "Supports different formatting styles\n"..
+        "Examples:\n"..
+        " - |cFF69CCF055|r\n"..
+        " - |cFF69CCF001:55|r\n"..
+        " - |cFF69CCF01:5|r",
     ["timingDeleteButton"] = "|cFFed3939Delete Timing|r",
     ["timingOptionsHeading"] = "Options",
     ["cloneTiming"] = "Clone Timing",
