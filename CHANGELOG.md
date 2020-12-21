@@ -1,4 +1,14 @@
 ===============================================================================
+# Release 2.0.8.0
+## Bugfixes
+None
+
+## Features
+ - Be able to use usdifferent format for timings like `mm:ss`, `m:s`, `m:ss`, or just seconds like usual
+ - Add `Rallying Cry` as fast access cooldown in messages
+
+
+===============================================================================
 # Release 2.0.7.0
 ## Bugfixes
 None
