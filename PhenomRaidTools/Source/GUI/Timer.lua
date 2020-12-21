@@ -6,6 +6,35 @@ local Timer = {}
 -------------------------------------------------------------------------------
 -- Local Helper
 
+Timer.ParseTiming = function(timing)
+    if strmatch(timing, ":") then
+        local minute, second = strsplit(":", timing)
+        return tonumber(minute) * 60 + tonumber(second)
+    else
+        return tonumber(timing)
+    end
+end
+
+Timer.ComposeTimingString = function(timings)
+    local timingsStrings = {}
+
+    for i, timing in ipairs(timings) do
+        local minutes = math.floor(timing / 60)
+        local seconds = timing % 60
+        local timingString = minutes..":"
+
+        if seconds < 10 then 
+            timingString = timingString.."0"..seconds
+        else
+            timingString = timingString..seconds
+        end
+        
+        tinsert(timingsStrings, timingString)
+    end
+
+    return strjoin(", ", unpack(timingsStrings))
+end
+
 Timer.TimingWidget = function(timing, container, key, timings)
     local timingOptionsGroup = PRT.InlineGroup("timingOptionsHeading")
     timingOptionsGroup:SetLayout("Flow")
@@ -20,21 +49,25 @@ Timer.TimingWidget = function(timing, container, key, timings)
             widget:ClearFocus()
         end)
 
-    local secondsEditBox = PRT.EditBox("timingSeconds", strjoin(", ", unpack(timing.seconds)), true)    
+    local secondsEditBox = PRT.EditBox("timingSeconds", strjoin(", ", Timer.ComposeTimingString(timing.seconds)), true)    
     secondsEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
             local text = widget:GetText()
             local times = {strsplit(",", text)}
-            
+
             timing.seconds = {}
-            for i, second in ipairs(times) do
-                tinsert(timing.seconds, tonumber(second))
+
+            for i, timingEntry in ipairs(times) do
+                local timingSecond = Timer.ParseTiming(timingEntry)                
+                tinsert(timing.seconds, timingSecond)
             end
 
             if not timing.name then
                 timing.name = strjoin(", ", strsplit(",", text))
             end
             
+            widget:SetText(Timer.ComposeTimingString(timing.seconds))
+
 			widget:ClearFocus()
         end)
 
