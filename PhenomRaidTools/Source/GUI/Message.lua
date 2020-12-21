@@ -42,6 +42,8 @@ local Cooldowns = {
 	},
 	utility = {
 		106898, -- Stampeding Roar
+
+		97462, -- Rallying Cry
 	}
 }
 
