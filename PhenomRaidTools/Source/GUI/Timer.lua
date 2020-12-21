@@ -16,6 +16,7 @@ Timer.ParseTiming = function(timing)
 end
 
 Timer.ComposeTimingString = function(timings)
+    sort(timings)
     local timingsStrings = {}
 
     for i, timing in ipairs(timings) do
