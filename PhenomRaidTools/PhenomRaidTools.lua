@@ -94,8 +94,8 @@ local defaults =  {
 			receivers = {
 				[1] = NewDefaultReceiverOverlay(1, "Default", 16, 1, 1, 1),
 				[2] = NewDefaultReceiverOverlay(2, "Important", 32, 1, 0, 0),
-				[3] = NewDefaultReceiverOverlay(3, "Unimportant", 24, 0, 1, 0),
-				[4] = NewDefaultReceiverOverlay(4, "Special", 12, 0, 0, 1)
+				[3] = NewDefaultReceiverOverlay(3, "Personals/Unimportant", 24, 0, 1, 0),
+				[4] = NewDefaultReceiverOverlay(4, "Healing/Special", 12, 0, 0, 1)
 			},
 
 			sender = {

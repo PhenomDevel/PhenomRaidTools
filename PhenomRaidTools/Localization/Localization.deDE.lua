@@ -95,6 +95,8 @@ if GetLocale() == "deDE" then
     L["defaultIgnoreDuration"] = "Ignorieren für"
     L["defaultIgnoreAfterActivation"] = "Nach der Aktivierung ignorieren"
     L["defaultEvent"] = "Event"
+    L["defaultMessage"] = "Nachricht"
+    L["defaultTargets"] = "Empfänger"
     L["defaultUnitID"] = "Unit-ID"
     L["defaultCheckAgain"] = "Mehrfach prüfen"
     L["defaultCheckAgainAfter"] = "Erneut prüfen nach (s)"

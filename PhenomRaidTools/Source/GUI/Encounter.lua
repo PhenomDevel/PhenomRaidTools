@@ -343,9 +343,6 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
             PRT.Core.UpdateTree()
         end)
 
-        exportButton:SetRelativeWidth(0.25)
-        deleteButton:SetRelativeWidth(0.25)
-
     encounterOptionsGroup:AddChild(enabledCheckBox)
     encounterOptionsGroup:AddChild(encounterIDEditBox)
     encounterOptionsGroup:AddChild(encounterNameEditBox)

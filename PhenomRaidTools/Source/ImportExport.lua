@@ -10,6 +10,8 @@ PRT.CreateImportFrame = function(successFunction)
     if not PRT.Core.FrameExists("importFrame") then
         local importFrame = PRT.Frame("importFrame")
         importFrame:SetLayout("Fill")
+        local childs = {importFrame.frame:GetChildren()}
+        childs[1]:SetText("Import")
         
         local importDataBox = PRT.MultiLineEditBox()
         importDataBox:SetFocus()
@@ -44,7 +46,7 @@ PRT.CreateExportFrame = function(t)
         exportFrame:SetCallback("OnClose", 
             function(widget)
                 PRT.Core.UnregisterFrame("exportFrame")
-            end)
+            end)        
 
         local exportDataBox = PRT.MultiLineEditBox(nil, PRT.TableToString(t))
         exportDataBox:SetLabel("String")

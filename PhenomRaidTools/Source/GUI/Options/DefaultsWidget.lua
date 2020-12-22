@@ -11,13 +11,23 @@ local addDefaultsWidgets = function(container, t)
 
            if type(v) == "boolean" then
                widget = PRT.CheckBox(k, v)
-               widget:SetCallback("OnValueChanged", function(widget) t[k] = widget:GetValue() end)
+               widget:SetCallback("OnValueChanged", 
+                    function(widget) 
+                        t[k] = widget:GetValue() 
+                    end)
            elseif type(v) == "string" then
                widget = PRT.EditBox(k, v)
-               widget:SetCallback("OnEnterPressed", function(widget) t[k] = widget:GetText() end)
+               widget:SetCallback("OnEnterPressed", 
+                    function(widget) 
+                        t[k] = widget:GetText() 
+                        widget:ClearFocus()
+                    end)
            elseif type(v) == "number" then
                widget = PRT.Slider(k, v)
-               widget:SetCallback("OnValueChanged", function(widget) t[k] = widget:GetValue() end)
+               widget:SetCallback("OnValueChanged", 
+                    function(widget) 
+                        t[k] = widget:GetValue() 
+                    end)
            elseif type(v) == "table" then
                widget = PRT.EditBox(k, strjoin(", ", unpack(v)), true)              
                widget:SetWidth(300)
@@ -28,6 +38,7 @@ local addDefaultsWidgets = function(container, t)
                        else
                            t[k] = { strsplit(",", widget:GetText()) }                         
                        end
+                       widget:ClearFocus()
                    end)
            end
    
