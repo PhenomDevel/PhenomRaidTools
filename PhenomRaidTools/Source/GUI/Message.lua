@@ -39,6 +39,8 @@ local Cooldowns = {
 		98008, -- Spirit Link Totem
 
 		31821, -- Aura Mastery
+
+		320420, -- Darkness
 	},
 	utility = {
 		106898, -- Stampeding Roar
