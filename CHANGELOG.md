@@ -1,10 +1,11 @@
 ===============================================================================
 # Release 2.0.8.4
 ## Bugfixes
-None
+ - Fix some typos / missleading labels
 
 ## Features
  - Add option the explicitly restart counter on timer stop condition
+ - QoL stuff
 
 
 ===============================================================================
