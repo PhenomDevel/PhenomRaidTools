@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.0.8.4
+## Bugfixes
+None
+
+## Features
+ - Add option the explicitly restart counter on timer stop condition
+
+
+===============================================================================
 # Release 2.0.8.3
 ## Bugfixes
  - Fix scrollbar jumping when changing selection of tab groups
