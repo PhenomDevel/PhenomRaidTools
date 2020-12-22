@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.0.8.3
+## Bugfixes
+ - Fix scrollbar jumping when changing selection of tab groups
+
+## Features
+ - Add Darkness as quick access on messages
+
+
+===============================================================================
 # Release 2.0.8.2
 ## Bugfixes
  - Make sure you can restart multiple timers with the same event
