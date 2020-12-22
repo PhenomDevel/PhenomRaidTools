@@ -341,6 +341,10 @@ PRT.PrintTable = function(prefix, t)
             if type(v) == "table" then
                 print(prefix.." ".."["..k.."]")
                 PRT.PrintTable(prefix.."  ", v)
+            elseif type(v) == "function" then
+                print(prefix.." ".."["..k.."]".." - function")
+            elseif type(v) == "userdata" then
+                print(prefix.." ".."["..k.."]".." - userdata")
             else
                 if v == true then
                     print(prefix.." ".."["..k.."]".." - ".."true")
