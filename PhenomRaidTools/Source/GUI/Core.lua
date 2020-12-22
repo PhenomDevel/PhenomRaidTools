@@ -334,9 +334,14 @@ Core.UpdateTree = function()
     PRT.mainWindowContent:SetTree(Core.GenerateTreeByProfile(PRT.db.profile))
 end
 
-Core.UpdateScrollFrame = function()
+Core.UpdateScrollFrame = function()    
+    local scrollvalueBefore = PRT.mainWindowContent.scrollFrame.localstatus.scrollvalue
     PRT.mainWindowContent.scrollFrame:FixScroll()
     PRT.mainWindowContent.scrollFrame:DoLayout()
+
+    if scrollvalueBefore > 0 then
+        PRT.mainWindowContent.scrollFrame:SetScroll(scrollvalueBefore)
+    end
 end
 
 Core.CreateMainWindowContent = function(profile)
