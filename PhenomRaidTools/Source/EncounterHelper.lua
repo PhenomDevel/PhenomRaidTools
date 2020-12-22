@@ -53,6 +53,7 @@ PRT.EmptyTimer = function()
         hasStopCondition = false,
         counter = 0,        
         triggerAtOccurence = 1,
+        resetCounterOnStop = false,
         name = "Timer Name"..random(0,100000),
         timings = {
             PRT.EmptyTiming()

@@ -221,6 +221,7 @@ if GetLocale() == "deDE" then
     L["timerDeleteButton"] = "|cFFed3939Timer entfernen|r"
     L["timerOptionsHeading"] = "Timer Optionen"
     L["timerOptionsTriggerAtOccurence"] = "Nach n Start Auslösern starten"
+    L["timerOptionsResetCounterOnStop"] = "Zähler bei Stop neustarten"
 
     -- Timings
     L["timingOptions"] = "Zeiteinträge"

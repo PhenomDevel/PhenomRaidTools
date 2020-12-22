@@ -229,6 +229,7 @@ L = {
     ["timerDeleteButton"] = "|cFFed3939Delete Timer|r",
     ["timerOptionsHeading"] = "Timer Options",
     ["timerOptionsTriggerAtOccurence"] = "Trigger at occurence",
+    ["timerOptionsResetCounterOnStop"] = "Restart Counter on Stop",
 
     -- Timings
     ["timingOptions"] = "Timing Options",

@@ -131,6 +131,14 @@ Timer.TimerWidget = function(timer, container, deleteButton, cloneButton)
             local value = widget:GetValue()
             timer.triggerAtOccurence = value
         end)
+
+    local resetCounterOnStopCheckbox = PRT.CheckBox("timerOptionsResetCounterOnStop", timer.resetCounterOnStop)
+    resetCounterOnStopCheckbox:SetRelativeWidth(1)
+    resetCounterOnStopCheckbox:SetCallback("OnValueChanged", 
+        function(widget) 
+            timer.resetCounterOnStop = widget:GetValue()    
+            PRT.Core.UpdateTree()       
+        end)
     
     local startConditionGroup = PRT.ConditionWidget(timer.startCondition, "conditionStartHeading")
     startConditionGroup:SetLayout("Flow")
@@ -146,6 +154,7 @@ Timer.TimerWidget = function(timer, container, deleteButton, cloneButton)
     timerOptionsGroup:AddChild(enabledCheckbox)
     timerOptionsGroup:AddChild(nameEditBox)
     timerOptionsGroup:AddChild(triggerAtOccurenceSlider)
+    timerOptionsGroup:AddChild(resetCounterOnStopCheckbox)
     timerOptionsGroup:AddChild(cloneButton)
     timerOptionsGroup:AddChild(deleteButton)    
     container:AddChild(timerOptionsGroup)

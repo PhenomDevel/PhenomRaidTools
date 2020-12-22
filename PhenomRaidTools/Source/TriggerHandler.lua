@@ -250,7 +250,10 @@ PRT.CheckTimerStopConditions = function(timers, event, combatEvent, spellID, tar
                         PRT.Debug("Stopped timer `"..(timer.name or "NO NAME").."`")
                         timer.started = false
                         timer.startedAt = nil
-                        timer.counter = 0
+
+                        if timer.resetCounterOnStop then
+                            timer.counter = 0
+                        end
                         
                         for i, timing in pairs(timer.timings) do
                             timing.executed = false  
