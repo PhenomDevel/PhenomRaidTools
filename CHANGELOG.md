@@ -1,4 +1,16 @@
 ===============================================================================
+# Release 2.0.9.0
+## Bugfixes
+None
+
+## Features
+ - Add difficulty switches for every trigger so you can have mythic only triggers
+ - Add immunities to quick access message icons
+ - Add some more sounds for disc priests
+ - Some little ui improvements
+
+
+===============================================================================
 # Release 2.0.8.4
 ## Bugfixes
  - Fix some typos / missleading labels

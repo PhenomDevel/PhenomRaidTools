@@ -252,7 +252,9 @@ function PRT:PLAYER_ENTERING_WORLD(event)
 	AceTimer:ScheduleTimer(
 		function()
 			local name, type, _, difficulty = GetInstanceInfo()
-							
+						
+			PRT.currentDifficulty = difficulty
+
 			if type == "party" then
 				PRT.Debug("Player entered dungeon - checking difficulty")
 				PRT.Debug("Current difficulty is", PRT.HighlightString(difficulty))

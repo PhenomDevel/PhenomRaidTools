@@ -55,6 +55,11 @@ PRT.EmptyTimer = function()
         triggerAtOccurence = 1,
         resetCounterOnStop = false,
         name = "Timer Name"..random(0,100000),
+        enabledDifficulties = {
+            Normal = true,
+            Heroic = true,
+            Mythic = true
+        },
         timings = {
             PRT.EmptyTiming()
         }
@@ -81,6 +86,11 @@ PRT.EmptyRotation = function()
         counter = 0,
         entries = {
             PRT.EmptyRotationEntry()
+        },
+        enabledDifficulties = {
+            Normal = true,
+            Heroic = true,
+            Mythic = true
         },
         shouldRestart = PRT.db.profile.triggerDefaults.rotationDefaults.defaultShouldRestart,
         ignoreAfterActivation = PRT.db.profile.triggerDefaults.rotationDefaults.defaultIgnoreAfterActivation,
@@ -109,6 +119,11 @@ PRT.EmptyPercentage = function()
         unitID = PRT.db.profile.triggerDefaults.percentageDefaults.defaultUnitID,
         values = {
             PRT.EmptyPercentageEntry()
+        },
+        enabledDifficulties = {
+            Normal = true,
+            Heroic = true,
+            Mythic = true
         },
         checkAgain = PRT.db.profile.triggerDefaults.percentageDefaults.defaultCheckAgain,
         checkAgainAfter = PRT.db.profile.triggerDefaults.percentageDefaults.defaultCheckAgainAfter

@@ -46,6 +46,14 @@ local Cooldowns = {
 		106898, -- Stampeding Roar
 
 		97462, -- Rallying Cry
+	},
+	immunities = {
+		31224, -- Cloak of Shadows
+		204018, -- Blessing of Spellwarding
+		642, -- Divine Shield
+		45438, -- Iceblock
+		186265, -- Turtle
+		196555, -- Netherwalk
 	}
 }
 
@@ -238,11 +246,11 @@ PRT.MessageWidget = function (message, container)
 		end)
 
 	local durationEditBox = PRT.Slider("messageDuration", message.duration, true)	
+	durationEditBox:SetSliderValues(0, 60, 0.5)
 	durationEditBox:SetCallback("OnValueChanged", 
 		function(widget)
 			message.duration = tonumber(widget:GetValue()) 
 		end)
-
 
 	local targetOverlayDropdownItems = {}
 	for i, overlay in ipairs(PRT.db.profile.overlay.receivers) do

@@ -38,14 +38,15 @@ Rotation.RotationWidget = function(rotation, container, deleteButton, cloneButto
     local shouldRestartCheckBox =  PRT.CheckBox("rotationShouldRestart", rotation.shouldRestart)
     local ignoreAfterActivationCheckBox = PRT.CheckBox("rotationIgnoreAfterActivation", rotation.ignoreAfterActivation)
     local ignoreDurationSlider = PRT.Slider("rotationIgnoreDuration", rotation.ignoreDuration)
-
-    ignoreDurationSlider:SetDisabled(not rotation.ignoreAfterActivation)
+    
+    enabledCheckbox:SetRelativeWidth(1)
     enabledCheckbox:SetCallback("OnValueChanged", 
         function(widget) 
             rotation.enabled = widget:GetValue()  
             PRT.Core.UpdateTree()         
         end)
-
+        
+    nameEditBox:SetRelativeWidth(1)
     nameEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
             rotation.name = widget:GetText() 
@@ -64,7 +65,8 @@ Rotation.RotationWidget = function(rotation, container, deleteButton, cloneButto
             rotation.ignoreAfterActivation = value
             ignoreDurationSlider:SetDisabled(not value)
         end)
-    
+
+    ignoreDurationSlider:SetDisabled(not rotation.ignoreAfterActivation)
     ignoreDurationSlider:SetCallback("OnValueChanged", 
         function(widget) 
             rotation.ignoreDuration = widget:GetValue() 
@@ -83,7 +85,8 @@ Rotation.RotationWidget = function(rotation, container, deleteButton, cloneButto
     PRT.SelectFirstTab(entriesTabGroupWidget, rotation.entries)
 
     rotationOptionsGroup:AddChild(enabledCheckbox)
-    rotationOptionsGroup:AddChild(nameEditBox)    
+    PRT.AddEnabledDifficultiesGroup(rotationOptionsGroup, rotation)  
+    rotationOptionsGroup:AddChild(nameEditBox)       
     rotationOptionsGroup:AddChild(ignoreAfterActivationCheckBox)
     rotationOptionsGroup:AddChild(ignoreDurationSlider)    
     rotationOptionsGroup:AddChild(shouldRestartCheckBox)

@@ -99,3 +99,8 @@ If you like the addon and want to support it's development you can simply do so 
  - Add images to readme 
  - Overhaul readme in general and add all features on the list
  - Support profiles (https://www.wowace.com/projects/ace3/pages/api/ace-db-3-0)
+ - Be able to Raidmark people instead of messages
+ - $spellID Placeholder for messages (condition spell)
+ - Import/Export for raidroster
+ - Import/Export single routines
+ - Trigger Templates which can be used instead of writing a new one 

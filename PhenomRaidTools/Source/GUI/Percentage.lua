@@ -84,6 +84,7 @@ Percentage.PercentageWidget = function(percentage, container, deleteButton, clon
             PRT.Core.UpdateTree()  
         end)
 
+    nameEditBox:SetRelativeWidth(1)
     nameEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
             percentage.name = widget:GetText() 
@@ -121,8 +122,9 @@ Percentage.PercentageWidget = function(percentage, container, deleteButton, clon
     percentageOptionsGroup:SetLayout("Flow")
 
     percentageOptionsGroup:AddChild(enabledCheckbox)
-    percentageOptionsGroup:AddChild(nameEditBox)
-    percentageOptionsGroup:AddChild(unitIDEditBox)
+    PRT.AddEnabledDifficultiesGroup(percentageOptionsGroup, percentage) 
+    percentageOptionsGroup:AddChild(nameEditBox)    
+    percentageOptionsGroup:AddChild(unitIDEditBox)    
     percentageOptionsGroup:AddChild(checkAgainCheckBox)
     percentageOptionsGroup:AddChild(checkAgainAfterSlider)    
     percentageOptionsGroup:AddChild(cloneButton)

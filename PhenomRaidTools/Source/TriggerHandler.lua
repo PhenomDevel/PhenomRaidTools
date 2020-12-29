@@ -8,6 +8,12 @@ local TriggerHandler = {}
 -------------------------------------------------------------------------------
 -- Local Helper
 
+TriggerHandler.CheckCurrentDifficulty = function(trigger)
+    if trigger.enabledDifficulties and PRT.currentDifficulty then
+        return trigger.enabledDifficulties[PRT.currentDifficulty]
+    end
+end
+
 TriggerHandler.CheckCondition = function(condition, event, combatEvent, spellID, targetGUID, sourceGUID)
     if condition ~= nil then
         if condition.event ~= nil and (condition.event == event or condition.event == combatEvent) then   
@@ -196,6 +202,8 @@ PRT.IsTriggerActive = function(trigger)
             trigger.enabled == true or trigger.enabled == nil
         ) 
         and
+            (TriggerHandler.CheckCurrentDifficulty(trigger) or PRT.db.profile.testMode)
+        and
         (
             trigger.active == true
             or 
@@ -303,7 +311,7 @@ PRT.CheckTimerTimings = function(timers)
     local currentTime = GetTime()    
     if timers ~= nil then
         for i, timer in ipairs(timers) do
-            if timer.enabled == true or timer.enabled == nil then
+            if PRT.IsTriggerActive(timer) then
                 if timer.started == true and timer.timings ~= nil then                
                     local elapsedTime = PRT.Round(currentTime - timer.startedAt)
                     local timings = timer.timings
@@ -331,7 +339,7 @@ PRT.CheckRotationTriggerCondition = function(rotations, event, combatEvent, even
     if rotations ~= nil then
         for i, rotation in ipairs(rotations) do
             if PRT.IsTriggerActive(rotation) then                
-                    if rotation.triggerCondition ~= nil then
+                if rotation.triggerCondition ~= nil then
                     TriggerHandler.CheckStopIgnoreRotationCondition(rotation)
                     
                     if rotation.ignored ~= true then

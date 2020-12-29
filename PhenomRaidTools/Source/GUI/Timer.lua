@@ -106,7 +106,7 @@ end
 
 Timer.TimerWidget = function(timer, container, deleteButton, cloneButton)    
     local timerOptionsGroup = PRT.InlineGroup("timerOptionsHeading")
-    timerOptionsGroup:SetLayout("Flow")
+    timerOptionsGroup:SetLayout("Flow")    
 
     local enabledCheckbox = PRT.CheckBox("timerEnabled", timer.enabled)
     enabledCheckbox:SetRelativeWidth(1)
@@ -117,6 +117,7 @@ Timer.TimerWidget = function(timer, container, deleteButton, cloneButton)
         end)
 
     local nameEditBox = PRT.EditBox("timerName", timer.name)
+    nameEditBox:SetRelativeWidth(1)
     nameEditBox:SetCallback("OnEnterPressed", 
         function(widget) 
             timer.name = widget:GetText()             
@@ -152,6 +153,7 @@ Timer.TimerWidget = function(timer, container, deleteButton, cloneButton)
     PRT.SelectFirstTab(timingsTabGroup, timer.timings)  
 
     timerOptionsGroup:AddChild(enabledCheckbox)
+    PRT.AddEnabledDifficultiesGroup(timerOptionsGroup, timer)    
     timerOptionsGroup:AddChild(nameEditBox)
     timerOptionsGroup:AddChild(triggerAtOccurenceSlider)
     timerOptionsGroup:AddChild(resetCounterOnStopCheckbox)

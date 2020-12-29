@@ -34,6 +34,7 @@ Source/ReceiverOverlay.lua
 Source/GUI/AceHelper.lua
 Source/GUI/Condition.lua
 Source/GUI/Message.lua
+Source/GUI/Trigger.lua
 Source/GUI/Timer.lua
 Source/GUI/CustomPlaceholder.lua
 Source/GUI/Rotation.lua
