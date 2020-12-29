@@ -32,6 +32,10 @@ local Cooldowns = {
 		108280, -- Healing Tide Totem
 
 		115310, -- Revival
+
+		31884, -- Wings
+
+		15286, -- Embrace
 	},
 	raidDamageReduction = {
 		62618, -- Power Word: Barrier
@@ -41,11 +45,17 @@ local Cooldowns = {
 		31821, -- Aura Mastery
 
 		320420, -- Darkness
+
+		51052, -- AMC
 	},
 	utility = {
 		106898, -- Stampeding Roar
 
 		97462, -- Rallying Cry
+
+		16191, -- Mana Tide
+
+		64901, -- Symbol of Hope
 	},
 	immunities = {
 		31224, -- Cloak of Shadows

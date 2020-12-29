@@ -104,3 +104,5 @@ If you like the addon and want to support it's development you can simply do so 
  - Import/Export for raidroster
  - Import/Export single routines
  - Trigger Templates which can be used instead of writing a new one 
+ - Be able to export encounter to exorsus in formatted manner
+ - Be able to have more than one routine for each encounter / profiles
