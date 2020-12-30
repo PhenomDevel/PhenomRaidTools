@@ -195,8 +195,25 @@ local defaults =  {
 	}
 }
 
-function PRT:OnInitialize()		
+local options = {
+	name = "PhenomRaidTools",
+	type = "group",
+	args = {
+
+	},
+}
+
+function PRT:OnInitialize()	
+	-- Register DB	
 	self.db = LibStub("AceDB-3.0"):New("PhenomRaidToolsDB", defaults, true)
+
+	options = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db)	
+
+	-- Register Options
+	LibStub("AceConfig-3.0"):RegisterOptionsTable("PhenomRaidTools", options)	
+	self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("PhenomRaidTools", "PhenomRaidTools")
+	
+	-- Initialize Minimap Icon
 	LibDBIcon:Register("PhenomRaidTools", PhenomRaidToolsLDB, self.db.profile.minimap)
 
 	local encounterIdx, encounter = PRT.FilterEncounterTable(self.db.profile.encounters, 9999)
@@ -217,6 +234,14 @@ function PRT:OnInitialize()
 	PRT.ReceiverOverlay.Initialize(PRT.db.profile.overlay.receivers)
 	PRT.SenderOverlay.Hide()
 	PRT.ReceiverOverlay.HideAll()
+
+	self.db.RegisterCallback(self, "OnProfileChanged", "RefreshConfig")
+   self.db.RegisterCallback(self, "OnProfileCopied", "RefreshConfig")
+   self.db.RegisterCallback(self, "OnProfileReset", "RefreshConfig")
+end
+
+function PRT:RefreshConfig()
+	PRT.Info("Active Profile was changed / copied or reset")
 end
 
 function PRT:OnEnable()

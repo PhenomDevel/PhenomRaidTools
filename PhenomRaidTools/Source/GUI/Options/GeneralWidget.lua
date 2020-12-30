@@ -41,6 +41,7 @@ PRT.AddGeneralWidgets = function(container, options)
     local weakAuraModeCheckbox = PRT.CheckBox("optionsWeakAuraMode", options.weakAuraMode, true)
     local receiveMessagesFromEditBox = PRT.EditBox("optionsReceiveMessagesFrom", options.receiveMessagesFrom, true)
     local versionCheckButton = PRT.Button("optionsVersionCheck")
+    local profilesOptionsButton = PRT.Button("optionsOpenProfiles")
 
     receiveMessagesFromEditBox:SetCallback("OnEnterPressed",
         function(widget)
@@ -113,5 +114,13 @@ PRT.AddGeneralWidgets = function(container, options)
             PRT:VersionCheck()
         end)
 
+    profilesOptionsButton:SetCallback("OnClick",
+        function()
+            InterfaceOptionsFrame_OpenToCategory("PhenomRaidTools")
+            InterfaceOptionsFrame_OpenToCategory("PhenomRaidTools")
+        end        
+    )
+
     container:AddChild(versionCheckButton)
+    container:AddChild(profilesOptionsButton)
 end

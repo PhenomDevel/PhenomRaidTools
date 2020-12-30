@@ -47,6 +47,7 @@ if GetLocale() == "deDE" then
     L["optionsRaidRosterImportByGroup"] = "Aktuellen Schlachtzug importieren"
     L["optionsRaidRosterClear"] = "Raidroster leeren"
     L["optionsVersionCheck"] = "Versionscheck ausführen"
+    L["optionsOpenProfiles"] = "Profilseite öffnen"
 
     L["optionsCustomPlaceholdersHeading"] = "Benutzerdefinierte Platzhalter"
     L["optionsCustomPlaceholderDeleteButton"] = "|cFFed3939Löschen|r"
