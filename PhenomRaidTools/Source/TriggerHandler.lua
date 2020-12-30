@@ -363,6 +363,8 @@ PRT.CheckRotationTriggerCondition = function(rotations, event, combatEvent, even
     end
 end
 
+-- Health Percentages
+
 PRT.GetEffectiveUnitID = function(unitID)
     if UnitExists(unitID) then
         return unitID
@@ -370,8 +372,8 @@ PRT.GetEffectiveUnitID = function(unitID)
         if PRT.currentEncounter.trackedUnits then
             for guid, t in pairs(PRT.currentEncounter.trackedUnits) do
                 if t.name == unitID then
-                    if UnitExists(t.unitID) and not UnitIsDead(t.unitID) then   
-                        return t.unitID
+                    if UnitExists(t.unitID) and not UnitIsDead(t.unitID) then
+                        return t.guid
                     end
                 end
             end
@@ -379,7 +381,6 @@ PRT.GetEffectiveUnitID = function(unitID)
     end 
 end
 
--- Health Percentages
 PRT.CheckUnitHealthPercentages = function(percentages)
     if percentages ~= nil then
         for i, percentage in ipairs(percentages) do
@@ -395,6 +396,8 @@ PRT.CheckUnitHealthPercentages = function(percentages)
                             local unitMaxHP = UnitHealthMax(unitID)
                             local unitHPPercent = PRT.Round(unitCurrentHP / unitMaxHP * 100, 0)                
                             local messagesByHP = TriggerHandler.FilterPercentagesTable(percentage.values, unitHPPercent)
+
+                            PRT.Info("UnitName:", unitCurrentHP, unitMaxHP, unitHPPercent)
 
                             if messagesByHP then
                                 if messagesByHP.messages ~= nil then
@@ -424,7 +427,7 @@ PRT.CheckUnitPowerPercentages = function(percentages)
                 if percentage.enabled == true or percentage.enabled == nil then
                     TriggerHandler.CheckStopIgnorePercentageCondition(percentage)
 
-                    if percentage.ignored ~= true then
+                    if percentage.ignored ~= true and percentage.executed ~= true then
                         local unitID = PRT.GetEffectiveUnitID(percentage.unitID)
 
                         if UnitExists(unitID) and (not UnitIsDead(unitID)) then

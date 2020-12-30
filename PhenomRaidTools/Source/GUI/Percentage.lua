@@ -4,15 +4,15 @@ local Percentage = {
     operatorValues = {
         { 
             id = "greater", 
-            name = ">" 
+            name = "> (greater)" 
         },
         { 
             id = "less",    
-            name = "<" 
+            name = "< (less)" 
         },
         { 
             id = "equals",  
-            name = "=" 
+            name = "= (equals)" 
         }
     }
 }
