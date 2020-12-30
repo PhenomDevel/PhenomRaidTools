@@ -1,4 +1,14 @@
 ===============================================================================
+# Release 2.0.11.0
+## Bugfixes
+ - Fix percentage recognition for unit names
+ - Add newly used library to support non "elvui" users
+ 
+## Features
+None
+
+
+===============================================================================
 # Release 2.0.10.0
 ## Bugfixes
 None
