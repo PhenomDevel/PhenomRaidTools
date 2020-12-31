@@ -49,10 +49,35 @@ Core.DisabledText = function(text, enabled)
     end
 end
 
+Core.WithDifficultiesText = function(text, trigger)
+    local updatedText = text
+
+    if not trigger.enabledDifficulties then
+        return updatedText 
+    else
+        local difficultiesShorthands = {}
+        if trigger.enabledDifficulties.Normal then
+            tinsert(difficultiesShorthands, "N")
+        end
+
+        if trigger.enabledDifficulties.Heroic then
+            tinsert(difficultiesShorthands, "H")
+        end
+
+        if trigger.enabledDifficulties.Mythic then
+            tinsert(difficultiesShorthands, "M")
+        end
+
+        updatedText = updatedText.." ("..strjoin(", ", unpack(difficultiesShorthands))..")"
+
+        return updatedText
+    end
+end
+
 Core.GeneratePercentageTree = function(percentage)
     local t = {
         value = percentage.name,
-        text = Core.DisabledText(percentage.name, percentage.enabled)
+        text = Core.DisabledText(Core.WithDifficultiesText(percentage.name, percentage), percentage.enabled)
     }
     
     return t
@@ -115,7 +140,7 @@ end
 Core.GenerateRotationTree = function(rotation)
     local t = {
         value = rotation.name,
-        text = Core.DisabledText(rotation.name, rotation.enabled)
+        text = Core.DisabledText(Core.WithDifficultiesText(rotation.name, rotation), rotation.enabled)
     }
 
     if rotation.triggerCondition then
@@ -152,7 +177,7 @@ end
 Core.GenerateTimerTree = function(timer)
     local t = {
         value = timer.name,
-        text = Core.DisabledText(timer.name, timer.enabled)
+        text = Core.DisabledText(Core.WithDifficultiesText(timer.name, timer), timer.enabled)
     }
 
     if timer.startCondition then
@@ -339,7 +364,7 @@ Core.UpdateScrollFrame = function()
     PRT.mainWindowContent.scrollFrame:FixScroll()
     PRT.mainWindowContent.scrollFrame:DoLayout()
 
-    if scrollvalueBefore > 0 then
+    if scrollvalueBefore and scrollvalueBefore > 0 then
         PRT.mainWindowContent.scrollFrame:SetScroll(scrollvalueBefore)
     end
 end
@@ -408,7 +433,7 @@ PRT.CreateMainWindow = function(profile)
     -- Initialize sender and receiver frames
     PRT.ReceiverOverlay.ShowAll()
     PRT.SenderOverlay.Show()    
-    PRT.SenderOverlay.ShowPlaceholder(profile.overlay.sender)
+    PRT.SenderOverlay.ShowPlaceholder(PRT.SenderOverlay.overlayFrame, profile.overlay.sender)
     
     for i, receiverOverlay in ipairs(profile.overlay.receivers) do
         local frame = PRT.ReceiverOverlay.overlayFrames[i]
