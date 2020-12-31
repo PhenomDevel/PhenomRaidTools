@@ -89,13 +89,8 @@ If you like the addon and want to support it's development you can simply do so 
  - [Backlog] Add "global" encounter which will always be merged with the current encounter for e.g. seconds pots or something
 
 ## TODOs
- - Translate error messages and debug messages
- - Add error log for current session
  - Add small descriptions of triggers to the overview to help ppl use them
  - Translate encounter overview strings
- - Create YouTube tutorials for the different trigger types
- - Implement generic handling of start/stop condition handlers
- - Implement generic handling of start/stop condition counter handler
  - Add images to readme 
  - Overhaul readme in general and add all features on the list
  - Support profiles (https://www.wowace.com/projects/ace3/pages/api/ace-db-3-0)
@@ -105,4 +100,4 @@ If you like the addon and want to support it's development you can simply do so 
  - Import/Export single routines
  - Trigger Templates which can be used instead of writing a new one 
  - Be able to export encounter to exorsus in formatted manner
- - Be able to have more than one routine for each encounter / profiles
+ - Be able to have more than one routine for each encounter
