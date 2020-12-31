@@ -28,21 +28,24 @@ PRT.AddEnabledDifficultiesGroup = function(container, trigger)
    normalCheckbox:SetRelativeWidth(0.33)
    normalCheckbox:SetCallback("OnValueChanged", 
        function(widget) 
-            trigger.enabledDifficulties.Normal = widget:GetValue()       
+            trigger.enabledDifficulties.Normal = widget:GetValue()     
+            PRT.Core.UpdateTree()  
        end)
 
    local heroicCheckbox = PRT.CheckBox("dungeonDifficultyHeroic", trigger.enabledDifficulties.Heroic or nil)
    heroicCheckbox:SetRelativeWidth(0.33)
    heroicCheckbox:SetCallback("OnValueChanged", 
        function(widget) 
-            trigger.enabledDifficulties.Heroic = widget:GetValue()       
+            trigger.enabledDifficulties.Heroic = widget:GetValue()  
+            PRT.Core.UpdateTree()     
        end)
 
    local mythicCheckbox = PRT.CheckBox("dungeonDifficultyMythic", trigger.enabledDifficulties.Mythic or nil)
    mythicCheckbox:SetRelativeWidth(0.33)
    mythicCheckbox:SetCallback("OnValueChanged", 
        function(widget) 
-            trigger.enabledDifficulties.Mythic = widget:GetValue()       
+            trigger.enabledDifficulties.Mythic = widget:GetValue()
+            PRT.Core.UpdateTree()       
        end)
 
    enabledDifficultiesGroup:AddChild(normalCheckbox)
