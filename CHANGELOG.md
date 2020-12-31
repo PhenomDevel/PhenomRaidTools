@@ -1,4 +1,16 @@
 ===============================================================================
+# Release 2.0.12.0
+## Bugfixes
+ - Fix some locals
+ - Make sure placeholder TANK, HEALER, and DAMAGER work properly again
+ - Make sure sender overlay is initialized correctly
+ 
+## Features
+ - Show indicator for each trigger for enabled difficulties (N, H, M)
+ - Add /prt profile slash command to open profile window
+
+
+===============================================================================
 # Release 2.0.11.0
 ## Bugfixes
  - Fix percentage recognition for unit names
