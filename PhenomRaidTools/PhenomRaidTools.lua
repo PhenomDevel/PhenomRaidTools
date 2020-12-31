@@ -327,6 +327,7 @@ function PRT:PrintHelp()
 	PRT.Info("You can use following commands:")
 	PRT.Info("/prt - Opens the config")
 	PRT.Info("/prt versions - Will perform a version check on the current group")
+	PRT.Info("/prt profile - Opens the profile page for PRT")
 	PRT.Info("/prt minimap - Will enable the minimap icon")
 	PRT.Info("/prtm $message - Will let you send a message to *ALL* players on the fly")
 end
@@ -338,6 +339,9 @@ function PRT:ExecuteChatCommand(input)
 		PRT.PrintHelp()
 	elseif input == "version" or input == "versions" then
 		PRT:VersionCheck()
+	elseif input == "profile" or input == "profiles" then 
+		InterfaceOptionsFrame_OpenToCategory("PhenomRaidTools")
+      InterfaceOptionsFrame_OpenToCategory("PhenomRaidTools")
 	elseif input == "minimap" then
 		PRT:ToggleMinimapIcon()	
 	else		
