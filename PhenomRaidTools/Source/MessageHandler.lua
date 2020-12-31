@@ -10,6 +10,11 @@ local MessageHandler = {
         "TANK",
         UnitName("player"),
         GetUnitName("player", true)
+    },
+    validPlayerTargets = {
+        "ALL", 
+        UnitName("player"),
+        GetUnitName("player", true)
     }
 }
 
@@ -103,7 +108,7 @@ MessageHandler.ExecuteMessageAction = function(message)
 end
 
 MessageHandler.IsMessageForMe = function(message)
-    if tContains(MessageHandler.validTargets, message.target) or message.target == UnitGroupRolesAssigned("player") then        
+    if tContains(MessageHandler.validPlayerTargets, message.target) or message.target == UnitGroupRolesAssigned("player") then        
         return true
     else 
         return false
