@@ -47,7 +47,7 @@ L = {
     ["optionsRaidRosterImportByGroup"] = "Import current raid",
     ["optionsRaidRosterClear"] = "Clear raid roster",
     ["optionsVersionCheck"] = "Perform version check",
-    ["optionsOpenProfiles"] = "Open Profiles Page",
+    ["optionsOpenProfiles"] = "Open profiles page",
 
     ["optionsCustomPlaceholdersHeading"] = "Custom Placeholders",
     ["optionsCustomPlaceholderDeleteButton"] = "|cFFed3939Delete Custom Placeholder|r",
