@@ -116,6 +116,7 @@ PRT.AddGeneralWidgets = function(container, options)
 
     profilesOptionsButton:SetCallback("OnClick",
         function()
+            PRT.mainWindow:Hide()
             InterfaceOptionsFrame_OpenToCategory("PhenomRaidTools")
             InterfaceOptionsFrame_OpenToCategory("PhenomRaidTools")
         end        
