@@ -22,6 +22,7 @@ local PhenomRaidToolsLDB = LibStub("LibDataBroker-1.1"):NewDataObject("PhenomRai
 	OnEnter = function()
 		GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
 		GameTooltip:AddDoubleLine("|cFF69CCF0PhenomRaidTools|r", "v"..PRT.db.profile.version) 
+		GameTooltip:AddDoubleLine("|cFFdcabffProfile|r", PRT.db:GetCurrentProfile()) 
 		GameTooltip:AddLine("|cFFdcabffLeft-Click|r Open Config")
 		GameTooltip:AddLine("|cFFdcabffMiddle-Click|r Hide minimap icon")
 		GameTooltip:Show() 
