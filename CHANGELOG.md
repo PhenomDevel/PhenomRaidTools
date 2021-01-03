@@ -1,4 +1,14 @@
 ===============================================================================
+# Release 2.0.13.0
+## Bugfixes
+ - Make sure unit name percentage trigger work as intended
+ - Close main window when profile page is opened
+ 
+## Features
+ - Show current active profile on minimap icon hover
+
+
+===============================================================================
 # Release 2.0.12.0
 ## Bugfixes
  - Fix some locals
