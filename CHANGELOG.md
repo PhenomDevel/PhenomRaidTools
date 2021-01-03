@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.0.14.0
+## Bugfixes
+None
+ 
+## Features
+ - Added sounds for heal cds
+
+
+===============================================================================
 # Release 2.0.13.0
 ## Bugfixes
  - Make sure unit name percentage trigger work as intended
