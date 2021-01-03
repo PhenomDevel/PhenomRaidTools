@@ -368,17 +368,15 @@ end
 PRT.GetEffectiveUnitID = function(unitID)
     if UnitExists(unitID) then
         return unitID
-    else
-        if PRT.currentEncounter.trackedUnits then
-            for guid, t in pairs(PRT.currentEncounter.trackedUnits) do
-                if t.name == unitID then
-                    if UnitExists(t.unitID) and not UnitIsDead(t.unitID) then
-                        return t.guid
-                    end
+    elseif PRT.currentEncounter.trackedUnits then
+        for guid, t in pairs(PRT.currentEncounter.trackedUnits) do
+            if t.name == unitID then
+                if UnitExists(t.unitID) and not UnitIsDead(t.unitID) then
+                    return t.unitID
                 end
             end
         end
-    end 
+    end
 end
 
 PRT.CheckUnitHealthPercentages = function(percentages)
@@ -390,14 +388,12 @@ PRT.CheckUnitHealthPercentages = function(percentages)
 
                     if percentage.ignored ~= true and percentage.executed ~= true then
                         local unitID = PRT.GetEffectiveUnitID(percentage.unitID)
-                        
+
                         if UnitExists(unitID) and (not UnitIsDead(unitID)) then
                             local unitCurrentHP = UnitHealth(unitID)
                             local unitMaxHP = UnitHealthMax(unitID)
                             local unitHPPercent = PRT.Round(unitCurrentHP / unitMaxHP * 100, 0)                
                             local messagesByHP = TriggerHandler.FilterPercentagesTable(percentage.values, unitHPPercent)
-
-                            PRT.Info("UnitName:", unitCurrentHP, unitMaxHP, unitHPPercent)
 
                             if messagesByHP then
                                 if messagesByHP.messages ~= nil then
