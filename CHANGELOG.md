@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.0.15.1
+## Bugfixes
+ - Make sure multiple imports do not create equaly named triggers
+ 
+## Features
+None
+
+
+===============================================================================
 # Release 2.0.15.0
 ## Bugfixes
 None
