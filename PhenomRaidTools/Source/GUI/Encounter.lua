@@ -164,9 +164,17 @@ end
 
 local MergeTriggers = function(a, b)
     if b then
-        for i, trigger in ipairs(b) do
-            trigger.name = "* "..trigger.name
-            tinsert(a, trigger)
+        for i, bTrigger in ipairs(b) do
+            local newName = "* "..bTrigger.name
+
+            for i, aTrigger in ipairs(a) do
+                if aTrigger.name == newName then
+                    newName = "*"..newName
+                end
+            end
+            
+            bTrigger.name = newName
+            tinsert(a, bTrigger)
         end
     end
 end
