@@ -271,6 +271,7 @@ if GetLocale() == "deDE" then
     L["confirmationWindow"] = "Bestätigung"
     L["confirmationDialogOk"] = "Ok"
     L["confirmationDialogCancel"] = "Abbrechen"
+    L["importConfirmationMergeEncounter"] = "Der Boss ist bereits vorhanden. Sollen die Auslöser zusammengeführt werden?"
     L["importByGroupConfirmationText"] = 
         "Bist Du sicher, dass Du das Raid-Roster anhand der aktuellen Gruppe importieren willst?|n"..
         "|cFF69CCF0Notiz: |rDieser Vorgang wird alle aktuell eingetragenen Namen überschreiben."

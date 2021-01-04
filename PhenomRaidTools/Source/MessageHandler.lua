@@ -82,7 +82,7 @@ MessageHandler.ExecuteMessageAction = function(message)
 
         if UnitExists(targetMessage.target) or tContains(MessageHandler.validTargets, targetMessage.target) then
             if not PRT.db.profile.weakAuraMode then
-                PRT.Debug("Sending new message to", targetMessage.target)
+                PRT.Debug("Sending new message to", PRT.HighlightString(targetMessage.target))
                 targetMessage.sender = PRT.db.profile.myName
 
                 -- If in test mode send the message through the whipser channel in case we are not in a group

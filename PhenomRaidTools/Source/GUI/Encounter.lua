@@ -162,15 +162,38 @@ local addPercentageOverviewEntry = function(container, prefix, percentage)
     addOverviewEmptyLine(container)
 end
 
+local MergeTriggers = function(a, b)
+    if b then
+        for i, trigger in ipairs(b) do
+            trigger.name = "* "..trigger.name
+            tinsert(a, trigger)
+        end
+    end
+end
+
+local MergeEncounters = function(a, b)
+    MergeTriggers(a.Timers, b.Timers)
+    MergeTriggers(a.Rotations, b.Rotations)
+    MergeTriggers(a.HealthPercentages, b.HealthPercentages)
+    MergeTriggers(a.PowerPercentages, b.PowerPercentages)
+    MergeTriggers(a.CustomPlaceholders, b.CustomPlaceholders)
+end
+
 local importSuccess = function(encounter)
     local idx, existingEncounter = PRT.FilterEncounterTable(PRT.db.profile.encounters, encounter.id)
+
     if not existingEncounter then
         tinsert(PRT.db.profile.encounters, encounter)
         PRT.mainWindow:ReleaseChildren()
         PRT.mainWindow:AddChild(PRT.Core.CreateMainWindowContent(PRT.db.profile))   
         PRT.Info("Encounter imported successfully.")         
     else
-        PRT.Error("Stopped import due to already existing encounter with the same id:", existingEncounter.name)
+        PRT.ConfirmationDialog(L["importConfirmationMergeEncounter"], 
+            function()
+                MergeEncounters(existingEncounter, encounter)
+                PRT.Info("Encounter was successfully merged.")
+                PRT.Core.UpdateTree()
+            end)           
     end
 end
 

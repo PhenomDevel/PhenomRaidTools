@@ -279,6 +279,7 @@ L = {
     ["confirmationWindow"] = "Confirmation",
     ["confirmationDialogOk"] = "Ok",
     ["confirmationDialogCancel"] = "Cancel",
+    ["importConfirmationMergeEncounter"] = "Encounter already exists. Should the triggers be merged?",
     ["importByGroupConfirmationText"] = 
         "Are you sure you want to import raid roster by your current group?|n"..
         "|cFF69CCF0Note: |rThis will overwrite all of your current raid roster entries.",
