@@ -6,7 +6,6 @@
 ## Features
  - Add description field for triggers to make it easier to understand the purpose
  - Add Flourish and Tree of Life as cooldown quick access
-- 
 
 
 ===============================================================================
