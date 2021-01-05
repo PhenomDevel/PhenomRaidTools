@@ -36,6 +36,10 @@ local Cooldowns = {
 		31884, -- Wings
 
 		15286, -- Embrace
+
+		33891, -- Tree
+
+		197721, -- Flourish
 	},
 	raidDamageReduction = {
 		62618, -- Power Word: Barrier
