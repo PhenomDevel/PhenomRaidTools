@@ -246,7 +246,8 @@ function PRT:UNIT_TARGET(event, unitID)
 end
 
 function PRT:PLAYER_ENTERING_WORLD(event)
-	PRT.Debug("Zone entered.")
+	PRT.Info("Currently active profile", PRT.HighlightString(PRT.db:GetCurrentProfile()))
+	PRT.Debug("Zone entered.")	
 	PRT.Debug("Will check zone/difficulty in 10 seconds to determine if addon should be loaded.")
 
 	AceTimer:ScheduleTimer(
