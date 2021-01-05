@@ -1,4 +1,15 @@
 ===============================================================================
+# Release 2.0.16.0
+## Bugfixes
+ - 
+ 
+## Features
+ - Add description field for triggers to make it easier to understand the purpose
+ - Add Flourish and Tree of Life as cooldown quick access
+- 
+
+
+===============================================================================
 # Release 2.0.15.1
 ## Bugfixes
  - Make sure multiple imports do not create equaly named triggers

@@ -242,7 +242,7 @@ function PRT:OnInitialize()
 end
 
 function PRT:RefreshConfig()
-	PRT.Info("Active Profile was changed / copied or reset")
+	PRT.Info("Active Profile was changed to", PRT.HighlightString(PRT.db:GetCurrentProfile()))
 end
 
 function PRT:OnEnable()
