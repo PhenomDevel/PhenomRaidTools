@@ -32,8 +32,8 @@ PRT.ConditionWidget = function(condition, textID)
 	local conditionEventsFull = table.mergecopy(Condition.defaultEvents, additionalEvents)
     
     -- Create default widgets for condition
-	local eventEditBox = PRT.EditBox("conditionEvent", condition.event, true)
 	local eventDropDown = PRT.Dropdown("conditionEvent", conditionEventsFull, condition.event, true)
+	local spellIDEditBox = PRT.EditBox("conditionSpellID", condition.spellID, true)
 	local targetEditBox = PRT.EditBox("conditionTarget", condition.target, true)
 	local sourceEditBox = PRT.EditBox("conditionSource", condition.source, true)
 
@@ -41,9 +41,7 @@ PRT.ConditionWidget = function(condition, textID)
 	local spellGroup = PRT.SimpleGroup()
 	spellGroup:SetLayout("Flow")
 	spellGroup:SetRelativeWidth(1)
-
-	local spellIDEditBox = PRT.EditBox("conditionSpellID", condition.spellID, true)
-    
+	
 	local spellIcon = PRT.Icon(condition.spellIcon, condition.spellID)
 	spellIcon:SetHeight(40)	
 	spellIcon:SetWidth(40)	
