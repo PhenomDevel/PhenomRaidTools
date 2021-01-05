@@ -124,6 +124,7 @@ Percentage.PercentageWidget = function(percentage, container, deleteButton, clon
     percentageOptionsGroup:AddChild(enabledCheckbox)
     PRT.AddEnabledDifficultiesGroup(percentageOptionsGroup, percentage) 
     percentageOptionsGroup:AddChild(nameEditBox)    
+    PRT.AddDescription(percentageOptionsGroup, percentage) 
     percentageOptionsGroup:AddChild(unitIDEditBox)    
     percentageOptionsGroup:AddChild(checkAgainCheckBox)
     percentageOptionsGroup:AddChild(checkAgainAfterSlider)    

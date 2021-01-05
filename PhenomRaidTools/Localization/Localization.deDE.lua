@@ -241,6 +241,9 @@ if GetLocale() == "deDE" then
     L["timingOptionsHeading"] = "Optionen"
     L["cloneTiming"] = "Timing duplizieren"
 
+    -- Trigger
+    L["descriptionMultiLineEditBox"] = "Beschreibung"
+
     -- Overlay
     L["senderGroup"] = "Absender"
     L["receiversGroup"] = "Empfänger"

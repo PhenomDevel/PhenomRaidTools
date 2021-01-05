@@ -54,3 +54,15 @@ PRT.AddEnabledDifficultiesGroup = function(container, trigger)
 
    container:AddChild(enabledDifficultiesGroup)
 end
+
+PRT.AddDescription = function(container, trigger)
+   local descriptionMultiLineEditBox = PRT.MultiLineEditBox("descriptionMultiLineEditBox", trigger.description or "")   
+   descriptionMultiLineEditBox:SetCallback("OnEnterPressed", 
+		function(widget) 
+			local text = widget:GetText()
+			trigger.description = text
+			widget:ClearFocus()
+		end) 
+   descriptionMultiLineEditBox:SetRelativeWidth(1)
+   container:AddChild(descriptionMultiLineEditBox)
+end

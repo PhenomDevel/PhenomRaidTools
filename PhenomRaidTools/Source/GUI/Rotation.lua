@@ -86,7 +86,8 @@ Rotation.RotationWidget = function(rotation, container, deleteButton, cloneButto
 
     rotationOptionsGroup:AddChild(enabledCheckbox)
     PRT.AddEnabledDifficultiesGroup(rotationOptionsGroup, rotation)  
-    rotationOptionsGroup:AddChild(nameEditBox)       
+    rotationOptionsGroup:AddChild(nameEditBox)     
+    PRT.AddDescription(rotationOptionsGroup, rotation)    
     rotationOptionsGroup:AddChild(ignoreAfterActivationCheckBox)
     rotationOptionsGroup:AddChild(ignoreDurationSlider)    
     rotationOptionsGroup:AddChild(shouldRestartCheckBox)

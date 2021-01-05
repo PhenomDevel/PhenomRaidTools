@@ -249,6 +249,9 @@ L = {
     ["timingOptionsHeading"] = "Options",
     ["cloneTiming"] = "Clone Timing",
 
+    -- Trigger
+    ["descriptionMultiLineEditBox"] = "Description",
+
     -- Overlay
     ["senderGroup"] = "Sender",
     ["receiversGroup"] = "Receiver",

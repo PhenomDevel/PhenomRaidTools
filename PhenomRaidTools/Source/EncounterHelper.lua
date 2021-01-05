@@ -60,6 +60,7 @@ PRT.EmptyTimer = function()
             Heroic = true,
             Mythic = true
         },
+        description = "",
         timings = {
             PRT.EmptyTiming()
         }
@@ -92,6 +93,7 @@ PRT.EmptyRotation = function()
             Heroic = true,
             Mythic = true
         },
+        description = "",
         shouldRestart = PRT.db.profile.triggerDefaults.rotationDefaults.defaultShouldRestart,
         ignoreAfterActivation = PRT.db.profile.triggerDefaults.rotationDefaults.defaultIgnoreAfterActivation,
         ignoreDuration = PRT.db.profile.triggerDefaults.rotationDefaults.defaultIgnoreDuration
@@ -125,6 +127,7 @@ PRT.EmptyPercentage = function()
             Heroic = true,
             Mythic = true
         },
+        description = "",
         checkAgain = PRT.db.profile.triggerDefaults.percentageDefaults.defaultCheckAgain,
         checkAgainAfter = PRT.db.profile.triggerDefaults.percentageDefaults.defaultCheckAgainAfter
     }
