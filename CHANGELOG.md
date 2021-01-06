@@ -1,4 +1,14 @@
 ===============================================================================
+# Release 2.0.16.1
+## Bugfixes
+ - Only add units to tracked units if not already exists
+ - Change event to track units
+ 
+## Features
+None
+
+
+===============================================================================
 # Release 2.0.16.0
 ## Bugfixes
  - 
