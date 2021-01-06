@@ -226,8 +226,8 @@ PRT.AddUnitToTrackedUnits = function(unitID)
 		if not PRT.currentEncounter.trackedUnits then
 			PRT.currentEncounter.trackedUnits = {}
 		end
-
-		if guid then
+		if guid and not PRT.currentEncounter.trackedUnits[guid] then
+			PRT.Debug("Adding "..PRT.HighlightString(guid).." to tracked units.")
 			PRT.currentEncounter.trackedUnits[guid] = {
 				unitID = unitID,
 				name = unitName,
