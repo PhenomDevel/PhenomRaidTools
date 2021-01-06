@@ -13,8 +13,7 @@ local EventHandler = {
 	},
 
 	combatEvents = {
-		"UNIT_TARGET",
-		"NAME_PLATE_UNIT_ADDED"
+		"UNIT_COMBAT",
 	}
 }
 
@@ -226,7 +225,7 @@ PRT.AddUnitToTrackedUnits = function(unitID)
 		if not PRT.currentEncounter.trackedUnits then
 			PRT.currentEncounter.trackedUnits = {}
 		end
-		if guid and not PRT.currentEncounter.trackedUnits[guid] then
+		if guid and not PRT.currentEncounter.trackedUnits[guid] and not PRT.UnitInParty(unitID) and not UnitIsPlayer(unitID) then
 			PRT.Debug("Adding "..PRT.HighlightString(guid).." to tracked units.")
 			PRT.currentEncounter.trackedUnits[guid] = {
 				unitID = unitID,
@@ -237,11 +236,7 @@ PRT.AddUnitToTrackedUnits = function(unitID)
 	end
 end
 
-function PRT:NAME_PLATE_UNIT_ADDED(event, unitID)
-	PRT.AddUnitToTrackedUnits(unitID)
-end
-
-function PRT:UNIT_TARGET(event, unitID)
+function PRT:UNIT_COMBAT(event, unitID)
 	PRT.AddUnitToTrackedUnits(unitID)
 end
 
