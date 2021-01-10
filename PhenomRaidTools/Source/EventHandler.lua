@@ -241,7 +241,7 @@ function PRT:UNIT_COMBAT(event, unitID)
 end
 
 function PRT:PLAYER_ENTERING_WORLD(event)
-	PRT.Info("Currently active profile", PRT.HighlightString(PRT.db:GetCurrentProfile()))
+	PRT.Debug("Currently active profile", PRT.HighlightString(PRT.db:GetCurrentProfile()))
 	PRT.Debug("Zone entered.")	
 	PRT.Debug("Will check zone/difficulty in 10 seconds to determine if addon should be loaded.")
 
