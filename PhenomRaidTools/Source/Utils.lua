@@ -465,7 +465,7 @@ PRT.AddCustomPlaceholdersToPlayerNames = function(token, t, customPlaceholders)
                     end
                 else
                     for nameIdx, name in ipairs(customPlaceholder.names) do
-                        if PRT.UnitInParty(name) or UnitExists(name) then
+                        if (PRT.UnitInParty(name) or UnitExists(name)) and not UnitIsDead(name) then
                             tinsert(t, strtrim(name, " "))
                             break
                         end
