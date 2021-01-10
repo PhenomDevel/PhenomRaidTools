@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.0.17.0
+## Bugfixes
+None
+ 
+## Features
+ - Check if a player of custom placeholders is dead before sending a message
+
+
+===============================================================================
 # Release 2.0.16.1
 ## Bugfixes
  - Only add units to tracked units if not already exists
