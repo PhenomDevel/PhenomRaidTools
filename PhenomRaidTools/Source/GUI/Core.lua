@@ -402,7 +402,7 @@ end
 -- Public API
 
 PRT.CreateMainWindow = function(profile)
-    local mainWindow = PRT.Window("mainWindowTitle")
+    local mainWindow = PRT.Window("PhenomRaidTools".." - "..PRT.db.profile.version)
     local mainWindowContent = Core.CreateMainWindowContent(profile)
 
 	mainWindow:SetCallback("OnClose",
