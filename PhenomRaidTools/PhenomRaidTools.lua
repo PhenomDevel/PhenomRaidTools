@@ -94,8 +94,8 @@ local defaults =  {
 		overlay = {
 			receivers = {
 				[1] = NewDefaultReceiverOverlay(1, "Default", 16, 1, 1, 1),
-				[2] = NewDefaultReceiverOverlay(2, "Important", 64, 1, 0, 0),
-				[3] = NewDefaultReceiverOverlay(3, "Personals/Unimportant", 84, 0, 1, 0),
+				[2] = NewDefaultReceiverOverlay(2, "Important", 84, 1, 0, 0),
+				[3] = NewDefaultReceiverOverlay(3, "Personals/Unimportant", 64, 0, 1, 0),
 				[4] = NewDefaultReceiverOverlay(4, "Healing/Special", 36, 0, 0, 1)
 			},
 
@@ -139,7 +139,7 @@ local defaults =  {
 				Mythic = true
 			}
 		},
-
+		
 		triggerDefaults = {
 			rotationDefaults = {
 				defaultShouldRestart = true,
