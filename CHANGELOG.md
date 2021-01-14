@@ -1,4 +1,20 @@
 ===============================================================================
+# Release 2.0.17.1
+## Bugfixes
+ - Make sure targets of a new trigger are not cleared after a reload if you haven't changed them
+ - Make sure PRT is loaded correctly for every language in the world (use IDs instead of localized names...)
+ - Display current version in the PRT header
+ - Be able to use exact unit names within `source` and `target` values for conditions
+   - With this you will be able to do stuff like
+     - Examples of what should now be able to do:
+       - `send a message when unit X dies` e.g. for cabalists on sire denathrius
+       - `send a messge when unit Xy starts casting a spell` e.g. for interupts on a specific unit
+ 
+## Features
+None
+
+
+===============================================================================
 # Release 2.0.17.0
 ## Bugfixes
 None
