@@ -14,6 +14,17 @@ local EventHandler = {
 
 	combatEvents = {
 		"UNIT_COMBAT",
+	},
+
+	difficultyIDToNameMapping = {
+		[1] = "Normal", -- Normal Dungeon
+		[2] = "Heroic", -- Heroic Dungeon
+		[8] = "Mythic", -- Mythic Keystone Dungeon
+		[23] = "Mythic", -- Mythic Dungeon
+
+		[14] = "Normal", -- Normal Raid
+		[15] = "Heroic", -- Heroic Raid
+		[16] = "Mythic" -- Mythic Raid
 	}
 }
 
@@ -225,6 +236,7 @@ PRT.AddUnitToTrackedUnits = function(unitID)
 		if not PRT.currentEncounter.trackedUnits then
 			PRT.currentEncounter.trackedUnits = {}
 		end
+		
 		if guid and not PRT.currentEncounter.trackedUnits[guid] and not PRT.UnitInParty(unitID) and not UnitIsPlayer(unitID) then
 			PRT.Debug("Adding "..PRT.HighlightString(guid).." to tracked units.")
 			PRT.currentEncounter.trackedUnits[guid] = {
@@ -247,16 +259,16 @@ function PRT:PLAYER_ENTERING_WORLD(event)
 
 	AceTimer:ScheduleTimer(
 		function()
-			local name, type, _, difficulty = GetInstanceInfo()
-						
-			PRT.currentDifficulty = difficulty
+			local name, type, difficultyID, _ = GetInstanceInfo()									
+			local difficultyNameEN = EventHandler.difficultyIDToNameMapping[difficultyID]
+			PRT.currentDifficulty = difficultyNameEN
 
 			if type == "party" then
 				PRT.Debug("Player entered dungeon - checking difficulty")
-				PRT.Debug("Current difficulty is", PRT.HighlightString(difficulty))
-				
-				if self.db.profile.enabledDifficulties["dungeon"][difficulty] then
-					PRT.Debug("Enabling PhenomRaidTools for", PRT.HighlightString(name), "on difficulty", PRT.HighlightString(difficulty))
+				PRT.Debug("Current difficulty is", PRT.HighlightString(difficultyID).."-"..PRT.HighlightString(difficultyNameEN))								
+
+				if self.db.profile.enabledDifficulties["dungeon"][difficultyNameEN] then
+					PRT.Debug("Enabling PhenomRaidTools for", PRT.HighlightString(name), "on difficulty", PRT.HighlightString(difficultyNameEN))
 					PRT.enabled = true
 				else
 					PRT.Debug("Difficulty not configured. PhenomRaidTools disabled.")
@@ -264,10 +276,10 @@ function PRT:PLAYER_ENTERING_WORLD(event)
 				end
 			elseif type == "raid" then
 				PRT.Debug("Player entered raid - checking difficulty")
-				PRT.Debug("Current difficulty is", PRT.HighlightString(difficulty))
+				PRT.Debug("Current difficulty is", PRT.HighlightString(difficultyID).."-"..PRT.HighlightString(difficultyNameEN))								
 				
-				if self.db.profile.enabledDifficulties["raid"][difficulty] then
-					PRT.Debug("Enabling PhenomRaidTools for", PRT.HighlightString(name), "on", PRT.HighlightString(difficulty), "difficulty")
+				if self.db.profile.enabledDifficulties["raid"][difficultyNameEN] then
+					PRT.Debug("Enabling PhenomRaidTools for", PRT.HighlightString(name), "on", PRT.HighlightString(difficultyNameEN), "difficulty")
 					PRT.enabled = true
 				else
 					PRT.Debug("Difficulty not configured. PhenomRaidTools disabled.")
