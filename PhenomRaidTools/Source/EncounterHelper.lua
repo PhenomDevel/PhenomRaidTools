@@ -22,9 +22,7 @@ PRT.EmptyMessage = function()
         message = PRT.db.profile.triggerDefaults.messageDefaults.defaultMessage or "TODO",
         useCustomSound = false,
         duration = 5,
-        targets = PRT.db.profile.triggerDefaults.messageDefaults.defaultTargets or {
-            "ALL"
-        },
+        targets = PRT.CopyTable(PRT.db.profile.triggerDefaults.messageDefaults.defaultTargets) or {"ALL"},
         targetOverlay = 1,
         delay = 0
     }
