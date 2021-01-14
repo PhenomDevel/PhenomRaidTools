@@ -14,18 +14,28 @@ TriggerHandler.CheckCurrentDifficulty = function(trigger)
     end
 end
 
-TriggerHandler.CheckCondition = function(condition, event, combatEvent, spellID, targetGUID, sourceGUID)
-    if condition ~= nil then
-        if condition.event ~= nil and (condition.event == event or condition.event == combatEvent) then   
-            if condition.spellID == nil or condition.spellID == spellID then
-                if condition.source == nil or UnitGUID(condition.source or "") == sourceGUID then     
-                    if condition.target == nil or UnitGUID(condition.target or "") == targetGUID then      
-                        return true
-                    end
+TriggerHandler.UnitExistsInTrackedUnits = function(conditionUnitID, eventUnitGUID)
+    if PRT.currentEncounter.trackedUnits then
+        for guid, t in pairs(PRT.currentEncounter.trackedUnits) do        
+            if guid == eventUnitGUID then    
+                if t.name == conditionUnitID then
+                    return true      
                 end
-            end         
+            end
         end
     end
+end
+
+TriggerHandler.CheckCondition = function(condition, event, combatEvent, spellID, targetGUID, sourceGUID)
+    if condition ~= nil and
+        (condition.event ~= nil and (condition.event == event or condition.event == combatEvent)) and
+        (condition.spellID == nil or condition.spellID == spellID) and
+        (condition.source == nil or UnitGUID(condition.source or "") == sourceGUID or TriggerHandler.UnitExistsInTrackedUnits(condition.source or "", sourceGUID)) and
+        (condition.target == nil or UnitGUID(condition.target or "") == targetGUID or TriggerHandler.UnitExistsInTrackedUnits(condition.target or "", targetGUID)) then
+
+        return true
+    end
+
     return false
 end
 
