@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.0.17.2
+## Bugfixes
+ - Make sure timing entries with the same timings all trigger not just one of them
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.0.17.1
 ## Bugfixes
  - Make sure targets of a new trigger are not cleared after a reload if you haven't changed them
