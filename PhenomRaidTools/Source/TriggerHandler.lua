@@ -40,7 +40,8 @@ TriggerHandler.CheckCondition = function(condition, event, combatEvent, spellID,
 end
 
 TriggerHandler.FilterTimingsTable = function(timings, timeOffset)
-    local value        
+    local timingTables = {} 
+
     if timings then        
         for i, v in ipairs(timings) do
             local secondsWithOffset
@@ -54,14 +55,13 @@ TriggerHandler.FilterTimingsTable = function(timings, timeOffset)
                 secondsWithOffset = v.seconds
             end
 
-            if tContains(secondsWithOffset, timeOffset) then
-                if not value then
-                    value = v
-                end
+            if tContains(secondsWithOffset, timeOffset) then                  
+                tinsert(timingTables, v)
             end
         end
     end
-    return value
+
+    return timingTables
 end
 
 TriggerHandler.FilterPercentagesTable = function(percentages, percent)
@@ -325,16 +325,18 @@ PRT.CheckTimerTimings = function(timers)
                 if timer.started == true and timer.timings ~= nil then                
                     local elapsedTime = PRT.Round(currentTime - timer.startedAt)
                     local timings = timer.timings
-                    local timingByTime = TriggerHandler.FilterTimingsTable(timings, elapsedTime)                
+                    local timingsByTime = TriggerHandler.FilterTimingsTable(timings, elapsedTime)                
 
-                    if timingByTime then
-                        local messagesByTime = timingByTime.messages
-                        
-                        if messagesByTime ~= nil then      
-                            messagesByTime.executionTimes = messagesByTime.executionTimes or {}                  
-                            if messagesByTime.executionTimes[elapsedTime] ~= true then
-                                TriggerHandler.SendMessagesAfterDelay(messagesByTime)                 
-                                messagesByTime.executionTimes[elapsedTime] = true
+                    for i, timingByTime in ipairs(timingsByTime) do
+                        if timingByTime then
+                            local messagesByTime = timingByTime.messages
+                            
+                            if messagesByTime ~= nil then      
+                                messagesByTime.executionTimes = messagesByTime.executionTimes or {}                  
+                                if messagesByTime.executionTimes[elapsedTime] ~= true then
+                                    TriggerHandler.SendMessagesAfterDelay(messagesByTime)                 
+                                    messagesByTime.executionTimes[elapsedTime] = true
+                                end
                             end
                         end
                     end
