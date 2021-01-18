@@ -436,6 +436,7 @@ PRT.SoundSelect = function(textID, value)
 	widget:SetList(AceGUIWidgetLSMlists.sound)
 	widget:SetLabel(text)	
 	widget:SetText(value)
+	widget:SetWidth(AceHelper.widgetDefaultWidth)
 
 	return widget 
 end
@@ -446,6 +447,7 @@ PRT.FontSelect = function(textID, value)
 	local widget = AceGUI:Create("LSM30_Font")
 	widget:SetList(AceGUIWidgetLSMlists.font)
 	widget:SetLabel(text)	
+	widget:SetWidth(AceHelper.widgetDefaultWidth)
 	widget:SetText(value)
 
 	return widget 
