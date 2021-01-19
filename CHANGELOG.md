@@ -1,4 +1,15 @@
 ===============================================================================
+# Release 2.0.17.3
+## Bugfixes
+ - Set default width for all selects
+ - Make sure encounter merge on import works in every case
+ - Create local copies of wow api functions to make sure no other addons overwrite them
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.0.17.2
 ## Bugfixes
  - Make sure timing entries with the same timings all trigger not just one of them
