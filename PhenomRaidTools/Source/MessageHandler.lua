@@ -2,6 +2,9 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 local AceComm = LibStub("AceComm-3.0")
 
+-- Create local copies of API functions which we use
+local UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat = UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat
+
 local MessageHandler = {
     validTargets = {
         "ALL", 

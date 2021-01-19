@@ -173,7 +173,7 @@ Message.GenerateRaidRosterDropdownItems = function()
 	tinsert(raidRosterItems, { id = "$target", name = "$conditionTarget"})
 	
 	raidRosterItems = table.mergecopy(raidRosterItems, Message.ColoredRaidPlayerNames())
-
+	PRT.SortTableByName(raidRosterItems)
 	return raidRosterItems
 end
 
@@ -253,15 +253,15 @@ PRT.MessageWidget = function (message, container)
 		end)
 
 
-	local delayEditBox = PRT.Slider("messageDelay", message.delay, true)	
-	delayEditBox:SetCallback("OnValueChanged", 
+	local delaySlider = PRT.Slider("messageDelay", message.delay, true)	
+	delaySlider:SetCallback("OnValueChanged", 
 		function(widget)
 			message.delay = tonumber(widget:GetValue()) 
 		end)
 
-	local durationEditBox = PRT.Slider("messageDuration", message.duration, true)	
-	durationEditBox:SetSliderValues(0, 60, 0.5)
-	durationEditBox:SetCallback("OnValueChanged", 
+	local durationSlider = PRT.Slider("messageDuration", message.duration, true)	
+	durationSlider:SetSliderValues(0, 60, 0.5)
+	durationSlider:SetCallback("OnValueChanged", 
 		function(widget)
 			message.duration = tonumber(widget:GetValue()) 
 		end)
@@ -308,8 +308,8 @@ PRT.MessageWidget = function (message, container)
 		container:AddChild(cooldownIconsGroup)
 	end
 
-	container:AddChild(delayEditBox)
-	container:AddChild(durationEditBox)	
+	container:AddChild(delaySlider)
+	container:AddChild(durationSlider)	
 	container:AddChild(targetOverlayDropdown)
 	container:AddChild(useCustomSoundCheckbox)	
 

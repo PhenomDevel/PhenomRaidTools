@@ -7,6 +7,9 @@ local SenderOverlay = {
     inactiveColor = "FF8f8f8f"
 }
 
+-- Create local copies of API functions which we use
+local UIParent, GameFontHighlightSmall = UIParent, GameFontHighlightSmall
+
 
 -------------------------------------------------------------------------------
 -- Local Helper

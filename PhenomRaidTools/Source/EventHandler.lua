@@ -28,6 +28,9 @@ local EventHandler = {
 	}
 }
 
+-- Create local copies of API functions which we use
+local GetTime, CombatLogGetCurrentEventInfo, UnitGUID, UnitIsPlayer, GetInstanceInfo = GetTime, CombatLogGetCurrentEventInfo, UnitGUID, UnitIsPlayer, GetInstanceInfo
+
 
 -------------------------------------------------------------------------------
 -- Local Helper

@@ -52,6 +52,7 @@ Rotation.RotationWidget = function(rotation, container, deleteButton, cloneButto
             rotation.name = widget:GetText() 
             PRT.Core.UpdateTree()
             PRT.Core.ReselectExchangeLast(rotation.name)
+            widget:ClearFocus()
         end)
     shouldRestartCheckBox:SetRelativeWidth(1)
     shouldRestartCheckBox:SetCallback("OnValueChanged", 

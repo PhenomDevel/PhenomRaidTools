@@ -39,8 +39,7 @@ L = {
     ["optionsRaidRosterExplanation"] = "Here you can define player names and reference them as targets in message with e.g. |cFF69CCF0$tank2|r, |cFF69CCF0$heal1|r etc.",
     ["optionsReceiveMessagesFrom"] = "Accept messages only from", 
     ["optionsReceiveMessagesFromTooltip"] = 
-        "Put the name of the player you want to receive messages from in here.|n"..
-        "All other messages will be filtered out so you won't get spammed.|n"..
+        "Comma separated list of player names you want to get messages from.\n"..
         "You also can use |cFF69CCF0$me|r to always receive messages from yourself.", 
     ["optionsReceiveMessagesFromDropdown"] = "Choose player", 
     ["optionsHideDisabledTriggers"] = "Hide disabled triggers",
@@ -99,6 +98,14 @@ L = {
     ["defaultEvent"] = "Event",
     ["defaultMessage"] = "Message",
     ["defaultTargets"] = "Targets",
+    ["defaultTargetsTooltip"] =
+        "Comma separated list of targets\n"..
+        "Examples:\n"..
+        "- |cFF69CCF0$me|r -> Will be exchanged with the current characters name\n"..
+        "- |cFF69CCF0$target|r -> Will be exchanged with the target of the event\n"..
+        "- |cFF69CCF0$healN|r or |cFF69CCF0$tankN|r or |cFF69CCF0$ddN|r -> N is a number between 1-21. Will be exchanged with the configured raid roster name.\n"..
+        "- |cFF69CCF0$groupN|r -> N is a number between 1-8. Will be exchanged with *all* members of the group.\n"..
+        "- |cFF69CCF0ALL|r, |cFF69CCF0HEALER|r, |cFF69CCF0TANK|r, |cFF69CCF0DAMAGER|r\n",
     ["defaultUnitID"] = "Unit-ID",
     ["defaultCheckAgain"] = "Check multiple times",
     ["defaultCheckAgainAfter"] = "Check again after (s)",

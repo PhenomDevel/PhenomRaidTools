@@ -167,6 +167,10 @@ local MergeTriggers = function(a, b)
         for i, bTrigger in ipairs(b) do
             local newName = "* "..bTrigger.name
 
+            if not a then
+                a = {}
+            end
+            
             for i, aTrigger in ipairs(a) do
                 if aTrigger.name == newName then
                     newName = "*"..newName
@@ -321,6 +325,7 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
                 end
                 PRT.Error("The encounter id you entered was already taken by ", PRT.HighlightString(existingEncounter.name))
             end
+            widget:ClearFocus()
         end)
     encounterNameEditBox:SetRelativeWidth(0.5)
     encounterNameEditBox:SetCallback("OnEnterPressed",
@@ -329,6 +334,7 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
             PRT.Core.UpdateTree()
             PRT.mainWindowContent:DoLayout()
             PRT.Core.ReselectExchangeLast(encounter.id)
+            widget:ClearFocus()
         end)
 
     encounterSelectDropdown:SetRelativeWidth(0.5)
@@ -360,6 +366,7 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
             end
 
             widget:SetValue(nil)
+            widget:ClearFocus()
         end)
 
     exportButton:SetCallback("OnClick",
@@ -372,6 +379,7 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
         function(widget)
             encounter.enabled = widget:GetValue()
             PRT.Core.UpdateTree()
+            widget:ClearFocus()
         end)
 
     encounterOptionsGroup:AddChild(enabledCheckBox)

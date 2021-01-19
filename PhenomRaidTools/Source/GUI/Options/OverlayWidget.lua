@@ -65,6 +65,7 @@ Overlay.FontGroup = function(options, overlayFrame)
             widget:SetText(value)
             
             PRT.Overlay.UpdateFrame(overlayFrame, options)
+            widget:ClearFocus()
         end)
 
     fontGroup:AddChild(fontSizeSlider)

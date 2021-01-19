@@ -39,8 +39,7 @@ if GetLocale() == "deDE" then
     L["optionsRaidRosterExplanation"] = "Hier können Spielernamen des Raidkaders eingetragen werden, um diese später zu referenzieren mit z.B. |cFF69CCF0$tank2|r |cFF69CCF0$heal1|r etc."
     L["optionsReceiveMessagesFrom"] = "Akzeptiere nur Nachrichten von:"
     L["optionsReceiveMessagesFromTooltip"] = 
-        "Wähle einen Spielernamen von dem du Nachrichten erhalten möchtest.|n"..
-        "Alle Nachrichten von anderen Absendern werden ignoriert.|n"..
+        "Komma separierte Liste von Spielernamen von denen Du Nachrichten empfangen willst.|n"..
         "Du kannst auch |cFF69CCF0$me|r benutzen damit du Nachrichten von dir selbst immer erhälst.|n"
     L["optionsReceiveMessagesFromDropdown"] = "Namensauswahl"
     L["optionsHideDisabledTriggers"] = "Deaktivierte Auslöser verstecken"
@@ -98,6 +97,14 @@ if GetLocale() == "deDE" then
     L["defaultEvent"] = "Event"
     L["defaultMessage"] = "Nachricht"
     L["defaultTargets"] = "Empfänger"
+    L["defaultTargetsTooltip"] =
+        "Kommaseparierte Liste von Empfängern\n"..
+        "Beispiele:\n"..
+        "- |cFF69CCF0$me|r -> Wird mit dem Namen der aktuellen Charakters ausgetauscht\n"..
+        "- |cFF69CCF0$target|r -> Wird mit dem Ziel des Kampfevents ausgetauscht\n"..
+        "- |cFF69CCF0$healN|r or |cFF69CCF0$tankN|r or |cFF69CCF0$ddN|r -> N ist eine Zahl zwischen 1-21. Wird mit dem konfigurierten Namen im Raidkader ausgetauscht.\n"..
+        "- |cFF69CCF0$groupN|r -> N ist eine Zahl zwischen 1-8. Wird mit *allen* Spielern der entsprechenden Gruppe ausgetauscht.\n"..
+        "- |cFF69CCF0ALL|r |cFF69CCF0HEALER|r |cFF69CCF0TANK|r |cFF69CCF0DAMAGER|r\n"
     L["defaultUnitID"] = "Unit-ID"
     L["defaultCheckAgain"] = "Mehrfach prüfen"
     L["defaultCheckAgainAfter"] = "Erneut prüfen nach (s)"

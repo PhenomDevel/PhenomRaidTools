@@ -6,6 +6,10 @@ local Core = {
     }
 }
 
+-- Create local copies of API functions which we use
+local UIParent = UIParent
+local UISpecialFrames = UISpecialFrames
+
 
 -------------------------------------------------------------------------------
 -- Local Helper

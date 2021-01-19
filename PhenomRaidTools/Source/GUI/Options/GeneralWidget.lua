@@ -29,6 +29,10 @@ local General = {
    }
 }
 
+-- Create local copies of API functions which we use
+local InterfaceOptionsFrame_OpenToCategory = InterfaceOptionsFrame_OpenToCategory
+
+
 -------------------------------------------------------------------------------
 -- Public API
 

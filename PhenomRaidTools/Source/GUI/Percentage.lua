@@ -36,7 +36,7 @@ Percentage.PercentageEntryWidget = function(entry, container, key, entries)
         function(widget) 
             local value = widget:GetValue()
             entry.value = value
-            entry.name = value.." %" 
+            entry.name = value.." %"
         end)
 
     local messagesHeading = PRT.Heading("messageHeading")
@@ -90,6 +90,7 @@ Percentage.PercentageWidget = function(percentage, container, deleteButton, clon
             percentage.name = widget:GetText() 
             PRT.Core.UpdateTree()
             PRT.Core.ReselectExchangeLast(percentage.name)
+            widget:ClearFocus()
         end)
     
     unitIDEditBox:SetCallback("OnEnterPressed", 

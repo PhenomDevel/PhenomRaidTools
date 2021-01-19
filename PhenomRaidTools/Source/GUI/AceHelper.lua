@@ -10,6 +10,12 @@ local AceHelper = {
 	}
 }
 
+-- Create local copies of API functions which we use
+local UIParent = UIParent
+local GameTooltip = GameTooltip
+local GameFontHighlightSmall = GameFontHighlightSmall
+
+
 -------------------------------------------------------------------------------
 -- Local Helper
 
@@ -179,18 +185,6 @@ PRT.InlineGroup = function(textID)
 	container:SetFullWidth(true)
 	container:SetLayout("List")
 	container:SetTitle(text)
-
-   return container
-end
-
--- TODO: Actually make this transparent even when using elvui
-PRT.TransparentGroup = function()
-	local text = L[textID]
-	local container = AceGUI:Create("SimpleGroup")    
-	container.frame:SetBackdrop(nil)
-
-	container:SetFullWidth(true)
-	container:SetLayout("List")
 
    return container
 end

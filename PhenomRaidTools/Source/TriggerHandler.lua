@@ -5,6 +5,10 @@ local AceTimer = LibStub("AceTimer-3.0")
 local TriggerHandler = {}
 
 
+-- Create local copies of API functions which we use
+local UnitGUID, GetTime, UnitExists, UnitIsDead, UnitHealth, UnitHealthMax, UnitPower, UnitPowerMax = UnitGUID, GetTime, UnitExists, UnitIsDead, UnitHealth, UnitHealthMax, UnitPower, UnitPowerMax
+
+
 -------------------------------------------------------------------------------
 -- Local Helper
 

@@ -6,6 +6,9 @@ local ReceiverOverlay = {
     messageStack = {}
 }
 
+-- Create local copies of API functions which we use
+local UIParent, GameFontHighlightSmall = UIParent, GameFontHighlightSmall
+
 
 -------------------------------------------------------------------------------
 -- Local Helper

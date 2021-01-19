@@ -19,6 +19,10 @@ local classColors = {
     [12] = "FFA330C9"
 }
 
+-- Create local copies of API functions which we use
+local UnitClass, GetSpellInfo, UnitExists, UnitIsDead, UnitName = UnitClass, GetSpellInfo, UnitExists, UnitIsDead, UnitName 
+local GetRaidRosterInfo, GetUnitName, GetNumGroupMembers, UnitInParty, UnitInRaid = GetRaidRosterInfo, GetUnitName, GetNumGroupMembers, UnitInParty, UnitInRaid
+
 
 -------------------------------------------------------------------------------
 -- Public API
@@ -430,7 +434,9 @@ PRT.ClassColoredName = function(name)
 end
 
 PRT.ColoredString = function(s, color)
-    return "|c"..(color or "FFFFFFFF")..s.."|r"
+    if s then
+        return "|c"..(color or "FFFFFFFF")..s.."|r"
+    end
 end
 
 PRT.HighlightString = function(s)

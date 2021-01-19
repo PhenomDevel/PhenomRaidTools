@@ -4,6 +4,10 @@ local Overlay = {}
 local padding = 15
 
 
+-- Create local copies of API functions which we use
+local UIParent, GameFontHighlightSmall = UIParent, GameFontHighlightSmall
+
+
 -------------------------------------------------------------------------------
 -- Public API
 

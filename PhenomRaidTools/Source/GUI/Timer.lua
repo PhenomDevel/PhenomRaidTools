@@ -123,6 +123,7 @@ Timer.TimerWidget = function(timer, container, deleteButton, cloneButton)
             timer.name = widget:GetText()             
             PRT.Core.UpdateTree()
             PRT.Core.ReselectExchangeLast(timer.name)            
+            widget:ClearFocus()
         end)
 
     local triggerAtOccurenceSlider = PRT.Slider("timerOptionsTriggerAtOccurence", (timer.triggerAtOccurence or 1))
