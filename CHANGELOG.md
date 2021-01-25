@@ -1,4 +1,18 @@
 ===============================================================================
+# Release 2.0.18.0-BETA
+## Bugfixes
+None
+
+## Features
+ - A lot of refactoring
+ - Add ability to filter messages by guild rank
+ - Removed legacy weakaura support
+
+## Notes
+ - Make sure to add a message filter again. Due to some data changes this will be empty
+
+
+===============================================================================
 # Release 2.0.17.3
 ## Bugfixes
  - Set default width for all selects
