@@ -25,14 +25,6 @@ local MessageHandler = {
 -------------------------------------------------------------------------------
 -- Local Helper
 
-MessageHandler.SendMessageToReceiver = function(message)
-    if PRT.PlayerInParty() then
-        C_ChatInfo.SendAddonMessage(PRT.db.profile.addonPrefixes.weakAuraMessage, message, "RAID")    
-    else
-        C_ChatInfo.SendAddonMessage(PRT.db.profile.addonPrefixes.weakAuraMessage, message, "WHISPER", UnitName("player"))         
-    end
-end
-
 MessageHandler.MessageToReceiverMessage = function(message)
     local target = message.target or ""
     local spellID = message.spellID or ""
@@ -84,23 +76,15 @@ MessageHandler.ExecuteMessageAction = function(message)
         targetMessage.targets = nil 
 
         if UnitExists(targetMessage.target) or tContains(MessageHandler.validTargets, targetMessage.target) then
-            if not PRT.db.profile.weakAuraMode then
-                PRT.Debug("Sending new message to", PRT.HighlightString(targetMessage.target))
-                targetMessage.sender = PRT.db.profile.myName
+            PRT.Debug("Sending new message to", PRT.HighlightString(targetMessage.target))
+            targetMessage.sender = PRT.db.profile.myName
 
-                -- If in test mode send the message through the whipser channel in case we are not in a group
-                if not PRT.PlayerInParty() then
-                    AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.addonMessage, PRT.TableToString(targetMessage), "WHISPER", PRT.db.profile.myName) 
-                end
-
-                AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.addonMessage, PRT.TableToString(targetMessage), "RAID") 
-            elseif PRT.db.profile.weakAuraMode then
-                local weakAuraReceiverMessage = nil
-
-                weakAuraReceiverMessage = MessageHandler.MessageToReceiverMessage(targetMessage) 
-                PRT.Debug("Sending new weakaura message", weakAuraReceiverMessage)
-                MessageHandler.SendMessageToReceiver(weakAuraReceiverMessage) 
+            -- If in test mode send the message through the whipser channel in case we are not in a group
+            if not PRT.PlayerInParty() then
+                AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.addonMessage, PRT.TableToString(targetMessage), "WHISPER", PRT.db.profile.myName) 
             end
+
+            AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.addonMessage, PRT.TableToString(targetMessage), "RAID") 
         else
             -- Don't spam chat if a configured user is not in the raid. We expect those to happen sometimes
             if targetMessage.target ~= "N/A" then
@@ -108,6 +92,22 @@ MessageHandler.ExecuteMessageAction = function(message)
             end
         end        
     end    
+end
+
+MessageHandler.IsValidSender = function(message)
+    if PRT.db.profile.messageFilter.filterBy == "names" then
+        return (tContains(PRT.db.profile.messageFilter.requiredNames, message.sender) or 
+                tContains(PRT.db.profile.messageFilter.requiredNames, "$me") or
+                PRT.db.profile.messageFilter.requiredNames == nil or
+                PRT.db.profile.messageFilter.requiredNames == {})
+
+    elseif PRT.db.profile.messageFilter.filterBy == "guildRank" then
+        local senderGuildRankIndex = select(3, GetGuildInfo(message.sender))
+
+        return (senderGuildRankIndex <= PRT.db.profile.messageFilter.requiredGuildRank)
+    end
+
+    return false
 end
 
 MessageHandler.IsMessageForMe = function(message)
@@ -121,24 +121,16 @@ end
 function PRT:OnAddonMessage(message)
     if PRT.db.profile.enabled then 
         if UnitAffectingCombat("player") then
-            if not PRT.db.profile.weakAuraMode then
-                local worked, messageTable = PRT.StringToTable(message)
-                
-                if PRT.db.profile.receiverMode then                     
-                    if (messageTable.sender == PRT.db.profile.receiveMessagesFrom or 
-                        PRT.db.profile.receiveMessagesFrom == "$me" or
-                        PRT.db.profile.receiveMessagesFrom == nil or
-                        PRT.db.profile.receiveMessagesFrom == "") then
-
-                        if MessageHandler.IsMessageForMe(messageTable) then
-                            PRT.Debug("Received message from", PRT.ClassColoredName(messageTable.sender))
-                            PRT.ReceiverOverlay.AddMessage(messageTable)
-                        else
-                            PRT.Debug("Received a message from", PRT.ClassColoredName(messageTable.sender), "but it was not ment for you. Ignoring message.")
-                        end
+            local worked, messageTable = PRT.StringToTable(message)
+            
+            if PRT.db.profile.receiverMode then                
+                if MessageHandler.IsValidSender(messageTable) then
+                    if MessageHandler.IsMessageForMe(messageTable) then
+                        PRT.Debug("Received message from", PRT.ClassColoredName(messageTable.sender))
+                        PRT.ReceiverOverlay.AddMessage(messageTable)
+                    else
+                        PRT.Debug("Received a message from", PRT.ClassColoredName(messageTable.sender), "but it was not ment for you. Ignoring message.")
                     end
-                else
-                    PRT.Debug("Received a message from", PRT.ClassColoredName(messageTable.sender), "and only accept messages from", PRT.ClassColoredName(PRT.db.profile.receiveMessagesFrom), "therefore skipping the message.")
                 end
             end
         end
@@ -171,6 +163,15 @@ function PRT:OnVersionResponse(message)
     end
 end
 
+function PRT:OnSyncRequest(message)
+    -- daten auspacken
+    -- abfrage, ob benutzer syncen will
+    -- encounter, placeholder, overlays, raid roster
+end
+
+function PRT:OnSyncResponse(message)
+    -- Rückmeldung an den Benutzer
+end
 
 -------------------------------------------------------------------------------
 -- Public API

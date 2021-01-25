@@ -29,6 +29,10 @@ Source/ImportExport.lua
 Source/Overlay.lua
 Source/SenderOverlay.lua
 Source/ReceiverOverlay.lua
+# Utils
+Source/Utils/GuildUtils.lua
+Source/Utils/TableUtils.lua
+Source/Utils/StringUtils.lua
 
 # GUI Source
 Source/GUI/AceHelper.lua

@@ -53,6 +53,8 @@ local Cooldowns = {
 		51052, -- AMC
 	},
 	utility = {
+		192077, -- Windrush Totem
+		
 		106898, -- Stampeding Roar
 
 		97462, -- Rallying Cry
@@ -219,15 +221,9 @@ PRT.MessageWidget = function (message, container)
 	targetsEditBox:SetCallback("OnEnterPressed", 
 		function(widget) 
 			local text = widget:GetText()
-			if text ~= "" then
-				-- Support space and comma
-				local split1 = {strsplit(" ", text)}
-				local split2 = {strsplit(",", strjoin(",", unpack(split1)))}
+			local targets = PRT.StringUtils.SplitToTable(text)
+			message.targets = targets
 
-				message.targets = PRT.TableRemove(split2, PRT.EmptyString)			
-			else
-				message.targets = {}
-			end
 			targetsPreviewLabel:SetText(L["messagePreview"]..PRT.PrepareMessageForDisplay(Message.TargetsPreviewString(message.targets)))
 			widget:ClearFocus()
 		end) 

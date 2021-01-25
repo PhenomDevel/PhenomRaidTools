@@ -221,7 +221,7 @@ Encounter.OverviewWidget = function(encounter)
     local powerPercentageGroup = PRT.InlineGroup(PRT.TextureString(132849).." "..L["powerPercentageOverview"])
 
     -- Timers
-    if not table.empty(encounter.Timers) then        
+    if not PRT.TableUtils.IsEmpty(encounter.Timers) then        
         for i, v in ipairs(encounter.Timers) do
             addTimerOverviewEntry(timerGroup, v)
         end   
@@ -230,7 +230,7 @@ Encounter.OverviewWidget = function(encounter)
     end
 
     -- Rotations
-    if not table.empty(encounter.Rotations) then        
+    if not PRT.TableUtils.IsEmpty(encounter.Rotations) then        
         for i, v in ipairs(encounter.Rotations) do
             addRotationOverviewEntry(rotationsGroup, v)
         end  
@@ -239,7 +239,7 @@ Encounter.OverviewWidget = function(encounter)
     end
 
     -- Health Percentages
-    if not table.empty(encounter.HealthPercentages) then        
+    if not PRT.TableUtils.IsEmpty(encounter.HealthPercentages) then        
         for i, v in ipairs(encounter.HealthPercentages) do
             addPercentageOverviewEntry(healthPercentageGroup, L["encounterOverviewPercentagePrefixHealth"], v)
         end       
@@ -248,7 +248,7 @@ Encounter.OverviewWidget = function(encounter)
     end
 
     -- Power Percentages
-    if not table.empty(encounter.PowerPercentages) then        
+    if not PRT.TableUtils.IsEmpty(encounter.PowerPercentages) then        
         for i, v in ipairs(encounter.PowerPercentages) do
             addPercentageOverviewEntry(powerPercentageGroup, L["encounterOverviewPercentagePrefixPower"], v)
         end        

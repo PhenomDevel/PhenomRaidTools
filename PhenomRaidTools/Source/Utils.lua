@@ -265,29 +265,6 @@ table.mergecopy = function(t1, t2)
     return t3
 end
 
-table.empty = function(t)
-    if t then
-        if table.getn(t) == 0 then
-            return true
-        end
-    end
-
-    return false
-end
-
-PRT.TableRemove = function(t, pred)
-    for i = #t, 1, -1 do
-        if pred(t[i], i) then
-            table.remove(t, i)
-        end
-    end
-    return t
-end
-
-PRT.EmptyString = function(v)
-    return (v == "" or v == nil)
-end
-
 PRT.FilterEncounterTable = function(encounters, id)
     local value
     if encounters then
@@ -507,7 +484,7 @@ PRT.PlayerNamesByToken = function(token)
         tinsert(playerNames, "N/A")
     end
 
-    if table.empty(playerNames) then
+    if PRT.TableUtils.IsEmpty(playerNames) then
         tinsert(playerNames, "N/A")
     end    
 

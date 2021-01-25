@@ -39,7 +39,7 @@ SenderOverlay.UpdateFrame = function(encounter, options)
         overlayText = encounter.name.." ("..PRT.HighlightString(timeIntoCombat)..")|n"
 
         -- Timer
-        if not table.empty(encounter.Timers) then
+        if not PRT.TableUtils.IsEmpty(encounter.Timers) then
             local timerStringComplete = ""
 
             for i, timer in ipairs(encounter.Timers) do
@@ -76,7 +76,7 @@ SenderOverlay.UpdateFrame = function(encounter, options)
         end
 
         -- Rotation
-        if not table.empty(encounter.Rotations) then
+        if not PRT.TableUtils.IsEmpty(encounter.Rotations) then
             local rotationStringComplete = ""
 
             for i, rotation in ipairs(encounter.Rotations) do

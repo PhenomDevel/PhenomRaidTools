@@ -4,7 +4,6 @@ if GetLocale() == "deDE" then
     L["sender+receiver"] = "Absender & Empfänger"
 
     L["mainWindowTitle"] = "PhenomRaidTools"
-    L["runModeDropdown"] = "Ausführungsmodus"
 
     -- Options
     L["optionsFontSelect"] = "Schriftart"
@@ -20,33 +19,34 @@ if GetLocale() == "deDE" then
     L["optionsReceiverModeHelp"] = 
         "|cFF69CCF0Notiz|r: Alle Optionen, welche mit dem Sender-Modus zusammenhängen sind entweder ausgeblendet oder deaktiviert.\n"..
         "Wenn du das Aussehen des für das Empfänger-Overlay ändern möchtest bitte navgiere auf `|cFF69CCF0Overlays|r`."
-    L["optionsWeakAuraMode"] = "WeakAura Empfänger benutzen"
-    L["optionsWeakAuraModeTooltip"] = 
-        "Aktiviere diese Option, um den WeakAura Empfänger zu benutzen.\n"..
-        "Wenn Du das Addon als Empfänger benutzen möchstest stelle sicher, dass die WeakAura |cFF69CCF0Phenom Raid Tools: Receiver|r deaktiviert ist.\n"..
-        "https://wago.io/HyieicnAz\n"..
-        "|cFFcc7000WARNUNG|r: Nicht alle Funktionalitäten des Addons funktionieren mit der WeakAura!"
     L["optionsEnabled"] = "Aktiviert"
-    L["optionsTestMode"] = "Testmodus"
-    L["optionsDebugMode"] = "Debugmodus"
-    L["optionsDebugModeTooltip"] = "Wenn dieser Modus aktiviert ist werden einige allgemeine Informationen in das Chatfenster ausgegeben"
-    L["optionsTestEncounterID"] = "Boss-ID zum Testen"
-    L["optionsTestEncounterIDTooltip"] = "Wähle den Boss der getestet werden soll"
     L["optionsShowOverlay"] = "Overlay anzeigen"
     L["optionsHideOverlayAfterCombat"] = "Overlay nach dem Kampf ausblenden"
     L["optionsDifficultyExplanation"] = "Hier können die Schwierigkeiten ausgewählt werden auf denen das Addon aktiv sein soll."
     L["optionsDefaultsExplanation"] = "Hier können Standardwerte für die Auslöser ausgewählt werden."
     L["optionsRaidRosterExplanation"] = "Hier können Spielernamen des Raidkaders eingetragen werden, um diese später zu referenzieren mit z.B. |cFF69CCF0$tank2|r |cFF69CCF0$heal1|r etc."
-    L["optionsReceiveMessagesFrom"] = "Akzeptiere nur Nachrichten von:"
-    L["optionsReceiveMessagesFromTooltip"] = 
-        "Komma separierte Liste von Spielernamen von denen Du Nachrichten empfangen willst.|n"..
-        "Du kannst auch |cFF69CCF0$me|r benutzen damit du Nachrichten von dir selbst immer erhälst.|n"
-    L["optionsReceiveMessagesFromDropdown"] = "Namensauswahl"
     L["optionsHideDisabledTriggers"] = "Deaktivierte Auslöser verstecken"
     L["optionsRaidRosterImportByGroup"] = "Aktuellen Schlachtzug importieren"
     L["optionsRaidRosterClear"] = "Raidroster leeren"
     L["optionsVersionCheck"] = "Versionscheck ausführen"
     L["optionsOpenProfiles"] = "Profilseite öffnen"
+
+    L["debugModeGroup"] = "Debugmodus"
+    L["debugModeEnabled"] = "Aktiviert"
+
+    L["runModeGroup"] = "Ausführungsmodus"
+    L["runModeDropdown"] = "Select mode"
+
+    L["testModeGroup"] = "Testmodus"
+    L["testModeEnabled"] = "Aktiviert"
+    L["testModeEncounterID"] = "Zu testender Boss"
+
+    L["messageFilterGroup"] = "Nachrichtenfilter"
+    L["messageFilterByDropdown"] = "Filter nach"
+    L["messageFilterGuildRankDropdown"] = "Mindestens benötigter Gildenrang"
+    L["messageFilterNamesEditBox"] = "Spielernamen"
+    L["messageFilterNamesEditBoxTooltip"] = "Komma separierte Liste von Spielernamen.\n"..
+        "|cFF69CCF0$me|r kann dazu genutzt werden Nachrichten von Dir selbst immer zu erhalten."
 
     L["optionsCustomPlaceholdersHeading"] = "Benutzerdefinierte Platzhalter"
     L["optionsCustomPlaceholderDeleteButton"] = "|cFFed3939Löschen|r"
@@ -168,7 +168,7 @@ if GetLocale() == "deDE" then
     L["percentageName"] = "Name"
     L["percentageUnitID"] = "Unit-ID / Unit-Name"
     L["percentageUnitIDTooltip"] = "Unit-ID welche geprüft werden soll (|cFF69CCF0boss1|r |cFF69CCF0player|r |cFF69CCF0PlayerName|r etc.)\n"..
-        "Es kann ebenfalls ein Unit-Name genutzt werden. Dabei ist wichtig, dass nur die erste Unit geprüft wird, welche im Kampf ist und nicht tot ist."
+        "Es kann ebenfalls ein Unit-Name genutzt werden."
     L["percentageCheckAgain"] = "Mehrfach prüfen?"
     L["percentageOptionsHeading"] = "Optionen"
     L["percentageCheckAgainAfter"] = "Nochmal prüfen nach (s)"

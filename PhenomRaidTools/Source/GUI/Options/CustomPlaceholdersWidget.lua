@@ -42,7 +42,7 @@ local addCustomPlaceholderWidget = function(customPlaceholder, container, tabKey
    local clearEmptyNamesButton = PRT.Button("optionsCustomPlaceholderRemoveEmptyNames")
    clearEmptyNamesButton:SetCallback("OnClick",
       function()
-         PRT.TableRemove(customPlaceholder.names, PRT.EmptyString)
+         PRT.TableUtils.Remove(customPlaceholder.names, StringUtils.IsEmpty)
          PRT.ReSelectTab(container)
       end)
 

@@ -10,6 +10,7 @@ local AceHelper = {
 	}
 }
 
+PRT.AceHelper = AceHelper
 -- Create local copies of API functions which we use
 local UIParent = UIParent
 local GameTooltip = GameTooltip

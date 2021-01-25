@@ -4,7 +4,6 @@ L = {
     ["sender+receiver"] = "Sender & Receiver",
 
     ["mainWindowTitle"] = "PhenomRaidTools",
-    ["runModeDropdown"] = "Run mode",
 
     -- Options
     ["optionsFontSelect"] = "Font",
@@ -20,28 +19,32 @@ L = {
     ["optionsReceiverModeHelp"] = 
         "|cFF69CCF0Note|r: All options regarding the sender mode are hidden or disabled.\n"..
         "If you want to change the appereance of the receiver overlay please go to `|cFF69CCF0Overlays|r`.",
-    ["optionsWeakAuraMode"] = "Use legacy WeakAura receiver",
-    ["optionsWeakAuraModeTooltip"] = 
-        "Activate this option if you want to use the WeakAura as receiver.\n"..
-        "If you want to use the addon as receiver make sure you deactivate the WeakAura |cFF69CCF0Phenom Raid Tools: Receiver|r\n"..
-        "https://wago.io/HyieicnAz\n"..
-        "|cFFcc7000WARNING|r: Not every feature of the addon is supported with the WeakAura!",
-    ["optionsEnabled"] = "Enabled",
-    ["optionsTestMode"] = "Test mode",
+    ["optionsEnabled"] = "Enabled",    
     ["optionsDebugMode"] = "Debug mode",
     ["optionsDebugModeTooltip"] = "If this mode is active PRT will print debug information to the default chat frame",
-    ["optionsTestEncounterID"] = "Test encounter",
-    ["optionsTestEncounterIDTooltip"] = "Choose the encounter you want to test",
     ["optionsShowOverlay"] = "Show overlay",
     ["optionsHideOverlayAfterCombat"] = "Hide overlay after combat",
     ["optionsDifficultyExplanation"] = "Set the difficulties on which the addon should start tracking combat events",
     ["optionsDefaultsExplanation"] = "Set some default values for all new messages, timers, percentages and so on.",
     ["optionsRaidRosterExplanation"] = "Here you can define player names and reference them as targets in message with e.g. |cFF69CCF0$tank2|r, |cFF69CCF0$heal1|r etc.",
-    ["optionsReceiveMessagesFrom"] = "Accept messages only from", 
-    ["optionsReceiveMessagesFromTooltip"] = 
-        "Comma separated list of player names you want to get messages from.\n"..
-        "You also can use |cFF69CCF0$me|r to always receive messages from yourself.", 
-    ["optionsReceiveMessagesFromDropdown"] = "Choose player", 
+
+    ["debugModeGroup"] = "Debug mode",
+    ["debugModeEnabled"] = "Enabled",
+
+    ["runModeGroup"] = "Run mode",
+    ["runModeDropdown"] = "Select mode",
+
+    ["testModeGroup"] = "Test mode",
+    ["testModeEnabled"] = "Enabled",
+    ["testModeEncounterID"] = "Encounter to test",
+
+    ["messageFilterGroup"] = "Message filter",
+    ["messageFilterByDropdown"] = "Filter by",
+    ["messageFilterGuildRankDropdown"] = "Minimum required guild rank",
+    ["messageFilterNamesEditBox"] = "Required player names",
+    ["messageFilterNamesEditBoxTooltip"] = "Comma separated list of player names.\n"..
+        "|cFF69CCF0$me|r can be used to always get messages from yourself.",
+
     ["optionsHideDisabledTriggers"] = "Hide disabled triggers",
     ["optionsRaidRosterImportByGroup"] = "Import current raid",
     ["optionsRaidRosterClear"] = "Clear raid roster",
@@ -171,7 +174,7 @@ L = {
     ["percentageName"] = "Name",
     ["percentageUnitID"] = "Unit-ID / Unit-Name",
     ["percentageUnitIDTooltip"] = "Unit-ID which percentage should be tracked (|cFF69CCF0boss1|r, |cFF69CCF0player|r, |cFF69CCF0PlayerName|r etc.)\n"..
-        "You also can use the units name. It will only work if there is only one unit in combat which will be used.",
+        "You also can use the units name.",
     ["percentageCheckAgain"] = "Check multiple times?",
     ["percentageCheckDelay"] = "Check again after (s)",
     ["percentageOptionsHeading"] = "Percentage Options",

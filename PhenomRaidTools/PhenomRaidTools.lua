@@ -73,7 +73,13 @@ local defaults =  {
 		},
 		myName = UnitName("player"),
 		version = "@project-version@",
-		receiveMessagesFrom = "",
+		messageFilter = {
+			filterBy = "names",
+			requiredGuildRank = nil,
+			requiredNames = {
+				""
+			}
+		},
 		enabled = true,
 		testMode = false,
 		testEncounterID = 9999,
@@ -81,7 +87,6 @@ local defaults =  {
 		debugMode = false,
 		showOverlay = false,
 		hideOverlayAfterCombat = true,
-		weakAuraMode = false,
 
 		runMode = "receiver",
 		senderMode = false,
@@ -139,7 +144,7 @@ local defaults =  {
 				Mythic = true
 			}
 		},
-		
+
 		triggerDefaults = {
 			rotationDefaults = {
 				defaultShouldRestart = true,
@@ -185,7 +190,6 @@ local defaults =  {
 		},
 
 		addonPrefixes = { 
-			weakAuraMessage = "PRT_MSG",
 			addonMessage = "PRT_ADDON_MSG",
 			versionRequest = "PRT_VERSION_REQ",
 			versionResponse = "PRT_VERSION_RESP"
@@ -219,7 +223,7 @@ function PRT:OnInitialize()
 
 	local encounterIdx, encounter = PRT.FilterEncounterTable(self.db.profile.encounters, 9999)
 
-	if not encounterIdx and table.empty(self.db.profile.encounters) then
+	if not encounterIdx and PRT.TableUtils.IsEmpty(self.db.profile.encounters) then
 		table.insert(self.db.profile.encounters, PRT.ExampleEncounter())
 	end	
 
@@ -251,7 +255,6 @@ function PRT:OnEnable()
 	AceComm:RegisterComm(self.db.profile.addonPrefixes.addonMessage, self.OnAddonMessage)
 	AceComm:RegisterComm(self.db.profile.addonPrefixes.versionRequest, self.OnVersionRequest)
 	AceComm:RegisterComm(self.db.profile.addonPrefixes.versionResponse, self.OnVersionResponse)
-	C_ChatInfo.RegisterAddonMessagePrefix(PRT.db.profile.addonPrefixes.weakAuraMessage)
 end
 
 function PRT:OnDisable()
