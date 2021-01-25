@@ -33,6 +33,7 @@ if GetLocale() == "deDE" then
 
     L["debugModeGroup"] = "Debugmodus"
     L["debugModeEnabled"] = "Aktiviert"
+    L["debugModeEnabledTooltip"] = "Wenn dieser Modus aktiviert ist werden einige zusätzliche Informationen in den Chat ausgegeben, die bei einer Fehleranalyse helfen können."
 
     L["runModeGroup"] = "Ausführungsmodus"
     L["runModeDropdown"] = "Select mode"

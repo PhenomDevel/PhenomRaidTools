@@ -21,7 +21,6 @@ L = {
         "If you want to change the appereance of the receiver overlay please go to `|cFF69CCF0Overlays|r`.",
     ["optionsEnabled"] = "Enabled",    
     ["optionsDebugMode"] = "Debug mode",
-    ["optionsDebugModeTooltip"] = "If this mode is active PRT will print debug information to the default chat frame",
     ["optionsShowOverlay"] = "Show overlay",
     ["optionsHideOverlayAfterCombat"] = "Hide overlay after combat",
     ["optionsDifficultyExplanation"] = "Set the difficulties on which the addon should start tracking combat events",
@@ -30,6 +29,7 @@ L = {
 
     ["debugModeGroup"] = "Debug mode",
     ["debugModeEnabled"] = "Enabled",
+    ["debugModeEnabledTooltip"] = "If this mode is active PRT will print debug information to the default chat frame",
 
     ["runModeGroup"] = "Run mode",
     ["runModeDropdown"] = "Select mode",
