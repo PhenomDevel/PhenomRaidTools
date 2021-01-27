@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.0.19.1
+## Bugfixes
+ - Make sure required names for message filter is empty initially
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.0.19.0
 ## Bugfixes
  - Show index for timings if no name is set
