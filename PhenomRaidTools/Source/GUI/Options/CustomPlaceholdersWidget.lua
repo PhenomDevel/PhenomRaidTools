@@ -9,7 +9,7 @@ local CustomPlaceholder = {}
 local newCustomPlaceholder = function()
    return {
       type = "player",
-      name = "Placeholder",
+      name = "Placeholder"..random(0,100000),
       names = {
          "Change me"
       }
@@ -105,14 +105,17 @@ PRT.AddCustomPlaceholdersTabGroup = function(container, customPlaceholders)
    container:AddChild(placeholdersTabGroup)
 end
 
-PRT.AddCustomPlaceholdersWidget = function(container, customPlaceholders)
-   local description = PRT.Label("optionsCustomPlaceholdersDescription", 14)
-   local subDescription = PRT.Label("optionsCustomPlaceholdersSubDescription")   
+PRT.AddCustomPlaceholderDescription = function(container)
+   local description = PRT.Label("optionsCustomPlaceholdersDescription", 16)
+   local subDescription = PRT.Label("optionsCustomPlaceholdersSubDescription", 14)   
    description:SetRelativeWidth(1)
    subDescription:SetRelativeWidth(1)   
    container:AddChild(description)
    container:AddChild(subDescription)
+end
 
+PRT.AddCustomPlaceholdersWidget = function(container, customPlaceholders)
+   PRT.AddCustomPlaceholderDescription(container)
    local importButton = PRT.Button("importButton")
    importButton:SetCallback("OnClick",
       function()

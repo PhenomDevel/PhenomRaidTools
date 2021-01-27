@@ -182,15 +182,14 @@ if GetLocale() == "deDE" then
     L["percentageEntryOptionsHeading"] = "Optionen"
 
     -- Encounters
-    L["encounterHeading"] = "Boss Optionen"
+    L["encounterHeading"] = "Optionen"
     L["encounterTriggerHeading"] = "Auslöser"
-    L["encounterImport"] = "Boss importieren"
-    L["encounterExport"] = "Boss exportieren"
+    L["encounterImport"] = "Importieren"
+    L["encounterExport"] = "Exportieren"
     L["encounterID"] = "Boss-ID"
     L["encounterName"] = "Name"
     L["encounterSelectDropdown"] = "Boss auswählen"
     L["encounterDeleteButton"] = "|cFFed3939Boss entfernen|r"
-    L["encounterOptionsHeading"] = "Boss Optionen"
     L["encounterEnabled"] = "Aktiviert?"
     L["encounterOverview"] = "Übersicht der Auslöser"
     L["timerOverview"] = "Timer"
@@ -270,9 +269,9 @@ if GetLocale() == "deDE" then
     L["deleteRotation"] = "|cFFed3939Rotation entfernen|r"
     L["deletePercentage"] = "|cFFed3939Prozent entfernen|r"
     L["deleteEncounter"] = "|cFFed3939Boss entfernen|r"
-    L["exportEncounter"] = "Boss exportieren"
-    L["importEncounter"] = "Boss importieren"
-    L["newEncounter"] = "|cFF76ff68Neuer Boss|r"
+    L["exportEncounter"] = "Exportieren"
+    L["importEncounter"] = "Importieren"
+    L["newEncounter"] = "|cFF76ff68Neu|r"
     L["newTimer"] = "|cFF76ff68Neuer Timer|r"
     L["newRotation"] = "|cFF76ff68Neue Rotation|r"
     L["newHealthPercentage"] = "|cFF76ff68Neues Lebens-Prozent|r"
@@ -372,6 +371,13 @@ if GetLocale() == "deDE" then
     L["TOP - Xav the Unfallen" ] = "TOP - Xav the Unfallen"
     L["TOP - Kul'tharok" ] = "TOP - Kul'tharok"
     L["TOP - Mordretha the Endless Empress"] = "TOP - Mordretha the Endless Empress"
+
+    L["copyTimer"] = "In Zwischenablage kopieren"
+    L["copyRotation"] = "In Zwischenablage kopieren"
+    L["copyPercentage"] = "In Zwischenablage kopieren"
+    L["pasteTimer"] = "Einfügen aus Zwischenablage"
+    L["pasteRotation"] = "Einfügen aus Zwischenablage"
+    L["pastePercentage"] = "Einfügen aus Zwischenablage"
 
 else 
     return 

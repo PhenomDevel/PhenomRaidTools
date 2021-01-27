@@ -38,6 +38,15 @@ Rotation.RotationWidget = function(rotation, container, deleteButton, cloneButto
     local shouldRestartCheckBox =  PRT.CheckBox("rotationShouldRestart", rotation.shouldRestart)
     local ignoreAfterActivationCheckBox = PRT.CheckBox("rotationIgnoreAfterActivation", rotation.ignoreAfterActivation)
     local ignoreDurationSlider = PRT.Slider("rotationIgnoreDuration", rotation.ignoreDuration)
+
+    local copyButton = PRT.Button("copyRotation")
+    copyButton:SetCallback("OnClick", 
+        function(widget)
+            local copy = PRT.CopyTable(rotation)
+            copy.name = copy.name.." Copy"..random(0,100000)
+            PRT.db.profile.clipboard.rotation = copy
+            PRT.Debug("Copied rotation", PRT.HighlightString(rotation.name), "to clipboard")
+        end)
     
     enabledCheckbox:SetRelativeWidth(1)
     enabledCheckbox:SetCallback("OnValueChanged", 
@@ -94,6 +103,7 @@ Rotation.RotationWidget = function(rotation, container, deleteButton, cloneButto
     rotationOptionsGroup:AddChild(shouldRestartCheckBox)
     rotationOptionsGroup:AddChild(cloneButton)
     rotationOptionsGroup:AddChild(deleteButton)    
+    rotationOptionsGroup:AddChild(copyButton)
     container:AddChild(rotationOptionsGroup)
     container:AddChild(triggerConditionGroup)    
     PRT.MaybeAddStartCondition(container, rotation)
@@ -122,7 +132,21 @@ PRT.AddRotationOptions = function(container, profile, encounterID)
             PRT.mainWindowContent:SelectByPath("encounters", encounterID, "rotations", newRotation.name)
         end)
 
+    local hasClipboardRotation = not PRT.TableUtils.IsEmpty(PRT.db.profile.clipboard.rotation)
+    local pasteButton = PRT.Button("pasteRotation")
+    pasteButton:SetDisabled(hasClipboardRotation)
+    pasteButton:SetCallback("OnClick",
+        function(widget)
+            tinsert(rotations, PRT.db.profile.clipboard.rotation)            
+            PRT.Core.UpdateTree()
+            PRT.mainWindowContent:DoLayout()
+            PRT.mainWindowContent:SelectByPath("encounters", encounterID, "rotations", PRT.db.profile.clipboard.rotation.name)
+            PRT.Debug("Pasted rotation", PRT.HighlightString(PRT.db.profile.clipboard.rotation.name), "to", PRT.HighlightString(encounter.name))
+            PRT.db.profile.clipboard.rotation = nil            
+        end)
+
     rotationOptionsGroup:AddChild(addButton)
+    rotationOptionsGroup:AddChild(pasteButton)
     container:AddChild(rotationOptionsGroup)
 end
 

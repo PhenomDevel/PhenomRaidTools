@@ -92,9 +92,14 @@ local defaults =  {
 		senderMode = false,
 		receiverMode = true,
 
-		customPlaceholders = {
-
+		clipboard = {
+			timer = nil,
+			rotation = nil,
+			percentage = nil,
+			message = nil
 		},
+
+		customPlaceholders = {},
 
 		overlay = {
 			receivers = {
@@ -229,6 +234,9 @@ function PRT:OnInitialize()
 
 	-- Reset versions
 	PRT.db.profile.versionCheck = {}
+
+	-- Reset clipboard
+	PRT.db.profile.clipboard = {}
 
 	-- We hold the main frame within the global addon variable 
 	-- because we sometimes have to do a re-layout of the complete content

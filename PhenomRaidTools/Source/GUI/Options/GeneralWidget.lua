@@ -38,8 +38,7 @@ local GeneralOptions = {
        },
        {
            id = "guildRank",
-           name = "Guild Rank",
-           disabled = not(select(1, {GetGuildInfo("player")}))
+           name = "Guild Rank"
        }
    }
 }
@@ -173,14 +172,14 @@ PRT.AddGeneralWidgets = function(container, options)
         container:AddChild(helpLabel)
     end
 
-    if options.senderMode then
-        GeneralOptions.AddTestMode(container, options) 
-    end        
-
     if options.receiverMode then
         GeneralOptions.AddMessageFilter(container, options.messageFilter)
     end
 
+    if options.senderMode then
+        GeneralOptions.AddTestMode(container, options) 
+    end        
+    
     GeneralOptions.AddDebugMode(container, options)
 
     versionCheckButton:SetCallback("OnClick",

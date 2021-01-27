@@ -36,7 +36,7 @@ PRT.EmptyTiming = function()
     return {
         seconds = {1},
         offset = 0,
-        name = "",
+        name = nil,
         messages = {
             PRT.EmptyMessage()
         }

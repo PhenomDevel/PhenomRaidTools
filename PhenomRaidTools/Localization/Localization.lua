@@ -189,15 +189,14 @@ L = {
     ["percentageEntryOptionsHeading"] = "Percentage Entry Options",
 
     -- Encounters
-    ["encounterHeading"] = "Encounter Options",
+    ["encounterHeading"] = "Options",
     ["encounterTriggerHeading"] = "Trigger",
-    ["encounterImport"] = "Import Encounter",
-    ["encounterExport"] = "Export Encounter",
+    ["encounterImport"] = "Import",
+    ["encounterExport"] = "Export",
     ["encounterID"] = "Encounter-ID",
     ["encounterName"] = "Name",
     ["encounterSelectDropdown"] = "Select Encounter",
     ["encounterDeleteButton"] = "|cFFed3939Delete Encounter|r",
-    ["encounterOptionsHeading"] = "Encounter Options",
     ["encounterEnabled"] = "Enabled",
     ["encounterOverview"] = "Trigger Overview",
     ["timerOverview"] = "Timers",
@@ -276,17 +275,17 @@ L = {
     ["overlayEnableSound"] = "Enable sounds",
     ["overlayDefaultSoundFile"] = "Default Sound",
 
-    ["deleteTimer"] = "|cFFed3939Delete Timer|r",
-    ["deleteRotation"] = "|cFFed3939Delete Rotation|r",
-    ["deletePercentage"] = "|cFFed3939Delete Percentage|r",
-    ["deleteEncounter"] = "|cFFed3939Delete Encounter|r",
-    ["exportEncounter"] = "Export Encounter",
-    ["importEncounter"] = "Import Encounter",
-    ["newEncounter"] = "|cFF76ff68New Encounter|r",
-    ["newTimer"] = "|cFF76ff68New Timer|r",
-    ["newRotation"] = "|cFF76ff68New Rotation|r",
-    ["newHealthPercentage"] = "|cFF76ff68New Health Percentage|r",
-    ["newPowerPercentage"] = "|cFF76ff68New Power Percentage|r",
+    ["deleteTimer"] = "|cFFed3939Delete|r",
+    ["deleteRotation"] = "|cFFed3939Delete|r",
+    ["deletePercentage"] = "|cFFed3939Delete|r",
+    ["deleteEncounter"] = "|cFFed3939Delete|r",
+    ["exportEncounter"] = "Export",
+    ["importEncounter"] = "Import",
+    ["newEncounter"] = "|cFF76ff68New|r",
+    ["newTimer"] = "|cFF76ff68New|r",
+    ["newRotation"] = "|cFF76ff68New|r",
+    ["newHealthPercentage"] = "|cFF76ff68New|r",
+    ["newPowerPercentage"] = "|cFF76ff68New|r",
 
     -- Confirmation
     ["confirmationWindow"] = "Confirmation",
@@ -380,6 +379,13 @@ L = {
     ["TOP - Xav the Unfallen" ] = "TOP - Xav the Unfallen",
     ["TOP - Kul'tharok" ] = "TOP - Kul'tharok",
     ["TOP - Mordretha, the Endless Empress"] = "TOP - Mordretha, the Endless Empress",    
+
+    ["copyTimer"] = "Copy to clipboard",
+    ["copyRotation"] = "Copy to clipboard",
+    ["copyPercentage"] = "Copy to clipboard",
+    ["pasteTimer"] = "Paste from clipboard",
+    ["pasteRotation"] = "Paste from clipboard",
+    ["pastePercentage"] = "Paste from clipboard"
 }
 
 

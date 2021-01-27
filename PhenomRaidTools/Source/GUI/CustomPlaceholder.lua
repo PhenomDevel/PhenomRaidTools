@@ -12,6 +12,7 @@ PRT.AddCustomPlaceholderOptions = function(container, profile, encounterID)
       encounter.CustomPlaceholders = {}
       CustomPlaceholders = {}
    end
-
+   
+   PRT.AddCustomPlaceholderDescription(container)
    PRT.AddCustomPlaceholdersTabGroup(container, CustomPlaceholders)
 end

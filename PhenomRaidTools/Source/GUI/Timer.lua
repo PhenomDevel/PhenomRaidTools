@@ -108,6 +108,15 @@ Timer.TimerWidget = function(timer, container, deleteButton, cloneButton)
     local timerOptionsGroup = PRT.InlineGroup("timerOptionsHeading")
     timerOptionsGroup:SetLayout("Flow")    
 
+    local copyButton = PRT.Button("copyTimer")
+    copyButton:SetCallback("OnClick", 
+        function(widget)
+            local copy = PRT.CopyTable(timer)
+            copy.name = copy.name.." Copy"..random(0,100000)
+            PRT.db.profile.clipboard.timer = copy
+            PRT.Debug("Copied timer", PRT.HighlightString(timer.name), "to clipboard")
+        end)
+
     local enabledCheckbox = PRT.CheckBox("timerEnabled", timer.enabled)
     enabledCheckbox:SetRelativeWidth(1)
     enabledCheckbox:SetCallback("OnValueChanged", 
@@ -162,6 +171,7 @@ Timer.TimerWidget = function(timer, container, deleteButton, cloneButton)
     container:AddChild(startConditionGroup)
     timerOptionsGroup:AddChild(cloneButton)
     timerOptionsGroup:AddChild(deleteButton)  
+    timerOptionsGroup:AddChild(copyButton)  
 
     PRT.MaybeAddStopCondition(container, timer)
 
@@ -179,7 +189,18 @@ PRT.AddTimerOptionsWidgets = function(container, profile, encounterID)
     local timerOptionsGroup = PRT.InlineGroup("Options")
     timerOptionsGroup:SetLayout("Flow")
 
-    -- Add copy select    
+    local hasClipboardTimer = not PRT.TableUtils.IsEmpty(PRT.db.profile.clipboard.timer)
+    local pasteButton = PRT.Button("pasteTimer")
+    pasteButton:SetDisabled(hasClipboardTimer)
+    pasteButton:SetCallback("OnClick",
+        function(widget)
+            tinsert(timers, PRT.db.profile.clipboard.timer)            
+            PRT.Core.UpdateTree()
+            PRT.mainWindowContent:DoLayout()
+            PRT.mainWindowContent:SelectByPath("encounters", encounterID, "timers", PRT.db.profile.clipboard.timer.name)
+            PRT.Debug("Pasted timer", PRT.HighlightString(PRT.db.profile.clipboard.timer.name), "to", PRT.HighlightString(encounter.name))
+            PRT.db.profile.clipboard.timer = nil            
+        end)
 
     local addButton = PRT.Button("newTimer")
     addButton:SetCallback("OnClick", 
@@ -190,7 +211,9 @@ PRT.AddTimerOptionsWidgets = function(container, profile, encounterID)
             PRT.mainWindowContent:DoLayout()
             PRT.mainWindowContent:SelectByPath("encounters", encounterID, "timers", newTimer.name)
         end)
+
     timerOptionsGroup:AddChild(addButton)
+    timerOptionsGroup:AddChild(pasteButton)
     container:AddChild(timerOptionsGroup)
 end
 
