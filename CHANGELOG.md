@@ -1,4 +1,18 @@
 ===============================================================================
+# Release 2.0.19.0
+## Bugfixes
+ - Show index for timings if no name is set
+
+## Features
+ - Added ability to copy&paste timers, rotations, and percentages
+   - Go into a trigger and click "Copy to clipboard"
+   - Afterwards go to the overview of the corresponding trigger type in another encounter and 
+     click "Paste from clipboard"
+ - A whole lot of local fixes
+ - Show custom placeholder explanation for encounter placeholders aswell
+
+
+===============================================================================
 # Release 2.0.18.0-BETA
 ## Bugfixes
 None
