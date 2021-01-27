@@ -190,7 +190,8 @@ PRT.AddTimerOptionsWidgets = function(container, profile, encounterID)
     timerOptionsGroup:SetLayout("Flow")
 
     local hasClipboardTimer = not PRT.TableUtils.IsEmpty(PRT.db.profile.clipboard.timer)
-    local pasteButton = PRT.Button("pasteTimer")
+    local pasteButtonText = PRT.StringUtils.WrapColorByBoolean(L["pasteTimer"], hasClipboardTimer, "FF696969")
+    local pasteButton = PRT.Button(pasteButtonText)
     pasteButton:SetDisabled(hasClipboardTimer)
     pasteButton:SetCallback("OnClick",
         function(widget)

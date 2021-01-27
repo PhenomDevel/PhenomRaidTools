@@ -22,3 +22,19 @@ StringUtils.SplitToTable = function(s)
 
    return entries
 end
+
+StringUtils.WrapColorByBoolean = function(s, boolean, inactiveColor, activeColor)
+   if not boolean then
+      if activeColor then
+         return "|c"..activeColor..s.."|r"
+      else
+         return s
+      end
+   else
+      if inactiveColor then
+         return "|c"..inactiveColor..s.."|r"
+      else
+         return s
+      end
+   end
+end

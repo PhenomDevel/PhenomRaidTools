@@ -133,7 +133,8 @@ PRT.AddRotationOptions = function(container, profile, encounterID)
         end)
 
     local hasClipboardRotation = not PRT.TableUtils.IsEmpty(PRT.db.profile.clipboard.rotation)
-    local pasteButton = PRT.Button("pasteRotation")
+    local pasteButtonText = PRT.StringUtils.WrapColorByBoolean(L["pasteRotation"], hasClipboardRotation, "FF696969")
+    local pasteButton = PRT.Button(pasteButtonText)
     pasteButton:SetDisabled(hasClipboardRotation)
     pasteButton:SetCallback("OnClick",
         function(widget)

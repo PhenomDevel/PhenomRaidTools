@@ -76,9 +76,7 @@ local defaults =  {
 		messageFilter = {
 			filterBy = "names",
 			requiredGuildRank = nil,
-			requiredNames = {
-				""
-			}
+			requiredNames = {}
 		},
 		enabled = true,
 		testMode = false,

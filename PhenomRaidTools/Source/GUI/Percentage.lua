@@ -209,7 +209,8 @@ PRT.AddHealthPercentageOptions = function(container, profile, encounterID)
     percentageOptionsGroup:SetLayout("Flow")
 
     local hasClipboardPercentage = not PRT.TableUtils.IsEmpty(PRT.db.profile.clipboard.percentage)
-    local pasteButton = PRT.Button("pastePercentage")
+    local pasteButtonText = PRT.StringUtils.WrapColorByBoolean(L["pastePercentage"], hasClipboardPercentage, "FF696969")
+    local pasteButton = PRT.Button(pasteButtonText)
     pasteButton:SetDisabled(hasClipboardPercentage)
     pasteButton:SetCallback("OnClick",
         function(widget)
