@@ -76,7 +76,8 @@ local defaults =  {
 		messageFilter = {
 			filterBy = "names",
 			requiredGuildRank = nil,
-			requiredNames = {}
+			requiredNames = {},
+			alwaysIncludeMyself = true
 		},
 		enabled = true,
 		testMode = false,

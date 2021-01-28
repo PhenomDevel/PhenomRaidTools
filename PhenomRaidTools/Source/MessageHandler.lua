@@ -95,11 +95,15 @@ MessageHandler.ExecuteMessageAction = function(message)
 end
 
 MessageHandler.IsValidSender = function(message)
+    -- Filter received messages by configured message filter
     if PRT.db.profile.messageFilter.filterBy == "names" then
         return (tContains(PRT.db.profile.messageFilter.requiredNames, message.sender) or 
                 tContains(PRT.db.profile.messageFilter.requiredNames, "$me") or
                 PRT.db.profile.messageFilter.requiredNames == nil or
-                PRT.db.profile.messageFilter.requiredNames == {})
+                PRT.db.profile.messageFilter.requiredNames == {} or
+                PRT.TableUtils.IsEmpty(PRT.db.profile.messageFilter.requiredNames) or
+                (PRT.db.profile.messageFilter.alwaysIncludeMyself and
+                message.sender == select(1, UnitName("player"))))
 
     elseif PRT.db.profile.messageFilter.filterBy == "guildRank" then
         local senderGuildRankIndex = select(3, GetGuildInfo(message.sender))
@@ -111,6 +115,7 @@ MessageHandler.IsValidSender = function(message)
 end
 
 MessageHandler.IsMessageForMe = function(message)
+    -- Check if the message is relevant for myself by message targets
     if tContains(MessageHandler.validPlayerTargets, message.target) or message.target == UnitGroupRolesAssigned("player") then        
         return true
     else 

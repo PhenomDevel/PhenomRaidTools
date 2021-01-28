@@ -47,7 +47,13 @@ if GetLocale() == "deDE" then
     L["messageFilterGuildRankDropdown"] = "Mindestens benötigter Gildenrang"
     L["messageFilterNamesEditBox"] = "Spielernamen"
     L["messageFilterNamesEditBoxTooltip"] = "Komma separierte Liste von Spielernamen.\n"..
-        "|cFF69CCF0$me|r kann dazu genutzt werden Nachrichten von Dir selbst immer zu erhalten."
+        "Wenn die Liste leer ist werden keine Nachrichten gefiltert.\n"..
+        "(!) Das kann zu sehr vielen Nachrichten führen, wenn einige Spieler in der Raidgruppe Nachrichten konfiguriert haben."
+    L["messageFilterAlwaysIncludeMyself"] = "Nachrichten von mir selbst immer erhalten"
+    L["messageFilterExplanationNames"] = "Du filters Nachrichten aktuell nach |cFF69CCF0Spielernamen|r, dadurch werden nur Nachrichten von diesen Spielern angezeigt."
+    L["messageFilterExplanationNoNames"] = "Du filters Nachrichten aktuell nach |cFF69CCF0Spielernamen|r, aber hast keine Namen konfiguriert. Dadurch werden alle Nachrichten von anderen Spielern angezeigt."
+    L["messageFilterExplanationGuildRank"] = "Du filters Nachrichten aktuell nach |cFF69CCF0Gildenrang|r, dadurch werden alle Nachrichten von Spielern mit diesem Gildenrang oder höher angezeigt."
+    L["messageFilterExplanationAlwaysIncludeMyself"] = "\nZusätzlich lässt du dir immer deine eigenen Nachrichten anzeigen."
 
     L["optionsCustomPlaceholdersHeading"] = "Benutzerdefinierte Platzhalter"
     L["optionsCustomPlaceholderDeleteButton"] = "|cFFed3939Löschen|r"
@@ -262,7 +268,7 @@ if GetLocale() == "deDE" then
     L["overlayFontSize"] = "Schriftgröße"
     L["overlayBackdropColor"] = "Hintergrundfarbe"
     L["overlayLocked"] = "Gesperrt"
-    L["overlayEnableSound"] = "Töne aktivieren"
+    L["overlayEnableSound"] = "Aktiviert"
     L["overlayDefaultSoundFile"] = "Standard Sound"
 
     L["deleteTimer"] = "|cFFed3939Timer entfernen|r"

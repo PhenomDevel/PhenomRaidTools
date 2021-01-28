@@ -54,6 +54,8 @@ GeneralOptions.AddMessageFilterByNamesWidgets = function(container, options)
             local text = widget:GetText()
             options.requiredNames = PRT.StringUtils.SplitToTable(text)
             widget:ClearFocus()
+            PRT.Core.UpdateTree()
+            PRT.Core.ReselectCurrentValue()
         end)
     container:AddChild(namesEditBox)
 end
@@ -75,17 +77,52 @@ GeneralOptions.AddMessageFilterByGuildRankWidgets = function(container, options)
     container:AddChild(guildRankDropdown)
 end
 
+GeneralOptions.MessageFilterExplanationString = function(options)
+    local message = ""
+
+    if options.filterBy == "names" then
+        if PRT.TableUtils.IsEmpty(options.requiredNames) then
+            message = L["messageFilterExplanationNoNames"]
+        else
+            message = L["messageFilterExplanationNames"]
+        end        
+    elseif options.filterBy == "guildRank" then
+        local guildRanks = PRT.GuildUtils.GetGuildRanksTable("player")
+        local requiredGuildRankName = guildRanks[options.requiredGuildRank]
+
+        message = L["messageFilterExplanationGuildRank"]
+    end
+
+    if options.alwaysIncludeMyself then
+        message = message..L["messageFilterExplanationAlwaysIncludeMyself"]
+    end
+
+    return message
+end
+
 GeneralOptions.AddMessageFilter = function(container, options)
     local messageFilterGroup = PRT.InlineGroup("messageFilterGroup")
-    messageFilterGroup:SetLayout("Flow")
+    local alwaysIncludeMyselfCheckBox = PRT.CheckBox("messageFilterAlwaysIncludeMyself", options.alwaysIncludeMyself)
     local filterTypeDropDown = PRT.Dropdown("messageFilterByDropdown", GeneralOptions.messageFilterTypes, options.filterBy)
+    local messageFilterExplanationString = GeneralOptions.MessageFilterExplanationString(options)
+    local messageFilterExplanation = PRT.Label(messageFilterExplanationString, 16)
+    messageFilterExplanation:SetRelativeWidth(1)
     
+    messageFilterGroup:SetLayout("Flow")        
     filterTypeDropDown:SetCallback("OnValueChanged", 
         function(widget, event, key)         
             options.filterBy = key
             PRT.Core.UpdateTree()
             PRT.Core.ReselectCurrentValue()
         end) 
+
+    alwaysIncludeMyselfCheckBox:SetRelativeWidth(1)
+    alwaysIncludeMyselfCheckBox:SetCallback("OnValueChanged",
+        function(widget)
+            options.alwaysIncludeMyself = widget:GetValue()
+            PRT.Core.UpdateTree()
+            PRT.Core.ReselectCurrentValue()
+        end)
 
     messageFilterGroup:AddChild(filterTypeDropDown)
 
@@ -94,6 +131,9 @@ GeneralOptions.AddMessageFilter = function(container, options)
     elseif options.filterBy == "guildRank" then
         GeneralOptions.AddMessageFilterByGuildRankWidgets(messageFilterGroup, options)
     end
+
+    messageFilterGroup:AddChild(alwaysIncludeMyselfCheckBox)        
+    messageFilterGroup:AddChild(messageFilterExplanation)
 
     container:AddChild(messageFilterGroup)
 end
@@ -168,7 +208,7 @@ PRT.AddGeneralWidgets = function(container, options)
     GeneralOptions.AddRunMode(container, options)
 
     if not options.senderMode and options.receiverMode then
-        local helpLabel = PRT.Label("optionsReceiverModeHelp", 14)
+        local helpLabel = PRT.Label("optionsReceiverModeHelp", 16)
         container:AddChild(helpLabel)
     end
 

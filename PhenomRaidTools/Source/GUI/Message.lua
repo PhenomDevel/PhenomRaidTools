@@ -172,7 +172,7 @@ Message.GenerateRaidRosterDropdownItems = function()
 		tinsert(raidRosterItems, { id = name, name = name})
 	end
 
-	tinsert(raidRosterItems, { id = "$target", name = "$conditionTarget"})
+	tinsert(raidRosterItems, { id = "$target", name = "$target"})
 	
 	raidRosterItems = table.mergecopy(raidRosterItems, Message.ColoredRaidPlayerNames())
 	PRT.SortTableByName(raidRosterItems)

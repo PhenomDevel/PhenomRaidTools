@@ -43,7 +43,13 @@ L = {
     ["messageFilterGuildRankDropdown"] = "Minimum required guild rank",
     ["messageFilterNamesEditBox"] = "Required player names",
     ["messageFilterNamesEditBoxTooltip"] = "Comma separated list of player names.\n"..
-        "|cFF69CCF0$me|r can be used to always get messages from yourself.",
+        "If the list is empty no message filter is applied.\n"..
+        "(!) Be careful this can lead to a lot of messages if players in your raid have messages configured.",
+    ["messageFilterAlwaysIncludeMyself"] = "Always include myself",
+    ["messageFilterExplanationNames"] = "You currently filter messages by |cFF69CCF0names|r. Therefore only messages from those players will be displayed!",
+    ["messageFilterExplanationNoNames"] = "You currently filter messages by |cFF69CCF0names|r and have NO names configured therefore all messages you receive will be displayed.",
+    ["messageFilterExplanationGuildRank"] = "You currently filter messages by |cFF69CCF0guild rank|r. Therefore only messages from players with the choosen guild rank or above will be displayed.",
+    ["messageFilterExplanationAlwaysIncludeMyself"] = "\nIn addition you always include yourself. So messages you send will always be displayed for yourself.",
 
     ["optionsHideDisabledTriggers"] = "Hide disabled triggers",
     ["optionsRaidRosterImportByGroup"] = "Import current raid",
@@ -272,7 +278,7 @@ L = {
     ["overlayFontSize"] = "Font size",
     ["overlayBackdropColor"] = "Backdrop color",
     ["overlayLocked"] = "Locked",
-    ["overlayEnableSound"] = "Enable sounds",
+    ["overlayEnableSound"] = "Enabled",
     ["overlayDefaultSoundFile"] = "Default Sound",
 
     ["deleteTimer"] = "|cFFed3939Delete|r",

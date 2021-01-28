@@ -1,4 +1,15 @@
 ===============================================================================
+# Release 2.0.20.0
+## Bugfixes
+ - Do not throw exception when enabling or disabling an encounter
+
+## Features
+ - Add `always include myself` checkbox for message filter
+  - This can be used instead of `$me` as name so you will be able to include yourself even if 
+    you choose to filter messages by a higher guild rank than yourself. Note `$me` as name will still work.
+
+
+===============================================================================
 # Release 2.0.19.1
 ## Bugfixes
  - Make sure required names for message filter is empty initially
