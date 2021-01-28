@@ -366,7 +366,6 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
             end
 
             widget:SetValue(nil)
-            widget:ClearFocus()
         end)
 
     exportButton:SetCallback("OnClick",
@@ -379,7 +378,6 @@ PRT.AddEncounterOptions = function(container, profile, encounterID)
         function(widget)
             encounter.enabled = widget:GetValue()
             PRT.Core.UpdateTree()
-            widget:ClearFocus()
         end)
 
     encounterOptionsGroup:AddChild(enabledCheckBox)
