@@ -1,6 +1,9 @@
 [![PhenomRaidTools on Discord](https://img.shields.io/badge/discord-PhenomRaidTools-738bd7.svg)](https://discord.gg/GAYDjBF)
 # PhenomRaidTools
 
+## Quickstart
+If you want to access the addon just use `/prt` or the minimap icon in game and the addon will open. If you seek help visit the discord server and feel free to ask for help :)
+
 ## About
 PhenomRaidTools is an addon to use next to the usual raid utility addons like `WeakAuras2`, `DBM`, and `BigWigs`. With PhenomRaidTools you'll be able to configure your own timers, rotations and other triggers to show messages on the screen. You can choose when and how the messages should be displayed as well as who in the raid team should see the messages.
 
