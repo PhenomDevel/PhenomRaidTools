@@ -7,41 +7,41 @@ If you want to access the addon just use `/prt` or the minimap icon in game and 
 ## About
 PhenomRaidTools is an addon to use next to the usual raid utility addons like `WeakAuras2`, `DBM`, and `BigWigs`. With PhenomRaidTools you'll be able to configure your own timers, rotations and other triggers to show messages on the screen. You can choose when and how the messages should be displayed as well as who in the raid team should see the messages.
 
-### Sender & Receiver
+## Sender & Receiver
 PhenomRaidTools supports two run modes. Sender mode and receiver mode. As sender all your configured triggers which send messages which will be executed and send messages through an addon channel. Every player who matches your configured targets within messages will get a message displayed. 
 As receiver you'll only get messages displayed when you are a valid message target of the received messages. You can alos filter messages so you won't get spammed.
 
-### Trigger
+## Trigger
 There are four different types of triggers which will send the configured messages based on different condition which all can be configured.
 
-#### Timer
+### Timer
 You can configure your own timers for a fight. Those can be used for e.g. healing cooldowns or strategic positioning. 
 You can setup a start condition for when the timer should start counting and a stop condition which can be used for restarting timers. This can be useful if you have a timer for an encounter phase which repeats itself.
 
-#### Rotation
+### Rotation
 Rotations have a trigger condition for when to count up. Everytime the trigger condition is met a certain action will be executed if there is one for the given index. 
 Like for timers you can configure start and stop conditions. This can be helpful if you only want a rotation to count in a certain phase or to restart it on certain events.
 
-#### Health Percentage
+### Health Percentage
 With health percentages you can query specific units for their health value and check if it less, equal or greater than a configured value and send messages based on this condition.
 
-#### Power Percentage
+### Power Percentage
 Same as health percentage but with power values.
 
-### Setup
+## Setup
 
-#### Easymode
+### Easymode
 Just install the addon through the Twitch desktop app or any other third party app for managing your addons
 
-#### Manual
+### Manual
 - Download the latest release of the addon: [Releases](https://github.com/PhenomDevel/PhenomRaidTools/releases)
 - Unpack the zip folder
 - Copy the folder `PhenomRaidTools` to your World of Warcraft addon folder `path\to\World of Warcraft\_retail_\Interface\AddOns`
 
-### Help
+## Help
 I have set up a discord server up and running for every kind of question. Feel free to enter and ask what you have trouble with. [Discord](https://discord.gg/GAYDjBF)
 
-### Support
+## Support
 If you like the addon and want to support it's development you can simply do so with one of the following
 
 - Leave feedback, suggestions or bug reports
@@ -50,4 +50,3 @@ If you like the addon and want to support it's development you can simply do so 
 - If you really have to much money and want to support me just donate any amount you feel comfortable with on https://streamlabs.com/phenomgamestv/tip
 
 Thank you very much.
-
