@@ -191,10 +191,10 @@ PRT.InlineGroup = function(textID)
 end
 
 PRT.SimpleGroup = function()
-	local container = AceGUI:Create("SimpleGroup")    
-	
+	local container = AceGUI:Create("SimpleGroup")   
 	container:SetFullWidth(true)
 	container:SetLayout("List")
+	container.frame.backdrop:SetBackdrop({})
 
    return container
 end
