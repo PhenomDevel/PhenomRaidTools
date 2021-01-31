@@ -1,4 +1,15 @@
 ===============================================================================
+# Release 2.0.20.1
+## Bugfixes
+ - Fix start/stop condition for rotations
+   - If you only used start condition it wouldn't work at all....
+ - Remove backdrop for simple groups
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.0.20.0
 ## Bugfixes
  - Do not throw exception when enabling or disabling an encounter
