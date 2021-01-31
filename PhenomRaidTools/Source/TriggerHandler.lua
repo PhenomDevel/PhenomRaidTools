@@ -179,29 +179,31 @@ TriggerHandler.SendMessagesAfterDelay = function(messages)
 end
 
 TriggerHandler.SendMessagesAfterDelayWithEventInfo = function(messages, event, combatEvent, eventSpellID, targetName, sourceName)
-    for i, message in ipairs(messages) do
-        AceTimer:ScheduleTimer(
-            function()  
-                -- Make sure we are not changing the configured message itself
-                local messageForReceiver = PRT.CopyTable(message)
-                
-                if targetName then       
-                    messageForReceiver.message = messageForReceiver.message:gsub("$target", targetName)
-                else
-                    messageForReceiver.message = messageForReceiver.message:gsub("$target", "N/A")
-                end
-                if sourceName then
-                    messageForReceiver.message = messageForReceiver.message:gsub("$source", sourceName)
-                else
-                    messageForReceiver.message = messageForReceiver.message:gsub("$source", "N/A")
-                end
-                if tContains(messageForReceiver.targets, "$target") then
-                    messageForReceiver.eventTarget = targetName
-                end
-                PRT.ExecuteMessage(messageForReceiver)
-            end,
-            message.delay or 0
-        )
+    if messages then
+        for i, message in ipairs(messages) do
+            AceTimer:ScheduleTimer(
+                function()  
+                    -- Make sure we are not changing the configured message itself
+                    local messageForReceiver = PRT.CopyTable(message)
+                    
+                    if targetName then       
+                        messageForReceiver.message = messageForReceiver.message:gsub("$target", targetName)
+                    else
+                        messageForReceiver.message = messageForReceiver.message:gsub("$target", "N/A")
+                    end
+                    if sourceName then
+                        messageForReceiver.message = messageForReceiver.message:gsub("$source", sourceName)
+                    else
+                        messageForReceiver.message = messageForReceiver.message:gsub("$source", "N/A")
+                    end
+                    if tContains(messageForReceiver.targets, "$target") then
+                        messageForReceiver.eventTarget = targetName
+                    end
+                    PRT.ExecuteMessage(messageForReceiver)
+                end,
+                message.delay or 0
+            )
+        end
     end
 end
 
@@ -222,8 +224,8 @@ PRT.IsTriggerActive = function(trigger)
             trigger.active == true
             or 
             (
-                not trigger.hasStartCondition and 
-                not trigger.hasStopCondition and 
+                (not trigger.hasStartCondition) and 
+                (not trigger.hasStopCondition) and 
                 (
                     trigger.active or 
                     trigger.active == nil
@@ -231,8 +233,17 @@ PRT.IsTriggerActive = function(trigger)
             )
             or 
             (
-                not trigger.hasStartCondition and 
+                (not trigger.hasStartCondition) and 
                 trigger.hasStopCondition and 
+                (
+                    trigger.active or 
+                    trigger.active == nil
+                )
+            )
+            or 
+            (
+                trigger.hasStartCondition and 
+                (not trigger.hasStopCondition) and 
                 (
                     trigger.active or 
                     trigger.active == nil
@@ -353,8 +364,8 @@ end
 -- Rotations
 PRT.CheckRotationTriggerCondition = function(rotations, event, combatEvent, eventSpellID, targetGUID, targetName, sourceGUID, sourceName)  
     if rotations ~= nil then
-        for i, rotation in ipairs(rotations) do
-            if PRT.IsTriggerActive(rotation) then                
+        for i, rotation in ipairs(rotations) do                       
+            if PRT.IsTriggerActive(rotation) then               
                 if rotation.triggerCondition ~= nil then
                     TriggerHandler.CheckStopIgnoreRotationCondition(rotation)
                     
