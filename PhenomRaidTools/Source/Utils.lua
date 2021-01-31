@@ -316,12 +316,16 @@ end
 -------------------------------------------------------------------------------
 -- Debug Helper
 
-PRT.PrintTable = function(prefix, t)
-    if t ~= nil then
+PRT.PrintTable = function(prefix, t, maxRecursionDepth, recursionDepth)
+    local recursionDepth = recursionDepth or 0
+    local maxRecursionDepth = maxRecursionDepth or 3
+    recursionDepth = recursionDepth + 1    
+
+    if t ~= nil and recursionDepth <= maxRecursionDepth then
         for k, v in pairs(t) do
             if type(v) == "table" then
                 print(prefix.." ".."["..k.."]")
-                PRT.PrintTable(prefix.."  ", v)
+                PRT.PrintTable(prefix.."  ", v, maxRecursionDepth, recursionDepth)
             elseif type(v) == "function" then
                 print(prefix.." ".."["..k.."]".." - function")
             elseif type(v) == "userdata" then
