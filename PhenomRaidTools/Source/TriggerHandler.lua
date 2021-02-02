@@ -224,30 +224,15 @@ PRT.IsTriggerActive = function(trigger)
             trigger.active == true
             or 
             (
-                (not trigger.hasStartCondition) and 
-                (not trigger.hasStopCondition) and 
-                (
-                    trigger.active or 
-                    trigger.active == nil
-                )
+                (not trigger.hasStartCondition) and (not trigger.hasStopCondition) and trigger.active == nil
             )
             or 
             (
-                (not trigger.hasStartCondition) and 
-                trigger.hasStopCondition and 
-                (
-                    trigger.active or 
-                    trigger.active == nil
-                )
+                (not trigger.hasStartCondition) and trigger.hasStopCondition and trigger.active == nil
             )
             or 
             (
-                trigger.hasStartCondition and 
-                (not trigger.hasStopCondition) and 
-                (
-                    trigger.active or 
-                    trigger.active == nil
-                )
+                trigger.hasStartCondition and (not trigger.hasStopCondition) and trigger.active == nil
             )
         )
     )
