@@ -31,11 +31,15 @@ TriggerHandler.UnitExistsInTrackedUnits = function(conditionUnitID, eventUnitGUI
 end
 
 TriggerHandler.ValidTestModeEvent = function(event, combatEvent, conditionEvent)
-    if conditionEvent == "ENCOUNTER_START" then
-        local conditionEvent = "PLAYER_REGEN_DISABLED"
+    if PRT.db.profile.testMode then
+        if conditionEvent == "ENCOUNTER_START" then
+            local conditionEvent = "PLAYER_REGEN_DISABLED"
 
-        return (conditionEvent ~= nil and (conditionEvent == event or conditionEvent == combatEvent))
-    else 
+            return (conditionEvent ~= nil and (conditionEvent == event or conditionEvent == combatEvent))
+        else 
+            return false
+        end
+    else
         return false
     end
 end
