@@ -194,7 +194,14 @@ PRT.SimpleGroup = function()
 	local container = AceGUI:Create("SimpleGroup")   
 	container:SetFullWidth(true)
 	container:SetLayout("List")
-	container.frame.backdrop:SetBackdrop({})
+
+	-- NOTE: Make sure a simple group is displayed without backdrop even for ElvUI users
+	-- since we just use it to structure some controls and not to actually group them
+	if container.frame then
+		if container.frame.backdrop then
+			container.frame.backdrop:SetBackdrop({})
+		end
+	end
 
    return container
 end
