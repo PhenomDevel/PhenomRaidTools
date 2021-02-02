@@ -1,8 +1,19 @@
 ===============================================================================
+# Release 2.0.21.1
+## Bugfixes
+ - Make sure backdrop removal for styling does not break for non elvui users
+ - Simplify trigger active check for faster execution
+
+## Features
+ - Automatically replace `ENCOUNTER_START` events with `PLAYER_REGEN_DISABLED` in test mode
+   - You do not have to change this everytime you want to test simple timers for an encounter
+
+
+===============================================================================
 # Release 2.0.20.1
 ## Bugfixes
  - Fix start/stop condition for rotations
-   - If you only used start condition it wouldn't work at all....
+   - If you only used start condition it wouldn't work at all...
  - Remove backdrop for simple groups
 
 ## Features
