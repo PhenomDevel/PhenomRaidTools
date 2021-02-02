@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.0.21.2
+## Bugfixes
+ - Make sure test mode events are only checked in test mode
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.0.21.1
 ## Bugfixes
  - Make sure backdrop removal for styling does not break for non elvui users
