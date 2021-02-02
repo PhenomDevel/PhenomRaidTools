@@ -30,9 +30,19 @@ TriggerHandler.UnitExistsInTrackedUnits = function(conditionUnitID, eventUnitGUI
     end
 end
 
+TriggerHandler.ValidTestModeEvent = function(event, combatEvent, conditionEvent)
+    if conditionEvent == "ENCOUNTER_START" then
+        local conditionEvent = "PLAYER_REGEN_DISABLED"
+
+        return (conditionEvent ~= nil and (conditionEvent == event or conditionEvent == combatEvent))
+    else 
+        return false
+    end
+end
+
 TriggerHandler.CheckCondition = function(condition, event, combatEvent, spellID, targetGUID, sourceGUID)
     if condition ~= nil and
-        (condition.event ~= nil and (condition.event == event or condition.event == combatEvent)) and
+        ((condition.event ~= nil and (condition.event == event or condition.event == combatEvent)) or TriggerHandler.ValidTestModeEvent(event, combatEvent, condition.event)) and
         (condition.spellID == nil or condition.spellID == spellID) and
         (condition.source == nil or UnitGUID(condition.source or "") == sourceGUID or TriggerHandler.UnitExistsInTrackedUnits(condition.source or "", sourceGUID)) and
         (condition.target == nil or UnitGUID(condition.target or "") == targetGUID or TriggerHandler.UnitExistsInTrackedUnits(condition.target or "", targetGUID)) then
