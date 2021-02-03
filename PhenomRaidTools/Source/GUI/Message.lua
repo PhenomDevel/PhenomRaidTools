@@ -83,11 +83,10 @@ function Message.TargetsPreviewString(targets)
   if targets then
     local previewNames = {}
 
-    for i, target in ipairs(targets) do
-      local name = PRT.ReplacePlayerNameTokens(target)
-      local names = {strsplit(",", name)}
+    for _, target in ipairs(targets) do
+      local names = {strsplit(",", PRT.ReplacePlayerNameTokens(target))}
 
-      for i, name in ipairs(names) do
+      for _, name in ipairs(names) do
         local trimmedName = strtrim(name, " ")
         local coloredName = PRT.ClassColoredName(trimmedName)
 
@@ -104,7 +103,7 @@ end
 function Message.ColoredRaidPlayerNames()
   local playerNames = {}
 
-  for i, name in ipairs(PRT.PartyNames(false)) do
+  for _, name in ipairs(PRT.PartyNames(false)) do
     tinsert(playerNames, { id = name, name = PRT.ClassColoredName(name)})
   end
 
@@ -127,10 +126,10 @@ function Message.GenerateRaidRosterDropdownItems()
   -- Hacky because we do not have the encounter here...
   if PRT.currentEncounter.encounter then
     if PRT.currentEncounter.encounter.CustomPlaceholders then
-      for i, customEncounterPlaceholder in ipairs(PRT.currentEncounter.encounter.CustomPlaceholders) do
+      for _, customEncounterPlaceholder in ipairs(PRT.currentEncounter.encounter.CustomPlaceholders) do
         local coloredNames = {}
 
-        for nameIdx, name in ipairs(customEncounterPlaceholder.names) do
+        for _, name in ipairs(customEncounterPlaceholder.names) do
           tinsert(coloredNames, PRT.ClassColoredName(name))
         end
 
@@ -142,10 +141,10 @@ function Message.GenerateRaidRosterDropdownItems()
   end
 
   -- Add Custom Placeholder
-  for i, customPlaceholder in ipairs(PRT.db.profile.customPlaceholders) do
+  for _, customPlaceholder in ipairs(PRT.db.profile.customPlaceholders) do
     local coloredNames = {}
 
-    for nameIdx, name in ipairs(customPlaceholder.names) do
+    for _, name in ipairs(customPlaceholder.names) do
       tinsert(coloredNames, PRT.ClassColoredName(name))
     end
 
@@ -163,12 +162,12 @@ function Message.GenerateRaidRosterDropdownItems()
     end
   end
 
-  for i, v in ipairs(groupItems) do
+  for _, v in ipairs(groupItems) do
     tinsert(raidRosterItems, { id = v, name = v})
   end
 
   -- Add default targets (HEALER, TANK etc.)
-  for i, name in ipairs(Message.defaultTargets) do
+  for _, name in ipairs(Message.defaultTargets) do
     tinsert(raidRosterItems, { id = name, name = name})
   end
 
@@ -199,7 +198,7 @@ function PRT.MessageWidget(message, container)
 
   local soundSelect = PRT.SoundSelect("messageSound", (message.soundFileName or L["messageStandardSound"]))
   soundSelect:SetCallback("OnValueChanged",
-    function(widget, event, value)
+    function(widget, _, value)
       local path = AceGUIWidgetLSMlists.sound[value]
       message.soundFile = path
       message.soundFileName = value
@@ -263,7 +262,7 @@ function PRT.MessageWidget(message, container)
     end)
 
   local targetOverlayDropdownItems = {}
-  for i, overlay in ipairs(PRT.db.profile.overlay.receivers) do
+  for _, overlay in ipairs(PRT.db.profile.overlay.receivers) do
     tinsert(targetOverlayDropdownItems, { id = overlay.id, name = overlay.id..": "..overlay.label})
   end
 
@@ -281,19 +280,19 @@ function PRT.MessageWidget(message, container)
   container:AddChild(messageEditBox)
   container:AddChild(messagePreviewLabel)
 
-  for k, cooldownGroup in pairs(Cooldowns) do
+  for _, cooldownGroup in pairs(Cooldowns) do
     local cooldownIconsGroup = PRT.SimpleGroup()
     cooldownIconsGroup:SetLayout("Flow")
 
-    for i, spellID in ipairs(cooldownGroup) do
-      local name, _, icon = GetSpellInfo(spellID)
+    for _, spellID in ipairs(cooldownGroup) do
+      local _, _, icon = GetSpellInfo(spellID)
       local spellIcon = PRT.Icon(icon, spellID)
       spellIcon:SetHeight(cooldownIconSize + 4)
       spellIcon:SetWidth(cooldownIconSize + 4)
       spellIcon:SetImageSize(cooldownIconSize, cooldownIconSize)
 
       spellIcon:SetCallback("OnClick",
-        function(widget)
+        function()
           message.message = message.message.."{spell:"..spellID.."}"
           messageEditBox:SetText(message.message)
           messagePreviewLabel:SetText(L["messagePreview"]..PRT.PrepareMessageForDisplay(message.message))

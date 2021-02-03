@@ -64,7 +64,7 @@ function PRT.ConditionWidget(condition, textID)
     function(widget)
       local text = tonumber(widget:GetText())
 
-      local name, _, icon, _, _, _, spellId = GetSpellInfo(text)
+      local _, _, icon, _, _, _, spellId = GetSpellInfo(text)
 
       if spellId then
         condition.spellID = spellId

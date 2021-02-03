@@ -7,7 +7,7 @@ local ReceiverOverlay = {
 }
 
 -- Create local copies of API functions which we use
-local UIParent, GameFontHighlightSmall = UIParent, GameFontHighlightSmall
+local GameFontHighlightSmall = GameFontHighlightSmall
 
 
 -------------------------------------------------------------------------------
@@ -26,7 +26,7 @@ function ReceiverOverlay.AddMessage(messageTable)
     local customWillPlay
 
     if soundFile and messageTable.useCustomSound then
-      customWillPlay, _ = PlaySoundFile(soundFile, "Master")
+      customWillPlay = PlaySoundFile(soundFile, "Master")
     end
 
     if not customWillPlay then
@@ -74,7 +74,7 @@ function ReceiverOverlay.UpdateFrameText()
   for frameIndex, frame in ipairs(ReceiverOverlay.overlayFrames) do
     local text = ""
 
-    for i, message in pairs(ReceiverOverlay.messageStack) do
+    for _, message in pairs(ReceiverOverlay.messageStack) do
       if message ~= "" then
         -- Add text only to corresponding frame
         if (message.targetOverlay or 1) == frameIndex then
@@ -129,7 +129,7 @@ end
 
 function ReceiverOverlay.HideAll()
   if ReceiverOverlay.overlayFrames then
-    for i, overlayFrame in ipairs(ReceiverOverlay.overlayFrames) do
+    for _, overlayFrame in ipairs(ReceiverOverlay.overlayFrames) do
       PRT.Overlay.Hide(overlayFrame)
     end
   end
@@ -137,7 +137,7 @@ end
 
 function ReceiverOverlay.ShowAll()
   if ReceiverOverlay.overlayFrames then
-    for i, overlayFrame in ipairs(ReceiverOverlay.overlayFrames) do
+    for _, overlayFrame in ipairs(ReceiverOverlay.overlayFrames) do
       PRT.Overlay.Show(overlayFrame)
     end
   end

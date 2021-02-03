@@ -42,6 +42,16 @@ globals = {
   "random",
   "CreateFrame",
   "BackdropTemplateMixin",
+  "getn",
+  "sort",
+  "UnitClass",
+  "GetRaidRosterInfo",
+  "GetNumGroupMembers",
+  "UnitInParty",
+  "UnitInRaid",
+  "max",
+  "format",
+  "UnitFullName",
 
   -- Locals
   "L",

@@ -74,7 +74,7 @@ local Encounter = {
 }
 
 local function addOverviewHeader(container, header, enabled)
-  local coloredText = ""
+  local coloredText
 
   if not enabled then
     coloredText = PRT.ColoredString(header..L["encounterOverviewDisabled"], PRT.db.profile.colors.disabled)
@@ -155,7 +155,7 @@ local function addPercentageOverviewEntry(container, prefix, percentage)
     addStringByCondition(container, L["encounterOverviewStopTriggerOn"], percentage.stopCondition)
   end
 
-  for i, value in ipairs(percentage.values) do
+  for _, value in ipairs(percentage.values) do
     addOverviewLine(container, L["encounterOverviewTriggerOn"].." "..prefix.." "..value.operator.." "..value.value)
   end
 
@@ -164,14 +164,14 @@ end
 
 local function MergeTriggers(a, b)
   if b then
-    for i, bTrigger in ipairs(b) do
+    for _, bTrigger in ipairs(b) do
       local newName = "* "..bTrigger.name
 
       if not a then
         a = {}
       end
 
-      for i, aTrigger in ipairs(a) do
+      for _, aTrigger in ipairs(a) do
         if aTrigger.name == newName then
           newName = "*"..newName
         end
@@ -192,7 +192,7 @@ local function MergeEncounters(a, b)
 end
 
 local function importSuccess(encounter)
-  local idx, existingEncounter = PRT.FilterEncounterTable(PRT.db.profile.encounters, encounter.id)
+  local _, existingEncounter = PRT.FilterEncounterTable(PRT.db.profile.encounters, encounter.id)
 
   if not existingEncounter then
     tinsert(PRT.db.profile.encounters, encounter)
@@ -222,7 +222,7 @@ function Encounter.OverviewWidget(encounter)
 
   -- Timers
   if not PRT.TableUtils.IsEmpty(encounter.Timers) then
-    for i, v in ipairs(encounter.Timers) do
+    for _, v in ipairs(encounter.Timers) do
       addTimerOverviewEntry(timerGroup, v)
     end
 
@@ -231,7 +231,7 @@ function Encounter.OverviewWidget(encounter)
 
   -- Rotations
   if not PRT.TableUtils.IsEmpty(encounter.Rotations) then
-    for i, v in ipairs(encounter.Rotations) do
+    for _, v in ipairs(encounter.Rotations) do
       addRotationOverviewEntry(rotationsGroup, v)
     end
 
@@ -240,7 +240,7 @@ function Encounter.OverviewWidget(encounter)
 
   -- Health Percentages
   if not PRT.TableUtils.IsEmpty(encounter.HealthPercentages) then
-    for i, v in ipairs(encounter.HealthPercentages) do
+    for _, v in ipairs(encounter.HealthPercentages) do
       addPercentageOverviewEntry(healthPercentageGroup, L["encounterOverviewPercentagePrefixHealth"], v)
     end
 
@@ -249,7 +249,7 @@ function Encounter.OverviewWidget(encounter)
 
   -- Power Percentages
   if not PRT.TableUtils.IsEmpty(encounter.PowerPercentages) then
-    for i, v in ipairs(encounter.PowerPercentages) do
+    for _, v in ipairs(encounter.PowerPercentages) do
       addPercentageOverviewEntry(powerPercentageGroup, L["encounterOverviewPercentagePrefixPower"], v)
     end
 
@@ -268,7 +268,7 @@ function PRT.AddEncountersWidgets(container, profile)
 
   local addButton = PRT.Button("newEncounter")
   addButton:SetCallback("OnClick",
-    function(widget)
+    function()
       local newEncounter = PRT.EmptyEncounter()
       tinsert(profile.encounters, newEncounter)
       PRT.Core.UpdateTree()
@@ -277,7 +277,7 @@ function PRT.AddEncountersWidgets(container, profile)
 
   local importButton = PRT.Button("importEncounter")
   importButton:SetCallback("OnClick",
-    function(widget)
+    function()
       PRT.CreateImportFrame(importSuccess)
     end)
 
@@ -339,8 +339,8 @@ function PRT.AddEncounterOptions(container, profile, encounterID)
 
   encounterSelectDropdown:SetRelativeWidth(0.5)
   encounterSelectDropdown:SetCallback("OnValueChanged",
-    function(widget, event, id)
-      local idx, entry = PRT.FilterTableByID(Encounter.currentEncounters, id)
+    function(widget, _, id)
+      local _, entry = PRT.FilterTableByID(Encounter.currentEncounters, id)
       -- TODO: Refactor and put together with above id function
       local _, existingEncounter = PRT.FilterEncounterTable(profile.encounters, id)
 
@@ -369,7 +369,7 @@ function PRT.AddEncounterOptions(container, profile, encounterID)
     end)
 
   exportButton:SetCallback("OnClick",
-    function(widget)
+    function()
       PRT.CreateExportFrame(encounter)
     end)
 

@@ -19,7 +19,7 @@ function Timer.ComposeTimingString(timings)
   sort(timings)
   local timingsStrings = {}
 
-  for i, timing in ipairs(timings) do
+  for _, timing in ipairs(timings) do
     local minutes = math.floor(timing / 60)
     local seconds = timing % 60
     local timingString = minutes..":"
@@ -36,7 +36,7 @@ function Timer.ComposeTimingString(timings)
   return strjoin(", ", unpack(timingsStrings))
 end
 
-function Timer.TimingWidget(timing, container, key, timings)
+function Timer.TimingWidget(timing, container, _, timings)
   local timingOptionsGroup = PRT.InlineGroup("timingOptionsHeading")
   timingOptionsGroup:SetLayout("Flow")
 
@@ -58,7 +58,7 @@ function Timer.TimingWidget(timing, container, key, timings)
 
       timing.seconds = {}
 
-      for i, timingEntry in ipairs(times) do
+      for _, timingEntry in ipairs(times) do
         local timingSecond = Timer.ParseTiming(timingEntry)
         tinsert(timing.seconds, timingSecond)
       end
@@ -76,7 +76,7 @@ function Timer.TimingWidget(timing, container, key, timings)
   local messagesTabGroup = PRT.TabGroup("messageHeading", messagesTabs)
   messagesTabGroup:SetLayout("List")
   messagesTabGroup:SetCallback("OnGroupSelected",
-    function(widget, event, key)
+    function(widget, _, key)
       PRT.TabGroupSelected(widget, timing.messages, key, PRT.MessageWidget, PRT.EmptyMessage, true, "messageDeleteButton")
     end)
 
@@ -110,7 +110,7 @@ function Timer.TimerWidget(timer, container, deleteButton, cloneButton)
 
   local copyButton = PRT.Button("copyTimer")
   copyButton:SetCallback("OnClick",
-    function(widget)
+    function()
       local copy = PRT.CopyTable(timer)
       copy.name = copy.name.." Copy"..random(0,100000)
       PRT.db.profile.clipboard.timer = copy
@@ -156,7 +156,7 @@ function Timer.TimerWidget(timer, container, deleteButton, cloneButton)
   local timingsTabs = PRT.TableToTabs(timer.timings, true)
   local timingsTabGroup = PRT.TabGroup("timingOptions", timingsTabs)
   timingsTabGroup:SetCallback("OnGroupSelected",
-    function(widget, event, key)
+    function(widget, _, key)
       PRT.TabGroupSelected(widget, timer.timings, key, Timer.TimingWidget, PRT.EmptyTiming, true, "timingDeleteButton")
     end)
   PRT.SelectFirstTab(timingsTabGroup, timer.timings)
@@ -194,7 +194,7 @@ function PRT.AddTimerOptionsWidgets(container, profile, encounterID)
   local pasteButton = PRT.Button(pasteButtonText)
   pasteButton:SetDisabled(hasClipboardTimer)
   pasteButton:SetCallback("OnClick",
-    function(widget)
+    function()
       tinsert(timers, PRT.db.profile.clipboard.timer)
       PRT.Core.UpdateTree()
       PRT.mainWindowContent:DoLayout()
@@ -205,7 +205,7 @@ function PRT.AddTimerOptionsWidgets(container, profile, encounterID)
 
   local addButton = PRT.Button("newTimer")
   addButton:SetCallback("OnClick",
-    function(widget, event, key)
+    function()
       local newTimer = PRT.EmptyTimer()
       tinsert(timers, newTimer)
       PRT.Core.UpdateTree()

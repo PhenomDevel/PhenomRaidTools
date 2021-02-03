@@ -195,8 +195,8 @@ function PRT.CopyTable(orig, copies)
   return copy
 end
 
-function PRT.SecondsToClock(seconds)
-  local seconds = tonumber(seconds)
+function PRT.SecondsToClock(input)
+  local seconds = tonumber(input)
 
   if seconds <= 0 then
     return "00:00:00";
@@ -242,8 +242,8 @@ end
 function table.mergemany(...)
   local tNew = {}
 
-  for i, t in ipairs({...}) do
-    for i, v in ipairs(t) do
+  for _, t in ipairs({...}) do
+    for _, v in ipairs(t) do
       tinsert(tNew, v)
     end
   end
@@ -254,11 +254,11 @@ end
 function table.mergecopy(t1, t2)
   local t3 = {}
 
-  for k,v in ipairs(t1) do
+  for _, v in ipairs(t1) do
     tinsert(t3, v)
   end
 
-  for k,v in ipairs(t2) do
+  for _, v in ipairs(t2) do
     tinsert(t3, v)
   end
 
@@ -266,39 +266,30 @@ function table.mergecopy(t1, t2)
 end
 
 function PRT.FilterEncounterTable(encounters, id)
-  local value
   if encounters then
     for i, v in ipairs(encounters) do
       if v.id == id then
-        if not value then
-          return i, v
-        end
+        return i, v
       end
     end
   end
 end
 
 function PRT.FilterTableByName(t, name)
-  local value
   if t then
     for i, v in ipairs(t) do
       if v.name == name then
-        if not value then
-          return i, v
-        end
+        return i, v
       end
     end
   end
 end
 
 function PRT.FilterTableByID(t, id)
-  local value
   if t then
     for i, v in ipairs(t) do
       if v.id == id then
-        if not value then
-          return i, v
-        end
+        return i, v
       end
     end
   end
@@ -401,7 +392,7 @@ function PRT.ClassColoredName(name)
   if name then
     local _, _, classIndex = UnitClass(string.gsub(name, "-.*", ""))
     local color = classColors[classIndex]
-    local coloredName = name
+    local coloredName
 
     if color then
       coloredName = PRT.ColoredString(name, color)
@@ -444,14 +435,14 @@ end
 
 function PRT.AddCustomPlaceholdersToPlayerNames(token, t, customPlaceholders)
   if customPlaceholders then
-    for i, customPlaceholder in ipairs(customPlaceholders) do
+    for _, customPlaceholder in ipairs(customPlaceholders) do
       if customPlaceholder.name == token then
         if customPlaceholder.type == "group" then
           for i = #customPlaceholder.names, 1, -1 do
             tinsert(t, strtrim(customPlaceholder.names[i], " "))
           end
         else
-          for nameIdx, name in ipairs(customPlaceholder.names) do
+          for _, name in ipairs(customPlaceholder.names) do
             if (PRT.UnitInParty(name) or UnitExists(name)) and not UnitIsDead(name) then
               tinsert(t, strtrim(name, " "))
               break
@@ -526,7 +517,6 @@ end
 
 function PRT.PartyNames(withServer)
   local names = {}
-  local unitString = ""
   local myName = UnitName("player")
 
   if withServer then

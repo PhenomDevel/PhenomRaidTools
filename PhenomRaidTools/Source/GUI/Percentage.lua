@@ -21,12 +21,12 @@ local Percentage = {
 -------------------------------------------------------------------------------
 -- Local Helper
 
-function Percentage.PercentageEntryWidget(entry, container, key, entries)
+function Percentage.PercentageEntryWidget(entry, container, _, entries)
   local percentageEntryOptionsGroup = PRT.InlineGroup("percentageEntryOptionsHeading")
 
   local operatorDropdown = PRT.Dropdown("percentageEntryOperatorDropdown", Percentage.operatorValues, entry.operator)
   operatorDropdown:SetCallback("OnValueChanged",
-    function(widget, event, key)
+    function(_, _, key)
       entry.operator = key
     end)
 
@@ -39,12 +39,11 @@ function Percentage.PercentageEntryWidget(entry, container, key, entries)
       entry.name = value.." %"
     end)
 
-  local messagesHeading = PRT.Heading("messageHeading")
   local messagesTabs = PRT.TableToTabs(entry.messages, true)
   local messagesTabGroup = PRT.TabGroup("messageHeading", messagesTabs)
   messagesTabGroup:SetLayout("List")
   messagesTabGroup:SetCallback("OnGroupSelected",
-    function(widget, event, key)
+    function(widget, _, key)
       PRT.TabGroupSelected(widget, entry.messages, key, PRT.MessageWidget, PRT.EmptyMessage, true, "messageDeleteButton")
     end)
 
@@ -78,7 +77,7 @@ function Percentage.PercentageWidget(percentage, container, deleteButton, cloneB
 
   local copyButton = PRT.Button("copyPercentage")
   copyButton:SetCallback("OnClick",
-    function(widget)
+    function()
       local copy = PRT.CopyTable(percentage)
       copy.name = copy.name.." Copy"..random(0,100000)
       PRT.db.profile.clipboard.percentage = copy
@@ -123,7 +122,7 @@ function Percentage.PercentageWidget(percentage, container, deleteButton, cloneB
   local tabs = PRT.TableToTabs(percentage.values, true)
   local valuesTabGroupWidget = PRT.TabGroup(nil, tabs)
   valuesTabGroupWidget:SetCallback("OnGroupSelected",
-    function(widget, event,key)
+    function(widget, _, key)
       PRT.TabGroupSelected(widget, percentage.values, key, Percentage.PercentageEntryWidget, PRT.EmptyPercentageEntry, true, "percentageEntryDeleteButton")
     end)
 
@@ -153,7 +152,7 @@ end
 -- Public API Power Percentage
 
 function PRT.AddPowerPercentageOptions(container, profile, encounterID)
-  local idx, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
+  local _, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
   local percentages = encounter.PowerPercentages
 
   local percentageOptionsGroup = PRT.InlineGroup("Options")
@@ -163,7 +162,7 @@ function PRT.AddPowerPercentageOptions(container, profile, encounterID)
   local pasteButton = PRT.Button("pastePercentage")
   pasteButton:SetDisabled(hasClipboardPercentage)
   pasteButton:SetCallback("OnClick",
-    function(widget)
+    function()
       tinsert(percentages, PRT.db.profile.clipboard.percentage)
       PRT.Core.UpdateTree()
       PRT.mainWindowContent:DoLayout()
@@ -174,7 +173,7 @@ function PRT.AddPowerPercentageOptions(container, profile, encounterID)
 
   local addButton = PRT.Button("newPowerPercentage")
   addButton:SetCallback("OnClick",
-    function(widget, event, key)
+    function()
       local newPercentage = PRT.EmptyPercentage()
       tinsert(percentages, newPercentage)
       PRT.Core.UpdateTree()
@@ -202,7 +201,7 @@ end
 -- Public API Health Percentage
 
 function PRT.AddHealthPercentageOptions(container, profile, encounterID)
-  local idx, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
+  local _, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
   local percentages = encounter.HealthPercentages
 
   local percentageOptionsGroup = PRT.InlineGroup("Options")
@@ -213,7 +212,7 @@ function PRT.AddHealthPercentageOptions(container, profile, encounterID)
   local pasteButton = PRT.Button(pasteButtonText)
   pasteButton:SetDisabled(hasClipboardPercentage)
   pasteButton:SetCallback("OnClick",
-    function(widget)
+    function()
       tinsert(percentages, PRT.db.profile.clipboard.percentage)
       PRT.Core.UpdateTree()
       PRT.mainWindowContent:DoLayout()
@@ -224,7 +223,7 @@ function PRT.AddHealthPercentageOptions(container, profile, encounterID)
 
   local addButton = PRT.Button("newHealthPercentage")
   addButton:SetCallback("OnClick",
-    function(widget, event, key)
+    function()
       local newPercentage = PRT.EmptyPercentage()
       tinsert(percentages, newPercentage)
       PRT.Core.UpdateTree()

@@ -22,10 +22,11 @@ local GameFontHighlightSmall = GameFontHighlightSmall
 
 function AceHelper.AddTooltip(widget, tooltip)
   if tooltip and widget then
-    widget:SetCallback("OnEnter", function(widget)
+    widget:SetCallback("OnEnter",
+    function()
       GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
       if type(tooltip) == "table" then
-        for i, entry in ipairs(tooltip) do
+        for _, entry in ipairs(tooltip) do
           GameTooltip:AddLine(entry)
         end
       else
@@ -35,7 +36,7 @@ function AceHelper.AddTooltip(widget, tooltip)
     end)
 
     widget:SetCallback("OnLeave",
-      function(widget)
+      function()
         GameTooltip:FadeOut()
       end)
   end
@@ -116,7 +117,7 @@ function PRT.TableToTabs(t, withNewTab, newTabText)
   return tabs
 end
 
-function PRT.TabGroupSelected(widget, t, key, itemFunction, emptyItemFunction, deleteButton, deleteTextID)
+function PRT.TabGroupSelected(widget, t, key, itemFunction, emptyItemFunction, withDeleteButton, deleteTextID)
   widget:ReleaseChildren()
 
   if key == "new" then
@@ -132,7 +133,7 @@ function PRT.TabGroupSelected(widget, t, key, itemFunction, emptyItemFunction, d
 
     itemFunction(item, widget, key, t)
 
-    if deleteButton then
+    if withDeleteButton then
       local deleteButtonText = L[deleteTextID]
       local deleteButton = AceGUI:Create("Button")
       deleteButton:SetText(deleteButtonText)
@@ -338,7 +339,7 @@ function PRT.ColorPicker(textID, value)
   return widget
 end
 
-function PRT.Dropdown(textID, values, value, withEmpty, orderByKey)
+function PRT.Dropdown(textID, dropdownValues, dropdownValue, withEmpty, orderByKey)
   local text = L[textID]
 
   local dropdownItems = {}
@@ -346,7 +347,7 @@ function PRT.Dropdown(textID, values, value, withEmpty, orderByKey)
     dropdownItems[999] = ""
   end
 
-  for i,v in ipairs(values) do
+  for _,v in ipairs(dropdownValues) do
     if type(v) == "string" then
       dropdownItems[v] = v
     else
@@ -359,7 +360,7 @@ function PRT.Dropdown(textID, values, value, withEmpty, orderByKey)
   if orderByKey then
     local order = {}
 
-    for i,v in ipairs(values) do
+    for _,v in ipairs(dropdownValues) do
       local value
       if type(v) == "string" then
         value = v
@@ -374,10 +375,10 @@ function PRT.Dropdown(textID, values, value, withEmpty, orderByKey)
   end
 
   widget:SetLabel(text)
-  widget:SetText(dropdownItems[value])
+  widget:SetText(dropdownItems[dropdownValue])
   widget:SetWidth(AceHelper.widgetDefaultWidth)
 
-  for i,v in ipairs(values) do
+  for _, v in ipairs(dropdownValues) do
     if v.disabled then
       local id
       if type(v) == "string" then

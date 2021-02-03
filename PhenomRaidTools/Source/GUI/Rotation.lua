@@ -6,12 +6,12 @@ local Rotation = {}
 -------------------------------------------------------------------------------
 -- Local Helper
 
-function Rotation.RotationEntryWidget(entry, container, key, entries)
+function Rotation.RotationEntryWidget(entry, container, _, entries)
   local messagesTabs = PRT.TableToTabs(entry.messages, true)
   local messagesTabGroup = PRT.TabGroup("messageHeading", messagesTabs)
   messagesTabGroup:SetLayout("List")
   messagesTabGroup:SetCallback("OnGroupSelected",
-    function(widget, event, key)
+    function(widget, _, key)
       PRT.TabGroupSelected(widget, entry.messages, key, PRT.MessageWidget, PRT.EmptyMessage, true, "messageDeleteButton")
     end)
 
@@ -41,7 +41,7 @@ function Rotation.RotationWidget(rotation, container, deleteButton, cloneButton)
 
   local copyButton = PRT.Button("copyRotation")
   copyButton:SetCallback("OnClick",
-    function(widget)
+    function()
       local copy = PRT.CopyTable(rotation)
       copy.name = copy.name.." Copy"..random(0,100000)
       PRT.db.profile.clipboard.rotation = copy
@@ -88,7 +88,7 @@ function Rotation.RotationWidget(rotation, container, deleteButton, cloneButton)
   local tabs = PRT.TableToTabs(rotation.entries, true)
   local entriesTabGroupWidget = PRT.TabGroup("rotationEntryHeading", tabs)
   entriesTabGroupWidget:SetCallback("OnGroupSelected",
-    function(widget, event,key)
+    function(widget, _, key)
       PRT.TabGroupSelected(widget, rotation.entries, key, Rotation.RotationEntryWidget, PRT.EmptyRotationEntry, true, "rotationEntryDeleteButton")
     end)
 
@@ -116,7 +116,7 @@ end
 -- Public API
 
 function PRT.AddRotationOptions(container, profile, encounterID)
-  local idx, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
+  local _, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
   local rotations = encounter.Rotations
 
   local rotationOptionsGroup = PRT.InlineGroup("Options")
@@ -124,7 +124,7 @@ function PRT.AddRotationOptions(container, profile, encounterID)
 
   local addButton = PRT.Button("newRotation")
   addButton:SetCallback("OnClick",
-    function(widget, event, key)
+    function()
       local newRotation = PRT.EmptyRotation()
       tinsert(rotations, newRotation)
       PRT.Core.UpdateTree()
@@ -137,7 +137,7 @@ function PRT.AddRotationOptions(container, profile, encounterID)
   local pasteButton = PRT.Button(pasteButtonText)
   pasteButton:SetDisabled(hasClipboardRotation)
   pasteButton:SetCallback("OnClick",
-    function(widget)
+    function()
       tinsert(rotations, PRT.db.profile.clipboard.rotation)
       PRT.Core.UpdateTree()
       PRT.mainWindowContent:DoLayout()
@@ -152,7 +152,7 @@ function PRT.AddRotationOptions(container, profile, encounterID)
 end
 
 function PRT.AddRotationWidget(container, profile, encounterID, triggerName)
-  local idx, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)
+  local _, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)
   local rotations = encounter.Rotations
   local rotationIndex, rotation = PRT.FilterTableByName(rotations, triggerName)
   local deleteButton = PRT.NewTriggerDeleteButton(container, rotations, rotationIndex, "deleteRotation", rotation.name)

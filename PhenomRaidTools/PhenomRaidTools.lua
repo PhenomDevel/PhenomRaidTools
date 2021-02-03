@@ -1,6 +1,5 @@
 local PRT = LibStub("AceAddon-3.0"):NewAddon("PhenomRaidTools", "AceConsole-3.0", "AceEvent-3.0");
 
-local AceGUI = LibStub("AceGUI-3.0")
 local AceComm = LibStub("AceComm-3.0")
 local AceTimer = LibStub("AceTimer-3.0")
 
@@ -225,7 +224,7 @@ function PRT:OnInitialize()
   -- Initialize Minimap Icon
   LibDBIcon:Register("PhenomRaidTools", PhenomRaidToolsLDB, self.db.profile.minimap)
 
-  local encounterIdx, encounter = PRT.FilterEncounterTable(self.db.profile.encounters, 9999)
+  local encounterIdx, _ = PRT.FilterEncounterTable(self.db.profile.encounters, 9999)
 
   if not encounterIdx and PRT.TableUtils.IsEmpty(self.db.profile.encounters) then
     table.insert(self.db.profile.encounters, PRT.ExampleEncounter())
@@ -318,7 +317,7 @@ function PRT:VersionCheck(_)
 
     self.db.profile.versionCheck = {}
 
-    for i, name in ipairs(PRT.PartyNames()) do
+    for _, name in ipairs(PRT.PartyNames()) do
       self.db.profile.versionCheck[name] = ""
     end
 

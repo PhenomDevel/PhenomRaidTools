@@ -17,21 +17,21 @@ function PRT.AddOptionWidgets(container, profile)
   local optionsTabsGroup = PRT.TabGroup(nil, optionsTabs)
   optionsTabsGroup:SetLayout("Flow")
   optionsTabsGroup:SetCallback("OnGroupSelected",
-    function(container, event, key)
-      container:ReleaseChildren()
+    function(widget, _, key)
+      widget:ReleaseChildren()
 
       if key ==  "general" then
-        PRT.AddGeneralWidgets(container, PRT.db.profile)
+        PRT.AddGeneralWidgets(widget, PRT.db.profile)
       elseif key == "difficulties" then
-        PRT.AddDifficultyWidgets(container, PRT.db.profile.enabledDifficulties)
+        PRT.AddDifficultyWidgets(widget, PRT.db.profile.enabledDifficulties)
       elseif key == "defaults" then
-        PRT.AddDefaultsGroups(container, PRT.db.profile.triggerDefaults)
+        PRT.AddDefaultsGroups(widget, PRT.db.profile.triggerDefaults)
       elseif key == "raidRoster" then
-        PRT.AddRaidRosterWidget(container, PRT.db.profile.raidRoster)
+        PRT.AddRaidRosterWidget(widget, PRT.db.profile.raidRoster)
       elseif key == "overlay" then
-        PRT.AddOverlayWidget(container, PRT.db.profile.overlay)
+        PRT.AddOverlayWidget(widget, PRT.db.profile.overlay)
       elseif key =="customPlaceholders" then
-        PRT.AddCustomPlaceholdersWidget(container, PRT.db.profile.customPlaceholders)
+        PRT.AddCustomPlaceholdersWidget(widget, PRT.db.profile.customPlaceholders)
       end
 
       if PRT.mainWindowContent.scrollFrame then

@@ -8,7 +8,7 @@ local SenderOverlay = {
 }
 
 -- Create local copies of API functions which we use
-local UIParent, GameFontHighlightSmall = UIParent, GameFontHighlightSmall
+local GameFontHighlightSmall = GameFontHighlightSmall
 
 
 -------------------------------------------------------------------------------
@@ -18,8 +18,8 @@ function SenderOverlay.GetNextTiming(timer, seconds)
   local nextTiming
   local lowestSecond
 
-  for i, timing in ipairs(timer.timings) do
-    for i, second in ipairs(timing.seconds) do
+  for _, timing in ipairs(timer.timings) do
+    for _, second in ipairs(timing.seconds) do
       if second < (lowestSecond or 999999) and second > seconds then
         nextTiming = timing
         lowestSecond = second
@@ -31,7 +31,7 @@ function SenderOverlay.GetNextTiming(timer, seconds)
 end
 
 function SenderOverlay.UpdateFrame(encounter, options)
-  local overlayText = text
+  local overlayText
 
   if encounter then
     -- Set Header to encounter name
@@ -42,7 +42,7 @@ function SenderOverlay.UpdateFrame(encounter, options)
     if not PRT.TableUtils.IsEmpty(encounter.Timers) then
       local timerStringComplete = ""
 
-      for i, timer in ipairs(encounter.Timers) do
+      for _, timer in ipairs(encounter.Timers) do
         local timerString = ""
 
         if timer.enabled or (not timer.enabled and not options.hideDisabledTriggers) then
@@ -53,7 +53,7 @@ function SenderOverlay.UpdateFrame(encounter, options)
             local timeIntoTimerString = PRT.SecondsToClock(timeIntoTimer)
             timerString = timerString.." ("..PRT.ColoredString(timeIntoTimerString, SenderOverlay.timerColor)..")"
 
-            local nextInSeconds, nextTiming = SenderOverlay.GetNextTiming(timer, timeIntoTimer)
+            local nextInSeconds = SenderOverlay.GetNextTiming(timer, timeIntoTimer)
 
             if nextInSeconds then
               local nextDelta = PRT.Round(nextInSeconds - timeIntoTimer)
@@ -79,7 +79,7 @@ function SenderOverlay.UpdateFrame(encounter, options)
     if not PRT.TableUtils.IsEmpty(encounter.Rotations) then
       local rotationStringComplete = ""
 
-      for i, rotation in ipairs(encounter.Rotations) do
+      for _, rotation in ipairs(encounter.Rotations) do
         local rotationString = ""
 
         if rotation.enabled or (not rotation.enabled and not options.hideDisabledTriggers) then

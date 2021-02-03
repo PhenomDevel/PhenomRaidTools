@@ -38,7 +38,7 @@ function Core.FrameExists(text)
 end
 
 function Core.CloseAllOpenFrames()
-  for id, frame in pairs(Core.openFrames) do
+  for _, frame in pairs(Core.openFrames) do
     frame:Hide()
   end
 
@@ -96,23 +96,7 @@ function Core.GeneratePercentagesTree(percentages)
     if getn(percentages) > 0 then
       PRT.SortTableByName(percentages)
       t.children = children
-      for i, percentage in ipairs(percentages) do
-        tinsert(children, Core.GeneratePercentageTree(percentage))
-      end
-    end
-  end
-
-  return t
-end
-
-function Core.GenerateCustomPlaceholderTree(placeholders)
-  local children = {}
-
-  if placeholders then
-    if getn(placeholders) > 0 then
-      PRT.SortTableByName(placeholders)
-      t.children = children
-      for i, placeholder in ipairs(placeholders) do
+      for _, percentage in ipairs(percentages) do
         tinsert(children, Core.GeneratePercentageTree(percentage))
       end
     end
@@ -170,7 +154,7 @@ function Core.GenerateRotationsTree(rotations)
     if getn(rotations) > 0 then
       PRT.SortTableByName(rotations)
       t.children = children
-      for i, rotation in ipairs(rotations) do
+      for _, rotation in ipairs(rotations) do
         tinsert(children, Core.GenerateRotationTree(rotation))
       end
     end
@@ -207,7 +191,7 @@ function Core.GenerateTimersTree(timers)
     if getn(timers) > 0 then
       PRT.SortTableByName(timers)
       t.children = children
-      for i, timer in ipairs(timers) do
+      for _, timer in ipairs(timers) do
         tinsert(children, Core.GenerateTimerTree(timer))
       end
     end
@@ -216,8 +200,7 @@ function Core.GenerateTimersTree(timers)
   return t
 end
 
-function Core.GenerateCustomPlaceholdersTree(placeholders)
-  local children = {}
+function Core.GenerateCustomPlaceholdersTree()
   local t = {
     value = "customPlaceholders",
     text = L["treeCustomPlaceholder"],
@@ -232,7 +215,6 @@ function Core.GenerateEncounterTree(encounter)
   -- Ensure that encounter has all trigger tables!
   PRT.EnsureEncounterTrigger(encounter)
 
-  local children = {}
   local t = {
     value = encounter.id,
     text = Core.DisabledText(encounter.name, encounter.enabled),
@@ -241,7 +223,7 @@ function Core.GenerateEncounterTree(encounter)
       Core.GenerateRotationsTree(encounter.Rotations),
       Core.GenerateHealthPercentagesTree(encounter.HealthPercentages),
       Core.GeneratePowerPercentagesTree(encounter.PowerPercentages),
-      Core.GenerateCustomPlaceholdersTree(encounter.customPlaceholders)
+      Core.GenerateCustomPlaceholdersTree()
     }
   }
 
@@ -257,7 +239,7 @@ function Core.GenerateEncountersTree(encounters)
     children = children
   }
   PRT.SortTableByName(encounters)
-  for i, encounter in ipairs(encounters) do
+  for _, encounter in ipairs(encounters) do
     tinsert(children, Core.GenerateEncounterTree(encounter))
   end
 
@@ -290,7 +272,7 @@ function Core.OnGroupSelected(container, key, profile)
   local mainKey, encounterID, triggerType, triggerName = strsplit("\001", key)
 
   if encounterID then
-    local idx, selectedEncounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
+    local _, selectedEncounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
     PRT.currentEncounter = {}
     PRT.currentEncounter.encounter = selectedEncounter
   end
@@ -383,7 +365,7 @@ function Core.CreateMainWindowContent(profile)
   treeGroup:SetTreeWidth(600)
   PRT.mainWindowContent = treeGroup
   treeGroup:SetCallback("OnGroupSelected",
-    function(widget, event, key)
+    function(_, _, key)
       treeGroup.selectedValue = key
       Core.OnGroupSelected(treeContentScrollFrame, key, profile)
     end)
