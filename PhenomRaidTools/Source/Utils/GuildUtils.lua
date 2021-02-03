@@ -12,16 +12,16 @@ local GetGuildInfo, GuildControlGetNumRanks, GuildControlGetRankName = GetGuildI
 -- Guild Utils
 
 GuildUtils.GetGuildRanksTable = function(unitID)
-   local guildRanks = {}
-   
-   if GetGuildInfo(unitID) then
-      local rankCount = GuildControlGetNumRanks()
+  local guildRanks = {}
 
-      for i=1, rankCount do 
-         local rankName = GuildControlGetRankName(i)
-         guildRanks[i] = rankName
-      end      
-   end
+  if GetGuildInfo(unitID) then
+    local rankCount = GuildControlGetNumRanks()
 
-   return guildRanks
+    for i=1, rankCount do
+      local rankName = GuildControlGetRankName(i)
+      guildRanks[i] = rankName
+    end
+  end
+
+  return guildRanks
 end

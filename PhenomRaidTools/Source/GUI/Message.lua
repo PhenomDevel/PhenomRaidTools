@@ -1,76 +1,76 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 local Message = {
-    defaultTargets = {
-        "$me",
-        "ALL",
-        "HEALER",
-        "TANKS",
-        "DAMAGER"
-    }
+  defaultTargets = {
+    "$me",
+    "ALL",
+    "HEALER",
+    "TANKS",
+    "DAMAGER"
+  }
 }
 
 local Cooldowns = {
-	externals = {
-		33206, -- Pain Suppression
-		47788, -- Guardian Spirit
+  externals = {
+    33206, -- Pain Suppression
+    47788, -- Guardian Spirit
 
-		102342, -- Iron Bark
+    102342, -- Iron Bark
 
-		6940, -- Blessing of Sacrifice
-		1022, -- Blessing of Protection
-		204018, -- Blessing of Spellwarding
+    6940, -- Blessing of Sacrifice
+    1022, -- Blessing of Protection
+    204018, -- Blessing of Spellwarding
 
-		116849, -- Life Cocoon
-	},
-	raidHeal = {
-		64843, -- Divine Hymn
-		265202, -- Holy Word: Salvation
+    116849, -- Life Cocoon
+  },
+  raidHeal = {
+    64843, -- Divine Hymn
+    265202, -- Holy Word: Salvation
 
-		740, -- Tranquility
+    740, -- Tranquility
 
-		108280, -- Healing Tide Totem
+    108280, -- Healing Tide Totem
 
-		115310, -- Revival
+    115310, -- Revival
 
-		31884, -- Wings
+    31884, -- Wings
 
-		15286, -- Embrace
+    15286, -- Embrace
 
-		33891, -- Tree
+    33891, -- Tree
 
-		197721, -- Flourish
-	},
-	raidDamageReduction = {
-		62618, -- Power Word: Barrier
+    197721, -- Flourish
+  },
+  raidDamageReduction = {
+    62618, -- Power Word: Barrier
 
-		98008, -- Spirit Link Totem
+    98008, -- Spirit Link Totem
 
-		31821, -- Aura Mastery
+    31821, -- Aura Mastery
 
-		320420, -- Darkness
+    320420, -- Darkness
 
-		51052, -- AMC
-	},
-	utility = {
-		192077, -- Windrush Totem
-		
-		106898, -- Stampeding Roar
+    51052, -- AMC
+  },
+  utility = {
+    192077, -- Windrush Totem
 
-		97462, -- Rallying Cry
+    106898, -- Stampeding Roar
 
-		16191, -- Mana Tide
+    97462, -- Rallying Cry
 
-		64901, -- Symbol of Hope
-	},
-	immunities = {
-		31224, -- Cloak of Shadows
-		204018, -- Blessing of Spellwarding
-		642, -- Divine Shield
-		45438, -- Iceblock
-		186265, -- Turtle
-		196555, -- Netherwalk
-	}
+    16191, -- Mana Tide
+
+    64901, -- Symbol of Hope
+  },
+  immunities = {
+    31224, -- Cloak of Shadows
+    204018, -- Blessing of Spellwarding
+    642, -- Divine Shield
+    45438, -- Iceblock
+    186265, -- Turtle
+    196555, -- Netherwalk
+  }
 }
 
 local cooldownIconSize = 20
@@ -80,103 +80,103 @@ local cooldownIconSize = 20
 -- Local Helper
 
 Message.TargetsPreviewString = function(targets)
-	if targets then
-		local previewNames = {}
+  if targets then
+    local previewNames = {}
 
-		  for i, target in ipairs(targets) do
-			local name = PRT.ReplacePlayerNameTokens(target)
-			local names = {strsplit(",", name)}
-			
-			for i, name in ipairs(names) do
-				local trimmedName = strtrim(name, " ")
-				local coloredName = PRT.ClassColoredName(trimmedName)
+    for i, target in ipairs(targets) do
+      local name = PRT.ReplacePlayerNameTokens(target)
+      local names = {strsplit(",", name)}
 
-				tinsert(previewNames, coloredName)
-			end
-		end
+      for i, name in ipairs(names) do
+        local trimmedName = strtrim(name, " ")
+        local coloredName = PRT.ClassColoredName(trimmedName)
 
-		return strjoin(", ", unpack(previewNames))
-	else
-		return ""
-	end
+        tinsert(previewNames, coloredName)
+      end
+    end
+
+    return strjoin(", ", unpack(previewNames))
+  else
+    return ""
+  end
 end
 
 Message.ColoredRaidPlayerNames = function()
-	local playerNames = {}
+  local playerNames = {}
 
-	for i, name in ipairs(PRT.PartyNames(false)) do
-		tinsert(playerNames, { id = name, name = PRT.ClassColoredName(name)})
-	end
+  for i, name in ipairs(PRT.PartyNames(false)) do
+    tinsert(playerNames, { id = name, name = PRT.ClassColoredName(name)})
+  end
 
-	return playerNames
+  return playerNames
 end
 
 Message.GenerateRaidRosterDropdownItems = function()
-	local raidRosterItems = {}
-	
-	-- Add Raid Roster entries
-	for k, v in pairs(PRT.db.profile.raidRoster) do
-		local name = PRT.ClassColoredName(v)
-		
-		name = "$"..k.." ("..name..")"
+  local raidRosterItems = {}
 
-		tinsert(raidRosterItems, { id = "$"..k , name = name})
-	end
+  -- Add Raid Roster entries
+  for k, v in pairs(PRT.db.profile.raidRoster) do
+    local name = PRT.ClassColoredName(v)
 
-	-- Add Custom Encounter Placeholder
-	-- Hacky because we do not have the encounter here...
-	if PRT.currentEncounter.encounter then
-		if PRT.currentEncounter.encounter.CustomPlaceholders then
-			for i, customEncounterPlaceholder in ipairs(PRT.currentEncounter.encounter.CustomPlaceholders) do
-				local coloredNames = {}
+    name = "$"..k.." ("..name..")"
 
-				for nameIdx, name in ipairs(customEncounterPlaceholder.names) do 
-					tinsert(coloredNames, PRT.ClassColoredName(name))
-				end
-		
-				local name = strjoin(", ", unpack(coloredNames))
-				name = "$"..customEncounterPlaceholder.name.." ("..name..")"
-				tinsert(raidRosterItems, { id = "$"..customEncounterPlaceholder.name , name = name})
-			end
-		end
-	end
+    tinsert(raidRosterItems, { id = "$"..k , name = name})
+  end
 
-	-- Add Custom Placeholder
-	for i, customPlaceholder in ipairs(PRT.db.profile.customPlaceholders) do
-		local coloredNames = {}
+  -- Add Custom Encounter Placeholder
+  -- Hacky because we do not have the encounter here...
+  if PRT.currentEncounter.encounter then
+    if PRT.currentEncounter.encounter.CustomPlaceholders then
+      for i, customEncounterPlaceholder in ipairs(PRT.currentEncounter.encounter.CustomPlaceholders) do
+        local coloredNames = {}
 
-		for nameIdx, name in ipairs(customPlaceholder.names) do 
-			tinsert(coloredNames, PRT.ClassColoredName(name))
-		end
+        for nameIdx, name in ipairs(customEncounterPlaceholder.names) do
+          tinsert(coloredNames, PRT.ClassColoredName(name))
+        end
 
-		local name = strjoin(", ", unpack(coloredNames))
-		name = "$"..customPlaceholder.name.." ("..name..")"
-		tinsert(raidRosterItems, { id = "$"..customPlaceholder.name , name = name})
-	end
+        local name = strjoin(", ", unpack(coloredNames))
+        name = "$"..customEncounterPlaceholder.name.." ("..name..")"
+        tinsert(raidRosterItems, { id = "$"..customEncounterPlaceholder.name , name = name})
+      end
+    end
+  end
 
-	-- Add groups
-	local groupItems = {}
-	for i = 1, 8, 1 do  
-		local identifier = "$group"..i
-		if not tContains(groupItems, identifier) then
-			tinsert(groupItems, identifier)
-		end
-	end
-	
-	for i, v in ipairs(groupItems) do
-		tinsert(raidRosterItems, { id = v, name = v})
-	end
+  -- Add Custom Placeholder
+  for i, customPlaceholder in ipairs(PRT.db.profile.customPlaceholders) do
+    local coloredNames = {}
 
-	-- Add default targets (HEALER, TANK etc.)
-	for i, name in ipairs(Message.defaultTargets) do
-		tinsert(raidRosterItems, { id = name, name = name})
-	end
+    for nameIdx, name in ipairs(customPlaceholder.names) do
+      tinsert(coloredNames, PRT.ClassColoredName(name))
+    end
 
-	tinsert(raidRosterItems, { id = "$target", name = "$target"})
-	
-	raidRosterItems = table.mergecopy(raidRosterItems, Message.ColoredRaidPlayerNames())
-	PRT.SortTableByName(raidRosterItems)
-	return raidRosterItems
+    local name = strjoin(", ", unpack(coloredNames))
+    name = "$"..customPlaceholder.name.." ("..name..")"
+    tinsert(raidRosterItems, { id = "$"..customPlaceholder.name , name = name})
+  end
+
+  -- Add groups
+  local groupItems = {}
+  for i = 1, 8, 1 do
+    local identifier = "$group"..i
+    if not tContains(groupItems, identifier) then
+      tinsert(groupItems, identifier)
+    end
+  end
+
+  for i, v in ipairs(groupItems) do
+    tinsert(raidRosterItems, { id = v, name = v})
+  end
+
+  -- Add default targets (HEALER, TANK etc.)
+  for i, name in ipairs(Message.defaultTargets) do
+    tinsert(raidRosterItems, { id = name, name = name})
+  end
+
+  tinsert(raidRosterItems, { id = "$target", name = "$target"})
+
+  raidRosterItems = table.mergecopy(raidRosterItems, Message.ColoredRaidPlayerNames())
+  PRT.SortTableByName(raidRosterItems)
+  return raidRosterItems
 end
 
 
@@ -184,132 +184,132 @@ end
 -- Public API
 
 PRT.MessageWidget = function (message, container)
-	local targetsString = strjoin(", ", unpack(message.targets))
-	local targetsPreviewString = Message.TargetsPreviewString(message.targets)
-	local raidRosterItems = Message.GenerateRaidRosterDropdownItems()	
-	
-	local targetsEditBox = PRT.EditBox("messageTargets", targetsString, true)	
-	targetsEditBox:SetWidth(500)
+  local targetsString = strjoin(", ", unpack(message.targets))
+  local targetsPreviewString = Message.TargetsPreviewString(message.targets)
+  local raidRosterItems = Message.GenerateRaidRosterDropdownItems()
 
-	local targetsPreviewLabel = PRT.Label(L["messagePreview"]..PRT.PrepareMessageForDisplay(targetsPreviewString))
-	targetsPreviewLabel:SetWidth(500)
+  local targetsEditBox = PRT.EditBox("messageTargets", targetsString, true)
+  targetsEditBox:SetWidth(500)
 
-	local raidRosterDropdown = PRT.Dropdown("messageRaidRosterAddDropdown", raidRosterItems)
-	raidRosterDropdown:SetWidth(500)
+  local targetsPreviewLabel = PRT.Label(L["messagePreview"]..PRT.PrepareMessageForDisplay(targetsPreviewString))
+  targetsPreviewLabel:SetWidth(500)
 
-	local soundSelect = PRT.SoundSelect("messageSound", (message.soundFileName or L["messageStandardSound"]))	
-	soundSelect:SetCallback("OnValueChanged", 
-		function(widget, event, value)
-			local path = AceGUIWidgetLSMlists.sound[value]
-			message.soundFile = path
-			message.soundFileName = value
-			widget:SetText(value)
+  local raidRosterDropdown = PRT.Dropdown("messageRaidRosterAddDropdown", raidRosterItems)
+  raidRosterDropdown:SetWidth(500)
 
-			if path then
-				PlaySoundFile(path, "Master")
-			end
-		end)
+  local soundSelect = PRT.SoundSelect("messageSound", (message.soundFileName or L["messageStandardSound"]))
+  soundSelect:SetCallback("OnValueChanged",
+    function(widget, event, value)
+      local path = AceGUIWidgetLSMlists.sound[value]
+      message.soundFile = path
+      message.soundFileName = value
+      widget:SetText(value)
 
-	local useCustomSoundCheckbox = PRT.CheckBox("messageUseCustomSound", message.useCustomSound)
-	useCustomSoundCheckbox:SetCallback("OnValueChanged", 
-		function(widget)
-			local value = widget:GetValue()
-			message.useCustomSound = value
-			PRT.ReSelectTab(container)
-		end)
+      if path then
+        PlaySoundFile(path, "Master")
+      end
+    end)
 
-	targetsEditBox:SetCallback("OnEnterPressed", 
-		function(widget) 
-			local text = widget:GetText()
-			local targets = PRT.StringUtils.SplitToTable(text)
-			message.targets = targets
+  local useCustomSoundCheckbox = PRT.CheckBox("messageUseCustomSound", message.useCustomSound)
+  useCustomSoundCheckbox:SetCallback("OnValueChanged",
+    function(widget)
+      local value = widget:GetValue()
+      message.useCustomSound = value
+      PRT.ReSelectTab(container)
+    end)
 
-			targetsPreviewLabel:SetText(L["messagePreview"]..PRT.PrepareMessageForDisplay(Message.TargetsPreviewString(message.targets)))
-			widget:ClearFocus()
-		end) 
-				
-	raidRosterDropdown:SetCallback("OnValueChanged", 
-		function(widget) 	
-			tinsert(message.targets, widget:GetValue())	
-			targetsEditBox:SetText(strjoin(", ", unpack(message.targets)))
-			targetsPreviewLabel:SetText(L["messagePreview"]..PRT.PrepareMessageForDisplay(Message.TargetsPreviewString(message.targets)))
-			widget:SetValue(nil)
-		end)    
-		
-	local messagePreviewLabel = PRT.Label(L["messagePreview"]..PRT.PrepareMessageForDisplay(message.message), 16)	
-	messagePreviewLabel:SetWidth(500)
-	local messageEditBox = PRT.EditBox("messageMessage", message.message, true)		
-	messageEditBox:SetWidth(500)
-	messageEditBox:SetCallback("OnEnterPressed", 
-		function(widget) 
-			local text = widget:GetText() 
-			message.message = text
-			widget:ClearFocus()
-			messagePreviewLabel:SetText(L["messagePreview"]..PRT.PrepareMessageForDisplay(message.message))
-		end)
+  targetsEditBox:SetCallback("OnEnterPressed",
+    function(widget)
+      local text = widget:GetText()
+      local targets = PRT.StringUtils.SplitToTable(text)
+      message.targets = targets
 
+      targetsPreviewLabel:SetText(L["messagePreview"]..PRT.PrepareMessageForDisplay(Message.TargetsPreviewString(message.targets)))
+      widget:ClearFocus()
+    end)
 
-	local delaySlider = PRT.Slider("messageDelay", message.delay, true)	
-	delaySlider:SetCallback("OnValueChanged", 
-		function(widget)
-			message.delay = tonumber(widget:GetValue()) 
-		end)
+  raidRosterDropdown:SetCallback("OnValueChanged",
+    function(widget)
+      tinsert(message.targets, widget:GetValue())
+      targetsEditBox:SetText(strjoin(", ", unpack(message.targets)))
+      targetsPreviewLabel:SetText(L["messagePreview"]..PRT.PrepareMessageForDisplay(Message.TargetsPreviewString(message.targets)))
+      widget:SetValue(nil)
+    end)
 
-	local durationSlider = PRT.Slider("messageDuration", message.duration, true)	
-	durationSlider:SetSliderValues(0, 60, 0.5)
-	durationSlider:SetCallback("OnValueChanged", 
-		function(widget)
-			message.duration = tonumber(widget:GetValue()) 
-		end)
-
-	local targetOverlayDropdownItems = {}
-	for i, overlay in ipairs(PRT.db.profile.overlay.receivers) do
-		tinsert(targetOverlayDropdownItems, { id = overlay.id, name = overlay.id..": "..overlay.label})
-	end
-	
-	local targetOverlayDropdown = PRT.Dropdown("messageTargetOverlay", targetOverlayDropdownItems, (message.targetOverlay or 1))
-	targetOverlayDropdown:SetCallback("OnValueChanged", 
-	function(widget) 	
-		message.targetOverlay = widget:GetValue()
-	end)  
+  local messagePreviewLabel = PRT.Label(L["messagePreview"]..PRT.PrepareMessageForDisplay(message.message), 16)
+  messagePreviewLabel:SetWidth(500)
+  local messageEditBox = PRT.EditBox("messageMessage", message.message, true)
+  messageEditBox:SetWidth(500)
+  messageEditBox:SetCallback("OnEnterPressed",
+    function(widget)
+      local text = widget:GetText()
+      message.message = text
+      widget:ClearFocus()
+      messagePreviewLabel:SetText(L["messagePreview"]..PRT.PrepareMessageForDisplay(message.message))
+    end)
 
 
-	container:AddChild(targetsEditBox)
-	container:AddChild(targetsPreviewLabel)	
-	container:AddChild(raidRosterDropdown)		
+  local delaySlider = PRT.Slider("messageDelay", message.delay, true)
+  delaySlider:SetCallback("OnValueChanged",
+    function(widget)
+      message.delay = tonumber(widget:GetValue())
+    end)
 
-	container:AddChild(messageEditBox)
-	container:AddChild(messagePreviewLabel)
+  local durationSlider = PRT.Slider("messageDuration", message.duration, true)
+  durationSlider:SetSliderValues(0, 60, 0.5)
+  durationSlider:SetCallback("OnValueChanged",
+    function(widget)
+      message.duration = tonumber(widget:GetValue())
+    end)
 
-	for k, cooldownGroup in pairs(Cooldowns) do
-		local cooldownIconsGroup = PRT.SimpleGroup()
-		cooldownIconsGroup:SetLayout("Flow")
+  local targetOverlayDropdownItems = {}
+  for i, overlay in ipairs(PRT.db.profile.overlay.receivers) do
+    tinsert(targetOverlayDropdownItems, { id = overlay.id, name = overlay.id..": "..overlay.label})
+  end
 
-		for i, spellID in ipairs(cooldownGroup) do 
-			local name, _, icon = GetSpellInfo(spellID)
-			local spellIcon = PRT.Icon(icon, spellID)
-			spellIcon:SetHeight(cooldownIconSize + 4)	
-			spellIcon:SetWidth(cooldownIconSize + 4)	
-			spellIcon:SetImageSize(cooldownIconSize, cooldownIconSize)
-	
-			spellIcon:SetCallback("OnClick", 
-				function(widget)
-					message.message = message.message.."{spell:"..spellID.."}"
-					messageEditBox:SetText(message.message)
-					messagePreviewLabel:SetText(L["messagePreview"]..PRT.PrepareMessageForDisplay(message.message))
-				end)	
-			cooldownIconsGroup:AddChild(spellIcon)
-		end
-		
-		container:AddChild(cooldownIconsGroup)
-	end
+  local targetOverlayDropdown = PRT.Dropdown("messageTargetOverlay", targetOverlayDropdownItems, (message.targetOverlay or 1))
+  targetOverlayDropdown:SetCallback("OnValueChanged",
+    function(widget)
+      message.targetOverlay = widget:GetValue()
+    end)
 
-	container:AddChild(delaySlider)
-	container:AddChild(durationSlider)	
-	container:AddChild(targetOverlayDropdown)
-	container:AddChild(useCustomSoundCheckbox)	
 
-	if message.useCustomSound then
-		container:AddChild(soundSelect)
-	end	
+  container:AddChild(targetsEditBox)
+  container:AddChild(targetsPreviewLabel)
+  container:AddChild(raidRosterDropdown)
+
+  container:AddChild(messageEditBox)
+  container:AddChild(messagePreviewLabel)
+
+  for k, cooldownGroup in pairs(Cooldowns) do
+    local cooldownIconsGroup = PRT.SimpleGroup()
+    cooldownIconsGroup:SetLayout("Flow")
+
+    for i, spellID in ipairs(cooldownGroup) do
+      local name, _, icon = GetSpellInfo(spellID)
+      local spellIcon = PRT.Icon(icon, spellID)
+      spellIcon:SetHeight(cooldownIconSize + 4)
+      spellIcon:SetWidth(cooldownIconSize + 4)
+      spellIcon:SetImageSize(cooldownIconSize, cooldownIconSize)
+
+      spellIcon:SetCallback("OnClick",
+        function(widget)
+          message.message = message.message.."{spell:"..spellID.."}"
+          messageEditBox:SetText(message.message)
+          messagePreviewLabel:SetText(L["messagePreview"]..PRT.PrepareMessageForDisplay(message.message))
+        end)
+      cooldownIconsGroup:AddChild(spellIcon)
+    end
+
+    container:AddChild(cooldownIconsGroup)
+  end
+
+  container:AddChild(delaySlider)
+  container:AddChild(durationSlider)
+  container:AddChild(targetOverlayDropdown)
+  container:AddChild(useCustomSoundCheckbox)
+
+  if message.useCustomSound then
+    container:AddChild(soundSelect)
+  end
 end
