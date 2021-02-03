@@ -1,12 +1,10 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
-local ImportExport = {}
-
 
 -------------------------------------------------------------------------------
 -- Public API
 
-PRT.CreateImportFrame = function(successFunction)
+function PRT.CreateImportFrame(successFunction)
   if not PRT.Core.FrameExists("importFrame") then
     local importFrame = PRT.Frame("importFrame")
     importFrame:SetLayout("Fill")
@@ -19,32 +17,33 @@ PRT.CreateImportFrame = function(successFunction)
 
     importFrame:AddChild(importDataBox)
 
-    importFrame:SetCallback("OnClose", function(widget)
-      local text = importDataBox:GetText()
-      local worked, t = PRT.StringToTable(text)
+    importFrame:SetCallback("OnClose",
+      function()
+        local text = importDataBox:GetText()
+        local worked, t = PRT.StringToTable(text)
 
-      if worked == true then
-        successFunction(t)
-      else
-        if not (text == "") then
-          PRT.Error("Import was not successfull.")
+        if worked == true then
+          successFunction(t)
+        else
+          if not (text == "") then
+            PRT.Error("Import was not successfull.")
+          end
         end
-      end
 
-      PRT.Core.UnregisterFrame("importFrame")
-    end)
+        PRT.Core.UnregisterFrame("importFrame")
+      end)
 
     importFrame:Show()
     PRT.Core.RegisterFrame("importFrame", importFrame)
   end
 end
 
-PRT.CreateExportFrame = function(t)
+function PRT.CreateExportFrame(t)
   if not PRT.Core.FrameExists("exportFrame") then
     local exportFrame = PRT.Frame("exportFrame")
     exportFrame:SetLayout("Fill")
     exportFrame:SetCallback("OnClose",
-      function(widget)
+      function()
         PRT.Core.UnregisterFrame("exportFrame")
       end)
 

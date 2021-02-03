@@ -21,7 +21,7 @@ local Percentage = {
 -------------------------------------------------------------------------------
 -- Local Helper
 
-Percentage.PercentageEntryWidget = function(entry, container, key, entries)
+function Percentage.PercentageEntryWidget(entry, container, key, entries)
   local percentageEntryOptionsGroup = PRT.InlineGroup("percentageEntryOptionsHeading")
 
   local operatorDropdown = PRT.Dropdown("percentageEntryOperatorDropdown", Percentage.operatorValues, entry.operator)
@@ -67,7 +67,7 @@ Percentage.PercentageEntryWidget = function(entry, container, key, entries)
   container:AddChild(cloneButton)
 end
 
-Percentage.PercentageWidget = function(percentage, container, deleteButton, cloneButton)
+function Percentage.PercentageWidget(percentage, container, deleteButton, cloneButton)
   local percentageOptionsGroup = PRT.InlineGroup("percentageOptionsHeading")
 
   local enabledCheckbox = PRT.CheckBox("percentageEnabled", percentage.enabled)
@@ -152,7 +152,7 @@ end
 -------------------------------------------------------------------------------
 -- Public API Power Percentage
 
-PRT.AddPowerPercentageOptions = function(container, profile, encounterID)
+function PRT.AddPowerPercentageOptions(container, profile, encounterID)
   local idx, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
   local percentages = encounter.PowerPercentages
 
@@ -187,7 +187,7 @@ PRT.AddPowerPercentageOptions = function(container, profile, encounterID)
   container:AddChild(percentageOptionsGroup)
 end
 
-PRT.AddPowerPercentageWidget = function(container, profile, encounterID, triggerName)
+function PRT.AddPowerPercentageWidget(container, profile, encounterID, triggerName)
   local _, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)
   local percentages = encounter.PowerPercentages
   local percentageIndex, percentage = PRT.FilterTableByName(percentages, triggerName)
@@ -201,7 +201,7 @@ end
 -------------------------------------------------------------------------------
 -- Public API Health Percentage
 
-PRT.AddHealthPercentageOptions = function(container, profile, encounterID)
+function PRT.AddHealthPercentageOptions(container, profile, encounterID)
   local idx, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
   local percentages = encounter.HealthPercentages
 
@@ -237,7 +237,7 @@ PRT.AddHealthPercentageOptions = function(container, profile, encounterID)
   container:AddChild(percentageOptionsGroup)
 end
 
-PRT.AddHealthPercentageWidget = function(container, profile, encounterID, triggerName)
+function PRT.AddHealthPercentageWidget(container, profile, encounterID, triggerName)
   local _, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)
   local percentages = encounter.HealthPercentages
   local percentageIndex, percentage = PRT.FilterTableByName(percentages, triggerName)

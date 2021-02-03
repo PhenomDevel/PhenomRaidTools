@@ -1,12 +1,10 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
-local CustomPlaceholder = {}
-
 
 -------------------------------------------------------------------------------
 -- Local Helper
 
-local newCustomPlaceholder = function()
+local function newCustomPlaceholder()
   return {
     type = "player",
     name = "Placeholder"..random(0,100000),
@@ -16,7 +14,7 @@ local newCustomPlaceholder = function()
   }
 end
 
-local addCustomPlaceholderWidget = function(customPlaceholder, container, tabKey)
+local function addCustomPlaceholderWidget(customPlaceholder, container, _)
   local placeholderTypesDropdownItems = {
     { id = "group", name = L["optionsCustomPlaceholderTypeGroup"]},
     { id = "player", name = L["optionsCustomPlaceholderTypePlayer"]}
@@ -29,8 +27,8 @@ local addCustomPlaceholderWidget = function(customPlaceholder, container, tabKey
       customPlaceholder.type = text
     end)
 
-  local nameEditBox = PRT.EditBox("optionsCustomPlaceholderName", customPlaceholder.name, true)
-  nameEditBox:SetCallback("OnEnterPressed",
+  local placeholderNameEditBox = PRT.EditBox("optionsCustomPlaceholderName", customPlaceholder.name, true)
+  placeholderNameEditBox:SetCallback("OnEnterPressed",
     function(widget)
       local text = widget:GetText()
       local cleanedText = string.gsub(text, " ", "")
@@ -42,7 +40,7 @@ local addCustomPlaceholderWidget = function(customPlaceholder, container, tabKey
   local clearEmptyNamesButton = PRT.Button("optionsCustomPlaceholderRemoveEmptyNames")
   clearEmptyNamesButton:SetCallback("OnClick",
     function()
-      PRT.TableUtils.Remove(customPlaceholder.names, StringUtils.IsEmpty)
+      PRT.TableUtils.Remove(customPlaceholder.names, PRT.StringUtils.IsEmpty)
       PRT.ReSelectTab(container)
     end)
 
@@ -67,16 +65,16 @@ local addCustomPlaceholderWidget = function(customPlaceholder, container, tabKey
     namesGroup:AddChild(nameEditBox)
   end
 
-  container:AddChild(nameEditBox)
+  container:AddChild(placeholderNameEditBox)
   container:AddChild(placeholderTypeSelect)
   container:AddChild(namesGroup)
   container:AddChild(addNameButton)
   container:AddChild(clearEmptyNamesButton)
 end
 
-local importSuccess = function(container, customPlaceholders, importedCustomPlaceholders)
+local function importSuccess(container, customPlaceholders, importedCustomPlaceholders)
   if customPlaceholders then
-    for i, customPlaceholder in ipairs(importedCustomPlaceholders) do
+    for _, customPlaceholder in ipairs(importedCustomPlaceholders) do
       tinsert(customPlaceholders, customPlaceholder)
     end
     container:ReleaseChildren()
@@ -91,13 +89,13 @@ end
 -------------------------------------------------------------------------------
 -- Public API
 
-PRT.AddCustomPlaceholdersTabGroup = function(container, customPlaceholders)
+function PRT.AddCustomPlaceholdersTabGroup(container, customPlaceholders)
   local placeholderTabs = PRT.TableToTabs(customPlaceholders, true)
   local placeholdersTabGroup = PRT.TabGroup("optionsCustomPlaceholdersHeading", placeholderTabs)
   placeholdersTabGroup:SetTitle(nil)
   placeholdersTabGroup:SetLayout("Flow")
   placeholdersTabGroup:SetCallback("OnGroupSelected",
-    function(widget, event, key)
+    function(widget, _, key)
       PRT.TabGroupSelected(widget, customPlaceholders, key, addCustomPlaceholderWidget , newCustomPlaceholder, true, "optionsCustomPlaceholderDeleteButton")
     end)
 
@@ -105,7 +103,7 @@ PRT.AddCustomPlaceholdersTabGroup = function(container, customPlaceholders)
   container:AddChild(placeholdersTabGroup)
 end
 
-PRT.AddCustomPlaceholderDescription = function(container)
+function PRT.AddCustomPlaceholderDescription(container)
   local description = PRT.Label("optionsCustomPlaceholdersDescription", 16)
   local subDescription = PRT.Label("optionsCustomPlaceholdersSubDescription", 14)
   description:SetRelativeWidth(1)
@@ -114,7 +112,7 @@ PRT.AddCustomPlaceholderDescription = function(container)
   container:AddChild(subDescription)
 end
 
-PRT.AddCustomPlaceholdersWidget = function(container, customPlaceholders)
+function PRT.AddCustomPlaceholdersWidget(container, customPlaceholders)
   PRT.AddCustomPlaceholderDescription(container)
   local importButton = PRT.Button("importButton")
   importButton:SetCallback("OnClick",

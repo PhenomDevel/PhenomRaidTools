@@ -6,7 +6,7 @@ local Timer = {}
 -------------------------------------------------------------------------------
 -- Local Helper
 
-Timer.ParseTiming = function(timing)
+function Timer.ParseTiming(timing)
   if strmatch(timing, ":") then
     local minute, second = strsplit(":", timing)
     return tonumber(minute) * 60 + tonumber(second)
@@ -15,7 +15,7 @@ Timer.ParseTiming = function(timing)
   end
 end
 
-Timer.ComposeTimingString = function(timings)
+function Timer.ComposeTimingString(timings)
   sort(timings)
   local timingsStrings = {}
 
@@ -36,7 +36,7 @@ Timer.ComposeTimingString = function(timings)
   return strjoin(", ", unpack(timingsStrings))
 end
 
-Timer.TimingWidget = function(timing, container, key, timings)
+function Timer.TimingWidget(timing, container, key, timings)
   local timingOptionsGroup = PRT.InlineGroup("timingOptionsHeading")
   timingOptionsGroup:SetLayout("Flow")
 
@@ -104,7 +104,7 @@ Timer.TimingWidget = function(timing, container, key, timings)
   container:AddChild(cloneButton)
 end
 
-Timer.TimerWidget = function(timer, container, deleteButton, cloneButton)
+function Timer.TimerWidget(timer, container, deleteButton, cloneButton)
   local timerOptionsGroup = PRT.InlineGroup("timerOptionsHeading")
   timerOptionsGroup:SetLayout("Flow")
 
@@ -182,7 +182,7 @@ end
 -------------------------------------------------------------------------------
 -- Public API
 
-PRT.AddTimerOptionsWidgets = function(container, profile, encounterID)
+function PRT.AddTimerOptionsWidgets(container, profile, encounterID)
   local _, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
   local timers = encounter.Timers
 
@@ -218,7 +218,7 @@ PRT.AddTimerOptionsWidgets = function(container, profile, encounterID)
   container:AddChild(timerOptionsGroup)
 end
 
-PRT.AddTimerWidget = function(container, profile, encounterID, triggerName)
+function PRT.AddTimerWidget(container, profile, encounterID, triggerName)
   local _, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)
   local timers = encounter.Timers
   local timerIndex, timer = PRT.FilterTableByName(timers, triggerName)

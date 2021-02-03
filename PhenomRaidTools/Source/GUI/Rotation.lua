@@ -6,7 +6,7 @@ local Rotation = {}
 -------------------------------------------------------------------------------
 -- Local Helper
 
-Rotation.RotationEntryWidget = function(entry, container, key, entries)
+function Rotation.RotationEntryWidget(entry, container, key, entries)
   local messagesTabs = PRT.TableToTabs(entry.messages, true)
   local messagesTabGroup = PRT.TabGroup("messageHeading", messagesTabs)
   messagesTabGroup:SetLayout("List")
@@ -29,7 +29,7 @@ Rotation.RotationEntryWidget = function(entry, container, key, entries)
   container:AddChild(cloneButton)
 end
 
-Rotation.RotationWidget = function(rotation, container, deleteButton, cloneButton)
+function Rotation.RotationWidget(rotation, container, deleteButton, cloneButton)
   local rotationOptionsGroup = PRT.InlineGroup("rotationOptionsHeading")
   rotationOptionsGroup:SetLayout("Flow")
 
@@ -115,7 +115,7 @@ end
 -------------------------------------------------------------------------------
 -- Public API
 
-PRT.AddRotationOptions = function(container, profile, encounterID)
+function PRT.AddRotationOptions(container, profile, encounterID)
   local idx, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
   local rotations = encounter.Rotations
 
@@ -151,7 +151,7 @@ PRT.AddRotationOptions = function(container, profile, encounterID)
   container:AddChild(rotationOptionsGroup)
 end
 
-PRT.AddRotationWidget = function(container, profile, encounterID, triggerName)
+function PRT.AddRotationWidget(container, profile, encounterID, triggerName)
   local idx, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)
   local rotations = encounter.Rotations
   local rotationIndex, rotation = PRT.FilterTableByName(rotations, triggerName)

@@ -14,7 +14,7 @@ local UIParent, GameFontHighlightSmall = UIParent, GameFontHighlightSmall
 -------------------------------------------------------------------------------
 -- Local Helper
 
-SenderOverlay.GetNextTiming = function(timer, seconds)
+function SenderOverlay.GetNextTiming(timer, seconds)
   local nextTiming
   local lowestSecond
 
@@ -30,7 +30,7 @@ SenderOverlay.GetNextTiming = function(timer, seconds)
   return lowestSecond, nextTiming
 end
 
-SenderOverlay.UpdateFrame = function(encounter, options)
+function SenderOverlay.UpdateFrame(encounter, options)
   local overlayText = text
 
   if encounter then
@@ -112,28 +112,28 @@ SenderOverlay.UpdateFrame = function(encounter, options)
   PRT.Overlay.UpdateSize(SenderOverlay.overlayFrame, options)
 end
 
-SenderOverlay.ShowPlaceholder = function(overlayFrame, options)
+function SenderOverlay.ShowPlaceholder(overlayFrame, options)
   SenderOverlay.Show()
   overlayFrame.text:SetText("PhenomRaidTools")
   PRT.Overlay.UpdateSize(overlayFrame, options)
 end
 
-SenderOverlay.CreateOverlay = function(options)
+function SenderOverlay.CreateOverlay(options)
   SenderOverlay.overlayFrame = PRT.Overlay.CreateOverlay(options, true)
   SenderOverlay.overlayFrame.text:SetJustifyH("LEFT")
   SenderOverlay.overlayFrame:SetPoint("TOPLEFT", "UIParent", "TOPLEFT", options.left, -options.top)
   SenderOverlay.overlayFrame.text:SetFont((options.font or GameFontHighlightSmall:GetFont()), options.fontSize, "OUTLINE")
 end
 
-SenderOverlay.Hide = function()
+function SenderOverlay.Hide()
   PRT.Overlay.Hide(SenderOverlay.overlayFrame)
 end
 
-SenderOverlay.Show = function()
+function SenderOverlay.Show()
   PRT.Overlay.Show(SenderOverlay.overlayFrame)
 end
 
-SenderOverlay.Initialize = function(options)
+function SenderOverlay.Initialize(options)
   if not SenderOverlay.overlayFrame then
     PRT.Debug("Initializing sender overlay")
     SenderOverlay.CreateOverlay(options)

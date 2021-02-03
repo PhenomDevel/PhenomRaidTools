@@ -11,7 +11,7 @@ local GetGuildInfo, GuildControlGetNumRanks, GuildControlGetRankName = GetGuildI
 -------------------------------------------------------------------------------
 -- Guild Utils
 
-GuildUtils.GetGuildRanksTable = function(unitID)
+function GuildUtils.GetGuildRanksTable(unitID)
   local guildRanks = {}
 
   if GetGuildInfo(unitID) then

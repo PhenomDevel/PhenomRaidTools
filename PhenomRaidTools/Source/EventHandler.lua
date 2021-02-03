@@ -29,13 +29,14 @@ local EventHandler = {
 }
 
 -- Create local copies of API functions which we use
-local GetTime, CombatLogGetCurrentEventInfo, UnitGUID, UnitIsPlayer, GetInstanceInfo = GetTime, CombatLogGetCurrentEventInfo, UnitGUID, UnitIsPlayer, GetInstanceInfo
+local GetTime, CombatLogGetCurrentEventInfo, UnitGUID, UnitIsPlayer, GetInstanceInfo =
+  GetTime, CombatLogGetCurrentEventInfo, UnitGUID, UnitIsPlayer, GetInstanceInfo
 
 
 -------------------------------------------------------------------------------
 -- Local Helper
 
-EventHandler.StartReceiveMessages = function()
+function EventHandler.StartReceiveMessages()
   if PRT.db.profile.enabled then
     if PRT.db.profile.receiverMode then
       PRT.ReceiverOverlay.ShowAll()
@@ -48,7 +49,7 @@ EventHandler.StartReceiveMessages = function()
   end
 end
 
-EventHandler.StartEncounter = function(event, encounterID, encounterName)
+function EventHandler.StartEncounter(event, encounterID, encounterName)
   if PRT.db.profile.enabled then
     if PRT.db.profile.senderMode then
       PRT.Debug("Starting new encounter", PRT.HighlightString(encounterName),"(", PRT.HighlightString(encounterID), ")" , "|r")
@@ -82,7 +83,7 @@ EventHandler.StartEncounter = function(event, encounterID, encounterName)
   end
 end
 
-EventHandler.StopEncounter = function(event)
+function EventHandler.StopEncounter(event)
   PRT.Debug("Combat stopped.")
   if PRT.db.profile.senderMode then
     -- Send the last event before unregistering the event
@@ -117,23 +118,23 @@ end
 -------------------------------------------------------------------------------
 -- Public API
 
-PRT.RegisterEvents = function(events)
-  for i, event in ipairs(events) do
+function PRT.RegisterEvents(events)
+  for _, event in ipairs(events) do
     PRT:RegisterEvent(event)
   end
 end
 
-PRT.UnregsiterEvents = function(events)
-  for i, event in ipairs(events) do
+function PRT.UnregsiterEvents(events)
+  for _, event in ipairs(events) do
     PRT:UnregisterEvent(event)
   end
 end
 
-PRT.RegisterEssentialEvents = function()
+function PRT.RegisterEssentialEvents()
   PRT.RegisterEvents(EventHandler.essentialEvents)
 end
 
-PRT.UnregisterEssentialEvents = function()
+function PRT.UnregisterEssentialEvents()
   PRT.UnregsiterEvents(EventHandler.essentialEvents)
 end
 
@@ -185,7 +186,7 @@ end
 
 function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
   if PRT.currentEncounter and PRT.db.profile.senderMode then
-    local timestamp, combatEvent, _, sourceGUID, sourceName, _, _, targetGUID, targetName, _, _, eventSpellID,_,_, eventExtraSpellID = CombatLogGetCurrentEventInfo()
+    local _, combatEvent, _, sourceGUID, sourceName, _, _, targetGUID, targetName, _, _, eventSpellID, _, _ = CombatLogGetCurrentEventInfo()
 
     if PRT.currentEncounter.inFight then
       if PRT.currentEncounter.encounter then
@@ -231,7 +232,7 @@ function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
   end
 end
 
-PRT.AddUnitToTrackedUnits = function(unitID)
+function PRT.AddUnitToTrackedUnits(unitID)
   local unitName = GetUnitName(unitID)
   local guid = UnitGUID(unitID)
 
@@ -251,11 +252,11 @@ PRT.AddUnitToTrackedUnits = function(unitID)
   end
 end
 
-function PRT:UNIT_COMBAT(event, unitID)
+function PRT:UNIT_COMBAT(_, unitID)
   PRT.AddUnitToTrackedUnits(unitID)
 end
 
-function PRT:PLAYER_ENTERING_WORLD(event)
+function PRT:PLAYER_ENTERING_WORLD(_)
   PRT.Debug("Currently active profile", PRT.HighlightString(PRT.db:GetCurrentProfile()))
   PRT.Debug("Zone entered.")
   PRT.Debug("Will check zone/difficulty in 10 seconds to determine if addon should be loaded.")

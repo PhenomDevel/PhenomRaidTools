@@ -4,7 +4,7 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 -------------------------------------------------------------------------------
 -- Public API
 
-PRT.AddOptionWidgets = function(container, profile)
+function PRT.AddOptionWidgets(container, profile)
   local optionsTabs = {
     { value = "general", text = L["optionsTabGeneral"] },
     { value = "raidRoster", text = L["optionsTabRaidRoster"] , disabled = not profile.senderMode},

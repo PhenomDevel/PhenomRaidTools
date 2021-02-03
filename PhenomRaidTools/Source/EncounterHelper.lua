@@ -4,7 +4,7 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 -------------------------------------------------------------------------------
 -- Condition
 
-PRT.EmptyCondition = function()
+function PRT.EmptyCondition()
   return {
     event = PRT.db.profile.triggerDefaults.conditionDefaults.defaultEvent,
     spellID = nil,
@@ -17,7 +17,7 @@ end
 -------------------------------------------------------------------------------
 -- Message
 
-PRT.EmptyMessage = function()
+function PRT.EmptyMessage()
   return {
     message = PRT.db.profile.triggerDefaults.messageDefaults.defaultMessage or "TODO",
     useCustomSound = false,
@@ -32,7 +32,7 @@ end
 -------------------------------------------------------------------------------
 -- Timer
 
-PRT.EmptyTiming = function()
+function PRT.EmptyTiming()
   return {
     seconds = {1},
     offset = 0,
@@ -43,7 +43,7 @@ PRT.EmptyTiming = function()
   }
 end
 
-PRT.EmptyTimer = function()
+function PRT.EmptyTimer()
   return {
     enabled = true,
     startCondition = PRT.EmptyCondition(),
@@ -69,7 +69,7 @@ end
 -------------------------------------------------------------------------------
 -- Rotation
 
-PRT.EmptyRotationEntry = function()
+function PRT.EmptyRotationEntry()
   return {
     messages = {
       PRT.EmptyMessage()
@@ -77,7 +77,7 @@ PRT.EmptyRotationEntry = function()
   }
 end
 
-PRT.EmptyRotation = function()
+function PRT.EmptyRotation()
   return {
     enabled = true,
     triggerCondition = PRT.EmptyCondition(),
@@ -102,7 +102,7 @@ end
 -------------------------------------------------------------------------------
 -- Percentage
 
-PRT.EmptyPercentageEntry = function()
+function PRT.EmptyPercentageEntry()
   return {
     value = 50,
     operator = "equals",
@@ -112,7 +112,7 @@ PRT.EmptyPercentageEntry = function()
   }
 end
 
-PRT.EmptyPercentage = function()
+function PRT.EmptyPercentage()
   return {
     enabled = true,
     name = "Percentage Name"..random(0,100000),
@@ -135,7 +135,7 @@ end
 -------------------------------------------------------------------------------
 -- Encounter
 
-PRT.EmptyEncounter = function()
+function PRT.EmptyEncounter()
   return {
     enabled = true,
     id = random(0,100000),
@@ -157,7 +157,7 @@ PRT.EmptyEncounter = function()
   }
 end
 
-PRT.ExampleEncounter = function()
+function PRT.ExampleEncounter()
   return {
     enabled = true,
     id = 9999,

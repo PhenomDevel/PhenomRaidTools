@@ -4,7 +4,7 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 -------------------------------------------------------------------------------
 -- Private Helper
 
-local addDefaultsWidgets = function(container, t)
+local function addDefaultsWidgets(container, t)
   if t then
     for k, v in pairs(t) do
       local widget = nil
@@ -12,27 +12,27 @@ local addDefaultsWidgets = function(container, t)
       if type(v) == "boolean" then
         widget = PRT.CheckBox(k, v)
         widget:SetCallback("OnValueChanged",
-          function(widget)
+          function()
             t[k] = widget:GetValue()
           end)
       elseif type(v) == "string" then
         widget = PRT.EditBox(k, v)
         widget:SetCallback("OnEnterPressed",
-          function(widget)
+          function()
             t[k] = widget:GetText()
             widget:ClearFocus()
           end)
       elseif type(v) == "number" then
         widget = PRT.Slider(k, v)
         widget:SetCallback("OnValueChanged",
-          function(widget)
+          function()
             t[k] = widget:GetValue()
           end)
       elseif type(v) == "table" then
         widget = PRT.EditBox(k, strjoin(", ", unpack(v)), true)
         widget:SetWidth(300)
         widget:SetCallback("OnEnterPressed",
-          function(widget)
+          function()
             if widget:GetText() == "" then
               t[k] = {}
             else
@@ -53,7 +53,7 @@ end
 -------------------------------------------------------------------------------
 -- Public API
 
-PRT.AddDefaultsGroups = function(container, options)
+function PRT.AddDefaultsGroups(container, options)
   local explanationLabel = PRT.Label("optionsDefaultsExplanation", 16)
   explanationLabel:SetRelativeWidth(1)
   container:AddChild(explanationLabel)

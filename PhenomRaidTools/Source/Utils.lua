@@ -30,7 +30,7 @@ local GetRaidRosterInfo, GetUnitName, GetNumGroupMembers, UnitInParty, UnitInRai
 -------------------------------------------------------------------------------
 -- Misc
 
-PRT.MaybeAddStartCondition = function(container, trigger)
+function PRT.MaybeAddStartCondition(container, trigger)
   if trigger.hasStartCondition then
     local startConditionGroup = PRT.ConditionWidget(trigger.startCondition, "conditionStartHeading")
     startConditionGroup:SetLayout("Flow")
@@ -56,7 +56,7 @@ PRT.MaybeAddStartCondition = function(container, trigger)
   end
 end
 
-PRT.MaybeAddStopCondition = function(container, trigger)
+function PRT.MaybeAddStopCondition(container, trigger)
   if trigger.hasStopCondition then
     local stopConditionGroup = PRT.ConditionWidget(trigger.stopCondition, "conditionStopHeading")
     stopConditionGroup:SetLayout("Flow")
@@ -82,7 +82,7 @@ PRT.MaybeAddStopCondition = function(container, trigger)
   end
 end
 
-PRT.NewTriggerDeleteButton = function(container, t, idx, textID, entityName)
+function PRT.NewTriggerDeleteButton(container, t, idx, textID, entityName)
   local deleteButton = PRT.Button(textID)
   deleteButton:SetCallback("OnClick",
     function()
@@ -102,7 +102,7 @@ PRT.NewTriggerDeleteButton = function(container, t, idx, textID, entityName)
   return deleteButton
 end
 
-PRT.NewCloneButton = function(container, t, idx, textID, entityName)
+function PRT.NewCloneButton(container, t, idx, textID, entityName)
   local cloneButton = PRT.Button(textID)
 
   cloneButton:SetCallback("OnClick",
@@ -125,7 +125,7 @@ PRT.NewCloneButton = function(container, t, idx, textID, entityName)
   return cloneButton
 end
 
-PRT.ConfirmationDialog = function(text, successFn, ...)
+function PRT.ConfirmationDialog(text, successFn, ...)
   if not PRT.Core.FrameExists(text) then
     local args = {...}
     local confirmationFrame = PRT.Window("confirmationWindow")
@@ -169,12 +169,12 @@ PRT.ConfirmationDialog = function(text, successFn, ...)
   end
 end
 
-PRT.Round = function (num, decimals)
+function PRT.Round(num, decimals)
   local mult = 10^(decimals or 0)
   return math.floor(num * mult + 0.5) / mult
 end
 
-PRT.CopyTable = function(orig, copies)
+function PRT.CopyTable(orig, copies)
   copies = copies or {}
   local orig_type = type(orig)
   local copy
@@ -195,14 +195,14 @@ PRT.CopyTable = function(orig, copies)
   return copy
 end
 
-PRT.SecondsToClock = function(seconds)
+function PRT.SecondsToClock(seconds)
   local seconds = tonumber(seconds)
 
   if seconds <= 0 then
     return "00:00:00";
   else
-    mins = string.format("%02.f", math.floor(seconds / 60));
-    secs = string.format("%02.f", math.floor(seconds - mins * 60));
+    local mins = string.format("%02.f", math.floor(seconds / 60));
+    local secs = string.format("%02.f", math.floor(seconds - mins * 60));
     return mins..":"..secs
   end
 end
@@ -211,14 +211,14 @@ end
 -------------------------------------------------------------------------------
 -- Table Helper
 
-PRT.TableToString = function(t)
+function PRT.TableToString(t)
   local serialized = AceSerializer:Serialize(t)
   local compressed = LibDeflate:CompressDeflate(serialized, {level = 9})
 
   return LibDeflate:EncodeForPrint(compressed)
 end
 
-PRT.StringToTable = function(s)
+function PRT.StringToTable(s)
   if s and s ~= "" then
     local decoded = LibDeflate:DecodeForPrint(s)
     if decoded then
@@ -239,7 +239,7 @@ PRT.StringToTable = function(s)
   return nil
 end
 
-table.mergemany = function(...)
+function table.mergemany(...)
   local tNew = {}
 
   for i, t in ipairs({...}) do
@@ -251,7 +251,7 @@ table.mergemany = function(...)
   return tNew
 end
 
-table.mergecopy = function(t1, t2)
+function table.mergecopy(t1, t2)
   local t3 = {}
 
   for k,v in ipairs(t1) do
@@ -265,7 +265,7 @@ table.mergecopy = function(t1, t2)
   return t3
 end
 
-PRT.FilterEncounterTable = function(encounters, id)
+function PRT.FilterEncounterTable(encounters, id)
   local value
   if encounters then
     for i, v in ipairs(encounters) do
@@ -278,7 +278,7 @@ PRT.FilterEncounterTable = function(encounters, id)
   end
 end
 
-PRT.FilterTableByName = function(t, name)
+function PRT.FilterTableByName(t, name)
   local value
   if t then
     for i, v in ipairs(t) do
@@ -291,7 +291,7 @@ PRT.FilterTableByName = function(t, name)
   end
 end
 
-PRT.FilterTableByID = function(t, id)
+function PRT.FilterTableByID(t, id)
   local value
   if t then
     for i, v in ipairs(t) do
@@ -304,11 +304,11 @@ PRT.FilterTableByID = function(t, id)
   end
 end
 
-PRT.CompareByName = function(a, b)
+function PRT.CompareByName(a, b)
   return a.name < b.name
 end
 
-PRT.SortTableByName = function(t)
+function PRT.SortTableByName(t)
   table.sort(t, PRT.CompareByName)
 end
 
@@ -316,7 +316,7 @@ end
 -------------------------------------------------------------------------------
 -- Debug Helper
 
-PRT.PrintTable = function(prefix, t, maxRecursionDepth, recursionDepth)
+function PRT.PrintTable(prefix, t, maxRecursionDepth, recursionDepth)
   local recursionDepth = recursionDepth or 0
   local maxRecursionDepth = maxRecursionDepth or 3
   recursionDepth = recursionDepth + 1
@@ -343,25 +343,25 @@ PRT.PrintTable = function(prefix, t, maxRecursionDepth, recursionDepth)
   end
 end
 
-PRT.Info = function(...)
+function PRT.Info(...)
   if PRT.db.profile.enabled then
     PRT:Print(PRT.ColoredString("[Info]", PRT.db.profile.colors.info), ...)
   end
 end
 
-PRT.Warn = function(...)
+function PRT.Warn(...)
   if PRT.db.profile.enabled then
     PRT:Print(PRT.ColoredString("[Warn]", PRT.db.profile.colors.warn), ...)
   end
 end
 
-PRT.Error = function(...)
+function PRT.Error(...)
   if PRT.db.profile.enabled then
     PRT:Print(PRT.ColoredString("[Error]", PRT.db.profile.colors.error), ...)
   end
 end
 
-PRT.Debug = function(...)
+function PRT.Debug(...)
   if PRT.db.profile.enabled then
     if PRT.db.profile.debugMode then
       PRT:Print(PRT.ColoredString("[Debug]", PRT.db.profile.colors.debug), ...)
@@ -373,7 +373,7 @@ end
 -------------------------------------------------------------------------------
 -- Encounter Helper
 
-PRT.EnsureEncounterTrigger = function(encounter)
+function PRT.EnsureEncounterTrigger(encounter)
   if encounter then
     if not encounter.Rotations then
       encounter.Rotations = {}
@@ -397,7 +397,7 @@ end
 -------------------------------------------------------------------------------
 -- String Helper
 
-PRT.ClassColoredName = function(name)
+function PRT.ClassColoredName(name)
   if name then
     local _, _, classIndex = UnitClass(string.gsub(name, "-.*", ""))
     local color = classColors[classIndex]
@@ -414,27 +414,27 @@ PRT.ClassColoredName = function(name)
   end
 end
 
-PRT.ColoredString = function(s, color)
+function PRT.ColoredString(s, color)
   if s then
     return "|c"..(color or "FFFFFFFF")..s.."|r"
   end
 end
 
-PRT.HighlightString = function(s)
+function PRT.HighlightString(s)
   return PRT.ColoredString(s, PRT.db.profile.colors.highlight)
 end
 
-PRT.TextureString = function(id, size)
+function PRT.TextureString(id, size)
   if id then
     return "|T"..id..":"..(size or 16)..":"..(size or 16)..":0:0:64:64:6:58:6:58|t"
   end
 end
 
-PRT.ExchangeRaidMarker = function(s)
+function PRT.ExchangeRaidMarker(s)
   return string.gsub(s, "{rt([^}])}", "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%1:16|t")
 end
 
-PRT.ExchangeSpellIcons = function(s)
+function PRT.ExchangeSpellIcons(s)
   return string.gsub(s, "{spell:([^}]+)}",
     function(match)
       local _, _, texture = GetSpellInfo(tonumber(match))
@@ -442,7 +442,7 @@ PRT.ExchangeSpellIcons = function(s)
     end)
 end
 
-PRT.AddCustomPlaceholdersToPlayerNames = function(token, t, customPlaceholders)
+function PRT.AddCustomPlaceholdersToPlayerNames(token, t, customPlaceholders)
   if customPlaceholders then
     for i, customPlaceholder in ipairs(customPlaceholders) do
       if customPlaceholder.name == token then
@@ -463,7 +463,7 @@ PRT.AddCustomPlaceholdersToPlayerNames = function(token, t, customPlaceholders)
   end
 end
 
-PRT.PlayerNamesByToken = function(token)
+function PRT.PlayerNamesByToken(token)
   token = strtrim(token, " ")
   local playerNames = {}
 
@@ -495,16 +495,16 @@ PRT.PlayerNamesByToken = function(token)
   return playerNames
 end
 
-PRT.ReplaceToken = function(token)
+function PRT.ReplaceToken(token)
   local playerNames = PRT.PlayerNamesByToken(token)
   return strjoin(", ", unpack(playerNames))
 end
 
-PRT.ReplacePlayerNameTokens = function(s)
+function PRT.ReplacePlayerNameTokens(s)
   return string.gsub(s, "[$]+([^$, ]*)", PRT.ReplaceToken)
 end
 
-PRT.PrepareMessageForDisplay = function(s)
+function PRT.PrepareMessageForDisplay(s)
   if s then
     return PRT.ReplacePlayerNameTokens(PRT.ExchangeSpellIcons(PRT.ExchangeRaidMarker(s:gsub("||", "|"))))
   else
@@ -512,7 +512,7 @@ PRT.PrepareMessageForDisplay = function(s)
   end
 end
 
-PRT.RGBAToHex = function(r,g,b,a)
+function PRT.RGBAToHex(r,g,b,a)
   return format("%02x%02x%02x%02x", (a * 255), (r * 255), (g * 255), (b * 255))
 end
 
@@ -520,11 +520,11 @@ end
 -------------------------------------------------------------------------------
 -- Unit Helper
 
-PRT.UnitFullName = function(unitID)
+function PRT.UnitFullName(unitID)
   return GetUnitName(unitID, true)
 end
 
-PRT.PartyNames = function(withServer)
+function PRT.PartyNames(withServer)
   local names = {}
   local unitString = ""
   local myName = UnitName("player")
@@ -552,17 +552,17 @@ PRT.PartyNames = function(withServer)
   return names
 end
 
-PRT.UnitInParty = function(unit)
+function PRT.UnitInParty(unit)
   if unit then
     return UnitInParty(unit) or UnitInRaid(unit)
   end
 end
 
-PRT.PlayerInParty = function()
+function PRT.PlayerInParty()
   return PRT.UnitInParty("player")
 end
 
-PRT.UnitIDByGroupType = function(idx)
+function PRT.UnitIDByGroupType(idx)
   if UnitInRaid("player") then
     return "raid"..idx
   elseif UnitInParty("player") then

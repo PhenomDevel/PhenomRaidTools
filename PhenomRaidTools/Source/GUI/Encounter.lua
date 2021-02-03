@@ -73,7 +73,7 @@ local Encounter = {
   }
 }
 
-local addOverviewHeader = function(container, header, enabled)
+local function addOverviewHeader(container, header, enabled)
   local coloredText = ""
 
   if not enabled then
@@ -88,21 +88,21 @@ local addOverviewHeader = function(container, header, enabled)
   container:AddChild(headerLabel)
 end
 
-local addOverviewLine = function(container, text)
+local function addOverviewLine(container, text)
   local textLabel = PRT.Label(text, 14)
   textLabel:SetRelativeWidth(1)
 
   container:AddChild(textLabel)
 end
 
-local addOverviewEmptyLine = function(container)
+local function addOverviewEmptyLine(container)
   local textLabel = PRT.Label(" ")
   textLabel:SetRelativeWidth(1)
 
   container:AddChild(textLabel)
 end
 
-local addStringByCondition = function(container, name, condition)
+local function addStringByCondition(container, name, condition)
   local conditionString = name.." "..PRT.HighlightString(condition.event)..L["encounterOverviewOf"].." "
 
   if condition.spellID then
@@ -115,7 +115,7 @@ local addStringByCondition = function(container, name, condition)
   addOverviewLine(container, conditionString)
 end
 
-local addTimerOverviewEntry = function(container, timer)
+local function addTimerOverviewEntry(container, timer)
   addOverviewHeader(container, timer.name, timer.enabled)
 
   addStringByCondition(container, L["encounterOverviewStartTimerOn"], timer.startCondition)
@@ -127,7 +127,7 @@ local addTimerOverviewEntry = function(container, timer)
   addOverviewEmptyLine(container)
 end
 
-local addRotationOverviewEntry = function(container, rotation)
+local function addRotationOverviewEntry(container, rotation)
   addOverviewHeader(container, rotation.name, rotation.enabled)
 
   if rotation.hasStartCondition then
@@ -144,7 +144,7 @@ local addRotationOverviewEntry = function(container, rotation)
   addOverviewEmptyLine(container)
 end
 
-local addPercentageOverviewEntry = function(container, prefix, percentage)
+local function addPercentageOverviewEntry(container, prefix, percentage)
   addOverviewHeader(container, percentage.name, percentage.enabled)
 
   if percentage.hasStartCondition then
@@ -162,7 +162,7 @@ local addPercentageOverviewEntry = function(container, prefix, percentage)
   addOverviewEmptyLine(container)
 end
 
-local MergeTriggers = function(a, b)
+local function MergeTriggers(a, b)
   if b then
     for i, bTrigger in ipairs(b) do
       local newName = "* "..bTrigger.name
@@ -183,7 +183,7 @@ local MergeTriggers = function(a, b)
   end
 end
 
-local MergeEncounters = function(a, b)
+local function MergeEncounters(a, b)
   MergeTriggers(a.Timers, b.Timers)
   MergeTriggers(a.Rotations, b.Rotations)
   MergeTriggers(a.HealthPercentages, b.HealthPercentages)
@@ -191,7 +191,7 @@ local MergeEncounters = function(a, b)
   MergeTriggers(a.CustomPlaceholders, b.CustomPlaceholders)
 end
 
-local importSuccess = function(encounter)
+local function importSuccess(encounter)
   local idx, existingEncounter = PRT.FilterEncounterTable(PRT.db.profile.encounters, encounter.id)
 
   if not existingEncounter then
@@ -213,7 +213,7 @@ end
 -------------------------------------------------------------------------------
 -- Local Helper
 
-Encounter.OverviewWidget = function(encounter)
+function Encounter.OverviewWidget(encounter)
   local overviewGroup = PRT.InlineGroup("encounterOverview")
   local timerGroup = PRT.InlineGroup(PRT.TextureString(237538).." "..L["timerOverview"])
   local rotationsGroup = PRT.InlineGroup(PRT.TextureString(450907).." "..L["rotationOverview"])
@@ -263,7 +263,7 @@ end
 -------------------------------------------------------------------------------
 -- Public API
 
-PRT.AddEncountersWidgets = function(container, profile)
+function PRT.AddEncountersWidgets(container, profile)
   local encounterOptionsGroup = PRT.InlineGroup("encounterHeading")
 
   local addButton = PRT.Button("newEncounter")
@@ -288,7 +288,7 @@ PRT.AddEncountersWidgets = function(container, profile)
   container:AddChild(encounterOptionsGroup)
 end
 
-PRT.AddEncounterOptions = function(container, profile, encounterID)
+function PRT.AddEncounterOptions(container, profile, encounterID)
   local encounterIndex, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
 
   local encounterOptionsGroup = PRT.InlineGroup("encounterHeading")

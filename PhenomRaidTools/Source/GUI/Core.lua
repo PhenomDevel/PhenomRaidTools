@@ -14,20 +14,20 @@ local UISpecialFrames = UISpecialFrames
 -------------------------------------------------------------------------------
 -- Local Helper
 
-local RegisterESCHandler = function(name, container)
+local function RegisterESCHandler(name, container)
   _G[name] = container.frame
   tinsert(UISpecialFrames, name)
 end
 
-Core.RegisterFrame = function(id, frame)
+function Core.RegisterFrame(id, frame)
   Core.openFrames[id] = frame
 end
 
-Core.UnregisterFrame = function(id)
+function Core.UnregisterFrame(id)
   Core.openFrames[id] = nil
 end
 
-Core.FrameExists = function(text)
+function Core.FrameExists(text)
   local frame = Core.openFrames[text]
 
   if frame then
@@ -37,7 +37,7 @@ Core.FrameExists = function(text)
   end
 end
 
-Core.CloseAllOpenFrames = function()
+function Core.CloseAllOpenFrames()
   for id, frame in pairs(Core.openFrames) do
     frame:Hide()
   end
@@ -45,7 +45,7 @@ Core.CloseAllOpenFrames = function()
   wipe(Core.openFrames)
 end
 
-Core.DisabledText = function(text, enabled)
+function Core.DisabledText(text, enabled)
   if enabled then
     return text
   else
@@ -53,7 +53,7 @@ Core.DisabledText = function(text, enabled)
   end
 end
 
-Core.WithDifficultiesText = function(text, trigger)
+function Core.WithDifficultiesText(text, trigger)
   local updatedText = text
 
   if not trigger.enabledDifficulties then
@@ -78,7 +78,7 @@ Core.WithDifficultiesText = function(text, trigger)
   end
 end
 
-Core.GeneratePercentageTree = function(percentage)
+function Core.GeneratePercentageTree(percentage)
   local t = {
     value = percentage.name,
     text = Core.DisabledText(Core.WithDifficultiesText(percentage.name, percentage), percentage.enabled)
@@ -87,7 +87,7 @@ Core.GeneratePercentageTree = function(percentage)
   return t
 end
 
-Core.GeneratePercentagesTree = function(percentages)
+function Core.GeneratePercentagesTree(percentages)
   local children = {}
   local t = {
     }
@@ -105,7 +105,7 @@ Core.GeneratePercentagesTree = function(percentages)
   return t
 end
 
-Core.GenerateCustomPlaceholderTree = function(placeholders)
+function Core.GenerateCustomPlaceholderTree(placeholders)
   local children = {}
 
   if placeholders then
@@ -121,7 +121,7 @@ Core.GenerateCustomPlaceholderTree = function(placeholders)
   return t
 end
 
-Core.GeneratePowerPercentagesTree = function(percentages)
+function Core.GeneratePowerPercentagesTree(percentages)
   local tree = Core.GeneratePercentagesTree(percentages)
   tree.value = "powerPercentages"
   tree.text = L["treePowerPercentage"]
@@ -131,7 +131,7 @@ Core.GeneratePowerPercentagesTree = function(percentages)
   return tree
 end
 
-Core.GenerateHealthPercentagesTree = function(percentages)
+function Core.GenerateHealthPercentagesTree(percentages)
   local tree = Core.GeneratePercentagesTree(percentages)
   tree.value = "healthPercentages"
   tree.text = L["treeHealthPercentage"]
@@ -141,7 +141,7 @@ Core.GenerateHealthPercentagesTree = function(percentages)
   return tree
 end
 
-Core.GenerateRotationTree = function(rotation)
+function Core.GenerateRotationTree(rotation)
   local t = {
     value = rotation.name,
     text = Core.DisabledText(Core.WithDifficultiesText(rotation.name, rotation), rotation.enabled)
@@ -157,7 +157,7 @@ Core.GenerateRotationTree = function(rotation)
   return t
 end
 
-Core.GenerateRotationsTree = function(rotations)
+function Core.GenerateRotationsTree(rotations)
   local children = {}
   local t = {
     value = "rotations",
@@ -178,7 +178,7 @@ Core.GenerateRotationsTree = function(rotations)
   return t
 end
 
-Core.GenerateTimerTree = function(timer)
+function Core.GenerateTimerTree(timer)
   local t = {
     value = timer.name,
     text = Core.DisabledText(Core.WithDifficultiesText(timer.name, timer), timer.enabled)
@@ -194,7 +194,7 @@ Core.GenerateTimerTree = function(timer)
   return t
 end
 
-Core.GenerateTimersTree = function(timers)
+function Core.GenerateTimersTree(timers)
   local children = {}
   local t = {
     value = "timers",
@@ -216,7 +216,7 @@ Core.GenerateTimersTree = function(timers)
   return t
 end
 
-Core.GenerateCustomPlaceholdersTree = function(placeholders)
+function Core.GenerateCustomPlaceholdersTree(placeholders)
   local children = {}
   local t = {
     value = "customPlaceholders",
@@ -228,7 +228,7 @@ Core.GenerateCustomPlaceholdersTree = function(placeholders)
   return t
 end
 
-Core.GenerateEncounterTree = function(encounter)
+function Core.GenerateEncounterTree(encounter)
   -- Ensure that encounter has all trigger tables!
   PRT.EnsureEncounterTrigger(encounter)
 
@@ -248,7 +248,7 @@ Core.GenerateEncounterTree = function(encounter)
   return t
 end
 
-Core.GenerateEncountersTree = function(encounters)
+function Core.GenerateEncountersTree(encounters)
   local children = {}
 
   local t = {
@@ -264,7 +264,7 @@ Core.GenerateEncountersTree = function(encounters)
   return t
 end
 
-Core.GenerateOptionsTree = function()
+function Core.GenerateOptionsTree()
   local t = {
     value = "options",
     text = L["treeOptions"]
@@ -272,7 +272,7 @@ Core.GenerateOptionsTree = function()
   return t
 end
 
-Core.GenerateTreeByProfile = function(profile)
+function Core.GenerateTreeByProfile(profile)
   local t = {
     Core.GenerateOptionsTree(),
   }
@@ -284,7 +284,7 @@ Core.GenerateTreeByProfile = function(profile)
   return t
 end
 
-Core.OnGroupSelected = function(container, key, profile)
+function Core.OnGroupSelected(container, key, profile)
   container:ReleaseChildren()
 
   local mainKey, encounterID, triggerType, triggerName = strsplit("\001", key)
@@ -342,13 +342,13 @@ Core.OnGroupSelected = function(container, key, profile)
   PRT.mainWindowContent:RefreshTree()
 end
 
-Core.ReselectCurrentValue = function()
+function Core.ReselectCurrentValue()
   if PRT.mainWindowContent.selectedValue then
     PRT.mainWindowContent:SelectByValue(PRT.mainWindowContent.selectedValue)
   end
 end
 
-Core.ReselectExchangeLast = function(last)
+function Core.ReselectExchangeLast(last)
   if PRT.mainWindowContent.selectedValue then
     local xs = { strsplit("\001", PRT.mainWindowContent.selectedValue) }
     tremove(xs, #xs)
@@ -359,11 +359,11 @@ Core.ReselectExchangeLast = function(last)
   end
 end
 
-Core.UpdateTree = function()
+function Core.UpdateTree()
   PRT.mainWindowContent:SetTree(Core.GenerateTreeByProfile(PRT.db.profile))
 end
 
-Core.UpdateScrollFrame = function()
+function Core.UpdateScrollFrame()
   local scrollvalueBefore = PRT.mainWindowContent.scrollFrame.localstatus.scrollvalue
   PRT.mainWindowContent.scrollFrame:FixScroll()
   PRT.mainWindowContent.scrollFrame:DoLayout()
@@ -373,7 +373,7 @@ Core.UpdateScrollFrame = function()
   end
 end
 
-Core.CreateMainWindowContent = function(profile)
+function Core.CreateMainWindowContent(profile)
   -- Create a sroll frame for the tree group content
   local treeContentScrollFrame = PRT.ScrollFrame()
 
@@ -405,7 +405,7 @@ end
 -------------------------------------------------------------------------------
 -- Public API
 
-PRT.CreateMainWindow = function(profile)
+function PRT.CreateMainWindow(profile)
   local mainWindow = PRT.Window("PhenomRaidTools".." - "..PRT.db.profile.version)
   local mainWindowContent = Core.CreateMainWindowContent(profile)
 

@@ -7,11 +7,11 @@ PRT.StringUtils = StringUtils
 -------------------------------------------------------------------------------
 -- String Utils
 
-StringUtils.IsEmpty = function(s)
+function StringUtils.IsEmpty(s)
   return (s == "" or s == nil)
 end
 
-StringUtils.SplitToTable = function(s)
+function StringUtils.SplitToTable(s)
   local entries = {}
   if s ~= "" then
     local split1 = {strsplit(" ", s)}
@@ -23,7 +23,7 @@ StringUtils.SplitToTable = function(s)
   return entries
 end
 
-StringUtils.WrapColorByBoolean = function(s, boolean, inactiveColor, activeColor)
+function StringUtils.WrapColorByBoolean(s, boolean, inactiveColor, activeColor)
   if not boolean then
     if activeColor then
       return "|c"..activeColor..s.."|r"

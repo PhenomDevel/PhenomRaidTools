@@ -79,7 +79,7 @@ local cooldownIconSize = 20
 -------------------------------------------------------------------------------
 -- Local Helper
 
-Message.TargetsPreviewString = function(targets)
+function Message.TargetsPreviewString(targets)
   if targets then
     local previewNames = {}
 
@@ -101,7 +101,7 @@ Message.TargetsPreviewString = function(targets)
   end
 end
 
-Message.ColoredRaidPlayerNames = function()
+function Message.ColoredRaidPlayerNames()
   local playerNames = {}
 
   for i, name in ipairs(PRT.PartyNames(false)) do
@@ -111,7 +111,7 @@ Message.ColoredRaidPlayerNames = function()
   return playerNames
 end
 
-Message.GenerateRaidRosterDropdownItems = function()
+function Message.GenerateRaidRosterDropdownItems()
   local raidRosterItems = {}
 
   -- Add Raid Roster entries
@@ -183,7 +183,7 @@ end
 -------------------------------------------------------------------------------
 -- Public API
 
-PRT.MessageWidget = function (message, container)
+function PRT.MessageWidget(message, container)
   local targetsString = strjoin(", ", unpack(message.targets))
   local targetsPreviewString = Message.TargetsPreviewString(message.targets)
   local raidRosterItems = Message.GenerateRaidRosterDropdownItems()

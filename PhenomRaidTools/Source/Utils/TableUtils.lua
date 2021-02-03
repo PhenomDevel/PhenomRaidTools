@@ -7,7 +7,7 @@ PRT.TableUtils = TableUtils
 -------------------------------------------------------------------------------
 -- String Utils
 
-TableUtils.Tableify = function(x)
+function TableUtils.Tableify(x)
   if type(x) == "string" then
     return {x}
   elseif type(x) == "table" then
@@ -15,7 +15,7 @@ TableUtils.Tableify = function(x)
   end
 end
 
-TableUtils.Remove = function(t, pred)
+function TableUtils.Remove(t, pred)
   for i = #t, 1, -1 do
     if pred(t[i], i) then
       table.remove(t, i)
@@ -25,7 +25,7 @@ TableUtils.Remove = function(t, pred)
   return t
 end
 
-TableUtils.IsEmpty = function(t)
+function TableUtils.IsEmpty(t)
   if t then
     if table.getn(t) == 0 then
       return true

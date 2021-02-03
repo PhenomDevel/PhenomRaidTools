@@ -8,7 +8,7 @@ local enabledDifficultiesDefaults = {
   Mythic = true
 }
 
-Trigger.EnsureEnabledDifficulties = function(trigger)
+function Trigger.EnsureEnabledDifficulties(trigger)
   if not trigger.enabledDifficulties then
     local defaults = PRT.CopyTable(enabledDifficultiesDefaults)
     trigger.enabledDifficulties = defaults
@@ -18,7 +18,7 @@ end
 -------------------------------------------------------------------------------
 -- Public API
 
-PRT.AddEnabledDifficultiesGroup = function(container, trigger)
+function PRT.AddEnabledDifficultiesGroup(container, trigger)
   Trigger.EnsureEnabledDifficulties(trigger)
 
   local enabledDifficultiesGroup = PRT.InlineGroup("Enable for")
@@ -55,7 +55,7 @@ PRT.AddEnabledDifficultiesGroup = function(container, trigger)
   container:AddChild(enabledDifficultiesGroup)
 end
 
-PRT.AddDescription = function(container, trigger)
+function PRT.AddDescription(container, trigger)
   local descriptionMultiLineEditBox = PRT.MultiLineEditBox("descriptionMultiLineEditBox", trigger.description or "")
   descriptionMultiLineEditBox:SetCallback("OnEnterPressed",
     function(widget)

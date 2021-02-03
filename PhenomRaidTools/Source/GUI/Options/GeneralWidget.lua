@@ -1,9 +1,7 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
-local AceTimer = LibStub("AceTimer-3.0")
-
 -- Create local copies of API functions which we use
-local GetGuildInfo, InterfaceOptionsFrame_OpenToCategory = GetGuildInfo, InterfaceOptionsFrame_OpenToCategory
+local InterfaceOptionsFrame_OpenToCategory = InterfaceOptionsFrame_OpenToCategory
 
 local GeneralOptions = {
   runModes = {
@@ -47,7 +45,7 @@ local GeneralOptions = {
 -------------------------------------------------------------------------------
 -- General Options
 
-GeneralOptions.AddMessageFilterByNamesWidgets = function(container, options)
+function GeneralOptions.AddMessageFilterByNamesWidgets(container, options)
   local namesEditBox = PRT.EditBox("messageFilterNamesEditBox", strjoin(", ", unpack(options.requiredNames)), true)
   namesEditBox:SetCallback("OnEnterPressed",
     function(widget)
@@ -60,7 +58,7 @@ GeneralOptions.AddMessageFilterByNamesWidgets = function(container, options)
   container:AddChild(namesEditBox)
 end
 
-GeneralOptions.AddMessageFilterByGuildRankWidgets = function(container, options)
+function GeneralOptions.AddMessageFilterByGuildRankWidgets(container, options)
   local guildRanks = PRT.GuildUtils.GetGuildRanksTable("player")
   local guildRankDropdownItems = {}
 
@@ -70,14 +68,14 @@ GeneralOptions.AddMessageFilterByGuildRankWidgets = function(container, options)
 
   local guildRankDropdown = PRT.Dropdown("messageFilterGuildRankDropdown", guildRankDropdownItems, options.requiredGuildRank)
   guildRankDropdown:SetCallback("OnValueChanged",
-    function(widget, event, key)
+    function(_, _, key)
       options.requiredGuildRank = key
     end)
 
   container:AddChild(guildRankDropdown)
 end
 
-GeneralOptions.MessageFilterExplanationString = function(options)
+function GeneralOptions.MessageFilterExplanationString(options)
   local message = ""
 
   if options.filterBy == "names" then
@@ -87,9 +85,6 @@ GeneralOptions.MessageFilterExplanationString = function(options)
       message = L["messageFilterExplanationNames"]
     end
   elseif options.filterBy == "guildRank" then
-    local guildRanks = PRT.GuildUtils.GetGuildRanksTable("player")
-    local requiredGuildRankName = guildRanks[options.requiredGuildRank]
-
     message = L["messageFilterExplanationGuildRank"]
   end
 
@@ -100,7 +95,7 @@ GeneralOptions.MessageFilterExplanationString = function(options)
   return message
 end
 
-GeneralOptions.AddMessageFilter = function(container, options)
+function GeneralOptions.AddMessageFilter(container, options)
   local messageFilterGroup = PRT.InlineGroup("messageFilterGroup")
   local alwaysIncludeMyselfCheckBox = PRT.CheckBox("messageFilterAlwaysIncludeMyself", options.alwaysIncludeMyself)
   local filterTypeDropDown = PRT.Dropdown("messageFilterByDropdown", GeneralOptions.messageFilterTypes, options.filterBy)
@@ -110,7 +105,7 @@ GeneralOptions.AddMessageFilter = function(container, options)
 
   messageFilterGroup:SetLayout("Flow")
   filterTypeDropDown:SetCallback("OnValueChanged",
-    function(widget, event, key)
+    function(_, _, key)
       options.filterBy = key
       PRT.Core.UpdateTree()
       PRT.Core.ReselectCurrentValue()
@@ -138,7 +133,7 @@ GeneralOptions.AddMessageFilter = function(container, options)
   container:AddChild(messageFilterGroup)
 end
 
-GeneralOptions.AddRunMode = function(container, options)
+function GeneralOptions.AddRunMode(container, options)
   local runModeGroup = PRT.InlineGroup("runModeGroup")
   runModeGroup:SetLayout("Flow")
   local runModeDropdown = PRT.Dropdown("runModeDropdown", GeneralOptions.runModes, options.runMode)
@@ -156,7 +151,7 @@ GeneralOptions.AddRunMode = function(container, options)
   container:AddChild(runModeGroup)
 end
 
-GeneralOptions.AddTestMode = function(container, options)
+function GeneralOptions.AddTestMode(container, options)
   local testModeGroup = PRT.InlineGroup("testModeGroup")
   testModeGroup:SetLayout("Flow")
 
@@ -179,7 +174,7 @@ GeneralOptions.AddTestMode = function(container, options)
   container:AddChild(testModeGroup)
 end
 
-GeneralOptions.AddDebugMode = function(container, options)
+function GeneralOptions.AddDebugMode(container, options)
   local debugModeGroup = PRT.InlineGroup("debugModeGroup")
   local debugModeCheckbox = PRT.CheckBox("debugModeEnabled", options.debugMode, true)
   debugModeCheckbox:SetCallback("OnValueChanged", function(widget) options.debugMode = widget:GetValue() end)
@@ -193,7 +188,7 @@ end
 -------------------------------------------------------------------------------
 -- Public API
 
-PRT.AddGeneralWidgets = function(container, options)
+function PRT.AddGeneralWidgets(container, options)
   local enabledCheckbox = PRT.CheckBox("optionsEnabled", options.enabled)
   local versionCheckButton = PRT.Button("optionsVersionCheck")
   local profilesOptionsButton = PRT.Button("optionsOpenProfiles")

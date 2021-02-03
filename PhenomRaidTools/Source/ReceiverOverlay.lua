@@ -13,11 +13,11 @@ local UIParent, GameFontHighlightSmall = UIParent, GameFontHighlightSmall
 -------------------------------------------------------------------------------
 -- Local Helper
 
-ReceiverOverlay.ClearMessageStack = function()
+function ReceiverOverlay.ClearMessageStack()
   ReceiverOverlay.messageStack = {}
 end
 
-ReceiverOverlay.AddMessage = function(messageTable)
+function ReceiverOverlay.AddMessage(messageTable)
   local receiverOverlayFrame = PRT.db.profile.overlay.receivers[(messageTable.targetOverlay or 1)]
 
   messageTable.expirationTime = GetTime() + (messageTable.duration or 5)
@@ -51,8 +51,9 @@ ReceiverOverlay.AddMessage = function(messageTable)
   ReceiverOverlay.UpdateFrameText()
 end
 
-ReceiverOverlay.ShowPlaceholder = function(frame, options, text)
+function ReceiverOverlay.ShowPlaceholder(frame, options, _)
   local text = ""
+
   if options then
     text = options.name..": "..(options.label or "LABEL")
   else
@@ -69,7 +70,7 @@ ReceiverOverlay.ShowPlaceholder = function(frame, options, text)
   PRT.Overlay.UpdateSize(frame)
 end
 
-ReceiverOverlay.UpdateFrameText = function()
+function ReceiverOverlay.UpdateFrameText()
   for frameIndex, frame in ipairs(ReceiverOverlay.overlayFrames) do
     local text = ""
 
@@ -97,14 +98,14 @@ ReceiverOverlay.UpdateFrameText = function()
   end
 end
 
-ReceiverOverlay.UpdateFrame = function(frame, options)
+function ReceiverOverlay.UpdateFrame(frame, options)
   PRT.Overlay.UpdateSize(frame, options)
   PRT.Overlay.UpdateBackdrop(frame, options)
   PRT.Overlay.UpdateFont(frame, options)
   PRT.Overlay.UpdatePosition(frame, options)
 end
 
-ReceiverOverlay.CreateOverlay = function(options)
+function ReceiverOverlay.CreateOverlay(options)
   local overlayFrame = PRT.Overlay.CreateOverlay(options, true)
   overlayFrame:ClearAllPoints()
   overlayFrame:SetPoint("CENTER", "UIParent", "CENTER", options.left, -options.top)
@@ -118,15 +119,15 @@ ReceiverOverlay.CreateOverlay = function(options)
   return overlayFrame
 end
 
-ReceiverOverlay.Hide = function(frame)
+function ReceiverOverlay.Hide(frame)
   PRT.Overlay.Hide(frame)
 end
 
-ReceiverOverlay.Show = function(frame)
+function ReceiverOverlay.Show(frame)
   PRT.Overlay.Show(frame)
 end
 
-ReceiverOverlay.HideAll = function()
+function ReceiverOverlay.HideAll()
   if ReceiverOverlay.overlayFrames then
     for i, overlayFrame in ipairs(ReceiverOverlay.overlayFrames) do
       PRT.Overlay.Hide(overlayFrame)
@@ -134,7 +135,7 @@ ReceiverOverlay.HideAll = function()
   end
 end
 
-ReceiverOverlay.ShowAll = function()
+function ReceiverOverlay.ShowAll()
   if ReceiverOverlay.overlayFrames then
     for i, overlayFrame in ipairs(ReceiverOverlay.overlayFrames) do
       PRT.Overlay.Show(overlayFrame)
@@ -142,7 +143,7 @@ ReceiverOverlay.ShowAll = function()
   end
 end
 
-ReceiverOverlay.Initialize = function(receivers)
+function ReceiverOverlay.Initialize(receivers)
   if not ReceiverOverlay.overlayFrames then
     ReceiverOverlay.overlayFrames = {}
 

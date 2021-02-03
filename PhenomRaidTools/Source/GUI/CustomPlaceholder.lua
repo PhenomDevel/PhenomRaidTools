@@ -4,7 +4,7 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 -------------------------------------------------------------------------------
 -- Public API
 
-PRT.AddCustomPlaceholderOptions = function(container, profile, encounterID)
+function PRT.AddCustomPlaceholderOptions(container, profile, encounterID)
   local idx, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
   local CustomPlaceholders = encounter.CustomPlaceholders
 

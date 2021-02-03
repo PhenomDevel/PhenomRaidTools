@@ -1,7 +1,6 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
-
-RaidRoster = {
+local RaidRoster = {
   tankCount = 3,
   healerCount = 6,
   ddCount = 21
@@ -11,14 +10,14 @@ RaidRoster = {
 -------------------------------------------------------------------------------
 -- Private Helper
 
-RaidRoster.ImportRaidRosterByGroup = function(options, container)
+function RaidRoster.ImportRaidRosterByGroup(options, container)
   wipe(options)
   local names = PRT.PartyNames(false)
   local tanksCounter = 0
   local healerCounter = 0
   local ddsCounter = 0
 
-  for i, name in ipairs(names) do
+  for _, name in ipairs(names) do
     local playerRole = UnitGroupRolesAssigned(name);
     local raidRosterID
 
@@ -42,7 +41,7 @@ RaidRoster.ImportRaidRosterByGroup = function(options, container)
   PRT.AddRaidRosterWidget(container, options)
 end
 
-RaidRoster.ClearRaidRoster = function(options, container)
+function RaidRoster.ClearRaidRoster(options, container)
   wipe(options)
 
   container:ReleaseChildren()
@@ -53,11 +52,21 @@ end
 -------------------------------------------------------------------------------
 -- Public API
 
-PRT.AddRaidRosterWidget = function(container, options)
+function PRT.AddRaidRosterWidget(container, options)
   local importByGroupButton = PRT.Button("optionsRaidRosterImportByGroup")
-  importByGroupButton:SetCallback("OnClick", function(_) PRT.ConfirmationDialog(L["importByGroupConfirmationText"], RaidRoster.ImportRaidRosterByGroup, options, container)  end)
+  importByGroupButton:SetCallback("OnClick",
+    function(_)
+      PRT.ConfirmationDialog(L["importByGroupConfirmationText"],
+        RaidRoster.ImportRaidRosterByGroup, options, container)
+    end)
+
   local clearRaidRosterButton = PRT.Button("optionsRaidRosterClear")
-  clearRaidRosterButton:SetCallback("OnClick", function(_) PRT.ConfirmationDialog(L["clearRaidRosterConfirmationText"], RaidRoster.ClearRaidRoster, options, container) end)
+  clearRaidRosterButton:SetCallback("OnClick",
+    function(_)
+      PRT.ConfirmationDialog(L["clearRaidRosterConfirmationText"],
+        RaidRoster.ClearRaidRoster, options, container)
+    end)
+
   local explanationLabel = PRT.Label("optionsRaidRosterExplanation", 16)
   explanationLabel:SetRelativeWidth(1)
 

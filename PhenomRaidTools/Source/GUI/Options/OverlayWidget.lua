@@ -6,7 +6,7 @@ local Overlay = {}
 -------------------------------------------------------------------------------
 -- Private Helper
 
-Overlay.AddPositionSliderGroup = function(container, overlayFrame, options)
+function Overlay.AddPositionSliderGroup(container, overlayFrame, options)
   local positionGroup = PRT.InlineGroup("overlayPositionGroup")
   positionGroup:SetLayout("List")
 
@@ -41,7 +41,7 @@ Overlay.AddPositionSliderGroup = function(container, overlayFrame, options)
   container:AddChild(positionGroup)
 end
 
-Overlay.FontGroup = function(options, overlayFrame)
+function Overlay.FontGroup(options, overlayFrame)
   local fontGroup = PRT.InlineGroup("overlayFontGroup")
   fontGroup:SetLayout("Flow")
 
@@ -58,7 +58,7 @@ Overlay.FontGroup = function(options, overlayFrame)
     end)
 
   fontSelect:SetCallback("OnValueChanged",
-    function(widget, event, value)
+    function(widget, _, value)
       local path = AceGUIWidgetLSMlists.font[value]
       options.font = path
       options.fontName = value
@@ -74,16 +74,19 @@ Overlay.FontGroup = function(options, overlayFrame)
   return fontGroup
 end
 
-Overlay.AddSoundGroup = function(container, options)
+function Overlay.AddSoundGroup(container, options)
   local soundGroup = PRT.InlineGroup("overlaySoundGroup")
   soundGroup:SetLayout("Flow")
 
   local enableSoundCheckbox = PRT.CheckBox("overlayEnableSound", options.enableSound)
-  enableSoundCheckbox:SetCallback("OnValueChanged", function(widget) options.enableSound = enableSoundCheckbox:GetValue() end)
+  enableSoundCheckbox:SetCallback("OnValueChanged",
+    function()
+      options.enableSound = enableSoundCheckbox:GetValue()
+    end)
 
   local defaultSoundFileSelect = PRT.SoundSelect("overlayDefaultSoundFile", (options.defaultSoundFileName or options.defaultSoundFile))
   defaultSoundFileSelect:SetCallback("OnValueChanged",
-    function(widget, event, value)
+    function(widget, _, value)
       local defaultSoundFile = AceGUIWidgetLSMlists.sound[value]
       options.defaultSoundFile = defaultSoundFile
       options.defaultSoundFileName = value
@@ -98,7 +101,7 @@ Overlay.AddSoundGroup = function(container, options)
   container:AddChild(soundGroup)
 end
 
-Overlay.AddSenderOverlayWidget = function(container, options)
+function Overlay.AddSenderOverlayWidget(container, options)
   local hideDisabledTriggersCheckbox = PRT.CheckBox("optionsHideDisabledTriggers", options.hideDisabledTriggers)
   local showOverlayCheckbox = PRT.CheckBox("optionsShowOverlay", options.enabled)
   local hideOverlayAfterCombatCheckbox = PRT.CheckBox("optionsHideOverlayAfterCombat", options.hideAfterCombat)
@@ -130,7 +133,7 @@ Overlay.AddSenderOverlayWidget = function(container, options)
 
   backdropColor:SetHasAlpha(true)
   backdropColor:SetCallback("OnValueConfirmed",
-    function(widget, event, r, g, b, a)
+    function(_, _, r, g, b, a)
       options.backdropColor.a = a
       options.backdropColor.r = r
       options.backdropColor.g = g
@@ -148,7 +151,7 @@ Overlay.AddSenderOverlayWidget = function(container, options)
   Overlay.AddPositionSliderGroup(container, PRT.SenderOverlay.overlayFrame, options)
 end
 
-Overlay.AddReceiverOverlayWidget = function(options, container, index)
+function Overlay.AddReceiverOverlayWidget(options, container, index)
   local overlayFrame = PRT.ReceiverOverlay.overlayFrames[index]
   local labelEditBox = PRT.EditBox("overlayLabel", options.label)
   labelEditBox:SetCallback("OnEnterPressed",
@@ -162,7 +165,7 @@ Overlay.AddReceiverOverlayWidget = function(options, container, index)
 
   local fontColor =  PRT.ColorPicker("overlayFontColor", options.fontColor)
   fontColor:SetCallback("OnValueConfirmed",
-    function(widget, event, r, g, b, a)
+    function(_, _, r, g, b, a)
       options.fontColor.hex = PRT.RGBAToHex(r, g, b, a)
       options.fontColor.r = r
       options.fontColor.g = g
@@ -197,7 +200,7 @@ end
 -------------------------------------------------------------------------------
 -- Public API
 
-PRT.AddOverlayWidget = function(container, options)
+function PRT.AddOverlayWidget(container, options)
   local senderGroup = PRT.InlineGroup("senderGroup")
   senderGroup:SetLayout("Flow")
   Overlay.AddSenderOverlayWidget(senderGroup, options.sender)
@@ -206,7 +209,7 @@ PRT.AddOverlayWidget = function(container, options)
   local receiversTabGroup = PRT.TabGroup("receiversGroup", receiversTabs)
   receiversTabGroup:SetLayout("List")
   receiversTabGroup:SetCallback("OnGroupSelected",
-    function(widget, event, key)
+    function(widget, _, key)
       PRT.TabGroupSelected(widget, options.receivers, key, Overlay.AddReceiverOverlayWidget)
     end)
 

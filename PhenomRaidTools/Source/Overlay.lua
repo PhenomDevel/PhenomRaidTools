@@ -11,7 +11,7 @@ local UIParent, GameFontHighlightSmall = UIParent, GameFontHighlightSmall
 -------------------------------------------------------------------------------
 -- Public API
 
-Overlay.SavePosition = function(frame, options)
+function Overlay.SavePosition(frame, options)
   local left, top = frame:GetLeft(), frame:GetTop()
 
   if options.anchor == "CENTER" then
@@ -23,14 +23,14 @@ Overlay.SavePosition = function(frame, options)
   options.left = left
 end
 
-Overlay.UpdatePosition = function(frame, options)
+function Overlay.UpdatePosition(frame, options)
   if options then
     frame:ClearAllPoints()
     frame:SetPoint(options.anchor or "CENTER", "UIParent", "TOPLEFT", options.left, -options.top)
   end
 end
 
-Overlay.UpdateSize = function(frame, options)
+function Overlay.UpdateSize(frame, options)
   local width = frame.text:GetStringWidth()
   frame:SetWidth(width + (2 * padding))
 
@@ -40,11 +40,11 @@ Overlay.UpdateSize = function(frame, options)
   Overlay.UpdatePosition(frame, options)
 end
 
-Overlay.UpdateFont = function(frame, options)
+function Overlay.UpdateFont(frame, options)
   frame.text:SetFont((options.font or GameFontHighlightSmall:GetFont()), options.fontSize, "OUTLINE")
 end
 
-Overlay.UpdateBackdrop = function(frame, options)
+function Overlay.UpdateBackdrop(frame, options)
   if options then
     if options.locked then
       frame:SetBackdropColor(0, 0, 0, 0);
@@ -64,26 +64,26 @@ Overlay.UpdateBackdrop = function(frame, options)
   end
 end
 
-Overlay.UpdateFrame = function(frame, options)
+function Overlay.UpdateFrame(frame, options)
   Overlay.UpdateFont(frame, options)
   Overlay.UpdateSize(frame, options)
   Overlay.UpdateBackdrop(frame, options)
   Overlay.UpdatePosition(frame, options)
 end
 
-Overlay.SetMoveable = function(frame, v)
+function Overlay.SetMoveable(frame, v)
   if frame then
     frame:EnableMouse(v)
     frame:SetMovable(v)
   end
 end
 
-Overlay.SetFont = function(frame, options)
+function Overlay.SetFont(frame, options)
   frame.text:SetFont((options.font or GameFontHighlightSmall:GetFont()), options.fontSize, "OUTLINE")
   Overlay.UpdateSize(frame, options)
 end
 
-Overlay.CreateOverlay = function(options, withBackdrop)
+function Overlay.CreateOverlay(options, withBackdrop)
   local overlayFrame = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
   overlayFrame:EnableMouse(true)
   overlayFrame:SetMovable(true)
@@ -124,20 +124,20 @@ Overlay.CreateOverlay = function(options, withBackdrop)
   return overlayFrame
 end
 
-Overlay.ClearText = function(frame)
+function Overlay.ClearText(frame)
   if frame then
     frame.text:SetText("")
   end
 end
 
-Overlay.Hide = function(frame)
+function Overlay.Hide(frame)
   if frame then
     Overlay.ClearText(frame)
     frame:Hide()
   end
 end
 
-Overlay.Show = function(frame)
+function Overlay.Show(frame)
   if frame then
     Overlay.ClearText(frame)
     frame:Show()

@@ -20,7 +20,7 @@ local GameFontHighlightSmall = GameFontHighlightSmall
 -------------------------------------------------------------------------------
 -- Local Helper
 
-AceHelper.AddTooltip = function(widget, tooltip)
+function AceHelper.AddTooltip(widget, tooltip)
   if tooltip and widget then
     widget:SetCallback("OnEnter", function(widget)
       GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
@@ -41,7 +41,7 @@ AceHelper.AddTooltip = function(widget, tooltip)
   end
 end
 
-AceHelper.AddNewTab = function(widget, t, item)
+function AceHelper.AddNewTab(widget, t, item)
   if not t then
     t = {}
   end
@@ -53,7 +53,7 @@ AceHelper.AddNewTab = function(widget, t, item)
   PRT.Core.UpdateScrollFrame()
 end
 
-AceHelper.RemoveTab = function(widget, t, item)
+function AceHelper.RemoveTab(widget, t, item)
   tremove(t, item)
   widget:SetTabs(PRT.TableToTabs(t, true))
   widget:DoLayout()
@@ -70,7 +70,7 @@ end
 -------------------------------------------------------------------------------
 -- Public API
 
-PRT.AddSpellTooltip = function(widget, spellID)
+function PRT.AddSpellTooltip(widget, spellID)
   if spellID then
     widget:SetCallback("OnEnter",
       function()
@@ -87,7 +87,7 @@ PRT.AddSpellTooltip = function(widget, spellID)
   return widget
 end
 
-PRT.SelectFirstTab = function(container, t)
+function PRT.SelectFirstTab(container, t)
   container:SelectTab(nil)
   if t then
     if getn(t) > 0 then
@@ -96,7 +96,7 @@ PRT.SelectFirstTab = function(container, t)
   end
 end
 
-PRT.TableToTabs = function(t, withNewTab, newTabText)
+function PRT.TableToTabs(t, withNewTab, newTabText)
   local tabs = {}
 
   if t then
@@ -116,7 +116,7 @@ PRT.TableToTabs = function(t, withNewTab, newTabText)
   return tabs
 end
 
-PRT.TabGroupSelected = function(widget, t, key, itemFunction, emptyItemFunction, deleteButton, deleteTextID)
+function PRT.TabGroupSelected(widget, t, key, itemFunction, emptyItemFunction, deleteButton, deleteTextID)
   widget:ReleaseChildren()
 
   if key == "new" then
@@ -152,11 +152,11 @@ PRT.TabGroupSelected = function(widget, t, key, itemFunction, emptyItemFunction,
   PRT.Core.UpdateScrollFrame()
 end
 
-PRT.ReSelectTab = function(container)
+function PRT.ReSelectTab(container)
   container:SelectTab(container.localstatus.selected)
 end
 
-PRT.Release = function(widget)
+function PRT.Release(widget)
   widget:ReleaseChildren()
   widget:Release()
 end
@@ -165,7 +165,7 @@ end
 -------------------------------------------------------------------------------
 -- Container
 
-PRT.TabGroup = function(textID, tabs)
+function PRT.TabGroup(textID, tabs)
   local text = L[textID]
   local container = AceGUI:Create("TabGroup")
 
@@ -179,7 +179,7 @@ PRT.TabGroup = function(textID, tabs)
   return container
 end
 
-PRT.InlineGroup = function(textID)
+function PRT.InlineGroup(textID)
   local text = L[textID]
   local container = AceGUI:Create("InlineGroup")
 
@@ -190,7 +190,7 @@ PRT.InlineGroup = function(textID)
   return container
 end
 
-PRT.SimpleGroup = function()
+function PRT.SimpleGroup()
   local container = AceGUI:Create("SimpleGroup")
   container:SetFullWidth(true)
   container:SetLayout("List")
@@ -206,7 +206,7 @@ PRT.SimpleGroup = function()
   return container
 end
 
-PRT.ScrollFrame = function()
+function PRT.ScrollFrame()
   local container = AceGUI:Create("ScrollFrame")
 
   container:SetLayout("List")
@@ -216,7 +216,7 @@ PRT.ScrollFrame = function()
   return container
 end
 
-PRT.Frame = function(titleID)
+function PRT.Frame(titleID)
   local titleText = L[titleID]
   local container = AceGUI:Create("Frame")
 
@@ -228,7 +228,7 @@ PRT.Frame = function(titleID)
   return container
 end
 
-PRT.TreeGroup = function(tree)
+function PRT.TreeGroup(tree)
   local container = AceGUI:Create("TreeGroup")
 
   container:SetLayout("Fill")
@@ -237,7 +237,7 @@ PRT.TreeGroup = function(tree)
   return container
 end
 
-PRT.Window = function(titleID)
+function PRT.Window(titleID)
   local titleText = L[titleID]
   local container = AceGUI:Create("Window")
   container.frame:SetFrameStrata("HIGH")
@@ -252,7 +252,7 @@ end
 -------------------------------------------------------------------------------
 -- Widgets
 
-PRT.Button = function(textID, addTooltip)
+function PRT.Button(textID, addTooltip)
   local text = L[textID]
 
   local widget = AceGUI:Create("Button")
@@ -267,7 +267,7 @@ PRT.Button = function(textID, addTooltip)
   return widget
 end
 
-PRT.Heading = function(textID)
+function PRT.Heading(textID)
   local text = L[textID]
 
   local widget = AceGUI:Create("Heading")
@@ -278,7 +278,7 @@ PRT.Heading = function(textID)
   return widget
 end
 
-PRT.Label = function(textID, fontSize)
+function PRT.Label(textID, fontSize)
   local text = L[textID]
 
   local widget = AceGUI:Create("Label")
@@ -290,7 +290,7 @@ PRT.Label = function(textID, fontSize)
   return widget
 end
 
-PRT.EditBox = function(textID, value, addTooltip)
+function PRT.EditBox(textID, value, addTooltip)
   local text = L[textID]
 
   local widget = AceGUI:Create("EditBox")
@@ -307,7 +307,7 @@ PRT.EditBox = function(textID, value, addTooltip)
   return widget
 end
 
-PRT.MultiLineEditBox = function(textID, value, addTooltip)
+function PRT.MultiLineEditBox(textID, value, addTooltip)
   local text = L[textID]
   local widget = AceGUI:Create("MultiLineEditBox")
 
@@ -324,7 +324,7 @@ PRT.MultiLineEditBox = function(textID, value, addTooltip)
   return widget
 end
 
-PRT.ColorPicker = function(textID, value)
+function PRT.ColorPicker(textID, value)
   local text = L[textID]
 
   local widget = AceGUI:Create("ColorPicker")
@@ -338,7 +338,7 @@ PRT.ColorPicker = function(textID, value)
   return widget
 end
 
-PRT.Dropdown = function(textID, values, value, withEmpty, orderByKey)
+function PRT.Dropdown(textID, values, value, withEmpty, orderByKey)
   local text = L[textID]
 
   local dropdownItems = {}
@@ -392,7 +392,7 @@ PRT.Dropdown = function(textID, values, value, withEmpty, orderByKey)
   return widget
 end
 
-PRT.CheckBox = function(textID, value, addTooltip)
+function PRT.CheckBox(textID, value, addTooltip)
   local text = L[textID]
 
   local widget = AceGUI:Create("CheckBox")
@@ -409,7 +409,7 @@ PRT.CheckBox = function(textID, value, addTooltip)
   return widget
 end
 
-PRT.Icon = function(value, spellID)
+function PRT.Icon(value, spellID)
   local widget = AceGUI:Create("Icon")
   widget:SetImage(value, 0.1, 0.9, 0.1, 0.9)
   PRT.AddSpellTooltip(widget, spellID)
@@ -417,7 +417,7 @@ PRT.Icon = function(value, spellID)
   return widget
 end
 
-PRT.Slider = function(textID, value)
+function PRT.Slider(textID, value)
   local text = L[textID]
   local widget = AceGUI:Create("Slider")
 
@@ -431,7 +431,7 @@ PRT.Slider = function(textID, value)
   return widget
 end
 
-PRT.SoundSelect = function(textID, value)
+function PRT.SoundSelect(textID, value)
   local text = L[textID]
 
   local widget = AceGUI:Create("LSM30_Sound")
@@ -443,7 +443,7 @@ PRT.SoundSelect = function(textID, value)
   return widget
 end
 
-PRT.FontSelect = function(textID, value)
+function PRT.FontSelect(textID, value)
   local text = L[textID]
 
   local widget = AceGUI:Create("LSM30_Font")

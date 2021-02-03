@@ -39,6 +39,9 @@ globals = {
   "UnitHealthMax",
   "UnitPower",
   "UnitPowerMax",
+  "random",
+  "CreateFrame",
+  "BackdropTemplateMixin",
 
   -- Locals
   "L",
@@ -51,4 +54,5 @@ max_cyclomatic_complexity=160
 
 ignore={
  ".*self",
+ ".*mergemany"
 }

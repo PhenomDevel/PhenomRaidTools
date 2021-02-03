@@ -12,13 +12,13 @@ local UnitGUID, GetTime, UnitExists, UnitIsDead, UnitHealth, UnitHealthMax, Unit
 -------------------------------------------------------------------------------
 -- Local Helper
 
-TriggerHandler.CheckCurrentDifficulty = function(trigger)
+function TriggerHandler.CheckCurrentDifficulty(trigger)
   if trigger.enabledDifficulties and PRT.currentDifficulty then
     return trigger.enabledDifficulties[PRT.currentDifficulty]
   end
 end
 
-TriggerHandler.UnitExistsInTrackedUnits = function(conditionUnitID, eventUnitGUID)
+function TriggerHandler.UnitExistsInTrackedUnits(conditionUnitID, eventUnitGUID)
   if PRT.currentEncounter.trackedUnits then
     for guid, t in pairs(PRT.currentEncounter.trackedUnits) do
       if guid == eventUnitGUID then
@@ -30,7 +30,7 @@ TriggerHandler.UnitExistsInTrackedUnits = function(conditionUnitID, eventUnitGUI
   end
 end
 
-TriggerHandler.ValidTestModeEvent = function(event, combatEvent, conditionEvent)
+function TriggerHandler.ValidTestModeEvent(event, combatEvent, conditionEvent)
   if PRT.db.profile.testMode then
     if conditionEvent == "ENCOUNTER_START" then
       local conditionEvent = "PLAYER_REGEN_DISABLED"
@@ -44,7 +44,7 @@ TriggerHandler.ValidTestModeEvent = function(event, combatEvent, conditionEvent)
   end
 end
 
-TriggerHandler.CheckCondition = function(condition, event, combatEvent, spellID, targetGUID, sourceGUID)
+function TriggerHandler.CheckCondition(condition, event, combatEvent, spellID, targetGUID, sourceGUID)
   if condition ~= nil and
     ((condition.event ~= nil and (condition.event == event or condition.event == combatEvent)) or TriggerHandler.ValidTestModeEvent(event, combatEvent, condition.event)) and
     (condition.spellID == nil or condition.spellID == spellID) and
@@ -57,7 +57,7 @@ TriggerHandler.CheckCondition = function(condition, event, combatEvent, spellID,
   return false
 end
 
-TriggerHandler.FilterTimingsTable = function(timings, timeOffset)
+function TriggerHandler.FilterTimingsTable(timings, timeOffset)
   local timingTables = {}
 
   if timings then
@@ -82,7 +82,7 @@ TriggerHandler.FilterTimingsTable = function(timings, timeOffset)
   return timingTables
 end
 
-TriggerHandler.FilterPercentagesTable = function(percentages, percent)
+function TriggerHandler.FilterPercentagesTable(percentages, percent)
   local value
 
   if percentages then
@@ -111,7 +111,7 @@ TriggerHandler.FilterPercentagesTable = function(percentages, percent)
   return value
 end
 
-TriggerHandler.GetTriggerCounter = function(trigger)
+function TriggerHandler.GetTriggerCounter(trigger)
   if trigger ~= nil then
     if trigger.counter ~= nil then
       return trigger.counter
@@ -121,7 +121,7 @@ TriggerHandler.GetTriggerCounter = function(trigger)
   end
 end
 
-TriggerHandler.GetRotationMessages = function(rotation)
+function TriggerHandler.GetRotationMessages(rotation)
   local rotationCounter = TriggerHandler.GetTriggerCounter(rotation)
   if rotation ~= nil then
     if rotation.entries ~= nil then
@@ -136,7 +136,7 @@ TriggerHandler.GetRotationMessages = function(rotation)
   end
 end
 
-TriggerHandler.IncrementTriggerCounter = function(trigger)
+function TriggerHandler.IncrementTriggerCounter(trigger)
   local triggerCounter = TriggerHandler.GetTriggerCounter(trigger)
   local newValue = triggerCounter + 1
 
@@ -144,7 +144,7 @@ TriggerHandler.IncrementTriggerCounter = function(trigger)
   trigger.counter = newValue
 end
 
-TriggerHandler.UpdateRotationCounter = function(rotation)
+function TriggerHandler.UpdateRotationCounter(rotation)
   if rotation ~= nil then
     if rotation.entries ~= nil then
       local rotationCurrentCount = TriggerHandler.GetTriggerCounter(rotation)
@@ -163,7 +163,7 @@ TriggerHandler.UpdateRotationCounter = function(rotation)
   end
 end
 
-TriggerHandler.CheckStopIgnoreRotationCondition = function(trigger)
+function TriggerHandler.CheckStopIgnoreRotationCondition(trigger)
   if trigger.ignoreAfterActivation and trigger.ignored == true then
     if ((trigger.lastActivation or 0) + (trigger.ignoreDuration or 5)) < GetTime() then
       trigger.ignored = false
@@ -172,7 +172,7 @@ TriggerHandler.CheckStopIgnoreRotationCondition = function(trigger)
   end
 end
 
-TriggerHandler.CheckStopIgnorePercentageCondition = function(trigger)
+function TriggerHandler.CheckStopIgnorePercentageCondition(trigger)
   if trigger.checkAgain and trigger.ignored == true then
     if ((trigger.lastActivation or 0) + (trigger.checkAgainAfter or 5)) < GetTime() then
       trigger.ignored = false
@@ -181,7 +181,7 @@ TriggerHandler.CheckStopIgnorePercentageCondition = function(trigger)
   end
 end
 
-TriggerHandler.SendMessagesAfterDelay = function(messages)
+function TriggerHandler.SendMessagesAfterDelay(messages)
   for i, message in ipairs(messages) do
     AceTimer:ScheduleTimer(
       function()
@@ -192,7 +192,7 @@ TriggerHandler.SendMessagesAfterDelay = function(messages)
   end
 end
 
-TriggerHandler.SendMessagesAfterDelayWithEventInfo = function(messages, event, combatEvent, eventSpellID, targetName, sourceName)
+function TriggerHandler.SendMessagesAfterDelayWithEventInfo(messages, event, combatEvent, eventSpellID, targetName, sourceName)
   if messages then
     for i, message in ipairs(messages) do
       AceTimer:ScheduleTimer(
@@ -225,7 +225,7 @@ end
 -------------------------------------------------------------------------------
 -- Public API
 
-PRT.IsTriggerActive = function(trigger)
+function PRT.IsTriggerActive(trigger)
   return
     (
     (
@@ -254,7 +254,7 @@ end
 
 -- Timer
 
-PRT.CheckTimerStartConditions = function(timers, event, combatEvent, spellID, targetGUID, sourceGUID)
+function PRT.CheckTimerStartConditions(timers, event, combatEvent, spellID, targetGUID, sourceGUID)
   if timers ~= nil then
     for i, timer in ipairs(timers) do
       if timer.enabled == true or timer.enabled == nil then
@@ -273,7 +273,7 @@ PRT.CheckTimerStartConditions = function(timers, event, combatEvent, spellID, ta
   end
 end
 
-PRT.CheckTimerStopConditions = function(timers, event, combatEvent, spellID, targetGUID, sourceGUID)
+function PRT.CheckTimerStopConditions(timers, event, combatEvent, spellID, targetGUID, sourceGUID)
   if timers ~= nil then
     for i, timer in ipairs(timers) do
       if timer.enabled == true or timer.enabled == nil then
@@ -301,7 +301,7 @@ PRT.CheckTimerStopConditions = function(timers, event, combatEvent, spellID, tar
   end
 end
 
-PRT.CheckTriggersStartConditions = function(triggers, event, combatEvent, spellID, targetGUID, sourceGUID)
+function PRT.CheckTriggersStartConditions(triggers, event, combatEvent, spellID, targetGUID, sourceGUID)
   if triggers ~= nil then
     for i, trigger in ipairs(triggers) do
       if trigger.enabled == true or trigger.enabled == nil then
@@ -316,7 +316,7 @@ PRT.CheckTriggersStartConditions = function(triggers, event, combatEvent, spellI
   end
 end
 
-PRT.CheckTriggersStopConditions = function(triggers, event, combatEvent, spellID, targetGUID, sourceGUID)
+function PRT.CheckTriggersStopConditions(triggers, event, combatEvent, spellID, targetGUID, sourceGUID)
   if triggers ~= nil then
     for i, trigger in ipairs(triggers) do
       if trigger.enabled == true or trigger.enabled == nil then
@@ -331,7 +331,7 @@ PRT.CheckTriggersStopConditions = function(triggers, event, combatEvent, spellID
   end
 end
 
-PRT.CheckTimerTimings = function(timers)
+function PRT.CheckTimerTimings(timers)
   local currentTime = GetTime()
   if timers ~= nil then
     for i, timer in ipairs(timers) do
@@ -361,7 +361,7 @@ PRT.CheckTimerTimings = function(timers)
 end
 
 -- Rotations
-PRT.CheckRotationTriggerCondition = function(rotations, event, combatEvent, eventSpellID, targetGUID, targetName, sourceGUID, sourceName)
+function PRT.CheckRotationTriggerCondition(rotations, event, combatEvent, eventSpellID, targetGUID, targetName, sourceGUID, sourceName)
   if rotations ~= nil then
     for i, rotation in ipairs(rotations) do
       if PRT.IsTriggerActive(rotation) then
@@ -391,7 +391,7 @@ end
 
 -- Health Percentages
 
-PRT.GetEffectiveUnitID = function(unitID)
+function PRT.GetEffectiveUnitID(unitID)
   if UnitExists(unitID) then
     return unitID
   elseif PRT.currentEncounter.trackedUnits then
@@ -405,7 +405,7 @@ PRT.GetEffectiveUnitID = function(unitID)
   end
 end
 
-PRT.CheckUnitHealthPercentages = function(percentages)
+function PRT.CheckUnitHealthPercentages(percentages)
   if percentages ~= nil then
     for i, percentage in ipairs(percentages) do
       if PRT.IsTriggerActive(percentage) then
@@ -442,7 +442,7 @@ PRT.CheckUnitHealthPercentages = function(percentages)
   end
 end
 
-PRT.CheckUnitPowerPercentages = function(percentages)
+function PRT.CheckUnitPowerPercentages(percentages)
   if percentages ~= nil then
     for i, percentage in ipairs(percentages) do
       if PRT.IsTriggerActive(percentage) then
@@ -483,11 +483,11 @@ end
 -------------------------------------------------------------------------------
 -- Message Queue Processing
 
-PRT.ProcessMessage = function(message)
+function PRT.ProcessMessage(message)
   PRT.ExecuteMessage(message)
 end
 
-PRT.ProcessMessageQueue = function()
+function PRT.ProcessMessageQueue()
   if PRT.MessageQueue ~= nil then
     if table.getn(PRT.MessageQueue) > 0 then
       local currentTime = GetTime()

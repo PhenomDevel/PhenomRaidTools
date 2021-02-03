@@ -25,19 +25,10 @@ local MessageHandler = {
 -------------------------------------------------------------------------------
 -- Local Helper
 
-MessageHandler.MessageToReceiverMessage = function(message)
-  local target = message.target or ""
-  local spellID = message.spellID or ""
-  local duration = message.duration or ""
-  local message = message.message or ""
-
-  return target.."?"..spellID.."#"..duration.."&"..message
-end
-
-MessageHandler.ExpandMessageTargets = function(message)
+function MessageHandler.ExpandMessageTargets(message)
   local splittetTargets = {}
 
-  for i, v in ipairs(message.targets) do
+  for _, v in ipairs(message.targets) do
     if v == "$target" then
       -- Set event target as message target
       tinsert(splittetTargets, { message.eventTarget })
@@ -52,22 +43,22 @@ MessageHandler.ExpandMessageTargets = function(message)
   local existingTarget = {}
   local distinctTargets = {}
 
-  for i, target in ipairs(targets) do
-    local target = strtrim(target, " ")
-    if (not existingTarget[target]) then
-      table.insert(distinctTargets, target)
-      existingTarget[target] = true
+  for _, target in ipairs(targets) do
+    local trimmedTarget = strtrim(target, " ")
+    if (not existingTarget[trimmedTarget]) then
+      table.insert(distinctTargets, trimmedTarget)
+      existingTarget[trimmedTarget] = true
     end
   end
 
   return distinctTargets
 end
 
-MessageHandler.ExecuteMessageAction = function(message)
+function MessageHandler.ExecuteMessageAction(message)
 
   local messageTargets = MessageHandler.ExpandMessageTargets(message)
 
-  for i, target in ipairs(messageTargets) do
+  for _, target in ipairs(messageTargets) do
     local targetMessage = PRT.CopyTable(message)
     targetMessage.target = target
     targetMessage.message = PRT.ReplacePlayerNameTokens(targetMessage.message)
@@ -94,7 +85,7 @@ MessageHandler.ExecuteMessageAction = function(message)
   end
 end
 
-MessageHandler.IsValidSender = function(message)
+function MessageHandler.IsValidSender(message)
   -- Filter received messages by configured message filter
   if PRT.db.profile.messageFilter.filterBy == "names" then
     return (tContains(PRT.db.profile.messageFilter.requiredNames, message.sender) or
@@ -114,7 +105,7 @@ MessageHandler.IsValidSender = function(message)
   return false
 end
 
-MessageHandler.IsMessageForMe = function(message)
+function MessageHandler.IsMessageForMe(message)
   -- Check if the message is relevant for myself by message targets
   if tContains(MessageHandler.validPlayerTargets, message.target) or message.target == UnitGroupRolesAssigned("player") then
     return true
@@ -126,7 +117,7 @@ end
 function PRT:OnAddonMessage(message)
   if PRT.db.profile.enabled then
     if UnitAffectingCombat("player") then
-      local worked, messageTable = PRT.StringToTable(message)
+      local _, messageTable = PRT.StringToTable(message)
 
       if PRT.db.profile.receiverMode then
         if MessageHandler.IsValidSender(messageTable) then
@@ -144,7 +135,7 @@ end
 
 function PRT:OnVersionRequest(message)
   if PRT.db.profile.enabled then
-    local worked, messageTable = PRT.StringToTable(message)
+    local _, messageTable = PRT.StringToTable(message)
 
     if messageTable.requestor then
       PRT.Debug("Version request from:", messageTable.requestor)
@@ -162,26 +153,26 @@ end
 
 function PRT:OnVersionResponse(message)
   if PRT.db.profile.enabled then
-    local worked, messageTable = PRT.StringToTable(message)
+    local _, messageTable = PRT.StringToTable(message)
     PRT.Debug("Version response from:", PRT.ClassColoredName(messageTable.name), PRT.HighlightString(messageTable.version))
     PRT.db.profile.versionCheck[messageTable.name] = messageTable.version
   end
 end
 
-function PRT:OnSyncRequest(message)
+function PRT:OnSyncRequest(_)
 -- daten auspacken
 -- abfrage, ob benutzer syncen will
 -- encounter, placeholder, overlays, raid roster
 end
 
-function PRT:OnSyncResponse(message)
+function PRT:OnSyncResponse(_)
 -- Rückmeldung an den Benutzer
 end
 
 -------------------------------------------------------------------------------
 -- Public API
 
-PRT.ExecuteMessage = function(message)
+function PRT.ExecuteMessage(message)
   if message then
     MessageHandler.ExecuteMessageAction(message)
   end

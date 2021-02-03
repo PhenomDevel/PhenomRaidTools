@@ -24,7 +24,7 @@ local Condition = {
 -------------------------------------------------------------------------------
 -- Public API
 
-PRT.ConditionWidget = function(condition, textID)
+function PRT.ConditionWidget(condition, textID)
   local conditionGroup = PRT.InlineGroup(textID)
 
   -- Generate event list
