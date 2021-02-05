@@ -259,7 +259,7 @@ end
 function PRT:PLAYER_ENTERING_WORLD(_)
   PRT.Debug("Currently active profile", PRT.HighlightString(PRT.db:GetCurrentProfile()))
   PRT.Debug("Zone entered.")
-  PRT.Debug("Will check zone/difficulty in 10 seconds to determine if addon should be loaded.")
+  PRT.Debug("Will check zone/difficulty in 5 seconds to determine if addon should be loaded.")
 
   AceTimer:ScheduleTimer(
     function()
@@ -269,7 +269,7 @@ function PRT:PLAYER_ENTERING_WORLD(_)
 
       if type == "party" then
         PRT.Debug("Player entered dungeon - checking difficulty")
-        PRT.Debug("Current difficulty is", PRT.HighlightString(difficultyID).."-"..PRT.HighlightString(difficultyNameEN))
+        PRT.Debug("Current difficulty is", PRT.HighlightString(difficultyID or "").."-"..PRT.HighlightString(difficultyNameEN or ""))
 
         if self.db.profile.enabledDifficulties["dungeon"][difficultyNameEN] then
           PRT.Debug("Enabling PhenomRaidTools for", PRT.HighlightString(name), "on difficulty", PRT.HighlightString(difficultyNameEN))
@@ -293,6 +293,6 @@ function PRT:PLAYER_ENTERING_WORLD(_)
         PRT.Debug("Player is not in a raid nor in a dungeon. PhenomRaidTools disabled.")
       end
     end,
-    10
+    5
   )
 end
