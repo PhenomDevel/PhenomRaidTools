@@ -1,4 +1,15 @@
 ===============================================================================
+# Release 2.1.0.1
+## Bugfixes
+ - Prepend exception when swapping loadscreens to fast
+
+## Features
+ - Refactoring
+   - Use luacheck for unused vars etc.
+   - Use lua-format for better indentation
+
+
+===============================================================================
 # Release 2.0.21.2
 ## Bugfixes
  - Make sure test mode events are only checked in test mode
@@ -36,7 +47,7 @@ None
 
 ## Features
  - Add `always include myself` checkbox for message filter
-  - This can be used instead of `$me` as name so you will be able to include yourself even if 
+  - This can be used instead of `$me` as name so you will be able to include yourself even if
     you choose to filter messages by a higher guild rank than yourself. Note `$me` as name will still work.
 
 
@@ -57,7 +68,7 @@ None
 ## Features
  - Added ability to copy&paste timers, rotations, and percentages
    - Go into a trigger and click "Copy to clipboard"
-   - Afterwards go to the overview of the corresponding trigger type in another encounter and 
+   - Afterwards go to the overview of the corresponding trigger type in another encounter and
      click "Paste from clipboard"
  - A whole lot of local fixes
  - Show custom placeholder explanation for encounter placeholders aswell
@@ -108,7 +119,7 @@ None
      - Examples of what should now be able to do:
        - `send a message when unit X dies` e.g. for cabalists on sire denathrius
        - `send a messge when unit Xy starts casting a spell` e.g. for interupts on a specific unit
- 
+
 ## Features
 None
 
@@ -117,7 +128,7 @@ None
 # Release 2.0.17.0
 ## Bugfixes
 None
- 
+
 ## Features
  - Check if a player of custom placeholders is dead before sending a message
 
@@ -127,7 +138,7 @@ None
 ## Bugfixes
  - Only add units to tracked units if not already exists
  - Change event to track units
- 
+
 ## Features
 None
 
@@ -135,8 +146,8 @@ None
 ===============================================================================
 # Release 2.0.16.0
 ## Bugfixes
- - 
- 
+ -
+
 ## Features
  - Add description field for triggers to make it easier to understand the purpose
  - Add Flourish and Tree of Life as cooldown quick access
@@ -146,7 +157,7 @@ None
 # Release 2.0.15.1
 ## Bugfixes
  - Make sure multiple imports do not create equaly named triggers
- 
+
 ## Features
 None
 
@@ -155,7 +166,7 @@ None
 # Release 2.0.15.0
 ## Bugfixes
 None
- 
+
 ## Features
  - Be able to merge encounters on import if encounter is already existing
 
@@ -164,7 +175,7 @@ None
 # Release 2.0.14.1
 ## Bugfixes
  - Upload correct file format for newly added sounds
- 
+
 ## Features
 None
 
@@ -173,7 +184,7 @@ None
 # Release 2.0.14.0
 ## Bugfixes
 None
- 
+
 ## Features
  - Added sounds for heal cds
 
@@ -183,7 +194,7 @@ None
 ## Bugfixes
  - Make sure unit name percentage trigger work as intended
  - Close main window when profile page is opened
- 
+
 ## Features
  - Show current active profile on minimap icon hover
 
@@ -194,7 +205,7 @@ None
  - Fix some locals
  - Make sure placeholder TANK, HEALER, and DAMAGER work properly again
  - Make sure sender overlay is initialized correctly
- 
+
 ## Features
  - Show indicator for each trigger for enabled difficulties (N, H, M)
  - Add /prt profile slash command to open profile window
@@ -205,7 +216,7 @@ None
 ## Bugfixes
  - Fix percentage recognition for unit names
  - Add newly used library to support non "elvui" users
- 
+
 ## Features
 None
 
@@ -392,7 +403,7 @@ None
  - Add custom placeholders for each encounter
   - Those will be exported / imported along with the given encounter
  - Add offset slider for timings which will be substracted from the timings
-  - Can be used to offset all timings of a timer  
+  - Can be used to offset all timings of a timer
 
 
 ===============================================================================
@@ -446,7 +457,7 @@ None
 # Release 2.0.2.5-SL-ALPHA
 ## Bugfixes
  - Be able to create new triggers again
-   - You're no longer able to mute single messages. This change is due to the 
+   - You're no longer able to mute single messages. This change is due to the
      facts that each player can mute certain reicever overlays
 
 ## Features
@@ -565,7 +576,7 @@ None
 ===============================================================================
 # Release 1.6.4.0-ALPHA
 ## Bugfixes
- - Make sure spell names on encounter overview are queried when needed and 
+ - Make sure spell names on encounter overview are queried when needed and
    not ahead of time
 
 ## Features
@@ -661,7 +672,7 @@ None
  - Be able to use $group1-8 as placeholder in message targets (will be exchanged with the player names dynamically)
  - Add more options to target select for messages
  - Support `space` as delimiter in message targets for more stability
- - Renamed `customNames` to `customPlaceholders` 
+ - Renamed `customNames` to `customPlaceholders`
    - This change was made in preparation to add more placeholder types like `group` (all players will be messaged instead of one)
 
 
@@ -714,7 +725,7 @@ None
  - Remove 180 character limit for messages (shouldn't really matter)
  - Added shared media files with more to come for the new expansion
  - Prepare encounter select for Shadowlands
- 
+
 
 ===============================================================================
 # Release 1.3.23.0
@@ -861,7 +872,7 @@ None
 
 ## Features
  - Added raid roster import by current group
- - Added confirmation dialog for raid roster import 
+ - Added confirmation dialog for raid roster import
  - Added confirmation dialog for encounter deletion
  - Added confirmation dialog for timer deletion
  - Added confirmation dialog for rotation deletion
