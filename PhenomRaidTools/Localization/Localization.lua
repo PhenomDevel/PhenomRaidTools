@@ -90,6 +90,7 @@ L = {
 
   -- Tree
   ["treeOptions"] = "Options",
+  ["treeTemplates"] = "Templates",
   ["treeEncounters"] = "Encounters",
   ["treeTimer"] = "Timers",
   ["treeRotation"] = "Rotations",
@@ -106,6 +107,9 @@ L = {
   ["defaultIgnoreAfterActivation"] = "Should restart",
   ["defaultEvent"] = "Event",
   ["defaultMessage"] = "Message",
+  ["defaultTargetOverlay"] = "Overlay",
+  ["defaultType"] = "type",
+  ["defaultTypeTooltip"] = "Possible values are |cFF69CCF0cooldown|r and |cFF69CCF0advanced|r.",
   ["defaultTargets"] = "Targets",
   ["defaultTargetsTooltip"] =
   "Comma separated list of targets\n"..
@@ -386,12 +390,42 @@ L = {
   ["TOP - Kul'tharok" ] = "TOP - Kul'tharok",
   ["TOP - Mordretha, the Endless Empress"] = "TOP - Mordretha, the Endless Empress",
 
+  -- Copy & Paste
   ["copyTimer"] = "Copy to clipboard",
   ["copyRotation"] = "Copy to clipboard",
   ["copyPercentage"] = "Copy to clipboard",
   ["pasteTimer"] = "Paste from clipboard",
   ["pasteRotation"] = "Paste from clipboard",
-  ["pastePercentage"] = "Paste from clipboard"
+  ["pastePercentage"] = "Paste from clipboard",
+
+  -- Trigger
+  ["triggerEnabled"] = "Enabled",
+  ["triggerName"] = "Name",
+  ["triggerDescription"] = "Description",
+  ["triggerCloneButton"] = "Clone",
+  ["triggerDeleteButton"] = "|cFFed3939Delete|r",
+
+  -- Action
+  ["actionType"] = "Type",
+  ["cooldownActionTargetDropdown"] = "Target",
+  ["cooldownActionSpellDropdown"] = "Cooldown",
+
+  -- Template
+  ["saveAsTemplate"] = "Save as template",
+  ["saveAsTemplateDescription"] = "Save as template.\n"..
+  "Please make sure you have everything setup correctly. A template is a snapshot of the current state.\n"..
+  "If you change anything after saving the template, the template will not be changed aswell.",
+  ["saveAsTemplateName"] = "Template name",
+  ["templatesTabGroup"] = "Templates",
+  ["templatesTabGroupMessages"] = "Messages",
+  ["templatesTabGroupTimers"] = "Timers",
+  ["templatesTabGroupRotations"] = "Rotations",
+  ["templatesTabGroupHealthPercentages"] = "Health Percentages",
+  ["templatesTabGroupPowerPercentages"] = "Power Percentages",
+  ["templateMessagesEmptyDescription"] = "There are currently no templates.",
+  ["templateMessagesDeleteDropdown"] = "Delete template",
+  ["templateMessagesDeleteConfirmation"] = "Are you sure you want to delete this template?",
+  ["loadTemplateActionTemplateDropdown"] = "Select template",
 }
 
 

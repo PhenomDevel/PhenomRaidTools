@@ -87,6 +87,7 @@ if GetLocale() == "deDE" then
 
   -- Tree
   L["treeOptions"] = "Optionen"
+  L["treeTemplates"] = "Vorlagen"
   L["treeEncounters"] = "Bosse"
   L["treeTimer"] = "Timer"
   L["treeRotation"] = "Rotationen"
@@ -384,6 +385,35 @@ if GetLocale() == "deDE" then
   L["pasteTimer"] = "Einfügen aus Zwischenablage"
   L["pasteRotation"] = "Einfügen aus Zwischenablage"
   L["pastePercentage"] = "Einfügen aus Zwischenablage"
+
+  -- Trigger
+  L["triggerEnabled"] = "Aktiviert"
+  L["triggerName"] = "Name"
+  L["triggerDescription"] = "Beschreibung"
+  L["triggerCloneButton"] = "Klonen"
+  L["triggerDeleteButton"] = "|cFFed3939Löschen|r"
+
+  -- Action
+  L["actionType"] = "Typ"
+  L["cooldownActionTargetDropdown"] = "Ziel"
+  L["cooldownActionSpellDropdown"] = "Fähigkeit"
+
+  -- Template
+  L["saveAsTemplate"] = "Als Vorlage speichern"
+  L["saveAsTemplateDescription"] = "Vorlage speichern\n"..
+    "Bitte stelle sicher, dass alles korrekt eingestellt ist. Eine Vorlage ist nur eine Momentaufnahme.\n"..
+    "Wenn Du Einstellungen veränderst wird die Vorlage nicht automatisch mit angepasst."
+  L["saveAsTemplateName"] = "Vorlagenname"
+  L["templatesTabGroup"] = "Vorlagen"
+  L["templatesTabGroupMessages"] = "Nachrichten"
+  L["templatesTabGroupTimers"] = "Timer"
+  L["templatesTabGroupRotations"] = "Rotationen"
+  L["templatesTabGroupHealthPercentages"] = "Lebens-Prozente"
+  L["templatesTabGroupPowerPercentages"] = "Energie-Prozente"
+  L["templateMessagesEmptyDescription"] = "Aktuell sind keine Vorlagen vorhanden."
+  L["templateMessagesDeleteDropdown"] = "Vorlage löschen"
+  L["templateMessagesDeleteConfirmation"] = "Bist Du dir sicher, dass du die Vorlage löschen willst?"
+  L["loadTemplateActionTemplateDropdown"] = "Vorlage wählen"
 
 else
   return
