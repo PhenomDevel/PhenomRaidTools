@@ -31,16 +31,11 @@ function PRT.ConditionWidget(condition, textID)
   local additionalEvents = PRT.db.profile.triggerDefaults.conditionDefaults.additionalEvents
   local conditionEventsFull = table.mergecopy(Condition.defaultEvents, additionalEvents)
 
-  -- Create default widgets for condition
+  -- Create new group for spell inputs
   local eventDropDown = PRT.Dropdown("conditionEvent", conditionEventsFull, condition.event, true)
   local spellIDEditBox = PRT.EditBox("conditionSpellID", condition.spellID, true)
-  local targetEditBox = PRT.EditBox("conditionTarget", condition.target, true)
-  local sourceEditBox = PRT.EditBox("conditionSource", condition.source, true)
-
-  -- Create new group for spell inputs
-  local spellGroup = PRT.SimpleGroup()
-  spellGroup:SetLayout("Flow")
-  spellGroup:SetRelativeWidth(1)
+  local eventGroup = PRT.SimpleGroup()
+  eventGroup:SetLayout("Flow")
 
   local spellIcon = PRT.Icon(condition.spellIcon, condition.spellID)
   spellIcon:SetHeight(40)
@@ -86,6 +81,12 @@ function PRT.ConditionWidget(condition, textID)
       widget:ClearFocus()
     end)
 
+  -- Add unit group
+  local targetEditBox = PRT.EditBox("conditionTarget", condition.target, true)
+  local sourceEditBox = PRT.EditBox("conditionSource", condition.source, true)
+  local unitGroup = PRT.SimpleGroup()
+  unitGroup:SetLayout("Flow")
+
   targetEditBox:SetCallback("OnEnterPressed",
     function(widget)
       local text = widget:GetText()
@@ -108,11 +109,14 @@ function PRT.ConditionWidget(condition, textID)
       widget:ClearFocus()
     end)
 
-  conditionGroup:AddChild(eventDropDown)
-  conditionGroup:AddChild(spellIDEditBox)
-  conditionGroup:AddChild(spellIcon)
-  conditionGroup:AddChild(targetEditBox)
-  conditionGroup:AddChild(sourceEditBox)
+  eventGroup:AddChild(eventDropDown)
+  eventGroup:AddChild(spellIDEditBox)
+  eventGroup:AddChild(spellIcon)
+  unitGroup:AddChild(targetEditBox)
+  unitGroup:AddChild(sourceEditBox)
+
+  conditionGroup:AddChild(eventGroup)
+  conditionGroup:AddChild(unitGroup)
 
   return conditionGroup
 end

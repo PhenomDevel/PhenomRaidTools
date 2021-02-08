@@ -283,9 +283,10 @@ function PRT.Label(textID, fontSize)
   local text = L[textID]
 
   local widget = AceGUI:Create("Label")
+  widget:SetJustifyV("CENTER")
 
   widget:SetText(text)
-  widget:SetFont(GameFontHighlightSmall:GetFont(), (fontSize or 12), "OUTLINE")
+  widget:SetFont(GameFontHighlightSmall:GetFont(), (fontSize or 14), "OUTLINE")
   widget:SetWidth(500)
 
   return widget

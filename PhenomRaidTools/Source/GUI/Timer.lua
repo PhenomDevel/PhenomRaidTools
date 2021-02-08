@@ -97,43 +97,22 @@ function Timer.TimingWidget(timing, container, _, timings)
   local cloneButton = PRT.Button("cloneTiming")
   cloneButton:SetCallback("OnClick",
     function()
-      local clone = PRT.CopyTable(timing)
+      local clone = PRT.TableUtils.CopyTable(timing)
       tinsert(timings, clone)
       PRT.Core.ReselectCurrentValue()
     end)
   container:AddChild(cloneButton)
 end
 
-function Timer.TimerWidget(timer, container, deleteButton, cloneButton)
+function Timer.TimerWidget(timerName, timers, container)
+  local _, timer = PRT.FilterTableByName(timers, timerName)
+
+  -- General Options
+  PRT.AddGeneralOptionsWidgets(container, timerName, timers, "timer")
+
+  -- Timer Options
   local timerOptionsGroup = PRT.InlineGroup("timerOptionsHeading")
   timerOptionsGroup:SetLayout("Flow")
-
-  local copyButton = PRT.Button("copyTimer")
-  copyButton:SetCallback("OnClick",
-    function()
-      local copy = PRT.CopyTable(timer)
-      copy.name = copy.name.." Copy"..random(0,100000)
-      PRT.db.profile.clipboard.timer = copy
-      PRT.Debug("Copied timer", PRT.HighlightString(timer.name), "to clipboard")
-    end)
-
-  local enabledCheckbox = PRT.CheckBox("timerEnabled", timer.enabled)
-  enabledCheckbox:SetRelativeWidth(1)
-  enabledCheckbox:SetCallback("OnValueChanged",
-    function(widget)
-      timer.enabled = widget:GetValue()
-      PRT.Core.UpdateTree()
-    end)
-
-  local nameEditBox = PRT.EditBox("timerName", timer.name)
-  nameEditBox:SetRelativeWidth(1)
-  nameEditBox:SetCallback("OnEnterPressed",
-    function(widget)
-      timer.name = widget:GetText()
-      PRT.Core.UpdateTree()
-      PRT.Core.ReselectExchangeLast(timer.name)
-      widget:ClearFocus()
-    end)
 
   local triggerAtOccurenceSlider = PRT.Slider("timerOptionsTriggerAtOccurence", (timer.triggerAtOccurence or 1))
   triggerAtOccurenceSlider:SetSliderValues(1, 20, 1)
@@ -150,9 +129,19 @@ function Timer.TimerWidget(timer, container, deleteButton, cloneButton)
       PRT.Core.UpdateTree()
     end)
 
+  timerOptionsGroup:AddChild(triggerAtOccurenceSlider)
+  timerOptionsGroup:AddChild(resetCounterOnStopCheckbox)
+  container:AddChild(timerOptionsGroup)
+
+  -- Start Condition
   local startConditionGroup = PRT.ConditionWidget(timer.startCondition, "conditionStartHeading")
   startConditionGroup:SetLayout("Flow")
+  container:AddChild(startConditionGroup)
 
+  -- Stop Condition
+  PRT.MaybeAddStopCondition(container, timer)
+
+  -- Timings
   local timingsTabs = PRT.TableToTabs(timer.timings, true)
   local timingsTabGroup = PRT.TabGroup("timingOptions", timingsTabs)
   timingsTabGroup:SetCallback("OnGroupSelected",
@@ -160,21 +149,6 @@ function Timer.TimerWidget(timer, container, deleteButton, cloneButton)
       PRT.TabGroupSelected(widget, timer.timings, key, Timer.TimingWidget, PRT.EmptyTiming, true, "timingDeleteButton")
     end)
   PRT.SelectFirstTab(timingsTabGroup, timer.timings)
-
-  timerOptionsGroup:AddChild(enabledCheckbox)
-  PRT.AddEnabledDifficultiesGroup(timerOptionsGroup, timer)
-  timerOptionsGroup:AddChild(nameEditBox)
-  PRT.AddDescription(timerOptionsGroup, timer)
-  timerOptionsGroup:AddChild(triggerAtOccurenceSlider)
-  timerOptionsGroup:AddChild(resetCounterOnStopCheckbox)
-  container:AddChild(timerOptionsGroup)
-  container:AddChild(startConditionGroup)
-  timerOptionsGroup:AddChild(cloneButton)
-  timerOptionsGroup:AddChild(deleteButton)
-  timerOptionsGroup:AddChild(copyButton)
-
-  PRT.MaybeAddStopCondition(container, timer)
-
   container:AddChild(timingsTabGroup)
 end
 
@@ -189,10 +163,10 @@ function PRT.AddTimerOptionsWidgets(container, profile, encounterID)
   local timerOptionsGroup = PRT.InlineGroup("Options")
   timerOptionsGroup:SetLayout("Flow")
 
-  local hasClipboardTimer = not PRT.TableUtils.IsEmpty(PRT.db.profile.clipboard.timer)
+  local hasClipboardTimer = (not PRT.TableUtils.IsEmpty(PRT.db.profile.clipboard.timer))
   local pasteButtonText = PRT.StringUtils.WrapColorByBoolean(L["pasteTimer"], hasClipboardTimer, "FF696969")
   local pasteButton = PRT.Button(pasteButtonText)
-  pasteButton:SetDisabled(hasClipboardTimer)
+  pasteButton:SetDisabled(not hasClipboardTimer)
   pasteButton:SetCallback("OnClick",
     function()
       tinsert(timers, PRT.db.profile.clipboard.timer)
@@ -218,12 +192,9 @@ function PRT.AddTimerOptionsWidgets(container, profile, encounterID)
   container:AddChild(timerOptionsGroup)
 end
 
-function PRT.AddTimerWidget(container, profile, encounterID, triggerName)
+function PRT.AddTimerWidget(container, profile, encounterID, timerName)
   local _, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)
   local timers = encounter.Timers
-  local timerIndex, timer = PRT.FilterTableByName(timers, triggerName)
-  local deleteButton = PRT.NewTriggerDeleteButton(container, timers, timerIndex, "deleteTimer", timer.name)
-  local cloneButton = PRT.NewCloneButton(container, timers, timerIndex, "cloneTimer", timer.name)
 
-  Timer.TimerWidget(timer, container, deleteButton, cloneButton)
+  Timer.TimerWidget(timerName, timers, container)
 end

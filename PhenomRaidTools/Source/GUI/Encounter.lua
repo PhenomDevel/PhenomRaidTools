@@ -82,21 +82,21 @@ local function addOverviewHeader(container, header, enabled)
     coloredText = PRT.ColoredString(header, PRT.db.profile.colors.success)
   end
 
-  local headerLabel = PRT.Label(coloredText, 16)
+  local headerLabel = PRT.Label(coloredText)
   headerLabel:SetRelativeWidth(1)
 
   container:AddChild(headerLabel)
 end
 
 local function addOverviewLine(container, text)
-  local textLabel = PRT.Label(text, 14)
+  local textLabel = PRT.Label(text, 12)
   textLabel:SetRelativeWidth(1)
 
   container:AddChild(textLabel)
 end
 
 local function addOverviewEmptyLine(container)
-  local textLabel = PRT.Label(" ")
+  local textLabel = PRT.Label(" ", 12)
   textLabel:SetRelativeWidth(1)
 
   container:AddChild(textLabel)

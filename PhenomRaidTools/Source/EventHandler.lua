@@ -63,7 +63,7 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
           PRT.currentEncounter = {}
           PRT.currentEncounter.inFight = true
 
-          PRT.currentEncounter.encounter = PRT.CopyTable(encounter)
+          PRT.currentEncounter.encounter = PRT.TableUtils.CopyTable(encounter)
           PRT.currentEncounter.encounter.startedAt = GetTime()
 
           if PRT.db.profile.overlay.sender.enabled then

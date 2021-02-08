@@ -12,7 +12,7 @@ local Difficulties = {
 -- Public API
 
 function PRT.AddDifficultyWidgets(container, options)
-  local explanationLabel = PRT.Label("optionsDifficultyExplanation", 16)
+  local explanationLabel = PRT.Label("optionsDifficultyExplanation")
   explanationLabel:SetRelativeWidth(1)
 
   local dungeonGroup = PRT.InlineGroup("dungeonHeading")

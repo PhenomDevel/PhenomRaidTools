@@ -67,7 +67,7 @@ function PRT.AddRaidRosterWidget(container, options)
         RaidRoster.ClearRaidRoster, options, container)
     end)
 
-  local explanationLabel = PRT.Label("optionsRaidRosterExplanation", 16)
+  local explanationLabel = PRT.Label("optionsRaidRosterExplanation")
   explanationLabel:SetRelativeWidth(1)
 
   local tankGroup = PRT.InlineGroup("raidRosterTanksHeading")

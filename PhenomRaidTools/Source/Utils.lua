@@ -113,7 +113,7 @@ function PRT.NewCloneButton(container, t, idx, textID, entityName)
       end
       PRT.ConfirmationDialog(text,
         function()
-          local clone = PRT.CopyTable(t[idx])
+          local clone = PRT.TableUtils.CopyTable(t[idx])
           clone.name = clone.name.."- Clone"..random(0,100000)
           tinsert(t, clone)
           PRT.Core.UpdateTree()
@@ -125,12 +125,11 @@ function PRT.NewCloneButton(container, t, idx, textID, entityName)
   return cloneButton
 end
 
-function PRT.ConfirmationDialog(text, successFn, ...)
+function PRT.ConfirmationDialog(text, successFn, bodyWidgets, ...)
   if not PRT.Core.FrameExists(text) then
     local args = {...}
     local confirmationFrame = PRT.Window("confirmationWindow")
     confirmationFrame:SetLayout("Flow")
-    confirmationFrame:SetHeight(130)
     confirmationFrame:EnableResize(false)
     confirmationFrame.frame:SetFrameStrata("DIALOG")
     confirmationFrame:SetCallback("OnClose",
@@ -139,7 +138,8 @@ function PRT.ConfirmationDialog(text, successFn, ...)
         PRT.Core.UnregisterFrame(text)
       end)
 
-    local textLabel = PRT.Label(text, 16)
+    local textLabel = PRT.Label(text)
+    textLabel:SetRelativeWidth(1)
 
     confirmationFrame:SetWidth(max(430, textLabel.label:GetStringWidth() + 50))
 
@@ -159,11 +159,23 @@ function PRT.ConfirmationDialog(text, successFn, ...)
         confirmationFrame:Hide()
         PRT.Core.UnregisterFrame(text)
       end)
-    confirmationFrame:SetHeight(max(100, textLabel.label:GetStringHeight() + textLabel.frame:GetHeight()))
+
     confirmationFrame:AddChild(textLabel)
+
+    local widgetHeight = 0
+
+    if bodyWidgets then
+      for _, widget in ipairs(bodyWidgets) do
+        widget:SetRelativeWidth(1)
+        confirmationFrame:AddChild(widget)
+        widgetHeight = widgetHeight + widget.frame:GetHeight()
+      end
+    end
+
+    confirmationFrame:SetHeight(max(100, textLabel.label:GetStringHeight() + textLabel.frame:GetHeight() + widgetHeight + okButton.frame:GetHeight() + 37))
+
     confirmationFrame:AddChild(okButton)
     confirmationFrame:AddChild(cancelButton)
-
     confirmationFrame:Show()
     PRT.Core.RegisterFrame(text, confirmationFrame)
   end
@@ -172,27 +184,6 @@ end
 function PRT.Round(num, decimals)
   local mult = 10^(decimals or 0)
   return math.floor(num * mult + 0.5) / mult
-end
-
-function PRT.CopyTable(orig, copies)
-  copies = copies or {}
-  local orig_type = type(orig)
-  local copy
-  if orig_type == 'table' then
-    if copies[orig] then
-      copy = copies[orig]
-    else
-      copy = {}
-      copies[orig] = copy
-      for orig_key, orig_value in next, orig, nil do
-        copy[PRT.CopyTable(orig_key, copies)] = PRT.CopyTable(orig_value, copies)
-      end
-      setmetatable(copy, PRT.CopyTable(getmetatable(orig), copies))
-    end
-  else
-    copy = orig
-  end
-  return copy
 end
 
 function PRT.SecondsToClock(input)
@@ -307,28 +298,31 @@ end
 -------------------------------------------------------------------------------
 -- Debug Helper
 
-function PRT.PrintTable(prefix, t, maxRecursionDepth, recursionDepth)
+function PRT.PrintTable(t, maxRecursionDepth, recursionDepth)
   local recursionDepth = recursionDepth or 0
   local maxRecursionDepth = maxRecursionDepth or 3
   recursionDepth = recursionDepth + 1
 
-  if t ~= nil and recursionDepth <= maxRecursionDepth then
+  local prefix = ""
+  if recursionDepth > 1 then
+    for _ = 1, recursionDepth do
+      prefix = prefix.." "
+    end
+    prefix = prefix.."- "
+  end
+
+  if recursionDepth == 1 then
+    print("-----------------")
+    print("PrintTable: "..PRT.HighlightString(tostring(t)))
+  end
+
+  if t and (recursionDepth <= maxRecursionDepth) then
     for k, v in pairs(t) do
       if type(v) == "table" then
-        print(prefix.." ".."["..k.."]")
-        PRT.PrintTable(prefix.."  ", v, maxRecursionDepth, recursionDepth)
-      elseif type(v) == "function" then
-        print(prefix.." ".."["..k.."]".." - function")
-      elseif type(v) == "userdata" then
-        print(prefix.." ".."["..k.."]".." - userdata")
+        print(prefix.."["..k.."]")
+        PRT.PrintTable(v, maxRecursionDepth, recursionDepth)
       else
-        if v == true then
-          print(prefix.." ".."["..k.."]".." - ".."true")
-        elseif v == false then
-          print(prefix.." ".."["..k.."]".." - ".."false")
-        else
-          print(prefix.." ".."["..k.."]".." - "..v)
-        end
+        print(prefix.."["..k.."]"..": "..PRT.HighlightString(tostring(v)))
       end
     end
   end
@@ -415,6 +409,12 @@ function PRT.HighlightString(s)
   return PRT.ColoredString(s, PRT.db.profile.colors.highlight)
 end
 
+function PRT.TextureStringBySpellID(spellID, size)
+  local _, _, texture = GetSpellInfo(tonumber(spellID))
+
+  return PRT.TextureString(texture, size)
+end
+
 function PRT.TextureString(id, size)
   if id then
     return "|T"..id..":"..(size or 16)..":"..(size or 16)..":0:0:64:64:6:58:6:58|t"
@@ -472,9 +472,14 @@ function PRT.PlayerNamesByToken(token)
         tinsert(playerNames, strtrim(name, " "))
       end
     end
-  elseif PRT.db.profile.customPlaceholders or PRT.currentEncounter.encounter.CustomPlaceholders then
+  elseif PRT.db.profile.customPlaceholders then
     PRT.AddCustomPlaceholdersToPlayerNames(token, playerNames, PRT.db.profile.customPlaceholders)
-    PRT.AddCustomPlaceholdersToPlayerNames(token, playerNames, PRT.currentEncounter.encounter.CustomPlaceholders)
+
+    if PRT.currentEncounter then
+      if PRT.currentEncounter.encounter.CustomPlaceholders then
+        PRT.AddCustomPlaceholdersToPlayerNames(token, playerNames, PRT.currentEncounter.encounter.CustomPlaceholders)
+      end
+    end
   else
     tinsert(playerNames, "N/A")
   end

@@ -10,6 +10,22 @@ local Message = {
   }
 }
 
+PRT.Message = Message
+
+local CooldownSoundFileMapping = {
+  [64843] = "PRT: Divine Hymn",
+  [265202] = "PRT: Holy Word: Salvation",
+  [740] = "PRT: Tranquility",
+  [108280] = "PRT: Healing Tide Totem",
+  [115310] = "PRT: Revival",
+  [62618] = "PRT: Power Word: Barrier",
+  [98008] = "PRT: Spirit Link Totem",
+  [31821] = "PRT: Aura Mastery",
+  [320420] = "PRT: Darkness",
+  [51052] = "PRT: Anti Magic Zone",
+  [97462] = "PRT: Rallying Cry",
+}
+
 local Cooldowns = {
   externals = {
     33206, -- Pain Suppression
@@ -40,8 +56,7 @@ local Cooldowns = {
     33891, -- Tree
 
     197721, -- Flourish
-  },
-  raidDamageReduction = {
+
     62618, -- Power Word: Barrier
 
     98008, -- Spirit Link Totem
@@ -124,18 +139,20 @@ function Message.GenerateRaidRosterDropdownItems()
 
   -- Add Custom Encounter Placeholder
   -- Hacky because we do not have the encounter here...
-  if PRT.currentEncounter.encounter then
-    if PRT.currentEncounter.encounter.CustomPlaceholders then
-      for _, customEncounterPlaceholder in ipairs(PRT.currentEncounter.encounter.CustomPlaceholders) do
-        local coloredNames = {}
+  if PRT.currentEncounter then
+    if PRT.currentEncounter.encounter then
+      if PRT.currentEncounter.encounter.CustomPlaceholders then
+        for _, customEncounterPlaceholder in ipairs(PRT.currentEncounter.encounter.CustomPlaceholders) do
+          local coloredNames = {}
 
-        for _, name in ipairs(customEncounterPlaceholder.names) do
-          tinsert(coloredNames, PRT.ClassColoredName(name))
+          for _, name in ipairs(customEncounterPlaceholder.names) do
+            tinsert(coloredNames, PRT.ClassColoredName(name))
+          end
+
+          local name = strjoin(", ", unpack(coloredNames))
+          name = "$"..customEncounterPlaceholder.name.." ("..name..")"
+          tinsert(raidRosterItems, { id = "$"..customEncounterPlaceholder.name , name = name})
         end
-
-        local name = strjoin(", ", unpack(coloredNames))
-        name = "$"..customEncounterPlaceholder.name.." ("..name..")"
-        tinsert(raidRosterItems, { id = "$"..customEncounterPlaceholder.name , name = name})
       end
     end
   end
@@ -178,11 +195,110 @@ function Message.GenerateRaidRosterDropdownItems()
   return raidRosterItems
 end
 
+local function CooldownActionPreviewString(action)
+  return format("{spell:%s} %%.0f {spell:%s}", action.spellID or "", action.spellID or "")
+end
 
--------------------------------------------------------------------------------
--- Public API
+function Message.CompilePossibleCooldownItems()
+  local cooldownItems = {}
+  for _, cooldownGroup in pairs(Cooldowns) do
+    for _, spellID in ipairs(cooldownGroup) do
+      local name = GetSpellInfo(spellID)
+      local cooldownItem = {
+        id = spellID,
+        name = strjoin(" ", PRT.TextureStringBySpellID(spellID), name)
+      }
 
-function PRT.MessageWidget(message, container)
+      tinsert(cooldownItems, cooldownItem)
+    end
+  end
+
+  return cooldownItems
+end
+
+local function AddLoadTemplateActionWidgets(container, action)
+  local templates = {}
+
+  for templateName, _ in pairs(PRT.db.profile.templateStore.messages) do
+    tinsert(templates, { id = templateName, name = templateName })
+  end
+
+  local templatesDropdown = PRT.Dropdown("loadTemplateActionTemplateDropdown", templates)
+  templatesDropdown:SetCallback("OnValueChanged",
+    function(widget)
+      local templateMessage = PRT.db.profile.templateStore.messages[widget:GetValue()]
+
+      if templateMessage then
+        local newAction = PRT.TableUtils.CopyTable(templateMessage)
+        PRT.TableUtils.OverwriteValues(action, newAction)
+        container:ReleaseChildren()
+        PRT.MessageWidget(action, container)
+        PRT.Core.UpdateScrollFrame()
+      end
+    end)
+
+  container:AddChild(templatesDropdown)
+end
+
+local function AddCooldownActionWidgets(container, action)
+  local possibleTargets = Message.GenerateRaidRosterDropdownItems()
+  local possibleCooldowns = Message.CompilePossibleCooldownItems()
+
+  local targetDropdown = PRT.Dropdown("cooldownActionTargetDropdown", possibleTargets, action.targets[1], true)
+  local cooldownSpellDropdown = PRT.Dropdown("cooldownActionSpellDropdown", possibleCooldowns, action.spellID)
+  local actionPreview = PRT.Label(L["messagePreview"]..PRT.PrepareMessageForDisplay(CooldownActionPreviewString(action)))
+  targetDropdown:SetCallback("OnValueChanged",
+    function(widget)
+      wipe(action.targets)
+      tinsert(action.targets, widget:GetValue())
+    end)
+
+  cooldownSpellDropdown:SetCallback("OnValueChanged",
+    function(widget)
+      local value = widget:GetValue()
+      action.spellID = value
+      local previewString = CooldownActionPreviewString(action)
+      action.message = previewString
+
+      local soundFileName = CooldownSoundFileMapping[value]
+      if soundFileName then
+        local path = AceGUIWidgetLSMlists.sound[soundFileName]
+        action.useCustomSound = true
+        action.soundFile = path
+        action.soundFileName = soundFileName
+      else
+        action.useCustomSound = false
+        action.soundFile = nil
+        action.soundFileName = nil
+      end
+
+      actionPreview:SetText(L["messagePreview"]..PRT.PrepareMessageForDisplay(CooldownActionPreviewString(action)))
+    end)
+
+  local targetOverlayDropdownItems = {}
+  for _, overlay in ipairs(PRT.db.profile.overlay.receivers) do
+    local targetOverlayItem = {
+      id = overlay.id,
+      name = overlay.id..": "..overlay.label
+    }
+
+    tinsert(targetOverlayDropdownItems, targetOverlayItem)
+  end
+
+  local targetOverlayDropdown = PRT.Dropdown("messageTargetOverlay", targetOverlayDropdownItems, (action.targetOverlay or 1))
+  targetOverlayDropdown:SetCallback("OnValueChanged",
+    function(widget)
+      action.targetOverlay = widget:GetValue()
+    end)
+
+  container:AddChild(targetDropdown)
+  container:AddChild(targetOverlayDropdown)
+  container:AddChild(cooldownSpellDropdown)
+  container:AddChild(actionPreview)
+end
+
+local function AddAdvancedActionWidgets(container, message)
+  -- TODO: Rename message to action
   local targetsString = strjoin(", ", unpack(message.targets))
   local targetsPreviewString = Message.TargetsPreviewString(message.targets)
   local raidRosterItems = Message.GenerateRaidRosterDropdownItems()
@@ -235,7 +351,7 @@ function PRT.MessageWidget(message, container)
       widget:SetValue(nil)
     end)
 
-  local messagePreviewLabel = PRT.Label(L["messagePreview"]..PRT.PrepareMessageForDisplay(message.message), 16)
+  local messagePreviewLabel = PRT.Label(L["messagePreview"]..PRT.PrepareMessageForDisplay(message.message))
   messagePreviewLabel:SetWidth(500)
   local messageEditBox = PRT.EditBox("messageMessage", message.message, true)
   messageEditBox:SetWidth(500)
@@ -311,4 +427,97 @@ function PRT.MessageWidget(message, container)
   if message.useCustomSound then
     container:AddChild(soundSelect)
   end
+end
+
+local function SetActionTypeDefaults(action)
+  if action.type == "cooldown" then
+    action.message = nil
+    action.spellID = nil
+  elseif action.type == "advanced" then
+  -- Nothing for now
+  end
+end
+
+local function AddActionTypeWidgets(container, action)
+  local actionTypeDropdownItems = {
+    {
+      id = "cooldown",
+      name = "Cooldown"
+    },
+    {
+      id = "advanced",
+      name = "Advanced"
+    },
+    {
+      id = "loadTemplate",
+      name = "Load template",
+      disabled = PRT.TableUtils.IsEmpty(PRT.db.profile.templateStore.messages)
+    }
+  }
+
+  local actionTypeDropdown = PRT.Dropdown("actionType", actionTypeDropdownItems, action.type or "advanced")
+  actionTypeDropdown:SetCallback("OnValueChanged",
+    function(widget)
+      local value = widget:GetValue()
+      action.type = value
+      SetActionTypeDefaults(action)
+      container:ReleaseChildren()
+      PRT.MessageWidget(action, container)
+      PRT.Core.UpdateScrollFrame()
+    end)
+
+  container:AddChild(actionTypeDropdown)
+end
+
+local function AddTemplateWidgets(container, message)
+  local saveAsTemplateButton = PRT.Button("saveAsTemplate")
+  local saveAsTemplateNameEditbox = PRT.EditBox("saveAsTemplateName")
+  saveAsTemplateNameEditbox:SetCallback("OnEnterPressed",
+    function(widget)
+      local value = widget:GetText()
+
+      if PRT.db.profile.templateStore.messages[value] then
+        PRT.Warn("A template with this name already exists. Please choose antother name.")
+        widget:SetText("")
+      else
+        widget:ClearFocus()
+      end
+    end)
+
+  saveAsTemplateButton:SetCallback("OnClick",
+    function()
+      PRT.ConfirmationDialog("saveAsTemplateDescription",
+        function()
+          local templateName = saveAsTemplateNameEditbox:GetText()
+
+          if not PRT.StringUtils.IsEmpty(templateName) then
+            PRT.Info("The template was saved.")
+            PRT.db.profile.templateStore.messages[templateName] = PRT.TableUtils.CopyTable(message)
+            saveAsTemplateNameEditbox:SetText("")
+          end
+        end,
+        {
+          saveAsTemplateNameEditbox
+        })
+    end)
+
+  container:AddChild(saveAsTemplateButton)
+end
+
+
+-------------------------------------------------------------------------------
+-- Public API
+
+function PRT.MessageWidget(message, container)
+  AddActionTypeWidgets(container, message)
+
+  if message.type == "cooldown" then
+    AddCooldownActionWidgets(container, message)
+  elseif message.type == "loadTemplate" then
+    AddLoadTemplateActionWidgets(container, message)
+  else
+    AddAdvancedActionWidgets(container, message)
+  end
+
+  AddTemplateWidgets(container, message)
 end

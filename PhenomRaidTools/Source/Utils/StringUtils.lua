@@ -24,7 +24,7 @@ function StringUtils.SplitToTable(s)
 end
 
 function StringUtils.WrapColorByBoolean(s, boolean, inactiveColor, activeColor)
-  if not boolean then
+  if boolean then
     if activeColor then
       return "|c"..activeColor..s.."|r"
     else

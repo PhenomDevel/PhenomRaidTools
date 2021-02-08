@@ -100,7 +100,7 @@ function GeneralOptions.AddMessageFilter(container, options)
   local alwaysIncludeMyselfCheckBox = PRT.CheckBox("messageFilterAlwaysIncludeMyself", options.alwaysIncludeMyself)
   local filterTypeDropDown = PRT.Dropdown("messageFilterByDropdown", GeneralOptions.messageFilterTypes, options.filterBy)
   local messageFilterExplanationString = GeneralOptions.MessageFilterExplanationString(options)
-  local messageFilterExplanation = PRT.Label(messageFilterExplanationString, 16)
+  local messageFilterExplanation = PRT.Label(messageFilterExplanationString)
   messageFilterExplanation:SetRelativeWidth(1)
 
   messageFilterGroup:SetLayout("Flow")
@@ -203,7 +203,7 @@ function PRT.AddGeneralWidgets(container, options)
   GeneralOptions.AddRunMode(container, options)
 
   if not options.senderMode and options.receiverMode then
-    local helpLabel = PRT.Label("optionsReceiverModeHelp", 16)
+    local helpLabel = PRT.Label("optionsReceiverModeHelp")
     container:AddChild(helpLabel)
   end
 

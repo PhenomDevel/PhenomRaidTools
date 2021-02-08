@@ -254,9 +254,17 @@ function Core.GenerateOptionsTree()
   return t
 end
 
+function Core.GenerateTemplatesTree()
+  return {
+    value = "templates",
+    text = L["treeTemplates"]
+  }
+end
+
 function Core.GenerateTreeByProfile(profile)
   local t = {
     Core.GenerateOptionsTree(),
+    Core.GenerateTemplatesTree()
   }
 
   if profile.senderMode then
@@ -280,6 +288,10 @@ function Core.OnGroupSelected(container, key, profile)
   -- options selected
   if mainKey == "options" then
     PRT.AddOptionWidgets(container, profile)
+
+    -- templates selected
+  elseif mainKey == "templates" then
+    PRT.AddTemplateWidgets(container, profile)
 
     -- encounters selected
   elseif mainKey == "encounters" and not triggerType and not triggerName and not encounterID then
@@ -413,7 +425,7 @@ function PRT.CreateMainWindow(profile)
   if profile.mainWindow.left or profile.mainWindow.top then
     mainWindow.frame:SetPoint("TOPLEFT",UIParent,"TOPLEFT", profile.mainWindow.left or 0, -(profile.mainWindow.top or 0))
   end
-  mainWindow.frame:SetMinResize(800, 400)
+  mainWindow.frame:SetMinResize(1000, 600)
   RegisterESCHandler("mainWindow", mainWindow)
 
   -- Initialize sender and receiver frames

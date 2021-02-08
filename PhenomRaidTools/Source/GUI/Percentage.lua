@@ -66,41 +66,20 @@ function Percentage.PercentageEntryWidget(entry, container, _, entries)
   container:AddChild(cloneButton)
 end
 
-function Percentage.PercentageWidget(percentage, container, deleteButton, cloneButton)
-  local percentageOptionsGroup = PRT.InlineGroup("percentageOptionsHeading")
+function Percentage.PercentageWidget(percentageName, percentages, container)
+  local _, percentage = PRT.FilterTableByName(percentages, percentageName)
 
-  local enabledCheckbox = PRT.CheckBox("percentageEnabled", percentage.enabled)
-  local nameEditBox = PRT.EditBox("percentageName", percentage.name)
+  -- General Options
+  PRT.AddGeneralOptionsWidgets(container, percentageName, percentages, "percentage")
+
+  -- Percentage Options
+  local percentageOptionsGroup = PRT.InlineGroup("percentageOptionsHeading")
+  percentageOptionsGroup:SetLayout("Flow")
   local unitIDEditBox = PRT.EditBox("percentageUnitID", percentage.unitID, true)
   local checkAgainCheckBox = PRT.CheckBox("percentageCheckAgain", percentage.checkAgain)
   local checkAgainAfterSlider = PRT.Slider("percentageCheckAgainAfter", percentage.checkAgainAfter)
 
-  local copyButton = PRT.Button("copyPercentage")
-  copyButton:SetCallback("OnClick",
-    function()
-      local copy = PRT.CopyTable(percentage)
-      copy.name = copy.name.." Copy"..random(0,100000)
-      PRT.db.profile.clipboard.percentage = copy
-      PRT.Debug("Copied percentage", PRT.HighlightString(percentage.name), "to clipboard")
-    end)
-
   checkAgainAfterSlider:SetDisabled(not percentage.checkAgain)
-  enabledCheckbox:SetRelativeWidth(1)
-  enabledCheckbox:SetCallback("OnValueChanged",
-    function(widget)
-      percentage.enabled = widget:GetValue()
-      PRT.Core.UpdateTree()
-    end)
-
-  nameEditBox:SetRelativeWidth(1)
-  nameEditBox:SetCallback("OnEnterPressed",
-    function(widget)
-      percentage.name = widget:GetText()
-      PRT.Core.UpdateTree()
-      PRT.Core.ReselectExchangeLast(percentage.name)
-      widget:ClearFocus()
-    end)
-
   unitIDEditBox:SetCallback("OnEnterPressed",
     function(widget)
       percentage.unitID = widget:GetText()
@@ -118,7 +97,18 @@ function Percentage.PercentageWidget(percentage, container, deleteButton, cloneB
     function(widget)
       percentage.checkAgainAfter = widget:GetValue()
     end)
+  percentageOptionsGroup:AddChild(unitIDEditBox)
+  percentageOptionsGroup:AddChild(checkAgainCheckBox)
+  percentageOptionsGroup:AddChild(checkAgainAfterSlider)
+  container:AddChild(percentageOptionsGroup)
 
+  -- Start Condition
+  PRT.MaybeAddStartCondition(container, percentage)
+
+  -- Stop Condition
+  PRT.MaybeAddStopCondition(container, percentage)
+
+  -- Percentageentries
   local tabs = PRT.TableToTabs(percentage.values, true)
   local valuesTabGroupWidget = PRT.TabGroup(nil, tabs)
   valuesTabGroupWidget:SetCallback("OnGroupSelected",
@@ -127,23 +117,6 @@ function Percentage.PercentageWidget(percentage, container, deleteButton, cloneB
     end)
 
   PRT.SelectFirstTab(valuesTabGroupWidget, percentage.values)
-
-  percentageOptionsGroup:SetLayout("Flow")
-
-  percentageOptionsGroup:AddChild(enabledCheckbox)
-  PRT.AddEnabledDifficultiesGroup(percentageOptionsGroup, percentage)
-  percentageOptionsGroup:AddChild(nameEditBox)
-  PRT.AddDescription(percentageOptionsGroup, percentage)
-  percentageOptionsGroup:AddChild(unitIDEditBox)
-  percentageOptionsGroup:AddChild(checkAgainCheckBox)
-  percentageOptionsGroup:AddChild(checkAgainAfterSlider)
-  percentageOptionsGroup:AddChild(cloneButton)
-  percentageOptionsGroup:AddChild(deleteButton)
-  percentageOptionsGroup:AddChild(copyButton)
-
-  container:AddChild(percentageOptionsGroup)
-  PRT.MaybeAddStartCondition(container, percentage)
-  PRT.MaybeAddStopCondition(container, percentage)
   container:AddChild(valuesTabGroupWidget)
 end
 
@@ -158,9 +131,10 @@ function PRT.AddPowerPercentageOptions(container, profile, encounterID)
   local percentageOptionsGroup = PRT.InlineGroup("Options")
   percentageOptionsGroup:SetLayout("Flow")
 
-  local hasClipboardPercentage = not PRT.TableUtils.IsEmpty(PRT.db.profile.clipboard.percentage)
-  local pasteButton = PRT.Button("pastePercentage")
-  pasteButton:SetDisabled(hasClipboardPercentage)
+  local hasClipboardPercentage = (not PRT.TableUtils.IsEmpty(PRT.db.profile.clipboard.percentage))
+  local pasteButtonText = PRT.StringUtils.WrapColorByBoolean(L["pastePercentage"], hasClipboardPercentage, "FF696969")
+  local pasteButton = PRT.Button(pasteButtonText)
+  pasteButton:SetDisabled(not hasClipboardPercentage)
   pasteButton:SetCallback("OnClick",
     function()
       tinsert(percentages, PRT.db.profile.clipboard.percentage)
@@ -186,14 +160,11 @@ function PRT.AddPowerPercentageOptions(container, profile, encounterID)
   container:AddChild(percentageOptionsGroup)
 end
 
-function PRT.AddPowerPercentageWidget(container, profile, encounterID, triggerName)
+function PRT.AddPowerPercentageWidget(container, profile, encounterID, percentageName)
   local _, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)
   local percentages = encounter.PowerPercentages
-  local percentageIndex, percentage = PRT.FilterTableByName(percentages, triggerName)
-  local deleteButton = PRT.NewTriggerDeleteButton(container, percentages, percentageIndex, "deletePercentage", percentage.name)
-  local cloneButton = PRT.NewCloneButton(container, percentages, percentageIndex, "clonePercentage", percentage.name)
 
-  Percentage.PercentageWidget(percentage, container, deleteButton, cloneButton)
+  Percentage.PercentageWidget(percentageName, percentages, container)
 end
 
 
@@ -207,10 +178,10 @@ function PRT.AddHealthPercentageOptions(container, profile, encounterID)
   local percentageOptionsGroup = PRT.InlineGroup("Options")
   percentageOptionsGroup:SetLayout("Flow")
 
-  local hasClipboardPercentage = not PRT.TableUtils.IsEmpty(PRT.db.profile.clipboard.percentage)
+  local hasClipboardPercentage = (not PRT.TableUtils.IsEmpty(PRT.db.profile.clipboard.percentage))
   local pasteButtonText = PRT.StringUtils.WrapColorByBoolean(L["pastePercentage"], hasClipboardPercentage, "FF696969")
   local pasteButton = PRT.Button(pasteButtonText)
-  pasteButton:SetDisabled(hasClipboardPercentage)
+  pasteButton:SetDisabled(not hasClipboardPercentage)
   pasteButton:SetCallback("OnClick",
     function()
       tinsert(percentages, PRT.db.profile.clipboard.percentage)
@@ -236,12 +207,9 @@ function PRT.AddHealthPercentageOptions(container, profile, encounterID)
   container:AddChild(percentageOptionsGroup)
 end
 
-function PRT.AddHealthPercentageWidget(container, profile, encounterID, triggerName)
+function PRT.AddHealthPercentageWidget(container, profile, encounterID, percentageName)
   local _, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)
   local percentages = encounter.HealthPercentages
-  local percentageIndex, percentage = PRT.FilterTableByName(percentages, triggerName)
-  local deleteButton = PRT.NewTriggerDeleteButton(container, percentages, percentageIndex, "deletePercentage", percentage.name)
-  local cloneButton = PRT.NewCloneButton(container, percentages, percentageIndex, "clonePercentage", percentage.name)
 
-  Percentage.PercentageWidget(percentage, container, deleteButton, cloneButton)
+  Percentage.PercentageWidget(percentageName, percentages, container)
 end

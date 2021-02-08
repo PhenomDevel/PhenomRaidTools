@@ -104,8 +104,8 @@ function PRT.AddCustomPlaceholdersTabGroup(container, customPlaceholders)
 end
 
 function PRT.AddCustomPlaceholderDescription(container)
-  local description = PRT.Label("optionsCustomPlaceholdersDescription", 16)
-  local subDescription = PRT.Label("optionsCustomPlaceholdersSubDescription", 14)
+  local description = PRT.Label("optionsCustomPlaceholdersDescription")
+  local subDescription = PRT.Label("optionsCustomPlaceholdersSubDescription", 12)
   description:SetRelativeWidth(1)
   subDescription:SetRelativeWidth(1)
   container:AddChild(description)

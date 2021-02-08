@@ -22,48 +22,27 @@ function Rotation.RotationEntryWidget(entry, container, _, entries)
   local cloneButton = PRT.Button("cloneRotationEntry")
   cloneButton:SetCallback("OnClick",
     function()
-      local clone = PRT.CopyTable(entry)
+      local clone = PRT.TableUtils.CopyTable(entry)
       tinsert(entries, clone)
       PRT.Core.ReselectCurrentValue()
     end)
   container:AddChild(cloneButton)
 end
 
-function Rotation.RotationWidget(rotation, container, deleteButton, cloneButton)
+function Rotation.RotationWidget(rotationName, rotations, container)
+  local _, rotation = PRT.FilterTableByName(rotations, rotationName)
+
+  -- General Options
+  PRT.AddGeneralOptionsWidgets(container, rotationName, rotations, "rotation")
+
+  -- Rotation Options
   local rotationOptionsGroup = PRT.InlineGroup("rotationOptionsHeading")
   rotationOptionsGroup:SetLayout("Flow")
 
-  local enabledCheckbox = PRT.CheckBox("rotationEnabled", rotation.enabled)
-  local nameEditBox = PRT.EditBox("rotationName", rotation.name)
   local shouldRestartCheckBox =  PRT.CheckBox("rotationShouldRestart", rotation.shouldRestart)
   local ignoreAfterActivationCheckBox = PRT.CheckBox("rotationIgnoreAfterActivation", rotation.ignoreAfterActivation)
   local ignoreDurationSlider = PRT.Slider("rotationIgnoreDuration", rotation.ignoreDuration)
 
-  local copyButton = PRT.Button("copyRotation")
-  copyButton:SetCallback("OnClick",
-    function()
-      local copy = PRT.CopyTable(rotation)
-      copy.name = copy.name.." Copy"..random(0,100000)
-      PRT.db.profile.clipboard.rotation = copy
-      PRT.Debug("Copied rotation", PRT.HighlightString(rotation.name), "to clipboard")
-    end)
-
-  enabledCheckbox:SetRelativeWidth(1)
-  enabledCheckbox:SetCallback("OnValueChanged",
-    function(widget)
-      rotation.enabled = widget:GetValue()
-      PRT.Core.UpdateTree()
-    end)
-
-  nameEditBox:SetRelativeWidth(1)
-  nameEditBox:SetCallback("OnEnterPressed",
-    function(widget)
-      rotation.name = widget:GetText()
-      PRT.Core.UpdateTree()
-      PRT.Core.ReselectExchangeLast(rotation.name)
-      widget:ClearFocus()
-    end)
-  shouldRestartCheckBox:SetRelativeWidth(1)
   shouldRestartCheckBox:SetCallback("OnValueChanged",
     function(widget)
       rotation.shouldRestart = widget:GetValue()
@@ -82,9 +61,23 @@ function Rotation.RotationWidget(rotation, container, deleteButton, cloneButton)
       rotation.ignoreDuration = widget:GetValue()
     end)
 
+  rotationOptionsGroup:AddChild(shouldRestartCheckBox)
+  rotationOptionsGroup:AddChild(ignoreAfterActivationCheckBox)
+  rotationOptionsGroup:AddChild(ignoreDurationSlider)
+  container:AddChild(rotationOptionsGroup)
+
+  -- Trigger Condition
   local triggerConditionGroup = PRT.ConditionWidget(rotation.triggerCondition, "Trigger Condition")
   triggerConditionGroup:SetLayout("Flow")
+  container:AddChild(triggerConditionGroup)
 
+  -- Start Condition
+  PRT.MaybeAddStartCondition(container, rotation)
+
+  -- Stop Condition
+  PRT.MaybeAddStopCondition(container, rotation)
+
+  -- Rotationentries
   local tabs = PRT.TableToTabs(rotation.entries, true)
   local entriesTabGroupWidget = PRT.TabGroup("rotationEntryHeading", tabs)
   entriesTabGroupWidget:SetCallback("OnGroupSelected",
@@ -93,21 +86,6 @@ function Rotation.RotationWidget(rotation, container, deleteButton, cloneButton)
     end)
 
   PRT.SelectFirstTab(entriesTabGroupWidget, rotation.entries)
-
-  rotationOptionsGroup:AddChild(enabledCheckbox)
-  PRT.AddEnabledDifficultiesGroup(rotationOptionsGroup, rotation)
-  rotationOptionsGroup:AddChild(nameEditBox)
-  PRT.AddDescription(rotationOptionsGroup, rotation)
-  rotationOptionsGroup:AddChild(ignoreAfterActivationCheckBox)
-  rotationOptionsGroup:AddChild(ignoreDurationSlider)
-  rotationOptionsGroup:AddChild(shouldRestartCheckBox)
-  rotationOptionsGroup:AddChild(cloneButton)
-  rotationOptionsGroup:AddChild(deleteButton)
-  rotationOptionsGroup:AddChild(copyButton)
-  container:AddChild(rotationOptionsGroup)
-  container:AddChild(triggerConditionGroup)
-  PRT.MaybeAddStartCondition(container, rotation)
-  PRT.MaybeAddStopCondition(container, rotation)
   container:AddChild(entriesTabGroupWidget)
 end
 
@@ -132,10 +110,10 @@ function PRT.AddRotationOptions(container, profile, encounterID)
       PRT.mainWindowContent:SelectByPath("encounters", encounterID, "rotations", newRotation.name)
     end)
 
-  local hasClipboardRotation = not PRT.TableUtils.IsEmpty(PRT.db.profile.clipboard.rotation)
+  local hasClipboardRotation = (not PRT.TableUtils.IsEmpty(PRT.db.profile.clipboard.rotation))
   local pasteButtonText = PRT.StringUtils.WrapColorByBoolean(L["pasteRotation"], hasClipboardRotation, "FF696969")
   local pasteButton = PRT.Button(pasteButtonText)
-  pasteButton:SetDisabled(hasClipboardRotation)
+  pasteButton:SetDisabled(not hasClipboardRotation)
   pasteButton:SetCallback("OnClick",
     function()
       tinsert(rotations, PRT.db.profile.clipboard.rotation)
@@ -151,12 +129,9 @@ function PRT.AddRotationOptions(container, profile, encounterID)
   container:AddChild(rotationOptionsGroup)
 end
 
-function PRT.AddRotationWidget(container, profile, encounterID, triggerName)
+function PRT.AddRotationWidget(container, profile, encounterID, rotationName)
   local _, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)
   local rotations = encounter.Rotations
-  local rotationIndex, rotation = PRT.FilterTableByName(rotations, triggerName)
-  local deleteButton = PRT.NewTriggerDeleteButton(container, rotations, rotationIndex, "deleteRotation", rotation.name)
-  local cloneButton = PRT.NewCloneButton(container, rotations, rotationIndex, "cloneRotation", rotation.name)
 
-  Rotation.RotationWidget(rotation, container, deleteButton, cloneButton)
+  Rotation.RotationWidget(rotationName, rotations, container)
 end

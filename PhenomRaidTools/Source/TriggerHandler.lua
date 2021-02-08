@@ -4,7 +4,6 @@ local AceTimer = LibStub("AceTimer-3.0")
 
 local TriggerHandler = {}
 
-
 -- Create local copies of API functions which we use
 local UnitGUID, GetTime, UnitExists, UnitIsDead, UnitHealth, UnitHealthMax, UnitPower, UnitPowerMax =
   UnitGUID, GetTime, UnitExists, UnitIsDead, UnitHealth, UnitHealthMax, UnitPower, UnitPowerMax
@@ -199,7 +198,7 @@ function TriggerHandler.SendMessagesAfterDelayWithEventInfo(messages, _event, _c
       AceTimer:ScheduleTimer(
         function()
           -- Make sure we are not changing the configured message itself
-          local messageForReceiver = PRT.CopyTable(message)
+          local messageForReceiver = PRT.TableUtils.CopyTable(message)
 
           if targetName then
             messageForReceiver.message = messageForReceiver.message:gsub("$target", targetName)
