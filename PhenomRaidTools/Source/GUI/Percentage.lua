@@ -59,7 +59,7 @@ function Percentage.PercentageEntryWidget(entry, container, _, entries)
   local cloneButton = PRT.Button("clonePercentageEntry")
   cloneButton:SetCallback("OnClick",
     function()
-      local clone = PRT.CopyTable(entry)
+      local clone = PRT.TableUtils.CopyTable(entry)
       tinsert(entries, clone)
       PRT.Core.ReselectCurrentValue()
     end)

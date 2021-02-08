@@ -54,7 +54,7 @@ end
 -- Public API
 
 function PRT.AddDefaultsGroups(container, options)
-  local explanationLabel = PRT.Label("optionsDefaultsExplanation", 16)
+  local explanationLabel = PRT.Label("optionsDefaultsExplanation")
   explanationLabel:SetRelativeWidth(1)
   container:AddChild(explanationLabel)
 
