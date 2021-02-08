@@ -199,6 +199,12 @@ local defaults =  {
     },
 
     versionCheck = {
+    },
+
+    templateStore = {
+      messages = {
+
+      }
     }
   }
 }
