@@ -1,4 +1,20 @@
 ===============================================================================
+# Release 2.2.0.0-BETA
+## Bugfixes
+ - Fix copy&paste conditions
+
+## Features
+ - Be able to save and load message templates
+ - Set default font for labels to 14
+ - Generalize general trigger options rendering
+ - Update sound names to reflect correct spell names
+ - Add messages types
+   - Advanced ( current state )
+   - Cooldown
+   - From template
+
+
+===============================================================================
 # Release 2.1.0.1
 ## Bugfixes
  - Prepend exception when swapping loadscreens to fast
