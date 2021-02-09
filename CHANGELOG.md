@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.2.0.3-BETA
+## Bugfixes
+ - Don't access table field for custom placeholders which are not present
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.2.0.2-BETA
 ## Bugfixes
 None
