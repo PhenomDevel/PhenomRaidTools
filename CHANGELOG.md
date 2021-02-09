@@ -1,4 +1,15 @@
 ===============================================================================
+# Release 2.2.0.1-BETA
+## Bugfixes
+ - Fix typo
+ - Correctly check **every** percentage entry for match and don't stop if one matched
+
+## Features
+ - Better tooltip rendering
+ - Be able to use `mob-id` for percentage unit to check
+
+
+===============================================================================
 # Release 2.2.0.0-BETA
 ## Bugfixes
  - Fix copy&paste conditions
