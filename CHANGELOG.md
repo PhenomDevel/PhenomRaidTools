@@ -1,4 +1,14 @@
 ===============================================================================
+# Release 2.2.0.2-BETA
+## Bugfixes
+None
+
+## Features
+ - Add button to add new template
+ - Be able to rename templates
+
+
+===============================================================================
 # Release 2.2.0.1-BETA
 ## Bugfixes
  - Fix typo
