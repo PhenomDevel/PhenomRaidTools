@@ -172,11 +172,13 @@ function TriggerHandler.CheckStopIgnoreRotationCondition(trigger)
   end
 end
 
-function TriggerHandler.CheckStopIgnorePercentageCondition(trigger)
-  if trigger.checkAgain and trigger.ignored == true then
-    if ((trigger.lastActivation or 0) + (trigger.checkAgainAfter or 5)) < GetTime() then
-      trigger.ignored = false
-      PRT.Debug("Stopped ignoring trigger", trigger.name)
+function TriggerHandler.CheckStopIgnorePercentageCondition(percentage)
+  for _, percentageValue in ipairs(percentage.values) do
+    if percentage.checkAgain and percentageValue.ignored == true then
+      if ((percentageValue.lastActivation or 0) + (percentage.checkAgainAfter or 5)) < GetTime() then
+        percentageValue.ignored = false
+        PRT.Debug("Stopped ignoring trigger", percentageValue.name)
+      end
     end
   end
 end
@@ -383,10 +385,21 @@ function PRT.GetEffectiveUnitID(unitID)
   if UnitExists(unitID) then
     return unitID
   elseif PRT.currentEncounter.trackedUnits then
-    for _, t in pairs(PRT.currentEncounter.trackedUnits) do
-      if t.name == unitID then
-        if UnitExists(t.unitID) and not UnitIsDead(t.unitID) then
-          return t.unitID
+    for trackedUnitGUID, trackedUnit in pairs(PRT.currentEncounter.trackedUnits) do
+      if tonumber(unitID) then
+        -- Find by Mob-ID
+        local mobID = select(6, strsplit("-", trackedUnitGUID))
+        if mobID == unitID then
+          if UnitExists(trackedUnit.unitID) and not UnitIsDead(trackedUnit.unitID) then
+            return trackedUnit.unitID
+          end
+        end
+      elseif type(unitID) == "string" then
+        -- Find by name
+        if trackedUnit.name == unitID then
+          if UnitExists(trackedUnit.unitID) and not UnitIsDead(trackedUnit.unitID) then
+            return trackedUnit.unitID
+          end
         end
       end
     end
@@ -397,29 +410,27 @@ function PRT.CheckUnitHealthPercentages(percentages)
   if percentages ~= nil then
     for _, percentage in ipairs(percentages) do
       if PRT.IsTriggerActive(percentage) then
-        if percentage.enabled == true or percentage.enabled == nil then
-          TriggerHandler.CheckStopIgnorePercentageCondition(percentage)
+        TriggerHandler.CheckStopIgnorePercentageCondition(percentage)
 
-          if percentage.ignored ~= true and percentage.executed ~= true then
+        for _, percentageValue in ipairs(percentage.values) do
+          if percentageValue.ignored ~= true and percentageValue.executed ~= true then
             local unitID = PRT.GetEffectiveUnitID(percentage.unitID)
 
             if UnitExists(unitID) and (not UnitIsDead(unitID)) then
               local unitCurrentHP = UnitHealth(unitID)
               local unitMaxHP = UnitHealthMax(unitID)
               local unitHPPercent = PRT.Round(unitCurrentHP / unitMaxHP * 100, 0)
-              local messagesByHP = TriggerHandler.FilterPercentagesTable(percentage.values, unitHPPercent)
+              local percentageValueMatched = TriggerHandler.FilterPercentagesTable({percentageValue}, unitHPPercent)
 
-              if messagesByHP then
-                if messagesByHP.messages ~= nil then
-                  TriggerHandler.SendMessagesAfterDelay(messagesByHP.messages)
+              if percentageValueMatched and percentageValue.messages then
+                TriggerHandler.SendMessagesAfterDelay(percentageValue.messages)
 
-                  percentage.lastActivation = GetTime()
-                  if percentage.checkAgain == true then
-                    percentage.ignored = true
-                    PRT.Debug("Started ignoring percentage", percentage.name, "for", percentage.checkAgainAfter)
-                  else
-                    percentage.executed = true
-                  end
+                percentageValue.lastActivation = GetTime()
+                if percentage.checkAgain == true then
+                  percentageValue.ignored = true
+                  PRT.Debug("Started ignoring percentage", percentageValue.name, "for", percentage.checkAgainAfter)
+                else
+                  percentageValue.executed = true
                 end
               end
             end
@@ -434,29 +445,27 @@ function PRT.CheckUnitPowerPercentages(percentages)
   if percentages ~= nil then
     for _, percentage in ipairs(percentages) do
       if PRT.IsTriggerActive(percentage) then
-        if percentage.enabled == true or percentage.enabled == nil then
-          TriggerHandler.CheckStopIgnorePercentageCondition(percentage)
+        TriggerHandler.CheckStopIgnorePercentageCondition(percentage)
 
-          if percentage.ignored ~= true and percentage.executed ~= true then
+        for _, percentageValue in ipairs(percentage.values) do
+          if percentageValue.ignored ~= true and percentageValue.executed ~= true then
             local unitID = PRT.GetEffectiveUnitID(percentage.unitID)
 
             if UnitExists(unitID) and (not UnitIsDead(unitID)) then
               local unitCurrentPower = UnitPower(percentage.unitID)
               local unitMaxPower = UnitPowerMax(percentage.unitID)
               local unitPowerPercent = PRT.Round(unitCurrentPower / unitMaxPower * 100, 0)
-              local messagesByPower = TriggerHandler.FilterPercentagesTable(percentage.values, unitPowerPercent)
+              local percentageValueMatched = TriggerHandler.FilterPercentagesTable(percentage.values, unitPowerPercent)
 
-              if messagesByPower then
-                if messagesByPower.messages ~= nil and not messagesByPower.executed == true then
-                  TriggerHandler.SendMessagesAfterDelay(messagesByPower.messages)
+              if percentageValueMatched and percentageValue.messages then
+                TriggerHandler.SendMessagesAfterDelay(percentageValue.messages)
 
-                  percentage.lastActivation = GetTime()
-                  if percentage.ignoreAfterActivation == true then
-                    percentage.ignored = true
-                    PRT.Debug("Started ignoring percentage", percentage.name, "for", percentage.ignoreDuration)
-                  else
-                    messagesByPower.executed = true
-                  end
+                percentageValue.lastActivation = GetTime()
+                if percentage.checkAgain == true then
+                  percentageValue.ignored = true
+                  PRT.Debug("Started ignoring percentage", percentageValue.name, "for", percentage.checkAgainAfter)
+                else
+                  percentageValue.executed = true
                 end
               end
             end
