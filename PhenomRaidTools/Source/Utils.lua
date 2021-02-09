@@ -475,7 +475,7 @@ function PRT.PlayerNamesByToken(token)
   elseif PRT.db.profile.customPlaceholders then
     PRT.AddCustomPlaceholdersToPlayerNames(token, playerNames, PRT.db.profile.customPlaceholders)
 
-    if PRT.currentEncounter then
+    if PRT.currentEncounter and PRT.currentEncounter.encounter then
       if PRT.currentEncounter.encounter.CustomPlaceholders then
         PRT.AddCustomPlaceholdersToPlayerNames(token, playerNames, PRT.currentEncounter.encounter.CustomPlaceholders)
       end
