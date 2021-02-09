@@ -124,7 +124,7 @@ function PRT.RegisterEvents(events)
   end
 end
 
-function PRT.UnregsiterEvents(events)
+function PRT.UnregisterEvents(events)
   for _, event in ipairs(events) do
     PRT:UnregisterEvent(event)
   end
@@ -135,7 +135,7 @@ function PRT.RegisterEssentialEvents()
 end
 
 function PRT.UnregisterEssentialEvents()
-  PRT.UnregsiterEvents(EventHandler.essentialEvents)
+  PRT.UnregisterEvents(EventHandler.essentialEvents)
 end
 
 function PRT:ENCOUNTER_START(event, encounterID, encounterName)
@@ -174,13 +174,13 @@ end
 
 function PRT:ENCOUNTER_END(event)
   EventHandler.StopEncounter(event)
-  PRT.UnregsiterEvents(EventHandler.combatEvents)
+  PRT.UnregisterEvents(EventHandler.combatEvents)
 end
 
 function PRT:PLAYER_REGEN_ENABLED(event)
   if not PRT.PlayerInParty() or self.db.profile.testMode then
     EventHandler.StopEncounter(event)
-    PRT.UnregsiterEvents(EventHandler.combatEvents)
+    PRT.UnregisterEvents(EventHandler.combatEvents)
   end
 end
 
