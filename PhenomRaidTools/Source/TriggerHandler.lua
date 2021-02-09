@@ -380,7 +380,6 @@ function PRT.CheckRotationTriggerCondition(rotations, event, combatEvent, eventS
 end
 
 -- Health Percentages
-
 function PRT.GetEffectiveUnitID(unitID)
   if UnitExists(unitID) then
     return unitID

@@ -508,7 +508,7 @@ end
 -------------------------------------------------------------------------------
 -- Public API
 
-function PRT.MessageWidget(message, container)
+function PRT.MessageWidget(message, container, saveableAsTemplate)
   AddActionTypeWidgets(container, message)
 
   if message.type == "cooldown" then
@@ -519,5 +519,7 @@ function PRT.MessageWidget(message, container)
     AddAdvancedActionWidgets(container, message)
   end
 
-  AddTemplateWidgets(container, message)
+  if saveableAsTemplate then
+    AddTemplateWidgets(container, message)
+  end
 end

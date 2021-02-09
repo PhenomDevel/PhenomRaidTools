@@ -417,6 +417,8 @@ if GetLocale() == "deDE" then
   L["templatesTabGroupRotations"] = "Rotationen"
   L["templatesTabGroupHealthPercentages"] = "Lebens-Prozente"
   L["templatesTabGroupPowerPercentages"] = "Energie-Prozente"
+  L["messageTemplateName"] = "Name"
+  L["templateMessageNewButton"] = "|cFF76ff68Neu|r"
   L["templateMessagesEmptyDescription"] = "Aktuell sind keine Vorlagen vorhanden."
   L["templateMessagesDeleteDropdown"] = "Vorlage löschen"
   L["templateMessagesDeleteConfirmation"] = "Bist Du dir sicher, dass du die Vorlage löschen willst?"

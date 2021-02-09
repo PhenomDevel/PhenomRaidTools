@@ -242,7 +242,7 @@ function PRT.AddUnitToTrackedUnits(unitID)
     end
 
     if guid and not PRT.currentEncounter.trackedUnits[guid] and not PRT.UnitInParty(unitID) and not UnitIsPlayer(unitID) then
-      PRT.Debug("Adding "..PRT.HighlightString(guid).." to tracked units.")
+      PRT.Debug("Adding "..PRT.HighlightString(unitName.." ("..guid..")").."to tracked units.")
       PRT.currentEncounter.trackedUnits[guid] = {
         unitID = unitID,
         name = unitName,
