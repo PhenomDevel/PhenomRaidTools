@@ -182,10 +182,16 @@ L = {
   ["percentageEnabled"] = "Enabled",
   ["percentageDeleteButton"] = "|cFFed3939Delete Percentage|r",
   ["percentageName"] = "Name",
-  ["percentageUnitID"] = "Unit-ID / Unit-Name",
-  ["percentageUnitIDTooltip"] = "Unit-ID which percentage should be tracked (|cFF69CCF0boss1|r, |cFF69CCF0player|r, |cFF69CCF0PlayerName|r etc.)\n"..
-  "You also can use the units name.",
-  ["percentageCheckAgain"] = "Check multiple times?",
+  ["percentageUnitID"] = "Unit",
+  ["percentageUnitIDTooltip"] = {
+    "The unit which should be checked.",
+    "If multiple units with the same name or id exist only the first one found will be used.",
+    "Unit-IDs can be found for e.g. on wowhead.com",
+    "Examples:",
+    "- |cFF69CCF0boss1|r",
+    "- |cFF69CCF0"..UnitName("player").."|r",
+    "- |cFF69CCF038046|r"
+  },
   ["percentageCheckDelay"] = "Check again after (s)",
   ["percentageOptionsHeading"] = "Percentage Options",
   ["percentageCheckAgainAfter"] = "Check again after (s)",

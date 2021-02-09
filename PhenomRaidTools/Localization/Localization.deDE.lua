@@ -174,9 +174,16 @@ if GetLocale() == "deDE" then
   L["percentageEnabled"] = "Aktiviert"
   L["percentageDeleteButton"] = "|cFFed3939Prozent entfernen|r"
   L["percentageName"] = "Name"
-  L["percentageUnitID"] = "Unit-ID / Unit-Name"
-  L["percentageUnitIDTooltip"] = "Unit-ID welche geprüft werden soll (|cFF69CCF0boss1|r |cFF69CCF0player|r |cFF69CCF0PlayerName|r etc.)\n"..
-    "Es kann ebenfalls ein Unit-Name genutzt werden."
+  L["percentageUnitID"] = "Unit"
+  L["percentageUnitIDTooltip"] = {
+    "Die Einheit, welche geprüft werden soll.",
+    "Wenn mehrere Einheiten mit dem gleichen Namen oder ID gefunden werden, wird nur die erste geprüft.",
+    "Einheiten-Namen und IDs können auf z.B. wowhead.com gefunden werden.",
+    "Beispiele:",
+    "- |cFF69CCF0boss1|r",
+    "- |cFF69CCF0"..UnitName("player").."|r",
+    "- |cFF69CCF038046|r"
+  }
   L["percentageCheckAgain"] = "Mehrfach prüfen?"
   L["percentageOptionsHeading"] = "Optionen"
   L["percentageCheckAgainAfter"] = "Nochmal prüfen nach (s)"
