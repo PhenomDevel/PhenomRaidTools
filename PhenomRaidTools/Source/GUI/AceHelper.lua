@@ -25,12 +25,19 @@ function AceHelper.AddTooltip(widget, tooltip)
     widget:SetCallback("OnEnter",
     function()
       GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
+
+      if widget.label and widget.label:GetText() then
+        GameTooltip:AddLine(widget.label:GetText())
+      elseif widget.text and widget.text:GetText() then
+        GameTooltip:AddLine(widget.text:GetText())
+      end
+
       if type(tooltip) == "table" then
         for _, entry in ipairs(tooltip) do
-          GameTooltip:AddLine(entry)
+          GameTooltip:AddLine(entry, 1, 1, 1)
         end
       else
-        GameTooltip:AddLine(tooltip)
+        GameTooltip:AddLine(tooltip, 1, 1, 1)
       end
       GameTooltip:Show()
     end)
