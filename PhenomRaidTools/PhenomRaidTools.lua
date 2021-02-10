@@ -166,7 +166,7 @@ local defaults =  {
       messageDefaults = {
         defaultMessage = "TODO",
         defaultTargets = {
-          "ALL"
+          "$me"
         }
       }
     },
