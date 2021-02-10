@@ -1,4 +1,14 @@
 ===============================================================================
+# Release 2.2.0.4-BETA
+## Bugfixes
+ - Set the default targets to only the player
+   - So if you fuck up it won't spam everyone in the raid but you
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.2.0.3-BETA
 ## Bugfixes
  - Don't access table field for custom placeholders which are not present
