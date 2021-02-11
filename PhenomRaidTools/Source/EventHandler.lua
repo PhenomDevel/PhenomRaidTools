@@ -51,6 +51,7 @@ end
 
 function EventHandler.StartEncounter(event, encounterID, encounterName)
   if PRT.db.profile.enabled then
+    PRT.db.profile.debugLog = {}
     if PRT.db.profile.senderMode then
       PRT.Debug("Starting new encounter", PRT.HighlightString(encounterName),"(", PRT.HighlightString(encounterID), ")" , "|r")
       local _, encounter = PRT.FilterEncounterTable(PRT.db.profile.encounters, encounterID)
@@ -235,19 +236,27 @@ end
 function PRT.AddUnitToTrackedUnits(unitID)
   local unitName = GetUnitName(unitID)
   local guid = UnitGUID(unitID)
+  local unitData = {
+    unitID = unitID,
+    name = unitName,
+    guid = guid
+  }
 
   if PRT.currentEncounter then
     if not PRT.currentEncounter.trackedUnits then
       PRT.currentEncounter.trackedUnits = {}
     end
 
-    if guid and not PRT.currentEncounter.trackedUnits[guid] and not PRT.UnitInParty(unitID) and not UnitIsPlayer(unitID) then
-      PRT.Debug("Adding "..PRT.HighlightString(unitName.." ("..guid..")").."to tracked units.")
-      PRT.currentEncounter.trackedUnits[guid] = {
-        unitID = unitID,
-        name = unitName,
-        guid = guid
-      }
+    if not PRT.UnitInParty(unitID) and not UnitIsPlayer(unitID) then
+      if PRT.currentEncounter.trackedUnits[guid] then
+        if PRT.currentEncounter.trackedUnits[guid].unitID ~= unitID then
+          PRT.Debug("Updating tracked unit "..PRT.HighlightString(unitName.." ("..unitID..")"))
+          PRT.currentEncounter.trackedUnits[guid] = unitData
+        end
+      else
+        PRT.Debug("Adding "..PRT.HighlightString(unitName.." ("..unitID..")").."to tracked units.")
+        PRT.currentEncounter.trackedUnits[guid] = unitData
+      end
     end
   end
 end
