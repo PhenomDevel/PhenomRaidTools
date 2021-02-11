@@ -177,10 +177,33 @@ end
 function GeneralOptions.AddDebugMode(container, options)
   local debugModeGroup = PRT.InlineGroup("debugModeGroup")
   local debugModeCheckbox = PRT.CheckBox("debugModeEnabled", options.debugMode, true)
-  debugModeCheckbox:SetCallback("OnValueChanged", function(widget) options.debugMode = widget:GetValue() end)
+  debugModeCheckbox:SetCallback("OnValueChanged",
+    function(widget)
+      options.debugMode = widget:GetValue()
+      wipe(PRT.db.profile.debugLog)
+      container:ReleaseChildren()
+      PRT.AddGeneralWidgets(container, options)
+    end)
   debugModeCheckbox:SetRelativeWidth(1)
-
   debugModeGroup:AddChild(debugModeCheckbox)
+
+  if options.debugMode then
+    local debugLogMultilineEditBox = PRT.MultiLineEditBox("optionsDebugLog")
+    debugLogMultilineEditBox:SetRelativeWidth(1)
+    debugLogMultilineEditBox:DisableButton(true)
+    debugLogMultilineEditBox:SetHeight(200)
+    local debugLogText = ""
+    for _, entry in ipairs(PRT.db.profile.debugLog) do
+      for _, entryLine in ipairs(entry) do
+        debugLogText = debugLogText..tostring(entryLine).." "
+      end
+      debugLogText = debugLogText.."\n"
+    end
+
+    debugLogMultilineEditBox:SetText(debugLogText)
+    debugModeGroup:AddChild(debugLogMultilineEditBox)
+  end
+
   container:AddChild(debugModeGroup)
 end
 
