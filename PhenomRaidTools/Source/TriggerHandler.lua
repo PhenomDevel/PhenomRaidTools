@@ -108,6 +108,7 @@ function TriggerHandler.FilterPercentagesTable(percentages, percent)
       end
     end
   end
+
   return value
 end
 
@@ -358,6 +359,14 @@ function PRT.CheckRotationTriggerCondition(rotations, event, combatEvent, eventS
         if rotation.triggerCondition ~= nil then
           TriggerHandler.CheckStopIgnoreRotationCondition(rotation)
 
+          if rotation.triggerCondition.event and not rotation.triggerCondition.spellID then
+            if string.find(rotation.triggerCondition.event, "SPELL_") then
+              PRT.Error("Rotation", PRT.HighlightString(rotation.name), "has a SPELL_* event configured without a spellID.", "This maybe would lead to a lot of messages and is therefore skipped and disabled.")
+              rotation.enabled = false
+              return
+            end
+          end
+
           if rotation.ignored ~= true then
             if TriggerHandler.CheckCondition(rotation.triggerCondition, event, combatEvent, eventSpellID, targetGUID, sourceGUID) then
               TriggerHandler.UpdateRotationCounter(rotation)
@@ -422,6 +431,8 @@ function PRT.CheckUnitHealthPercentages(percentages)
               local percentageValueMatched = TriggerHandler.FilterPercentagesTable({percentageValue}, unitHPPercent)
 
               if percentageValueMatched and percentageValue.messages then
+                PRT.Debug("Unit health percentage matched with unit ", PRT.HighlightString(unitID),
+                  unitHPPercent, percentageValueMatched.operator, percentageValueMatched.value)
                 TriggerHandler.SendMessagesAfterDelay(percentageValue.messages)
 
                 percentageValue.lastActivation = GetTime()
@@ -457,6 +468,8 @@ function PRT.CheckUnitPowerPercentages(percentages)
               local percentageValueMatched = TriggerHandler.FilterPercentagesTable(percentage.values, unitPowerPercent)
 
               if percentageValueMatched and percentageValue.messages then
+                PRT.Debug("Unit power percentage matched with unit ", PRT.HighlightString(unitID),
+                  unitPowerPercent, percentageValueMatched.operator, percentageValueMatched.value)
                 TriggerHandler.SendMessagesAfterDelay(percentageValue.messages)
 
                 percentageValue.lastActivation = GetTime()
