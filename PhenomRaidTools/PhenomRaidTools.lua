@@ -21,9 +21,9 @@ local PhenomRaidToolsLDB = LibStub("LibDataBroker-1.1"):NewDataObject("PhenomRai
   OnEnter = function()
     GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
     GameTooltip:AddDoubleLine("|cFF69CCF0PhenomRaidTools|r", "v"..PRT.db.profile.version)
-    GameTooltip:AddDoubleLine("|cFFdcabffProfile|r "..PRT.db:GetCurrentProfile())
-    GameTooltip:AddLine("|cFFdcabffLeft-Click|r Open Config")
-    GameTooltip:AddLine("|cFFdcabffMiddle-Click|r Hide minimap icon")
+    GameTooltip:AddDoubleLine("|cFFdcabffProfile|r ",PRT.db:GetCurrentProfile())
+    GameTooltip:AddDoubleLine("|cFFdcabffLeft-Click|r", "Open Config")
+    GameTooltip:AddDoubleLine("|cFFdcabffMiddle-Click|r", "Hide minimap icon")
     GameTooltip:Show()
   end,
 
@@ -96,9 +96,7 @@ local defaults =  {
       percentage = nil,
       message = nil
     },
-
     customPlaceholders = {},
-
     overlay = {
       receivers = {
         [1] = NewDefaultReceiverOverlay(1, "Default", 16, 1, 1, 1),
@@ -171,9 +169,7 @@ local defaults =  {
       }
     },
 
-    encounters = {
-    },
-
+    encounters = {},
     currentEncounter = {
       inFight = false
     },
@@ -188,24 +184,17 @@ local defaults =  {
       enabled = "FF00c234",
       success = "FF76ff68"
     },
-
-    raidRoster = {
-    },
-
+    raidRoster = {},
     addonPrefixes = {
       addonMessage = "PRT_ADDON_MSG",
       versionRequest = "PRT_VERSION_REQ",
       versionResponse = "PRT_VERSION_RESP"
     },
-
-    versionCheck = {
-    },
-
+    versionCheck = {},
     templateStore = {
-      messages = {
-
-      }
-    }
+      messages = {}
+    },
+    debugLog = {}
   }
 }
 

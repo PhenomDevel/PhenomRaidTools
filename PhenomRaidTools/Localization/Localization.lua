@@ -21,6 +21,7 @@ L = {
   "If you want to change the appereance of the receiver overlay please go to `|cFF69CCF0Overlays|r`.",
   ["optionsEnabled"] = "Enabled",
   ["optionsDebugMode"] = "Debug mode",
+  ["optionsDebugLog"] = "Log protocol of the last encounter",
   ["optionsShowOverlay"] = "Show overlay",
   ["optionsHideOverlayAfterCombat"] = "Hide overlay after combat",
   ["optionsDifficultyExplanation"] = "Set the difficulties on which the addon should start tracking combat events",

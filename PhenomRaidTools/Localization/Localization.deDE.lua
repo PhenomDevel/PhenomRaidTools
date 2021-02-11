@@ -20,6 +20,8 @@ if GetLocale() == "deDE" then
     "|cFF69CCF0Notiz|r: Alle Optionen, welche mit dem Sender-Modus zusammenhängen sind entweder ausgeblendet oder deaktiviert.\n"..
     "Wenn du das Aussehen des für das Empfänger-Overlay ändern möchtest bitte navgiere auf `|cFF69CCF0Overlays|r`."
   L["optionsEnabled"] = "Aktiviert"
+  L["optionsDebugMode"] = "Debugmodus"
+  L["optionsDebugLog"] = "Protokoll des letzten Bosses"
   L["optionsShowOverlay"] = "Overlay anzeigen"
   L["optionsHideOverlayAfterCombat"] = "Overlay nach dem Kampf ausblenden"
   L["optionsDifficultyExplanation"] = "Hier können die Schwierigkeiten ausgewählt werden auf denen das Addon aktiv sein soll."
