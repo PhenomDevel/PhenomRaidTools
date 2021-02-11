@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.2.1.0-BETA
+## Bugfixes
+ - Update tracked units if they reappear and do not use outdated unit-ids to query
+
+## Features
+ - Add debug log
+
+
+===============================================================================
 # Release 2.2.0.4-BETA
 ## Bugfixes
  - Set the default targets to only the player
