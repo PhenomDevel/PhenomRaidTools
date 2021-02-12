@@ -418,6 +418,17 @@ function PRT.GetEffectiveUnit(unitID)
   end
 end
 
+function TriggerHandler.ExecutePercentageValue(percentage, percentageValue)
+  TriggerHandler.SendMessagesAfterDelay(percentageValue.messages)
+  percentageValue.lastActivation = GetTime()
+  if percentage.checkAgain == true then
+    percentageValue.ignored = true
+    PRT.Debug("Started ignoring percentage", percentageValue.name, "for", percentage.checkAgainAfter)
+  else
+    percentageValue.executed = true
+  end
+end
+
 function PRT.CheckUnitHealthPercentages(percentages)
   if percentages ~= nil then
     for _, percentage in ipairs(percentages) do
@@ -438,15 +449,7 @@ function PRT.CheckUnitHealthPercentages(percentages)
                 if percentageValueMatched and percentageValue.messages then
                   PRT.Debug("Unit health percentage matched with unit ", PRT.HighlightString(effectiveUnit.unitID),
                     unitHPPercent, percentageValueMatched.operator, percentageValueMatched.value)
-                  TriggerHandler.SendMessagesAfterDelay(percentageValue.messages)
-
-                  percentageValue.lastActivation = GetTime()
-                  if percentage.checkAgain == true then
-                    percentageValue.ignored = true
-                    PRT.Debug("Started ignoring percentage", percentageValue.name, "for", percentage.checkAgainAfter)
-                  else
-                    percentageValue.executed = true
-                  end
+                  TriggerHandler.ExecutePercentageValue(percentage, percentageValue)
                 end
               end
             end
@@ -475,16 +478,10 @@ function PRT.CheckUnitPowerPercentages(percentages)
                 local percentageValueMatched = TriggerHandler.FilterPercentagesTable(percentage.values, unitPowerPercent)
 
                 if percentageValueMatched and percentageValue.messages then
-                  PRT.Debug("Unit power percentage matched with unit ", PRT.HighlightString(effectiveUnit.unitID),
-                    unitPowerPercent, percentageValueMatched.operator, percentageValueMatched.value)
-                  TriggerHandler.SendMessagesAfterDelay(percentageValue.messages)
-
-                  percentageValue.lastActivation = GetTime()
-                  if percentage.checkAgain == true then
-                    percentageValue.ignored = true
-                    PRT.Debug("Started ignoring percentage", percentageValue.name, "for", percentage.checkAgainAfter)
-                  else
-                    percentageValue.executed = true
+                  if percentageValueMatched and percentageValue.messages then
+                    PRT.Debug("Unit power percentage matched with unit ", PRT.HighlightString(effectiveUnit.unitID),
+                      unitPowerPercent, percentageValueMatched.operator, percentageValueMatched.value)
+                    TriggerHandler.ExecutePercentageValue(percentage, percentageValue)
                   end
                 end
               end
