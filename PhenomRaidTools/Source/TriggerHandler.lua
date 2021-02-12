@@ -85,7 +85,7 @@ end
 function TriggerHandler.FilterPercentagesTable(percentages, percent)
   local value
 
-  if percentages then
+  if percentages and percent then
     for _, v in ipairs(percentages) do
       if v.operator == "greater" then
         if percent >= v.value then
@@ -253,7 +253,7 @@ function PRT.CheckTimerStartConditions(timers, event, combatEvent, spellID, targ
           if TriggerHandler.CheckCondition(timer.startCondition, event, combatEvent, spellID, targetGUID, sourceGUID) then
             TriggerHandler.IncrementTriggerCounter(timer)
             if (timer.triggerAtOccurence or 1) == timer.counter then
-              PRT.Debug("Started timer `"..(timer.name or "NO NAME").."`")
+              PRT.Debug("Started timer", PRT.HighlightString(timer.name))
               timer.started = true
               timer.startedAt = GetTime()
             end
@@ -270,7 +270,7 @@ function PRT.CheckTimerStopConditions(timers, event, combatEvent, spellID, targe
       if timer.enabled == true or timer.enabled == nil then
         if timer.stopCondition ~= nil and timer.started == true then
           if TriggerHandler.CheckCondition(timer.stopCondition, event, combatEvent, spellID, sourceGUID, targetGUID) then
-            PRT.Debug("Stopped timer `"..(timer.name or "NO NAME").."`")
+            PRT.Debug("Stopped timer", PRT.HighlightString(timer.name))
             timer.started = false
             timer.startedAt = nil
 
@@ -298,7 +298,7 @@ function PRT.CheckTriggersStartConditions(triggers, event, combatEvent, spellID,
       if trigger.enabled == true or trigger.enabled == nil then
         if trigger.startCondition ~= nil and trigger.active ~= true then
           if TriggerHandler.CheckCondition(trigger.startCondition, event, combatEvent, spellID, targetGUID, sourceGUID) then
-            PRT.Debug("Started trigger `"..(trigger.name or "NO NAME").."`")
+            PRT.Debug("Started trigger", PRT.HighlightString(trigger.name))
             trigger.active = true
           end
         end
@@ -313,7 +313,7 @@ function PRT.CheckTriggersStopConditions(triggers, event, combatEvent, spellID, 
       if trigger.enabled == true or trigger.enabled == nil then
         if trigger.stopCondition ~= nil and (trigger.active == true or trigger.active == nil) then
           if TriggerHandler.CheckCondition(trigger.stopCondition, event, combatEvent, spellID, sourceGUID, targetGUID) then
-            PRT.Debug("Stopped trigger `"..(trigger.name or "NO NAME").."`")
+            PRT.Debug("Stopped trigger", PRT.HighlightString(trigger.name))
             trigger.active = false
           end
         end
@@ -441,14 +441,11 @@ function PRT.CheckUnitHealthPercentages(percentages)
 
             if effectiveUnit and effectiveUnit.name == UnitName(effectiveUnit.unitID) then
               if UnitExists(effectiveUnit.unitID) and (not UnitIsDead(effectiveUnit.unitID)) then
-                local unitCurrentHP = UnitHealth(effectiveUnit.unitID)
-                local unitMaxHP = UnitHealthMax(effectiveUnit.unitID)
-                local unitHPPercent = PRT.Round(unitCurrentHP / unitMaxHP * 100, 0)
-                local percentageValueMatched = TriggerHandler.FilterPercentagesTable({percentageValue}, unitHPPercent)
+                local percentageValueMatched = TriggerHandler.FilterPercentagesTable({percentageValue}, effectiveUnit.healthPercent)
 
                 if percentageValueMatched and percentageValue.messages then
                   PRT.Debug("Unit health percentage matched with unit ", PRT.HighlightString(effectiveUnit.unitID),
-                    unitHPPercent, percentageValueMatched.operator, percentageValueMatched.value)
+                    effectiveUnit.healthPercent, percentageValueMatched.operator, percentageValueMatched.value)
                   TriggerHandler.ExecutePercentageValue(percentage, percentageValue)
                 end
               end
@@ -472,15 +469,12 @@ function PRT.CheckUnitPowerPercentages(percentages)
 
             if effectiveUnit and effectiveUnit.name == UnitName(effectiveUnit.unitID) then
               if UnitExists(effectiveUnit.unitID) and (not UnitIsDead(effectiveUnit.unitID)) then
-                local unitCurrentPower = UnitPower(effectiveUnit.unitID)
-                local unitMaxPower = UnitPowerMax(effectiveUnit.unitID)
-                local unitPowerPercent = PRT.Round(unitCurrentPower / unitMaxPower * 100, 0)
-                local percentageValueMatched = TriggerHandler.FilterPercentagesTable(percentage.values, unitPowerPercent)
+                local percentageValueMatched = TriggerHandler.FilterPercentagesTable(percentage.values, effectiveUnit.powerPercent)
 
                 if percentageValueMatched and percentageValue.messages then
                   if percentageValueMatched and percentageValue.messages then
                     PRT.Debug("Unit power percentage matched with unit ", PRT.HighlightString(effectiveUnit.unitID),
-                      unitPowerPercent, percentageValueMatched.operator, percentageValueMatched.value)
+                      effectiveUnit.powerPercent, percentageValueMatched.operator, percentageValueMatched.value)
                     TriggerHandler.ExecutePercentageValue(percentage, percentageValue)
                   end
                 end
