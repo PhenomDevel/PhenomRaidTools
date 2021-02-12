@@ -13,7 +13,7 @@ local EventHandler = {
   },
 
   combatEvents = {
-    "UNIT_COMBAT",
+    "UNIT_COMBAT"
   },
 
   difficultyIDToNameMapping = {
@@ -250,7 +250,7 @@ function PRT.AddUnitToTrackedUnits(unitID)
     if not PRT.UnitInParty(unitID) and not UnitIsPlayer(unitID) then
       if PRT.currentEncounter.trackedUnits[guid] then
         if PRT.currentEncounter.trackedUnits[guid].unitID ~= unitID then
-          PRT.Debug("Updating tracked unit "..PRT.HighlightString(unitName.." ("..unitID..")"))
+          -- PRT.Debug("Updating tracked unit "..PRT.HighlightString(unitName.." ("..unitID..")"))
           PRT.currentEncounter.trackedUnits[guid] = unitData
         end
       else
