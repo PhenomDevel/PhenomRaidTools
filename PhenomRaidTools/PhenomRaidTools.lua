@@ -248,6 +248,12 @@ end
 
 function PRT:RefreshConfig()
   PRT.Info("Active Profile was changed to", PRT.HighlightString(PRT.db:GetCurrentProfile()))
+
+  PRT.ReceiverOverlay.overlayFrames = nil
+  PRT.SenderOverlay.overlayFrame = nil
+
+  PRT.ReceiverOverlay.Initialize(PRT.db.profile.overlay.receivers)
+  PRT.SenderOverlay.Initialize(PRT.db.profile.overlay.sender)
 end
 
 function PRT:OnEnable()
