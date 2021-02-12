@@ -244,6 +244,8 @@ function PRT:OnInitialize()
   self.db.RegisterCallback(self, "OnProfileChanged", "RefreshConfig")
   self.db.RegisterCallback(self, "OnProfileCopied", "RefreshConfig")
   self.db.RegisterCallback(self, "OnProfileReset", "RefreshConfig")
+
+  PRT.db.profile.debugLog = {}
 end
 
 function PRT:RefreshConfig()
