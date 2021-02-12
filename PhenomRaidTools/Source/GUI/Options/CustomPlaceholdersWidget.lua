@@ -129,7 +129,19 @@ function PRT.AddCustomPlaceholdersWidget(container, customPlaceholders)
       PRT.CreateExportFrame(customPlaceholders)
     end)
 
+  local removeAllButton = PRT.Button("removeAllButton")
+  removeAllButton:SetCallback("OnClick",
+    function()
+      PRT.ConfirmationDialog("removeAllCustomPlaceholderConfirmation",
+        function()
+          wipe(customPlaceholders)
+          container:ReleaseChildren()
+          PRT.AddCustomPlaceholdersWidget(container, customPlaceholders)
+        end)
+    end)
+
   container:AddChild(importButton)
   container:AddChild(exportButton)
+  container:AddChild(removeAllButton)
   PRT.AddCustomPlaceholdersTabGroup(container, customPlaceholders)
 end

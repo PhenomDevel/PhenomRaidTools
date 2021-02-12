@@ -322,6 +322,10 @@ L = {
   ["importFrame"] = "Import",
   ["exportButton"] = "Export",
   ["importButton"] = "Import",
+  ["removeAllButton"] = "|cFFed3939Delete all|r",
+
+  -- Custom Placeholders
+  ["removeAllCustomPlaceholderConfirmation"] = "Are you sure you want to delete *ALL* custom placeholders?",
 
   -- Clone
   ["cloneTimer"] = "Clone Timer",

@@ -13,6 +13,18 @@ function PRT.AddCustomPlaceholderOptions(container, profile, encounterID)
     CustomPlaceholders = {}
   end
 
+  local removeAllButton = PRT.Button("removeAllButton")
+  removeAllButton:SetCallback("OnClick",
+    function()
+      PRT.ConfirmationDialog("removeAllCustomPlaceholderConfirmation",
+        function()
+          wipe(CustomPlaceholders)
+          container:ReleaseChildren()
+          PRT.AddCustomPlaceholderOptions(container, profile, encounterID)
+        end)
+    end)
+
   PRT.AddCustomPlaceholderDescription(container)
+  container:AddChild(removeAllButton)
   PRT.AddCustomPlaceholdersTabGroup(container, CustomPlaceholders)
 end

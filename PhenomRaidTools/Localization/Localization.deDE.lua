@@ -311,6 +311,10 @@ if GetLocale() == "deDE" then
   L["importFrame"] = "Import"
   L["exportButton"] = "Export"
   L["importButton"] = "Import"
+  L["removeAllButton"] = "|cFFed3939Delete all|r"
+
+  -- Custom Placeholders
+  L["removeAllCustomPlaceholderConfirmation"] = "Bist Du sicher, dass Du *ALLE* benutzerdefinierten Platzhalter entfernen willst?"
 
   -- Clone
   L["cloneTimer"] = "Timer duplizieren"
