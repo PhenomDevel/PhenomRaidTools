@@ -61,23 +61,29 @@ function PRT.ConditionWidget(condition, textID)
 
       local _, _, icon, _, _, _, spellId = GetSpellInfo(text)
 
-      if spellId then
-        condition.spellID = spellId
-      end
+      if not spellId then
+        PRT.Warn("Your entered spell id", PRT.HighlightString(text), "does not exist.")
+        widget:SetText(nil)
+      else
 
-      if icon then
-        condition.spellIcon = icon
-      end
+        if spellId then
+          condition.spellID = spellId
+        end
 
-      if not (spellId and icon) then
-        condition.spellIcon = nil
-        condition.spellID = nil
-      end
+        if icon then
+          condition.spellIcon = icon
+        end
 
-      spellIcon:SetImage(condition.spellIcon, 0.1, 0.9, 0.1, 0.9)
-      PRT.AddSpellTooltip(spellIcon, condition.spellID)
-      spellIDEditBox:SetText(condition.spellID)
-      PRT.Core.UpdateTree()
+        if not (spellId and icon) then
+          condition.spellIcon = nil
+          condition.spellID = nil
+        end
+
+        spellIcon:SetImage(condition.spellIcon, 0.1, 0.9, 0.1, 0.9)
+        PRT.AddSpellTooltip(spellIcon, condition.spellID)
+        spellIDEditBox:SetText(condition.spellID)
+        PRT.Core.UpdateTree()
+      end
       widget:ClearFocus()
     end)
 
