@@ -1,4 +1,15 @@
 ===============================================================================
+# Release 2.2.1.1-BETA
+## Bugfixes
+ - Reinitialize overlays after profile change
+ - Typo fixes
+ - Only log into protocol when encounter is ongoing
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.2.1.0-BETA
 ## Bugfixes
  - Update tracked units if they reappear and do not use outdated unit-ids to query
