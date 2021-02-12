@@ -68,7 +68,7 @@ function MessageHandler.ExecuteMessageAction(message)
     targetMessage.targets = nil
 
     if UnitExists(targetMessage.target) or tContains(MessageHandler.validTargets, targetMessage.target) then
-      PRT.Debug("Sending new message to", PRT.HighlightString(targetMessage.target))
+      PRT.Debug("Sending new message to", PRT.ClassColoredName(targetMessage.target))
       targetMessage.sender = PRT.db.profile.myName
 
       -- If in test mode send the message through the whipser channel in case we are not in a group
