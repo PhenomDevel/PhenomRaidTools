@@ -416,13 +416,11 @@ function PRT.ClassColoredName(name)
 end
 
 function PRT.ColoredString(s, color)
-  if s then
-    return "|c"..(color or "FFFFFFFF")..s.."|r"
-  end
+  return "|c"..(color or "FFFFFFFF")..tostring(s).."|r"
 end
 
 function PRT.HighlightString(s)
-  return PRT.ColoredString(s, PRT.db.profile.colors.highlight)
+  return "`"..PRT.ColoredString(s, PRT.db.profile.colors.highlight).."`"
 end
 
 function PRT.TextureStringBySpellID(spellID, size)
