@@ -1,4 +1,15 @@
 ===============================================================================
+# Release 2.2.1.2-BETA
+## Bugfixes
+ - Update unit querying for health and power percentages ... again
+ - Clear debug log on init
+
+## Features
+ - Update some debug prints
+ - Add remove all global placeholder button
+
+
+===============================================================================
 # Release 2.2.1.1-BETA
 ## Bugfixes
  - Reinitialize overlays after profile change
