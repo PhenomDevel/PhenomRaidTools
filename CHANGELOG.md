@@ -1,4 +1,16 @@
 ===============================================================================
+# Release 2.2.2.0-BETA
+## Bugfixes
+None
+
+## Features
+ - Refactoring
+ - Track health and power values by UNIT_HEALTH and UNIT_POWER_UPDATE wow events
+ - Update highlight debug strings
+ - Warn if entered spell id for condition is non existing
+
+
+===============================================================================
 # Release 2.2.1.2-BETA
 ## Bugfixes
  - Update unit querying for health and power percentages ... again
