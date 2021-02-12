@@ -13,7 +13,9 @@ local EventHandler = {
   },
 
   combatEvents = {
-    "UNIT_COMBAT"
+    "UNIT_COMBAT",
+    "UNIT_HEALTH",
+    "UNIT_POWER_UPDATE"
   },
 
   difficultyIDToNameMapping = {
@@ -233,29 +235,43 @@ function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
   end
 end
 
-function PRT.AddUnitToTrackedUnits(unitID)
-  local unitName = GetUnitName(unitID)
-  local guid = UnitGUID(unitID)
-  local unitData = {
-    unitID = unitID,
-    name = unitName,
-    guid = guid
-  }
-
+local function EnsureTrackedUnit(guid)
   if PRT.currentEncounter then
     if not PRT.currentEncounter.trackedUnits then
       PRT.currentEncounter.trackedUnits = {}
     end
+    if PRT.currentEncounter.trackedUnits then
+      if not PRT.currentEncounter.trackedUnits[guid] then
+        PRT.currentEncounter.trackedUnits[guid] = {}
+      end
+    end
+  end
+end
 
+local function UpdateTrackedUnit(unitID, name, guid)
+  if PRT.currentEncounter.trackedUnits then
+    EnsureTrackedUnit(guid)
+
+    PRT.currentEncounter.trackedUnits[guid].unitID = unitID
+    PRT.currentEncounter.trackedUnits[guid].guid = guid
+    PRT.currentEncounter.trackedUnits[guid].name = name
+  end
+end
+
+function PRT.AddUnitToTrackedUnits(unitID)
+  local unitName = GetUnitName(unitID)
+  local guid = UnitGUID(unitID)
+
+  if PRT.currentEncounter then
     if not PRT.UnitInParty(unitID) and not UnitIsPlayer(unitID) then
       if PRT.currentEncounter.trackedUnits[guid] then
         if PRT.currentEncounter.trackedUnits[guid].unitID ~= unitID then
           -- PRT.Debug("Updating tracked unit "..PRT.HighlightString(unitName.." ("..unitID..")"))
-          PRT.currentEncounter.trackedUnits[guid] = unitData
+          UpdateTrackedUnit(unitID, unitName, guid)
         end
       else
         PRT.Debug("Adding "..PRT.HighlightString(unitName.." ("..unitID..")").."to tracked units.")
-        PRT.currentEncounter.trackedUnits[guid] = unitData
+        UpdateTrackedUnit(unitID, unitName, guid)
       end
     end
   end
@@ -263,6 +279,28 @@ end
 
 function PRT:UNIT_COMBAT(_, unitID)
   PRT.AddUnitToTrackedUnits(unitID)
+end
+
+function PRT:UNIT_HEALTH(_, unitID)
+  if UnitExists(unitID) then
+    local health = UnitHealth(unitID)
+    local healthMax = UnitHealthMax(unitID)
+    local unitGUID = UnitGUID(unitID)
+
+    EnsureTrackedUnit(unitGUID)
+    PRT.currentEncounter.trackedUnits[unitGUID].healthPercent = PRT.Round(health / healthMax * 100, 1)
+  end
+end
+
+function PRT:UNIT_POWER_UPDATE(_, unitID)
+  if UnitExists(unitID) then
+    local power = UnitPower(unitID)
+    local powerMax = UnitPowerMax(unitID)
+    local unitGUID = UnitGUID(unitID)
+
+    EnsureTrackedUnit(unitGUID)
+    PRT.currentEncounter.trackedUnits[unitGUID].powerPercent = PRT.Round(power / powerMax * 100, 1)
+  end
 end
 
 function PRT:PLAYER_ENTERING_WORLD(_)
