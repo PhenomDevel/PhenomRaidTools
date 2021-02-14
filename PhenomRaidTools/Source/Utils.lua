@@ -565,6 +565,7 @@ function PRT.UnitInParty(unit)
   if unit then
     return UnitInParty(unit) or UnitInRaid(unit)
   end
+  return false
 end
 
 function PRT.PlayerInParty()

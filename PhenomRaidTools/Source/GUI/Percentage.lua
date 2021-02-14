@@ -11,6 +11,14 @@ local Percentage = {
       name = "< (less)"
     },
     {
+      id = "greaterorequals",
+      name = ">= (greater or equals)"
+    },
+    {
+      id = "lessorequals",
+      name = "<= (less or equals)"
+    },
+    {
       id = "equals",
       name = "= (equals)"
     }
