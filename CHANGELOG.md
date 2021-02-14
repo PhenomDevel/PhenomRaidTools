@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.2.2.1-BETA
+## Bugfixes
+None
+
+## Features
+ - Revert health/power check for better performance
+
+
+===============================================================================
 # Release 2.2.2.0-BETA
 ## Bugfixes
 None
