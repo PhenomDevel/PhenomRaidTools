@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.2.2.2-BETA
+## Bugfixes
+ - Make sure raid roster import/clear does not break
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.2.2.1-BETA
 ## Bugfixes
 None
