@@ -57,14 +57,14 @@ function PRT.AddRaidRosterWidget(container, options)
   importByGroupButton:SetCallback("OnClick",
     function(_)
       PRT.ConfirmationDialog(L["importByGroupConfirmationText"],
-        RaidRoster.ImportRaidRosterByGroup, options, container)
+        RaidRoster.ImportRaidRosterByGroup, nil, options, container)
     end)
 
   local clearRaidRosterButton = PRT.Button("optionsRaidRosterClear")
   clearRaidRosterButton:SetCallback("OnClick",
     function(_)
       PRT.ConfirmationDialog(L["clearRaidRosterConfirmationText"],
-        RaidRoster.ClearRaidRoster, options, container)
+        RaidRoster.ClearRaidRoster, nil, options, container)
     end)
 
   local explanationLabel = PRT.Label("optionsRaidRosterExplanation")
