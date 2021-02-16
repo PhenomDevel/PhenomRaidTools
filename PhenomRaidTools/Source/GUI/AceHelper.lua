@@ -294,7 +294,7 @@ function PRT.Label(textID, fontSize)
 
   widget:SetText(text)
   widget:SetFont(GameFontHighlightSmall:GetFont(), (fontSize or 14), "OUTLINE")
-  widget:SetWidth(500)
+  widget:SetWidth(widget.label:GetStringWidth())
 
   return widget
 end
