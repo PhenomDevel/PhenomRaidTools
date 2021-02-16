@@ -24,6 +24,7 @@ local CooldownSoundFileMapping = {
   [320420] = "PRT: Darkness",
   [51052] = "PRT: Anti Magic Zone",
   [97462] = "PRT: Rallying Cry",
+  [109964] = "PRT: Spirit Shell"
 }
 
 local Cooldowns = {
@@ -66,6 +67,8 @@ local Cooldowns = {
     320420, -- Darkness
 
     51052, -- AMC
+
+    109964 -- Spirit Shell
   },
   utility = {
     192077, -- Windrush Totem
