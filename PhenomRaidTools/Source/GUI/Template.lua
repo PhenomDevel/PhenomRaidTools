@@ -11,7 +11,6 @@ local function AddTemplateNameWidgets(container, messages, messageName)
   messageTemplateNameEditBox:SetCallback("OnEnterPressed",
     function(widget)
       local newName = widget:GetText()
-      PRT.Info(newName)
       if not (messageName == newName) then
         messages[messageName] = nil
         if not messages[newName] then
