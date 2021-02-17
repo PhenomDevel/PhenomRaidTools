@@ -242,17 +242,21 @@ end
 
 function PRT.IsTriggerActive(trigger)
   return
-    ((trigger.enabled == true or trigger.enabled == nil)
+    (
+    (
+    trigger.enabled == true or trigger.enabled == nil
+    )
     and
     (TriggerHandler.CheckCurrentDifficulty(trigger) or PRT.db.profile.testMode)
     and
-    (trigger.active == true
+    (
+    trigger.active == true
     or
-    ((not trigger.hasStartCondition) and (not trigger.hasStopCondition) and trigger.active == nil)
-    or
-    ((not trigger.hasStartCondition) and trigger.hasStopCondition and trigger.active == nil)
-    or
-    (trigger.hasStartCondition and (not trigger.hasStopCondition) and trigger.active == nil)))
+    (
+    (not trigger.hasStartCondition) and (not trigger.hasStopCondition) and trigger.active == nil
+    )
+    )
+    )
 end
 
 -- Timer

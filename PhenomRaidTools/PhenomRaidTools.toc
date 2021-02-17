@@ -8,6 +8,8 @@
 ## SavedVariables: PhenomRaidToolsDB
 ## X-Category: Raid
 
+# 90005 9.0.5 PTR
+
 # Init
 embeds.xml
 PhenomRaidTools.lua
@@ -61,3 +63,5 @@ Source/GUI/Options.lua
 # Newly OOP Approach
 Source/NEW/Trigger.lua
 Source/NEW/Action.lua
+Source/NEW/ActionHandler.lua
+Source/NEW/Timer.lua
