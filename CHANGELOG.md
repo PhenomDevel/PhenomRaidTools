@@ -1,4 +1,14 @@
 ===============================================================================
+# Release 2.2.4.1
+## Bugfixes
+ - Make sure saved templates *always* have a type
+  - This fixes an issue if you saved a message that was created prior to 2.2.2.2
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.2.4.0
 ## Bugfixes
 None
