@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.2.4.0
+## Bugfixes
+None
+
+## Features
+ - Add custom option for cooldown action
+
+
+===============================================================================
 # Release 2.2.3.1
 ## Bugfixes
  - Fix trigger active check
