@@ -1,4 +1,42 @@
 ===============================================================================
+# Release 2.2.2.2
+## Bugfixes
+ - Make sure raid roster import/clear does not break
+ - Fix copy&paste conditions
+ - Fix typo
+ - Correctly check **every** percentage entry for match and don't stop if one matched
+ - Don't access table field for custom placeholders which are not present
+ - Set the default targets to only the player
+   - So if you fuck up it won't spam everyone in the raid but you
+ - Update tracked units if they reappear and do not use outdated unit-ids to query
+ - Reinitialize overlays after profile change
+ - Typo fixes
+ - Only log into protocol when encounter is ongoing
+ - Clear debug log on init
+
+## Features
+ - Revert health/power check for better performance
+ - Refactoring
+ - Add button to add new template
+ - Track health and power values by UNIT_HEALTH and UNIT_POWER_UPDATE wow events
+ - Update highlight debug strings
+ - Warn if entered spell id for condition is non existing
+ - Be able to rename templates
+ - Be able to save and load message templates
+ - Set default font for labels to 14
+ - Better tooltip rendering
+ - Be able to use `mob-id` for percentage unit to check
+ - Generalize general trigger options rendering
+ - Update sound names to reflect correct spell names
+ - Add messages types
+   - Advanced ( current state )
+   - Cooldown
+   - From template
+ - Add debug log
+ - Update some debug prints
+ - Add remove all global placeholder button
+
+===============================================================================
 # Release 2.2.2.2-BETA
 ## Bugfixes
  - Make sure raid roster import/clear does not break
