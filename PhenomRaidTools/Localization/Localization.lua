@@ -18,13 +18,13 @@ L = {
 
   ["optionsReceiverModeHelp"] =
   "|cFF69CCF0Note|r: All options regarding the sender mode are hidden or disabled.\n"..
-  "If you want to change the appereance of the receiver overlay please go to `|cFF69CCF0Overlays|r`.",
+  "If you want to change the appearance of the receiver overlay please go to `|cFF69CCF0Overlays|r`.",
   ["optionsEnabled"] = "Enabled",
   ["optionsDebugMode"] = "Debug mode",
   ["optionsDebugLog"] = "Log protocol of the last encounter",
   ["optionsShowOverlay"] = "Show overlay",
   ["optionsHideOverlayAfterCombat"] = "Hide overlay after combat",
-  ["optionsDifficultyExplanation"] = "Set the difficulties on which the addon should start tracking combat events",
+  ["optionsDifficultyExplanation"] = "Set the difficulties on which the add-on should start tracking combat events",
   ["optionsDefaultsExplanation"] = "Set some default values for all new messages, timers, percentages and so on.",
   ["optionsRaidRosterExplanation"] = "Here you can define player names and reference them as targets in message with e.g. |cFF69CCF0$tank2|r, |cFF69CCF0$heal1|r etc.",
 
@@ -49,7 +49,7 @@ L = {
   ["messageFilterAlwaysIncludeMyself"] = "Always include myself",
   ["messageFilterExplanationNames"] = "You currently filter messages by |cFF69CCF0names|r. Therefore only messages from those players will be displayed!",
   ["messageFilterExplanationNoNames"] = "You currently filter messages by |cFF69CCF0names|r and have NO names configured therefore all messages you receive will be displayed.",
-  ["messageFilterExplanationGuildRank"] = "You currently filter messages by |cFF69CCF0guild rank|r. Therefore only messages from players with the choosen guild rank or above will be displayed.",
+  ["messageFilterExplanationGuildRank"] = "You currently filter messages by |cFF69CCF0guild rank|r. Therefore only messages from players with the chosen guild rank or above will be displayed.",
   ["messageFilterExplanationAlwaysIncludeMyself"] = "\nIn addition you always include yourself. So messages you send will always be displayed for yourself.",
 
   ["optionsHideDisabledTriggers"] = "Hide disabled triggers",
@@ -141,19 +141,19 @@ L = {
   ["messageTargetsTooltip"] =
   "Comma separated list of targets\n"..
   "Examples:\n"..
-  "- |cFF69CCF0$me|r -> Will be exchanged with the current characters name\n"..
-  "- |cFF69CCF0$target|r -> Will be exchanged with the target of the event\n"..
-  "- |cFF69CCF0$healN|r or |cFF69CCF0$tankN|r or |cFF69CCF0$ddN|r -> N is a number between 1-21. Will be exchanged with the configured raid roster name.\n"..
-  "- |cFF69CCF0$groupN|r -> N is a number between 1-8. Will be exchanged with *all* members of the group.\n"..
+  "- |cFF69CCF0$me|r → Will be exchanged with the current characters name\n"..
+  "- |cFF69CCF0$target|r → Will be exchanged with the target of the event\n"..
+  "- |cFF69CCF0$healN|r or |cFF69CCF0$tankN|r or |cFF69CCF0$ddN|r → N is a number between 1-21. Will be exchanged with the configured raid roster name.\n"..
+  "- |cFF69CCF0$groupN|r → N is a number between 1-8. Will be exchanged with *all* members of the group.\n"..
   "- |cFF69CCF0ALL|r, |cFF69CCF0HEALER|r, |cFF69CCF0TANK|r, |cFF69CCF0DAMAGER|r\n",
   ["messageMessage"] = "Message",
   ["messageMessageTooltip"] =
-  "- Use |cFF69CCF0%.0f|r or |cFF69CCF0%s|r to display the countdown (the 1 can also changed to 0-2 for decimals)\n"..
+  "- Use |cFF69CCF0%.0f|r or |cFF69CCF0%s|r to display the countdown (the 1 can also be changed to 0-2 for decimals)\n"..
   "- You can use tokens which will be replaced within the message e.g. |cFF69CCF0$source|r, |cFF69CCF0$target|r, |cFF69CCF0$heal1|r, |cFF69CCF0$me|r\n"..
   "- Use placeholder |cFF69CCF0{rt1-8}|r for raid markers (1=|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_1:16|t, 2=|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_2:16|t, 3=|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_3:16|t, 4=|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_4:16|t, 5=|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_5:16|t, 6=|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_6:16|t, 7=|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_7:16|t, 8=|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:16|t)\n"..
   "- Use placeholder |cFF69CCF0{spell:$ID}|r where $ID is any spellID of the spell you want to display the texture of e.g. {spell:17} = |T135940:16|t",
   ["messageDelay"] = "Delay (s)",
-  ["messageDelayTooltip"] = "After how many seconds the message should be send to the receiver?",
+  ["messageDelayTooltip"] = "After how many seconds the message should be sent to the receiver?",
   ["messageDuration"] = "Duration (s)",
   ["messageDurationTooltip"] = "For how long should the message be displayed?",
   ["messageRaidRosterAddDropdown"] = "Select additional target entry",
@@ -257,7 +257,7 @@ L = {
   ["timerName"] = "Name",
   ["timerDeleteButton"] = "|cFFed3939Delete Timer|r",
   ["timerOptionsHeading"] = "Timer Options",
-  ["timerOptionsTriggerAtOccurence"] = "Trigger at occurence",
+  ["timerOptionsTriggerAtOccurence"] = "Trigger at occurrence",
   ["timerOptionsResetCounterOnStop"] = "Restart Counter on Stop",
 
   -- Timings
@@ -425,7 +425,7 @@ L = {
   ["saveAsTemplate"] = "Save as template",
   ["saveAsTemplateDescription"] = "Save as template.\n"..
   "Please make sure you have everything setup correctly. A template is a snapshot of the current state.\n"..
-  "If you change anything after saving the template, the template will not be changed aswell.",
+  "If you change anything after saving the template, the template will not be changed as well.",
   ["saveAsTemplateName"] = "Template name",
   ["templatesTabGroup"] = "Templates",
   ["templatesTabGroupMessages"] = "Messages",

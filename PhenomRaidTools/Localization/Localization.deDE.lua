@@ -18,13 +18,13 @@ if GetLocale() == "deDE" then
 
   L["optionsReceiverModeHelp"] =
     "|cFF69CCF0Notiz|r: Alle Optionen, welche mit dem Sender-Modus zusammenhängen sind entweder ausgeblendet oder deaktiviert.\n"..
-    "Wenn du das Aussehen des für das Empfänger-Overlay ändern möchtest bitte navgiere auf `|cFF69CCF0Overlays|r`."
+    "Wenn du das Aussehen des für das Empfänger-Overlay ändern möchtest bitte navigiere auf `|cFF69CCF0Overlays|r`."
   L["optionsEnabled"] = "Aktiviert"
   L["optionsDebugMode"] = "Debugmodus"
   L["optionsDebugLog"] = "Protokoll des letzten Bosses"
   L["optionsShowOverlay"] = "Overlay anzeigen"
   L["optionsHideOverlayAfterCombat"] = "Overlay nach dem Kampf ausblenden"
-  L["optionsDifficultyExplanation"] = "Hier können die Schwierigkeiten ausgewählt werden auf denen das Addon aktiv sein soll."
+  L["optionsDifficultyExplanation"] = "Hier können die Schwierigkeiten ausgewählt werden, auf denen das Add-on aktiv sein soll."
   L["optionsDefaultsExplanation"] = "Hier können Standardwerte für die Auslöser ausgewählt werden."
   L["optionsRaidRosterExplanation"] = "Hier können Spielernamen des Raidkaders eingetragen werden, um diese später zu referenzieren mit z.B. |cFF69CCF0$tank2|r |cFF69CCF0$heal1|r etc."
   L["optionsHideDisabledTriggers"] = "Deaktivierte Auslöser verstecken"
@@ -35,7 +35,7 @@ if GetLocale() == "deDE" then
 
   L["debugModeGroup"] = "Debugmodus"
   L["debugModeEnabled"] = "Aktiviert"
-  L["debugModeEnabledTooltip"] = "Wenn dieser Modus aktiviert ist werden einige zusätzliche Informationen in den Chat ausgegeben, die bei einer Fehleranalyse helfen können."
+  L["debugModeEnabledTooltip"] = "Wenn dieser Modus aktiviert ist, werden einige zusätzliche Informationen in den Chat ausgegeben, die bei einer Fehleranalyse helfen können."
 
   L["runModeGroup"] = "Ausführungsmodus"
   L["runModeDropdown"] = "Select mode"
@@ -46,11 +46,11 @@ if GetLocale() == "deDE" then
 
   L["messageFilterGroup"] = "Nachrichtenfilter"
   L["messageFilterByDropdown"] = "Filter nach"
-  L["messageFilterGuildRankDropdown"] = "Mindestens benötigter Gildenrang"
+  L["messageFilterGuildRankDropdown"] = "Mindestens benötigter Gilden Rang"
   L["messageFilterNamesEditBox"] = "Spielernamen"
   L["messageFilterNamesEditBoxTooltip"] = "Komma separierte Liste von Spielernamen.\n"..
-    "Wenn die Liste leer ist werden keine Nachrichten gefiltert.\n"..
-    "(!) Das kann zu sehr vielen Nachrichten führen, wenn einige Spieler in der Raidgruppe Nachrichten konfiguriert haben."
+    "Wenn die Liste leer ist, werden keine Nachrichten gefiltert.\n"..
+    "(!) das kann zu sehr vielen Nachrichten führen, wenn einige Spieler in der Raidgruppe Nachrichten konfiguriert haben."
   L["messageFilterAlwaysIncludeMyself"] = "Nachrichten von mir selbst immer erhalten"
   L["messageFilterExplanationNames"] = "Du filters Nachrichten aktuell nach |cFF69CCF0Spielernamen|r, dadurch werden nur Nachrichten von diesen Spielern angezeigt."
   L["messageFilterExplanationNoNames"] = "Du filters Nachrichten aktuell nach |cFF69CCF0Spielernamen|r, aber hast keine Namen konfiguriert. Dadurch werden alle Nachrichten von anderen Spielern angezeigt."
@@ -101,7 +101,7 @@ if GetLocale() == "deDE" then
   L["rotationDefaults"] = "Rotation"
   L["percentageDefaults"] = "Prozente"
   L["messageDefaults"] = "Nachricht"
-  L["defaultShouldRestart"] = "Soll neustarten"
+  L["defaultShouldRestart"] = "Soll neu starten"
   L["defaultIgnoreDuration"] = "Ignorieren für"
   L["defaultIgnoreAfterActivation"] = "Nach der Aktivierung ignorieren"
   L["defaultEvent"] = "Event"
@@ -110,10 +110,10 @@ if GetLocale() == "deDE" then
   L["defaultTargetsTooltip"] =
     "Kommaseparierte Liste von Empfängern\n"..
     "Beispiele:\n"..
-    "- |cFF69CCF0$me|r -> Wird mit dem Namen der aktuellen Charakters ausgetauscht\n"..
-    "- |cFF69CCF0$target|r -> Wird mit dem Ziel des Kampfevents ausgetauscht\n"..
-    "- |cFF69CCF0$healN|r or |cFF69CCF0$tankN|r or |cFF69CCF0$ddN|r -> N ist eine Zahl zwischen 1-21. Wird mit dem konfigurierten Namen im Raidkader ausgetauscht.\n"..
-    "- |cFF69CCF0$groupN|r -> N ist eine Zahl zwischen 1-8. Wird mit *allen* Spielern der entsprechenden Gruppe ausgetauscht.\n"..
+    "- |cFF69CCF0$me|r → wird mit dem Namen des aktuellen Charakters ausgetauscht\n"..
+    "- |cFF69CCF0$target|r → wird mit dem Ziel des Kampfevents ausgetauscht\n"..
+    "- |cFF69CCF0$healN|r or |cFF69CCF0$tankN|r or |cFF69CCF0$ddN|r → N ist eine Zahl zwischen 1 und 21. Wird mit dem konfigurierten Namen im Raidkader ausgetauscht.\n"..
+    "- |cFF69CCF0$groupN|r → N ist eine Zahl zwischen 1 und 8. Wird mit *allen* Spielern der entsprechenden Gruppe ausgetauscht.\n"..
     "- |cFF69CCF0ALL|r |cFF69CCF0HEALER|r |cFF69CCF0TANK|r |cFF69CCF0DAMAGER|r\n"
   L["defaultUnitID"] = "Unit-ID"
   L["defaultCheckAgain"] = "Mehrfach prüfen"
@@ -136,10 +136,10 @@ if GetLocale() == "deDE" then
   L["messageTargetsTooltip"] =
     "Kommaseparierte Liste von Empfängern\n"..
     "Beispiele:\n"..
-    "- |cFF69CCF0$me|r -> Wird mit dem Namen der aktuellen Charakters ausgetauscht\n"..
-    "- |cFF69CCF0$target|r -> Wird mit dem Ziel des Kampfevents ausgetauscht\n"..
-    "- |cFF69CCF0$healN|r or |cFF69CCF0$tankN|r or |cFF69CCF0$ddN|r -> N ist eine Zahl zwischen 1-21. Wird mit dem konfigurierten Namen im Raidkader ausgetauscht.\n"..
-    "- |cFF69CCF0$groupN|r -> N ist eine Zahl zwischen 1-8. Wird mit *allen* Spielern der entsprechenden Gruppe ausgetauscht.\n"..
+    "- |cFF69CCF0$me|r → wird mit dem Namen des aktuellen Charakters ausgetauscht\n"..
+    "- |cFF69CCF0$target|r → wird mit dem Ziel des Kampfevents ausgetauscht\n"..
+    "- |cFF69CCF0$healN|r or |cFF69CCF0$tankN|r or |cFF69CCF0$ddN|r → N ist eine Zahl zwischen 1 und 21. Wird mit dem konfigurierten Namen im Raidkader ausgetauscht.\n"..
+    "- |cFF69CCF0$groupN|r → N ist eine Zahl zwischen 1 und 8. Wird mit *allen* Spielern der entsprechenden Gruppe ausgetauscht.\n"..
     "- |cFF69CCF0ALL|r |cFF69CCF0HEALER|r |cFF69CCF0TANK|r |cFF69CCF0DAMAGER|r\n"
   L["messageMessage"] = "Nachricht"
   L["messageMessageTooltip"] =
@@ -161,7 +161,7 @@ if GetLocale() == "deDE" then
   L["rotationHeading"] = "Rotationen"
   L["rotationName"] = "Name"
   L["rotationDeleteButton"] = "|cFFed3939Rotation entfernen|r"
-  L["rotationShouldRestart"] = "Soll der Auslöser neustarten?"
+  L["rotationShouldRestart"] = "Soll der Auslöser neu starten?"
   L["rotationIgnoreAfterActivation"] = "Nach der Aktivierung ignorieren"
   L["rotationIgnoreDuration"] = "Ignorieren für (s)"
   L["rotationTriggerConditionHeading"] = "Auslöser"
@@ -215,12 +215,12 @@ if GetLocale() == "deDE" then
 
   L["encounterOverviewDisabled"] = "deaktiviert"
   L["encounterOverviewOf"] = "von"
-  L["encounterOverviewStartTimerOn"] = "Starte Timer wenn"
-  L["encounterOverviewStopTimerOn"] = "Stoppe Timer wenn"
+  L["encounterOverviewStartTimerOn"] = "Starte Timer, wenn"
+  L["encounterOverviewStopTimerOn"] = "Stoppe Timer, wenn"
   L["encounterOverviewTimings"] = "Auslösungszeiten"
-  L["encounterOverviewStartTriggerOn"] = "Starte Auslöser wenn"
-  L["encounterOverviewStopTriggerOn"] = "Starte Auslöser wenn"
-  L["encounterOverviewTriggerOn"] = "Löse aus wenn"
+  L["encounterOverviewStartTriggerOn"] = "Starte Auslöser, wenn"
+  L["encounterOverviewStopTriggerOn"] = "Starte Auslöser, wenn"
+  L["encounterOverviewTriggerOn"] = "Löse aus, wenn"
   L["encounterOverviewEntries"] = "Rotationseinträge"
 
   -- Conditions
@@ -229,7 +229,7 @@ if GetLocale() == "deDE" then
   L["conditionSpellID"] = "Zauber-ID"
   L["conditionSpellIDTooltip"] = "Die Zauber-ID bei dem der Auslöser ausgelöst werden soll (kann leer sein)"
   L["conditionTarget"] = "Ziel"
-  L["conditionTargetTooltip"] = "Das Event-Ziel bei dem der Auslöser ausgelöst werden soll (z.B. der exakte Name eines Gegners, |cFF69CCF0"..UnitName("player").."|r)"
+  L["conditionTargetTooltip"] = "Das Event-Ziel, bei dem der Auslöser ausgelöst werden soll (z.B. der exakte Name eines Gegners, |cFF69CCF0"..UnitName("player").."|r)"
   L["conditionSource"] = "Quelle"
   L["conditionSourceTooltip"] = "Die Event-Quelle bei dem der Auslöser ausgelöst werden soll (z.B. |cFF69CCF0boss1|r, der exakte Name eines Gegners)"
   L["conditionHeading"] = "Auslöser"
@@ -247,7 +247,7 @@ if GetLocale() == "deDE" then
   L["timerDeleteButton"] = "|cFFed3939Timer entfernen|r"
   L["timerOptionsHeading"] = "Timer Optionen"
   L["timerOptionsTriggerAtOccurence"] = "Nach n Start Auslösern starten"
-  L["timerOptionsResetCounterOnStop"] = "Zähler bei Stop neustarten"
+  L["timerOptionsResetCounterOnStop"] = "Zähler bei Stop neu starten"
 
   -- Timings
   L["timingOptions"] = "Zeiteinträge"
@@ -297,14 +297,14 @@ if GetLocale() == "deDE" then
   L["confirmationWindow"] = "Bestätigung"
   L["confirmationDialogOk"] = "Ok"
   L["confirmationDialogCancel"] = "Abbrechen"
-  L["importConfirmationMergeEncounter"] = "Der Boss ist bereits vorhanden. Sollen die Auslöser zusammengeführt werden?"
+  L["importConfirmationMergeEncounter"] = "Der Boss ist bereits vorhanden. Sollen die Auslöser zusammengeführt worden?"
   L["importByGroupConfirmationText"] =
     "Bist Du sicher, dass Du das Raid-Roster anhand der aktuellen Gruppe importieren willst?|n"..
     "|cFF69CCF0Notiz: |rDieser Vorgang wird alle aktuell eingetragenen Namen überschreiben."
   L["deleteConfirmationText"] = "Bist Du sicher, dass Du folgenden Eintrag entfernen willst:"
   L["clearRaidRosterConfirmationText"] = "Bist Du sicher, dass Du alle Raidroster Einträge entfernen willst?"
   L["cloneConfirmationText"] = "Bist Du sicher, dass Du diesen Auslöser duplizieren möchtest?"
-  L["optionsCustomNameDeleteButtonConfirmation"] = "Bist Du sicher, dass du den benutzerdefinierten Platzhalter entfernen willst?"
+  L["optionsCustomNameDeleteButtonConfirmation"] = "Bist Du sicher, dass Du den benutzerdefinierten Platzhalter entfernen willst?"
 
   -- Import/Export
   L["exportFrame"] = "Export"
@@ -321,7 +321,7 @@ if GetLocale() == "deDE" then
   L["cloneRotation"] = "Rotation duplizieren"
   L["clonePercentage"] = "Prozent duplizieren"
 
-  L["deleteTabEntryConfirmationText"] = "Bist Du sicher, dass du diesen Eintrag löschen willst?"
+  L["deleteTabEntryConfirmationText"] = "Bist Du sicher, dass Du diesen Eintrag löschen willst?"
 
   -- Encounters
   L["--- Castle Nathria ---"] = "--- Schloss Nathria ---"
@@ -414,8 +414,8 @@ if GetLocale() == "deDE" then
   -- Template
   L["saveAsTemplate"] = "Als Vorlage speichern"
   L["saveAsTemplateDescription"] = "Vorlage speichern\n"..
-    "Bitte stelle sicher, dass alles korrekt eingestellt ist. Eine Vorlage ist nur eine Momentaufnahme.\n"..
-    "Wenn Du Einstellungen veränderst wird die Vorlage nicht automatisch mit angepasst."
+    "Bitte sicherstellen, dass alles korrekt eingestellt ist. Eine Vorlage ist nur eine Momentaufnahme.\n"..
+    "Wenn Du Einstellungen veränderst, wird die Vorlage nicht automatisch mit angepasst."
   L["saveAsTemplateName"] = "Vorlagenname"
   L["templatesTabGroup"] = "Vorlagen"
   L["templatesTabGroupMessages"] = "Nachrichten"
@@ -427,7 +427,7 @@ if GetLocale() == "deDE" then
   L["templateMessageNewButton"] = "|cFF76ff68Neu|r"
   L["templateMessagesEmptyDescription"] = "Aktuell sind keine Vorlagen vorhanden."
   L["templateMessagesDeleteDropdown"] = "Vorlage löschen"
-  L["templateMessagesDeleteConfirmation"] = "Bist Du dir sicher, dass du die Vorlage löschen willst?"
+  L["templateMessagesDeleteConfirmation"] = "Bist Du Dir sicher, dass Du die Vorlage löschen willst?"
   L["loadTemplateActionTemplateDropdown"] = "Vorlage wählen"
 
 else
