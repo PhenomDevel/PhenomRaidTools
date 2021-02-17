@@ -1,4 +1,14 @@
 ===============================================================================
+# Release 2.2.3.1
+## Bugfixes
+ - Fix trigger active check
+   - Start and stop conditions of trigger were not checked correctly
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.2.3.0
 ## Bugfixes
 None
