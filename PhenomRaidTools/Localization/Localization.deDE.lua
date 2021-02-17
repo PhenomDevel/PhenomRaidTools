@@ -132,6 +132,7 @@ if GetLocale() == "deDE" then
   L["messageHeading"] = "Nachrichten"
   L["messageTargetOverlay"] = "Ziel Overlay"
   L["messageWithCountdown"] = "Countdown anzeigen"
+  L["messageCustomSpellID"] = "Benutzerdefinierte Zauber-ID"
   L["messageDeleteButton"] = "|cFFed3939Nachricht entfernen|r"
   L["messageTargets"] = "Empfänger"
   L["messageTargetsTooltip"] =
@@ -411,6 +412,7 @@ if GetLocale() == "deDE" then
   L["actionType"] = "Typ"
   L["cooldownActionTargetDropdown"] = "Ziel"
   L["cooldownActionSpellDropdown"] = "Fähigkeit"
+  L["cooldownActionCustomDropdownItem"] = "*Benutzerdefiniert*"
 
   -- Template
   L["saveAsTemplate"] = "Als Vorlage speichern"

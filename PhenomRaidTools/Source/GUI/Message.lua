@@ -207,7 +207,12 @@ local function CooldownActionPreviewString(action)
 end
 
 function Message.CompilePossibleCooldownItems()
-  local cooldownItems = {}
+  local cooldownItems = {
+    {
+      id = "custom",
+      name = "|cFFf5b247"..L["cooldownActionCustomDropdownItem"].."|r"
+    }
+  }
   for _, cooldownGroup in pairs(Cooldowns) do
     for _, spellID in ipairs(cooldownGroup) do
       local name = GetSpellInfo(spellID)
@@ -250,9 +255,16 @@ end
 local function AddCooldownActionWidgets(container, action)
   local possibleTargets = Message.GenerateRaidRosterDropdownItems()
   local possibleCooldowns = Message.CompilePossibleCooldownItems()
-
   local targetDropdown = PRT.Dropdown("cooldownActionTargetDropdown", possibleTargets, action.targets[1], true)
-  local cooldownSpellDropdown = PRT.Dropdown("cooldownActionSpellDropdown", possibleCooldowns, action.spellID)
+  local cooldownSpellDropdownValue
+
+  if action.hasCustomSpellID then
+    cooldownSpellDropdownValue = "custom"
+  else
+    cooldownSpellDropdownValue = action.spellID
+  end
+
+  local cooldownSpellDropdown = PRT.Dropdown("cooldownActionSpellDropdown", possibleCooldowns, cooldownSpellDropdownValue)
   local actionPreview = PRT.Label(L["messagePreview"]..PRT.PrepareMessageForDisplay(CooldownActionPreviewString(action)))
   actionPreview:SetRelativeWidth(1)
   targetDropdown:SetCallback("OnValueChanged",
@@ -280,6 +292,11 @@ local function AddCooldownActionWidgets(container, action)
         action.soundFileName = nil
       end
 
+      action.hasCustomSpellID = value == "custom"
+
+      container:ReleaseChildren()
+      AddCooldownActionWidgets(container, action)
+      PRT.Core.UpdateScrollFrame()
       actionPreview:SetText(L["messagePreview"]..PRT.PrepareMessageForDisplay(CooldownActionPreviewString(action)))
     end)
 
@@ -309,6 +326,21 @@ local function AddCooldownActionWidgets(container, action)
   container:AddChild(targetDropdown)
   container:AddChild(targetOverlayDropdown)
   container:AddChild(cooldownSpellDropdown)
+
+  if action.hasCustomSpellID then
+    local customSpellIDEditBox = PRT.EditBox("messageCustomSpellID", action.spellID)
+    customSpellIDEditBox:SetCallback("OnEnterPressed",
+      function(widget)
+        action.spellID = tonumber(widget:GetText())
+        local previewString = CooldownActionPreviewString(action)
+        action.message = previewString
+        actionPreview:SetText(L["messagePreview"]..PRT.PrepareMessageForDisplay(CooldownActionPreviewString(action)))
+        widget:ClearFocus()
+      end)
+
+    container:AddChild(customSpellIDEditBox)
+  end
+
   container:AddChild(withCountdownCheckbox)
   container:AddChild(actionPreview)
 end
@@ -528,7 +560,9 @@ function PRT.MessageWidget(message, container, saveableAsTemplate)
   AddActionTypeWidgets(container, message)
 
   if message.type == "cooldown" then
-    AddCooldownActionWidgets(container, message)
+    local cooldownActionGroup = PRT.SimpleGroup()
+    AddCooldownActionWidgets(cooldownActionGroup, message)
+    container:AddChild(cooldownActionGroup)
   elseif message.type == "loadTemplate" then
     AddLoadTemplateActionWidgets(container, message)
   else

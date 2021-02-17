@@ -139,6 +139,7 @@ L = {
   ["messageTargets"] = "Targets",
   ["messageTargetOverlay"] = "Target Overlay",
   ["messageWithCountdown"] = "Display countdown",
+  ["messageCustomSpellID"] = "Custom Spell-ID",
   ["messageTargetsTooltip"] =
   "Comma separated list of targets\n"..
   "Examples:\n"..
@@ -421,6 +422,7 @@ L = {
   ["actionType"] = "Type",
   ["cooldownActionTargetDropdown"] = "Target",
   ["cooldownActionSpellDropdown"] = "Cooldown",
+  ["cooldownActionCustomDropdownItem"] = "*Custom*",
 
   -- Template
   ["saveAsTemplate"] = "Save as template",
