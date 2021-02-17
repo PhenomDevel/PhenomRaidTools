@@ -1,4 +1,14 @@
 ===============================================================================
+# Release 2.2.3.0
+## Bugfixes
+None
+
+## Features
+ - Updated a lot of locals
+ - Add option to activate countdown for cooldown messages
+
+
+===============================================================================
 # Release 2.2.2.2
 ## Bugfixes
  - Make sure raid roster import/clear does not break
