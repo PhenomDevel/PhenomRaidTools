@@ -42,10 +42,10 @@ function EventHandler.StartReceiveMessages()
       PRT.ReceiverOverlay.ShowAll()
       AceTimer:ScheduleRepeatingTimer(PRT.ReceiverOverlay.UpdateFrameText, 0.01)
     else
-      PRT.Debug("You are not in receiver mode. We won't track messages.")
+      PRT.Debug(PRT.HighlightString("Receiver mode"), "is disabled. We won't track messages.")
     end
   else
-    PRT.Debug("PRT is disabled. We do not start to track messages.")
+    PRT.Debug(PRT.HighlightString("PhenomRaidTools"), "is disabled. We won't track messages.")
   end
 end
 
@@ -61,6 +61,7 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
   if PRT.db.profile.enabled then
     wipe(PRT.db.profile.debugLog)
     if PRT.db.profile.senderMode then
+      PRT.currentEncounter = NewEncounter()
       PRT.Debug("Starting new encounter", PRT.HighlightString(encounterName),"(", PRT.HighlightString(encounterID), ")" , "|r")
       local _, encounter = PRT.FilterEncounterTable(PRT.db.profile.encounters, encounterID)
 
@@ -69,7 +70,6 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
       if encounter then
         if encounter.enabled then
           PRT:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-          PRT.currentEncounter = NewEncounter()
 
           PRT.currentEncounter.encounter = PRT.TableUtils.CopyTable(encounter)
           PRT.currentEncounter.encounter.startedAt = GetTime()
@@ -87,7 +87,7 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
 
     PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
   else
-    PRT.Debug("PRT is disabled. Not starting encounter.")
+    PRT.Debug(PRT.HighlightString("PhenomRaidTools"), "is disabled. We won't start encounter.")
   end
 end
 
@@ -277,7 +277,7 @@ function PRT.AddUnitToTrackedUnits(unitID)
             UpdateTrackedUnit(unitID, unitName, guid)
           end
         else
-          PRT.Debug("Adding "..PRT.HighlightString(unitName.." ("..unitID..")").."to tracked units.")
+          PRT.Debug("Adding "..PRT.HighlightString(unitName.." ("..unitID..")"), "to tracked units.")
           UpdateTrackedUnit(unitID, unitName, guid)
         end
       end
@@ -302,7 +302,7 @@ function PRT:PLAYER_ENTERING_WORLD(_)
 
       if type == "party" then
         PRT.Debug("Player entered dungeon - checking difficulty")
-        PRT.Debug("Current difficulty is", PRT.HighlightString(difficultyID or "").."-"..PRT.HighlightString(difficultyNameEN or ""))
+        PRT.Debug("Current difficulty is", PRT.HighlightString(difficultyID or ""), "-", PRT.HighlightString(difficultyNameEN or ""))
 
         if self.db.profile.enabledDifficulties["dungeon"][difficultyNameEN] then
           PRT.Debug("Enabling PhenomRaidTools for", PRT.HighlightString(name), "on difficulty", PRT.HighlightString(difficultyNameEN))
@@ -313,7 +313,7 @@ function PRT:PLAYER_ENTERING_WORLD(_)
         end
       elseif type == "raid" then
         PRT.Debug("Player entered raid - checking difficulty")
-        PRT.Debug("Current difficulty is", PRT.HighlightString(difficultyID).."-"..PRT.HighlightString(difficultyNameEN))
+        PRT.Debug("Current difficulty is", PRT.HighlightString(difficultyID), "-", PRT.HighlightString(difficultyNameEN))
 
         if self.db.profile.enabledDifficulties["raid"][difficultyNameEN] then
           PRT.Debug("Enabling PhenomRaidTools for", PRT.HighlightString(name), "on", PRT.HighlightString(difficultyNameEN), "difficulty")

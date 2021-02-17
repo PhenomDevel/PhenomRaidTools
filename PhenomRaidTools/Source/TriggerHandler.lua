@@ -153,7 +153,7 @@ function TriggerHandler.IncrementTriggerCounter(trigger)
   local triggerCounter = TriggerHandler.GetTriggerCounter(trigger)
   local newValue = triggerCounter + 1
 
-  PRT.Debug("Incrementing trigger counter ("..(trigger.name or "NO NAME")..") to", newValue)
+  PRT.Debug("Incrementing trigger counter (", (trigger.name or "NO NAME"), ") to", newValue)
   trigger.counter = newValue
 end
 

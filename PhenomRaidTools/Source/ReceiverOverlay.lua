@@ -148,7 +148,7 @@ function ReceiverOverlay.Initialize(receivers)
     ReceiverOverlay.overlayFrames = {}
 
     for i, receiver in ipairs(receivers) do
-      PRT.Debug("Initializing receiver overlay"..i)
+      PRT.Debug("Initializing receiver overlay", i)
       local receiverOverlay = ReceiverOverlay.CreateOverlay(receiver)
 
       if not receiver.locked then
