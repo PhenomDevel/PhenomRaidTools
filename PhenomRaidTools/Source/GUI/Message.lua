@@ -199,7 +199,11 @@ function Message.GenerateRaidRosterDropdownItems()
 end
 
 local function CooldownActionPreviewString(action)
-  return format("{spell:%s} %%.0f {spell:%s}", action.spellID or "", action.spellID or "")
+  if action.withCountdown then
+    return format("{spell:%s} %%.0f {spell:%s}", action.spellID or "", action.spellID or "")
+  else
+    return format("{spell:%s}", action.spellID or "")
+  end
 end
 
 function Message.CompilePossibleCooldownItems()
@@ -250,6 +254,7 @@ local function AddCooldownActionWidgets(container, action)
   local targetDropdown = PRT.Dropdown("cooldownActionTargetDropdown", possibleTargets, action.targets[1], true)
   local cooldownSpellDropdown = PRT.Dropdown("cooldownActionSpellDropdown", possibleCooldowns, action.spellID)
   local actionPreview = PRT.Label(L["messagePreview"]..PRT.PrepareMessageForDisplay(CooldownActionPreviewString(action)))
+  actionPreview:SetRelativeWidth(1)
   targetDropdown:SetCallback("OnValueChanged",
     function(widget)
       wipe(action.targets)
@@ -294,9 +299,17 @@ local function AddCooldownActionWidgets(container, action)
       action.targetOverlay = widget:GetValue()
     end)
 
+  local withCountdownCheckbox = PRT.CheckBox("messageWithCountdown", action.withCountdown)
+  withCountdownCheckbox:SetCallback("OnValueChanged",
+    function(widget)
+      action.withCountdown = widget:GetValue()
+      actionPreview:SetText(L["messagePreview"]..PRT.PrepareMessageForDisplay(CooldownActionPreviewString(action)))
+    end)
+
   container:AddChild(targetDropdown)
   container:AddChild(targetOverlayDropdown)
   container:AddChild(cooldownSpellDropdown)
+  container:AddChild(withCountdownCheckbox)
   container:AddChild(actionPreview)
 end
 

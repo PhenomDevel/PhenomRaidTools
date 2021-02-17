@@ -131,6 +131,7 @@ if GetLocale() == "deDE" then
   L["messagePreview"] = "Vorschau: "
   L["messageHeading"] = "Nachrichten"
   L["messageTargetOverlay"] = "Ziel Overlay"
+  L["messageWithCountdown"] = "Countdown anzeigen"
   L["messageDeleteButton"] = "|cFFed3939Nachricht entfernen|r"
   L["messageTargets"] = "Empfänger"
   L["messageTargetsTooltip"] =

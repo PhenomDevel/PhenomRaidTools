@@ -138,6 +138,7 @@ L = {
   ["messageDeleteButton"] = "|cFFed3939Delete Message|r",
   ["messageTargets"] = "Targets",
   ["messageTargetOverlay"] = "Target Overlay",
+  ["messageWithCountdown"] = "Display countdown",
   ["messageTargetsTooltip"] =
   "Comma separated list of targets\n"..
   "Examples:\n"..
