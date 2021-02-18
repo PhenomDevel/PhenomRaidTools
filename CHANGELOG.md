@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.2.5.0
+## Bugfixes
+None
+
+## Features
+ - Sort tabs by name if possible
+
+
+===============================================================================
 # Release 2.2.4.1
 ## Bugfixes
  - Make sure saved templates *always* have a type
