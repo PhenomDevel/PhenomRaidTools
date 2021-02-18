@@ -23,24 +23,24 @@ local GameFontHighlightSmall = GameFontHighlightSmall
 function AceHelper.AddTooltip(widget, tooltip)
   if tooltip and widget then
     widget:SetCallback("OnEnter",
-    function()
-      GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
+      function()
+        GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
 
-      if widget.label and widget.label:GetText() then
-        GameTooltip:AddLine(widget.label:GetText())
-      elseif widget.text and widget.text:GetText() then
-        GameTooltip:AddLine(widget.text:GetText())
-      end
-
-      if type(tooltip) == "table" then
-        for _, entry in ipairs(tooltip) do
-          GameTooltip:AddLine(entry, 1, 1, 1)
+        if widget.label and widget.label:GetText() then
+          GameTooltip:AddLine(widget.label:GetText())
+        elseif widget.text and widget.text:GetText() then
+          GameTooltip:AddLine(widget.text:GetText())
         end
-      else
-        GameTooltip:AddLine(tooltip, 1, 1, 1)
-      end
-      GameTooltip:Show()
-    end)
+
+        if type(tooltip) == "table" then
+          for _, entry in ipairs(tooltip) do
+            GameTooltip:AddLine(entry, 1, 1, 1)
+          end
+        else
+          GameTooltip:AddLine(tooltip, 1, 1, 1)
+        end
+        GameTooltip:Show()
+      end)
 
     widget:SetCallback("OnLeave",
       function()
@@ -116,6 +116,8 @@ function PRT.TableToTabs(t, withNewTab, newTabText)
       end
     end
   end
+
+  PRT.TableUtils.SortByKey(tabs, "text")
 
   if withNewTab then
     tinsert(tabs, {value = "new", text = (newTabText or "+")})

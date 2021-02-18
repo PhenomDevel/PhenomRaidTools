@@ -73,3 +73,14 @@ function TableUtils.OverwriteValues(t1, t2)
     end
   end
 end
+
+function TableUtils.SortByKey(t, k)
+  table.sort(t,
+    function(t1, t2)
+      if t1[k] and t2[k] then
+        return string.lower(t1[k]) < string.lower(t2[k])
+      else
+        return false
+      end
+    end)
+end
