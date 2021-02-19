@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.2.6.1
+## Bugfixes
+ - Make sure all tab groups are sorted correctly
+
+## Features
+ - Add target overlay to message default options
+
+
+===============================================================================
 # Release 2.2.5.0
 ## Bugfixes
 None
