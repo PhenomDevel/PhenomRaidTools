@@ -108,11 +108,11 @@ function PRT.TableToTabs(t, withNewTab, newTabText)
   local tabs = {}
 
   if t then
-    for i, v in ipairs(t) do
+    for k, v in pairs(t) do
       if v.name then
-        tinsert(tabs, {value = i, text = v.name})
+        tinsert(tabs, {value = k, text = v.name})
       else
-        tinsert(tabs, {value = i, text = i})
+        tinsert(tabs, {value = k, text = k})
       end
     end
   end

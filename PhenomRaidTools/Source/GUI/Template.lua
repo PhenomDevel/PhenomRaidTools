@@ -31,12 +31,9 @@ local function AddMessageTemplateWidgets(container, messages)
     local emptyLabel = PRT.Label("templateMessagesEmptyDescription")
     container:AddChild(emptyLabel)
   else
-    local templateTabs = {}
-    for name, _ in pairs(messages) do
-      tinsert(templateTabs, { value = name, text = name})
-    end
+    local templateTabs = PRT.TableToTabs(messages)
 
-    PRT.TableUtils.SortByKey(templateTabs, "text")
+    -- PRT.TableUtils.SortByKey(templateTabs, "text")
 
     local messageTemplatesDropdownItems = {}
     for name, _ in pairs(messages) do
