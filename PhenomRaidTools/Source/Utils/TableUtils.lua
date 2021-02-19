@@ -77,8 +77,13 @@ end
 function TableUtils.SortByKey(t, k)
   table.sort(t,
     function(t1, t2)
-      if t1[k] and t2[k] then
-        return string.lower(t1[k]) < string.lower(t2[k])
+      local a, b = t1[k], t2[k]
+      if a and b then
+        if type(a) == "string" and type(b) == "string" then
+          return string.lower(t1[k]) < string.lower(t2[k])
+        else
+          return a < b
+        end
       else
         return false
       end
