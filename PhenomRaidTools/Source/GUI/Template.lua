@@ -36,6 +36,8 @@ local function AddMessageTemplateWidgets(container, messages)
       tinsert(templateTabs, { value = name, text = name})
     end
 
+    PRT.TableUtils.SortByKey(templateTabs, "text")
+
     local messageTemplatesDropdownItems = {}
     for name, _ in pairs(messages) do
       tinsert(messageTemplatesDropdownItems, name)
