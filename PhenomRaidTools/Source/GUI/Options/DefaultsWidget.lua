@@ -1,5 +1,8 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
+local specialWidgetNames = {
+  "defaultTargetOverlay"
+}
 
 -------------------------------------------------------------------------------
 -- Private Helper
@@ -8,8 +11,9 @@ local function addDefaultsWidgets(container, t)
   if t then
     for k, v in pairs(t) do
       local widget = nil
-
-      if type(v) == "boolean" then
+      if tContains(specialWidgetNames, k) then
+      -- do nothing
+      elseif type(v) == "boolean" then
         widget = PRT.CheckBox(k, v)
         widget:SetCallback("OnValueChanged",
           function()
@@ -49,6 +53,26 @@ local function addDefaultsWidgets(container, t)
   end
 end
 
+local function AddMessageDefaultWidgets(container, t)
+  local targetOverlayDropdownItems = {}
+  for _, overlay in ipairs(PRT.db.profile.overlay.receivers) do
+    local targetOverlayItem = {
+      id = overlay.id,
+      name = overlay.id..": "..overlay.label
+    }
+
+    tinsert(targetOverlayDropdownItems, targetOverlayItem)
+  end
+
+  local targetOverlayDropdown = PRT.Dropdown("messageTargetOverlay", targetOverlayDropdownItems, (t.defaultTargetOverlay or 1))
+  targetOverlayDropdown:SetCallback("OnValueChanged",
+    function(widget)
+      t.defaultTargetOverlay = widget:GetValue()
+    end)
+
+  container:AddChild(targetOverlayDropdown)
+end
+
 
 -------------------------------------------------------------------------------
 -- Public API
@@ -63,6 +87,11 @@ function PRT.AddDefaultsGroups(container, options)
       local groupWidget = PRT.InlineGroup(k)
       groupWidget:SetLayout("Flow")
       addDefaultsWidgets(groupWidget, v)
+
+      if k == "messageDefaults" then
+        AddMessageDefaultWidgets(groupWidget, v)
+      end
+
       container:AddChild(groupWidget)
     end
   end

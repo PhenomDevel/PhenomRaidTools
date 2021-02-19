@@ -23,7 +23,7 @@ function PRT.EmptyMessage()
     useCustomSound = false,
     duration = 5,
     targets = PRT.TableUtils.CopyTable(PRT.db.profile.triggerDefaults.messageDefaults.defaultTargets) or {"ALL"},
-    targetOverlay = 1,
+    targetOverlay = PRT.db.profile.triggerDefaults.messageDefaults.defaultTargetOverlay or 1,
     delay = 0,
     type = "cooldown",
     withCountdown = true
