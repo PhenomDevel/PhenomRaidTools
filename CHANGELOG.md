@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.2.7.2
+## Bugfixes
+ - Update logic for templates
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.2.7.1
 ## Bugfixes
  - Update check if trigger is active or not
