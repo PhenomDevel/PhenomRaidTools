@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.2.7.3
+## Bugfixes
+ - Make sure template names can be changed again
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.2.7.2
 ## Bugfixes
  - Update logic for templates
