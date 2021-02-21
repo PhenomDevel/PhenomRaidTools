@@ -542,7 +542,7 @@ local function AddTemplateWidgets(container, message)
             PRT.Info("The template was saved.")
 
             -- make sure a message always has a type
-            message.type = message.type or "cooldown"
+            message.type = message.type or "advanced"
 
             PRT.db.profile.templateStore.messages[templateName] = PRT.TableUtils.CopyTable(message)
             saveAsTemplateNameEditbox:SetText("")
