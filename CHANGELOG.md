@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.2.7.4
+## Bugfixes
+ - Make sure template name input does not disappear
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.2.7.3
 ## Bugfixes
  - Make sure template names can be changed again
