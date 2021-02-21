@@ -410,6 +410,9 @@ if GetLocale() == "deDE" then
 
   -- Action
   L["actionType"] = "Typ"
+  L["actionTypeCooldown"] = "Fähigkeit"
+  L["actionTypeAdvanced"] = "Erweitert"
+  L["actionTypeLoadTemplate"] = "Template laden"
   L["cooldownActionTargetDropdown"] = "Ziel"
   L["cooldownActionSpellDropdown"] = "Fähigkeit"
   L["cooldownActionCustomDropdownItem"] = "*Benutzerdefiniert*"

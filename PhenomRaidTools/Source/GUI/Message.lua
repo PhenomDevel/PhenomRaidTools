@@ -490,15 +490,15 @@ local function AddActionTypeWidgets(container, action)
   local actionTypeDropdownItems = {
     {
       id = "cooldown",
-      name = "Cooldown"
+      name = L["actionTypeCooldown"]
     },
     {
       id = "advanced",
-      name = "Advanced"
+      name = L["actionTypeAdvanced"]
     },
     {
       id = "loadTemplate",
-      name = "Load template",
+      name = L["actionTypeLoadTemplate"],
       disabled = PRT.TableUtils.IsEmpty(PRT.db.profile.templateStore.messages)
     }
   }

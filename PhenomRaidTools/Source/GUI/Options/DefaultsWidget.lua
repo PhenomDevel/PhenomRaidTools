@@ -1,7 +1,8 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 local specialWidgetNames = {
-  "defaultTargetOverlay"
+  "defaultTargetOverlay",
+  "defaultMessageType"
 }
 
 -------------------------------------------------------------------------------
@@ -70,6 +71,24 @@ local function AddMessageDefaultWidgets(container, t)
       t.defaultTargetOverlay = widget:GetValue()
     end)
 
+  local actionTypeDropdownItems = {
+    {
+      id = "cooldown",
+      name = L["actionTypeCooldown"]
+    },
+    {
+      id = "advanced",
+      name = L["actionTypeAdvanced"]
+    }
+  }
+
+  local actionTypeDropdown = PRT.Dropdown("actionType", actionTypeDropdownItems, t.defaultMessageType or "cooldown")
+  actionTypeDropdown:SetCallback("OnValueChanged",
+    function(widget)
+      t.defaultMessageType = widget:GetValue()
+    end)
+
+  container:AddChild(actionTypeDropdown)
   container:AddChild(targetOverlayDropdown)
 end
 

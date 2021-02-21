@@ -420,6 +420,9 @@ L = {
 
   -- Action
   ["actionType"] = "Type",
+  ["actionTypeCooldown"] = "Cooldown",
+  ["actionTypeAdvanced"] = "Advanced",
+  ["actionTypeLoadTemplate"] = "Load Template",
   ["cooldownActionTargetDropdown"] = "Target",
   ["cooldownActionSpellDropdown"] = "Cooldown",
   ["cooldownActionCustomDropdownItem"] = "*Custom*",
