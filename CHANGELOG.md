@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.2.7.0
+## Bugfixes
+None
+
+## Features
+ - Add option to set the default message type
+
+
+===============================================================================
 # Release 2.2.6.3
 ## Bugfixes
  - [#24] Make sure the default message type is advanced
