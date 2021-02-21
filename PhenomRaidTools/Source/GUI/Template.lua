@@ -5,8 +5,26 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 -- Private Helper
 
 local function AddTemplateMessageWidgets(container, messages, messageName)
+  local currentMessage = messages[messageName]
+
   local actionsGroup = PRT.SimpleGroup()
   local messageTemplateNameEditBox = PRT.EditBox("messageTemplateName", messageName)
+  messageTemplateNameEditBox:SetCallback("OnEnterPressed",
+    function(widget)
+      local newName = widget:GetText()
+      if not (messageName == newName) then
+        messages[messageName] = nil
+        if not messages[newName] then
+          messages[newName] = currentMessage
+          container:ReleaseChildren()
+          container:SetTabs(PRT.TableToTabs(messages))
+          AddTemplateMessageWidgets(container, messages, newName)
+          PRT.Core.UpdateScrollFrame()
+        else
+          PRT.Error("Name already taken")
+        end
+      end
+    end)
 
   actionsGroup:AddChild(messageTemplateNameEditBox)
 
