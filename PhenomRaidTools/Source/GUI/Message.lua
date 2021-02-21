@@ -511,7 +511,7 @@ local function AddActionTypeWidgets(container, action)
       SetActionTypeDefaults(action)
       container:ReleaseChildren()
       PRT.MessageWidget(action, container)
-      PRT.Core.UpdateScrollFrame()
+      PRT.ReSelectTab(container)
     end)
 
   container:AddChild(actionTypeDropdown)
