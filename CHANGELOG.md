@@ -1,4 +1,16 @@
 ===============================================================================
+# Release 2.2.6.3
+## Bugfixes
+ - [#24] Make sure the default message type is advanced
+   - This should fix an issue where a mesage gets the message type cooldown if
+     it was create prior to the templates release
+ - Make sure number is not compared to string
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.2.6.1
 ## Bugfixes
  - Make sure all tab groups are sorted correctly
