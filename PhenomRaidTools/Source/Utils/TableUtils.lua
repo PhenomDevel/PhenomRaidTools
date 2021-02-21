@@ -79,7 +79,7 @@ function TableUtils.SortByKey(t, k)
     function(t1, t2)
       local a, b = t1[k], t2[k]
       if a and b then
-        if type(a) == "string" and type(b) == "string" then
+        if type(a) == "string" or type(b) == "string" then
           return string.lower(t1[k]) < string.lower(t2[k])
         else
           return a < b
