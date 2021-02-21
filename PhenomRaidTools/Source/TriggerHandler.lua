@@ -241,26 +241,30 @@ end
 -- Public API
 
 function PRT.IsTriggerActive(trigger)
+  local isEnabled = trigger.enabled == true or trigger.enabled == nil
+  local isEnabledForDifficulty = TriggerHandler.CheckCurrentDifficulty(trigger) or PRT.db.profile.testMode
+  local isActive = trigger.active
+
   return
     (
-    (
-    trigger.enabled == true or trigger.enabled == nil
-    )
-    and
-    (TriggerHandler.CheckCurrentDifficulty(trigger) or PRT.db.profile.testMode)
-    and
-    (
-    trigger.active == true
-    or
-    (
-    (not trigger.hasStartCondition) and (not trigger.hasStopCondition) and trigger.active == nil
-    )
-    )
+      (
+        isEnabled and
+        isEnabledForDifficulty and
+        (
+          isActive or
+          (
+            trigger.active == nil and
+            (
+              not trigger.hasStartCondition
+            )
+          )
+        )
+      )
     )
 end
 
--- Timer
 
+-- Timer
 function PRT.CheckTimerStartConditions(timers, event, combatEvent, spellID, targetGUID, sourceGUID)
   if timers ~= nil then
     for _, timer in ipairs(timers) do
