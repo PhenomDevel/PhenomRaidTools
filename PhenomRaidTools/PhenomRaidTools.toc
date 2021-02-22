@@ -55,13 +55,3 @@ Source/GUI/Options/OverlayWidget.lua
 Source/GUI/Options/RaidRosterWidget.lua
 Source/GUI/Options/CustomPlaceholdersWidget.lua
 Source/GUI/Options.lua
-
-
-
-
-
-# Newly OOP Approach
-Source/NEW/Trigger.lua
-Source/NEW/Action.lua
-Source/NEW/ActionHandler.lua
-Source/NEW/Timer.lua
