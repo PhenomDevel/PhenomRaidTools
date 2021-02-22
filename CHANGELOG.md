@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.2.7.5
+## Bugfixes
+ - Do not import non existing files
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.2.7.4
 ## Bugfixes
  - Make sure template name input does not disappear
