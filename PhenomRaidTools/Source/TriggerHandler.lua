@@ -247,19 +247,19 @@ function PRT.IsTriggerActive(trigger)
 
   return
     (
-      (
-        isEnabled and
-        isEnabledForDifficulty and
-        (
-          isActive or
-          (
-            trigger.active == nil and
-            (
-              not trigger.hasStartCondition
-            )
-          )
-        )
-      )
+    (
+    isEnabled and
+    isEnabledForDifficulty and
+    (
+    isActive or
+    (
+    trigger.active == nil and
+    (
+    not trigger.hasStartCondition
+    )
+    )
+    )
+    )
     )
 end
 
@@ -408,6 +408,9 @@ function PRT.CheckRotationTriggerCondition(rotations, event, combatEvent, eventS
   end
 end
 
+local function ValidUnit(unitID)
+  return UnitExists(unitID) and not UnitIsDead(unitID)
+end
 -- Health Percentages
 function PRT.GetEffectiveUnit(unitID)
   if PRT.currentEncounter.trackedUnits then
@@ -416,7 +419,7 @@ function PRT.GetEffectiveUnit(unitID)
         -- Find by Mob-ID
         local mobID = select(6, strsplit("-", trackedUnitGUID))
         if mobID == unitID then
-          if UnitExists(trackedUnit.unitID) and not UnitIsDead(trackedUnit.unitID) then
+          if ValidUnit(trackedUnit.unitID) then
             return trackedUnit
           end
         end
@@ -429,7 +432,7 @@ function PRT.GetEffectiveUnit(unitID)
       elseif type(unitID) == "string" then
         -- Find by name
         if trackedUnit.name == unitID then
-          if UnitExists(trackedUnit.unitID) and not UnitIsDead(trackedUnit.unitID) then
+          if ValidUnit(trackedUnit.unitID) then
             return trackedUnit
           end
         end
