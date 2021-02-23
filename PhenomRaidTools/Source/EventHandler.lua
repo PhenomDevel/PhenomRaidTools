@@ -85,13 +85,13 @@ local function CompileInterestingUnits(currentEncounter)
   local interestingUnits = {}
 
   for _, percentage in pairs(currentEncounter.encounter.HealthPercentages) do
-    if percentage.eneabled and not interestingUnits[percentage.unitID] then
+    if percentage.enabled and not interestingUnits[percentage.unitID] then
       interestingUnits[percentage.unitID] = percentage.unitID
     end
   end
 
   for _, percentage in pairs(currentEncounter.encounter.PowerPercentages) do
-    if percentage.eneabled and not interestingUnits[percentage.unitID] then
+    if percentage.enabled and not interestingUnits[percentage.unitID] then
       interestingUnits[percentage.unitID] = percentage.unitID
     end
   end
@@ -125,7 +125,7 @@ local function CompileInterestingEventsByTriggers(interestingEvents, triggers)
 end
 
 local function CompileInterestingEvents(currentEncounter)
-  local interestingEvents = PRT.TableUtils.CopyTable(EventHandler.essentialEvents)
+  local interestingEvents = {}
 
   CompileInterestingEventsByTriggers(interestingEvents, currentEncounter.encounter.Timers)
   CompileInterestingEventsByTriggers(interestingEvents, currentEncounter.encounter.Rotations)
@@ -133,6 +133,18 @@ local function CompileInterestingEvents(currentEncounter)
   CompileInterestingEventsByTriggers(interestingEvents, currentEncounter.encounter.PowerPercentages)
 
   currentEncounter.interestingEvents = interestingEvents
+end
+
+local function LogInterestingUnitsAndEvents(currentEncounter)
+  PRT.Debug("Tracked Units:")
+  for _, unit in pairs(currentEncounter.interestingUnits) do
+    PRT.Debug("-", PRT.HighlightString(unit))
+  end
+
+  PRT.Debug("Tracked Events:")
+  for _, event in pairs(currentEncounter.interestingEvents) do
+    PRT.Debug("-", PRT.HighlightString(event))
+  end
 end
 
 function EventHandler.StartEncounter(event, encounterID, encounterName)
@@ -155,9 +167,7 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
 
           CompileInterestingUnits(PRT.currentEncounter)
           CompileInterestingEvents(PRT.currentEncounter)
-
-          PRT.PrintTable(PRT.currentEncounter.interestingEvents)
-          PRT.PrintTable(PRT.currentEncounter.interestingUnits)
+          LogInterestingUnitsAndEvents(PRT.currentEncounter)
 
           if PRT.db.profile.overlay.sender.enabled then
             PRT.SenderOverlay.Show()
