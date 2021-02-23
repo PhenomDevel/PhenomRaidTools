@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.2.8.0
+## Bugfixes
+ - Remove unused world events from tracked events
+
+## Features
+ - Add debug logging for tracked units and events
+
+
+===============================================================================
 # Release 2.2.7.9
 ## Bugfixes
  - Make sure world events are added to the list of tracked events aswell
