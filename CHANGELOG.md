@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.2.9.0
+## Bugfixes
+None
+
+## Features
+ - Add Ashen Hallow to quick access cooldowns
+
+
+===============================================================================
 # Release 2.2.8.0
 ## Bugfixes
  - Remove unused world events from tracked events
