@@ -364,10 +364,11 @@ function PRT.AddUnitToTrackedUnits(unitID)
   if PRT.currentEncounter then
     if not tContains(untrackedUnitIDs, unitID) then
       local unitName = GetUnitName(unitID)
-      if PRT.currentEncounter.interestingUnits[unitID] or PRT.currentEncounter.interestingUnits[unitName] then
-        if PRT.currentEncounter.trackedUnits then
-          local guid = UnitGUID(unitID)
+      local guid = UnitGUID(unitID)
+      local mobID = PRT.GUIDToMobID(guid)
 
+      if PRT.currentEncounter.interestingUnits[unitID] or PRT.currentEncounter.interestingUnits[unitName] or PRT.currentEncounter.interestingUnits[mobID] then
+        if PRT.currentEncounter.trackedUnits then
           if PRT.currentEncounter.trackedUnits[unitID] then
             if PRT.currentEncounter.trackedUnits[unitID].guid ~= guid then
               PRT.Debug("Updating tracked unit "..PRT.HighlightString(unitName.." ("..unitID..")"))

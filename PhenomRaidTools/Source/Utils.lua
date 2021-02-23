@@ -530,6 +530,10 @@ end
 -------------------------------------------------------------------------------
 -- Unit Helper
 
+function PRT.GUIDToMobID(guid)
+  return select(6, strsplit("-", guid))
+end
+
 function PRT.UnitFullName(unitID)
   return GetUnitName(unitID, true)
 end
