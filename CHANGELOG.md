@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.2.7.9
+## Bugfixes
+ - Make sure world events are added to the list of tracked events aswell
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.2.7.8
 ## Bugfixes
  - Make sure units are also tracked by numeric unit id (e.g. from wowhead)
