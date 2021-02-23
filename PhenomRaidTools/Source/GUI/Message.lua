@@ -24,7 +24,8 @@ local CooldownSoundFileMapping = {
   [320420] = "PRT: Darkness",
   [51052] = "PRT: Anti Magic Zone",
   [97462] = "PRT: Rallying Cry",
-  [109964] = "PRT: Spirit Shell"
+  [109964] = "PRT: Spirit Shell",
+  [316958] = "PRT: Ashen Hallow",
 }
 
 local Cooldowns = {
@@ -68,8 +69,12 @@ local Cooldowns = {
 
     51052, -- AMC
 
-    109964 -- Spirit Shell
+    109964, -- Spirit Shell
+
+    316958, -- Ashen Hallow
+
   },
+
   utility = {
     192077, -- Windrush Totem
 
@@ -81,6 +86,7 @@ local Cooldowns = {
 
     64901, -- Symbol of Hope
   },
+
   immunities = {
     31224, -- Cloak of Shadows
     204018, -- Blessing of Spellwarding
