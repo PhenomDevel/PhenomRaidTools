@@ -1,4 +1,15 @@
 ===============================================================================
+# Release 2.2.7.6
+## Bugfixes
+ - Only check units which are present in the current encounter
+   - Compile a list of all events and units which are in the triggers in the
+     current encounter and only check events if it is necessary
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.2.7.5
 ## Bugfixes
  - Do not import non existing files

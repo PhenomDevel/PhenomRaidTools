@@ -20,9 +20,18 @@ end
 
 function TriggerHandler.UnitExistsInTrackedUnits(conditionUnitID, eventUnitGUID)
   if PRT.currentEncounter.trackedUnits then
-    for guid, t in pairs(PRT.currentEncounter.trackedUnits) do
-      if guid == eventUnitGUID then
-        if t.name == conditionUnitID then
+    for _, trackedUnit in pairs(PRT.currentEncounter.trackedUnits) do
+      if tonumber(conditionUnitID) then
+        -- Find by Mob-ID
+        local mobID = select(6, strsplit("-", trackedUnit.guid))
+        if mobID == conditionUnitID and trackedUnit.guid == eventUnitGUID then
+          return true
+        end
+      elseif UnitExists(conditionUnitID) and trackedUnit.guid == eventUnitGUID then
+        return true
+      elseif type(conditionUnitID) == "string" then
+        -- Find by name
+        if trackedUnit.name == conditionUnitID and trackedUnit.guid == eventUnitGUID then
           return true
         end
       end

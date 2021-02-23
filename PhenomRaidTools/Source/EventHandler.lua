@@ -57,6 +57,30 @@ local function NewEncounter()
   }
 end
 
+local function CompileInterestingUnitsByTriggerCondition(interestingUnits, condition)
+  if condition.target and not interestingUnits[condition.target] then
+    interestingUnits[condition.target] = condition.target
+  end
+
+  if condition.source and not interestingUnits[condition.source] then
+    interestingUnits[condition.source] = condition.source
+  end
+end
+
+local function CompileInterestingUnitsByTriggers(interestingUnits, triggers)
+  for _, trigger in pairs(triggers) do
+    if trigger.enabled and trigger.stopCondition then
+      CompileInterestingUnitsByTriggerCondition(interestingUnits, trigger.stopCondition )
+    end
+    if trigger.enabled and trigger.startCondition then
+      CompileInterestingUnitsByTriggerCondition(interestingUnits, trigger.startCondition)
+    end
+    if trigger.enabled and trigger.triggerCondition then
+      CompileInterestingUnitsByTriggerCondition(interestingUnits, trigger.triggerCondition)
+    end
+  end
+end
+
 local function CompileInterestingUnits(currentEncounter)
   local interestingUnits = {}
 
@@ -71,6 +95,11 @@ local function CompileInterestingUnits(currentEncounter)
       interestingUnits[percentage.unitID] = percentage.unitID
     end
   end
+
+  CompileInterestingUnitsByTriggers(interestingUnits, currentEncounter.encounter.Timers)
+  CompileInterestingUnitsByTriggers(interestingUnits, currentEncounter.encounter.Rotations)
+  CompileInterestingUnitsByTriggers(interestingUnits, currentEncounter.encounter.HealthPercentages)
+  CompileInterestingUnitsByTriggers(interestingUnits, currentEncounter.encounter.PowerPercentages)
 
   currentEncounter.interestingUnits = interestingUnits
 end
@@ -126,6 +155,9 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
 
           CompileInterestingUnits(PRT.currentEncounter)
           CompileInterestingEvents(PRT.currentEncounter)
+
+          PRT.PrintTable(PRT.currentEncounter.interestingEvents)
+          PRT.PrintTable(PRT.currentEncounter.interestingUnits)
 
           if PRT.db.profile.overlay.sender.enabled then
             PRT.SenderOverlay.Show()
