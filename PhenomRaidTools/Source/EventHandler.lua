@@ -125,7 +125,7 @@ local function CompileInterestingEventsByTriggers(interestingEvents, triggers)
 end
 
 local function CompileInterestingEvents(currentEncounter)
-  local interestingEvents = {}
+  local interestingEvents = PRT.TableUtils.CopyTable(EventHandler.essentialEvents)
 
   CompileInterestingEventsByTriggers(interestingEvents, currentEncounter.encounter.Timers)
   CompileInterestingEventsByTriggers(interestingEvents, currentEncounter.encounter.Rotations)
@@ -155,6 +155,9 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
 
           CompileInterestingUnits(PRT.currentEncounter)
           CompileInterestingEvents(PRT.currentEncounter)
+
+          PRT.PrintTable(PRT.currentEncounter.interestingEvents)
+          PRT.PrintTable(PRT.currentEncounter.interestingUnits)
 
           if PRT.db.profile.overlay.sender.enabled then
             PRT.SenderOverlay.Show()
@@ -287,7 +290,7 @@ function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 
         -- Checking Timer activation
         if timers then
-          if PRT.currentEncounter.interestingEvents[combatEvent] then
+          if PRT.currentEncounter.interestingEvents[combatEvent] or PRT.currentEncounter.interestingEvents[event] then
             PRT.CheckTimerStopConditions(timers, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
             PRT.CheckTimerStartConditions(timers, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
           end
@@ -297,7 +300,7 @@ function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 
         -- Checking Rotation activation
         if rotations then
-          if PRT.currentEncounter.interestingEvents[combatEvent] then
+          if PRT.currentEncounter.interestingEvents[combatEvent] or PRT.currentEncounter.interestingEvents[event] then
             PRT.CheckTriggersStopConditions(rotations, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
             PRT.CheckTriggersStartConditions(rotations, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
           end
@@ -307,7 +310,7 @@ function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 
         -- Checking Health Percentage activation
         if healthPercentages then
-          if PRT.currentEncounter.interestingEvents[combatEvent] then
+          if PRT.currentEncounter.interestingEvents[combatEvent] or PRT.currentEncounter.interestingEvents[event] then
             PRT.CheckTriggersStartConditions(healthPercentages, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
             PRT.CheckTriggersStopConditions(healthPercentages, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
           end
@@ -317,7 +320,7 @@ function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 
         -- Checking Resource Percentage activation
         if powerPercentages then
-          if PRT.currentEncounter.interestingEvents[combatEvent] then
+          if PRT.currentEncounter.interestingEvents[combatEvent] or PRT.currentEncounter.interestingEvents[event] then
             PRT.CheckTriggersStartConditions(powerPercentages, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
             PRT.CheckTriggersStopConditions(powerPercentages, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
           end
@@ -367,16 +370,18 @@ function PRT.AddUnitToTrackedUnits(unitID)
       local guid = UnitGUID(unitID)
       local mobID = PRT.GUIDToMobID(guid)
 
-      if PRT.currentEncounter.interestingUnits[unitID] or PRT.currentEncounter.interestingUnits[unitName] or PRT.currentEncounter.interestingUnits[mobID] then
-        if PRT.currentEncounter.trackedUnits then
-          if PRT.currentEncounter.trackedUnits[unitID] then
-            if PRT.currentEncounter.trackedUnits[unitID].guid ~= guid then
-              PRT.Debug("Updating tracked unit "..PRT.HighlightString(unitName.." ("..unitID..")"))
+      if PRT.currentEncounter.interestingUnits then
+        if PRT.currentEncounter.interestingUnits[unitID] or PRT.currentEncounter.interestingUnits[unitName] or PRT.currentEncounter.interestingUnits[mobID] then
+          if PRT.currentEncounter.trackedUnits then
+            if PRT.currentEncounter.trackedUnits[unitID] then
+              if PRT.currentEncounter.trackedUnits[unitID].guid ~= guid then
+                PRT.Debug("Updating tracked unit "..PRT.HighlightString(unitName.." ("..unitID..")"))
+                UpdateTrackedUnit(unitID, unitName, guid)
+              end
+            else
+              PRT.Debug("Adding "..PRT.HighlightString(unitName.." ("..unitID..")"), "to tracked units.")
               UpdateTrackedUnit(unitID, unitName, guid)
             end
-          else
-            PRT.Debug("Adding "..PRT.HighlightString(unitName.." ("..unitID..")"), "to tracked units.")
-            UpdateTrackedUnit(unitID, unitName, guid)
           end
         end
       end
