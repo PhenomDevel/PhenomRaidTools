@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.2.7.7
+## Bugfixes
+ - Remove debug logging
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.2.7.6
 ## Bugfixes
  - Only check units which are present in the current encounter

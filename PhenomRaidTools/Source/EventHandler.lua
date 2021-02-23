@@ -156,9 +156,6 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
           CompileInterestingUnits(PRT.currentEncounter)
           CompileInterestingEvents(PRT.currentEncounter)
 
-          PRT.PrintTable(PRT.currentEncounter.interestingEvents)
-          PRT.PrintTable(PRT.currentEncounter.interestingUnits)
-
           if PRT.db.profile.overlay.sender.enabled then
             PRT.SenderOverlay.Show()
             PRT.Overlay.SetMoveable(PRT.SenderOverlay.overlayFrame, false)
