@@ -108,6 +108,7 @@ L = {
   ["defaultIgnoreAfterActivation"] = "Should restart",
   ["defaultEvent"] = "Event",
   ["defaultMessage"] = "Message",
+  ["defaultDuration"] = "Duration (s)",
   ["defaultTargetOverlay"] = "Overlay",
   ["defaultType"] = "type",
   ["defaultTypeTooltip"] = "Possible values are |cFF69CCF0cooldown|r and |cFF69CCF0advanced|r.",

@@ -106,6 +106,7 @@ if GetLocale() == "deDE" then
   L["defaultIgnoreAfterActivation"] = "Nach der Aktivierung ignorieren"
   L["defaultEvent"] = "Event"
   L["defaultMessage"] = "Nachricht"
+  L["defaultDuration"] = "Dauer (s)"
   L["defaultTargets"] = "Empfänger"
   L["defaultTargetsTooltip"] =
     "Kommaseparierte Liste von Empfängern\n"..

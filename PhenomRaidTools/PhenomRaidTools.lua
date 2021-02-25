@@ -163,6 +163,7 @@ local defaults =  {
       },
       messageDefaults = {
         defaultMessage = "TODO",
+        defaultDuration = 5,
         defaultTargets = {
           "$me"
         }
