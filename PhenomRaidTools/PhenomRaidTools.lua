@@ -260,7 +260,7 @@ function PRT:RefreshConfig()
 end
 
 function PRT:OnEnable()
-  PRT.RegisterEssentialEvents()
+  PRT.RegisterWorldEvents()
 
   AceComm:RegisterComm(self.db.profile.addonPrefixes.addonMessage, self.OnAddonMessage)
   AceComm:RegisterComm(self.db.profile.addonPrefixes.versionRequest, self.OnVersionRequest)
@@ -268,7 +268,7 @@ function PRT:OnEnable()
 end
 
 function PRT:OnDisable()
-  PRT.UnregisterEssentialEvents()
+  PRT.UnregisterWorldEvents()
 end
 
 function PRT:Open()

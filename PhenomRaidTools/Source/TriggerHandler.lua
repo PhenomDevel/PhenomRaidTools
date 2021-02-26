@@ -173,7 +173,7 @@ function TriggerHandler.UpdateRotationCounter(rotation)
       local rotationMaxCount = table.getn(rotation.entries)
       if rotationCurrentCount >= rotationMaxCount then
         if rotation.shouldRestart == true then
-          PRT.Debug("Resetting rotation counter to 1")
+          PRT.Debug("Resetting rotation counter to 1 for", PRT.HighlightString(rotation.name))
           rotation.counter = 1
         else
           TriggerHandler.IncrementTriggerCounter(rotation)
@@ -189,7 +189,7 @@ function TriggerHandler.CheckStopIgnoreRotationCondition(trigger)
   if trigger.ignoreAfterActivation and trigger.ignored == true then
     if ((trigger.lastActivation or 0) + (trigger.ignoreDuration or 5)) < GetTime() then
       trigger.ignored = false
-      PRT.Debug("Stopped ignoring trigger", trigger.name)
+      PRT.Debug("Stopped ignoring trigger", PRT.HighlightString(trigger.name))
     end
   end
 end
@@ -199,7 +199,7 @@ function TriggerHandler.CheckStopIgnorePercentageCondition(percentage)
     if percentage.checkAgain and percentageValue.ignored == true then
       if ((percentageValue.lastActivation or 0) + (percentage.checkAgainAfter or 5)) < GetTime() then
         percentageValue.ignored = false
-        PRT.Debug("Stopped ignoring trigger", percentageValue.name)
+        PRT.Debug("Stopped ignoring trigger", PRT.HighlightString(percentageValue.name))
       end
     end
   end
@@ -407,7 +407,7 @@ function PRT.CheckRotationTriggerCondition(rotations, event, combatEvent, eventS
 
               if rotation.ignoreAfterActivation == true then
                 rotation.ignored = true
-                PRT.Debug("Started ignoring rotation", rotation.name, "for", rotation.ignoreDuration)
+                PRT.Debug("Started ignoring rotation", PRT.HighlightString(rotation.name), "for", PRT.HighlightString(rotation.ignoreDuration))
               end
             end
           end
@@ -455,7 +455,7 @@ function TriggerHandler.ExecutePercentageValue(percentage, percentageValue)
   percentageValue.lastActivation = GetTime()
   if percentage.checkAgain == true then
     percentageValue.ignored = true
-    PRT.Debug("Started ignoring percentage", percentageValue.name, "for", percentage.checkAgainAfter)
+    PRT.Debug("Started ignoring percentage", PRT.HighlightString(percentageValue.name), "for", PRT.HighlightString(percentage.checkAgainAfter))
   else
     percentageValue.executed = true
   end
@@ -532,7 +532,7 @@ end
 
 function PRT.ProcessMessageQueue()
   if PRT.MessageQueue ~= nil then
-    if table.getn(PRT.MessageQueue) > 0 then
+    if not PRT.TableUtils.IsEmpty(PRT.MessageQueue) then
       local currentTime = GetTime()
       for i, message in ipairs(PRT.MessageQueue) do
         if message.executionTime < currentTime then

@@ -3,16 +3,18 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local AceTimer = LibStub("AceTimer-3.0")
 
 local EventHandler = {
-  essentialEvents = {
+  worldEvents = {
     "PLAYER_REGEN_DISABLED",
     "PLAYER_REGEN_ENABLED",
     "ENCOUNTER_START",
     "ENCOUNTER_END",
     "PLAYER_ENTERING_WORLD",
-
   },
 
-  combatEvents = {
+  trackedInCombatEvents = {
+    "COMBAT_LOG_EVENT_UNFILTERED",
+    "UNIT_HEALTH",
+    "UNIT_POWER_UPDATE",
     "UNIT_COMBAT"
   },
 
@@ -29,8 +31,8 @@ local EventHandler = {
 }
 
 -- Create local copies of API functions which we use
-local GetTime, CombatLogGetCurrentEventInfo, UnitGUID, UnitIsPlayer, GetInstanceInfo =
-  GetTime, CombatLogGetCurrentEventInfo, UnitGUID, UnitIsPlayer, GetInstanceInfo
+local GetTime, CombatLogGetCurrentEventInfo, UnitGUID, GetInstanceInfo =
+  GetTime, CombatLogGetCurrentEventInfo, UnitGUID, GetInstanceInfo
 
 
 -------------------------------------------------------------------------------
@@ -53,7 +55,9 @@ local function NewEncounter()
   return {
     trackedUnits = {},
     inFight = true,
-    encounter = {}
+    encounter = {},
+    interestingUnits = {},
+    interestingEvents = {}
   }
 end
 
@@ -161,6 +165,8 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
       if encounter then
         if encounter.enabled then
           PRT:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+          PRT:RegisterEvent("UNIT_POWER_UPDATE")
+          PRT:RegisterEvent("UNIT_HEALTH")
 
           PRT.currentEncounter.encounter = PRT.TableUtils.CopyTable(encounter)
           PRT.currentEncounter.encounter.startedAt = GetTime()
@@ -173,6 +179,8 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
             PRT.SenderOverlay.Show()
             PRT.Overlay.SetMoveable(PRT.SenderOverlay.overlayFrame, false)
             AceTimer:ScheduleRepeatingTimer(PRT.SenderOverlay.UpdateFrame, 1, PRT.currentEncounter.encounter, PRT.db.profile.overlay.sender)
+            AceTimer:ScheduleRepeatingTimer(PRT.ProcessMessageQueue, 0.5)
+            AceTimer:ScheduleRepeatingTimer(PRT.CheckTimerTimings, 0.5, PRT.currentEncounter.encounter.Timers)
           end
         else
           PRT.Warn("Found encounter but it is disabled. Skipping encounter.")
@@ -181,6 +189,12 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
     end
 
     PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
+
+    -- Simulate encounter start events when in test mode
+    if PRT.db.profile.testMode then
+      PRT:COMBAT_LOG_EVENT_UNFILTERED("PLAYER_REGEN_DISABLED")
+      PRT:COMBAT_LOG_EVENT_UNFILTERED("ENCOUNTER_START")
+    end
   else
     PRT.Debug(PRT.HighlightString("PhenomRaidTools"), "is disabled. We won't start encounter.")
   end
@@ -192,6 +206,8 @@ function EventHandler.StopEncounter(event)
     -- Send the last event before unregistering the event
     PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
     PRT:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+    PRT:UnregisterEvent("UNIT_POWER_UPDATE")
+    PRT:UnregisterEvent("UNIT_HEALTH")
 
     if PRT.currentEncounter then
       PRT.currentEncounter = {}
@@ -233,18 +249,18 @@ function PRT.UnregisterEvents(events)
   end
 end
 
-function PRT.RegisterEssentialEvents()
-  PRT.RegisterEvents(EventHandler.essentialEvents)
+function PRT.RegisterWorldEvents()
+  PRT.RegisterEvents(EventHandler.worldEvents)
 end
 
-function PRT.UnregisterEssentialEvents()
-  PRT.UnregisterEvents(EventHandler.essentialEvents)
+function PRT.UnrgisterWorldEvents()
+  PRT.UnregisterEvents(EventHandler.worldEvents)
 end
 
 function PRT:ENCOUNTER_START(event, encounterID, encounterName)
   -- We only start a real encounter if PRT is enabled (correct dungeon/raid difficulty) and we're not in test mode
   if PRT.enabled and not self.db.profile.testMode then
-    PRT.RegisterEvents(EventHandler.combatEvents)
+    PRT.RegisterEvents(EventHandler.trackedInCombatEvents)
     EventHandler.StartEncounter(event, encounterID, encounterName)
   end
 end
@@ -261,7 +277,7 @@ function PRT:PLAYER_REGEN_DISABLED(event)
 
     if encounter then
       if encounter.enabled then
-        PRT.RegisterEvents(EventHandler.combatEvents)
+        PRT.RegisterEvents(EventHandler.trackedInCombatEvents)
         EventHandler.StartEncounter(event, encounter.id, encounter.name)
       else
         PRT.Warn("The selected encounter is disabled. Please enable it before testing.")
@@ -277,13 +293,13 @@ end
 
 function PRT:ENCOUNTER_END(event)
   EventHandler.StopEncounter(event)
-  PRT.UnregisterEvents(EventHandler.combatEvents)
+  PRT.UnregisterEvents(EventHandler.trackedInCombatEvents)
 end
 
 function PRT:PLAYER_REGEN_ENABLED(event)
   if not PRT.PlayerInParty() or self.db.profile.testMode then
     EventHandler.StopEncounter(event)
-    PRT.UnregisterEvents(EventHandler.combatEvents)
+    PRT.UnregisterEvents(EventHandler.trackedInCombatEvents)
   end
 end
 
@@ -293,54 +309,64 @@ function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 
     if PRT.currentEncounter.inFight then
       if PRT.currentEncounter.encounter then
-        local timers = PRT.currentEncounter.encounter.Timers
-        local rotations = PRT.currentEncounter.encounter.Rotations
-        local healthPercentages = PRT.currentEncounter.encounter.HealthPercentages
-        local powerPercentages = PRT.currentEncounter.encounter.PowerPercentages
+        if PRT.currentEncounter.interestingEvents[combatEvent] or PRT.currentEncounter.interestingEvents[event] then
+          local timers = PRT.currentEncounter.encounter.Timers
+          local rotations = PRT.currentEncounter.encounter.Rotations
+          local healthPercentages = PRT.currentEncounter.encounter.HealthPercentages
+          local powerPercentages = PRT.currentEncounter.encounter.PowerPercentages
 
-        -- Checking Timer activation
-        if timers then
-          if PRT.currentEncounter.interestingEvents[combatEvent] or PRT.currentEncounter.interestingEvents[event] then
+          -- Checking Timer activation
+          if timers then
             PRT.CheckTimerStopConditions(timers, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
             PRT.CheckTimerStartConditions(timers, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
           end
 
-          PRT.CheckTimerTimings(timers)
-        end
-
-        -- Checking Rotation activation
-        if rotations then
-          if PRT.currentEncounter.interestingEvents[combatEvent] or PRT.currentEncounter.interestingEvents[event] then
+          -- Checking Rotation activation
+          if rotations then
             PRT.CheckTriggersStopConditions(rotations, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
             PRT.CheckTriggersStartConditions(rotations, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
+            PRT.CheckRotationTriggerCondition(rotations, event, combatEvent, eventSpellID, targetGUID, targetName, sourceGUID, sourceName)
           end
 
-          PRT.CheckRotationTriggerCondition(rotations, event, combatEvent, eventSpellID, targetGUID, targetName, sourceGUID, sourceName)
-        end
-
-        -- Checking Health Percentage activation
-        if healthPercentages then
-          if PRT.currentEncounter.interestingEvents[combatEvent] or PRT.currentEncounter.interestingEvents[event] then
+          -- Checking Health Percentage activation
+          if healthPercentages then
             PRT.CheckTriggersStartConditions(healthPercentages, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
             PRT.CheckTriggersStopConditions(healthPercentages, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
           end
 
-          PRT.CheckUnitHealthPercentages(healthPercentages)
-        end
-
-        -- Checking Resource Percentage activation
-        if powerPercentages then
-          if PRT.currentEncounter.interestingEvents[combatEvent] or PRT.currentEncounter.interestingEvents[event] then
+          -- Checking Resource Percentage activation
+          if powerPercentages then
             PRT.CheckTriggersStartConditions(powerPercentages, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
             PRT.CheckTriggersStopConditions(powerPercentages, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
           end
+        end
+      end
+    end
+  end
+end
 
+function PRT:UNIT_POWER_UPDATE(_)
+  if PRT.currentEncounter and PRT.db.profile.senderMode then
+    if PRT.currentEncounter.inFight then
+      if PRT.currentEncounter.encounter then
+        local powerPercentages = PRT.currentEncounter.encounter.PowerPercentages
+
+        if powerPercentages then
           PRT.CheckUnitPowerPercentages(powerPercentages)
         end
+      end
+    end
+  end
+end
 
-        -- Process Message Queue after activations
-        if timers or rotations or healthPercentages or powerPercentages then
-          PRT.ProcessMessageQueue()
+function PRT:UNIT_HEALTH(_)
+  if PRT.currentEncounter and PRT.db.profile.senderMode then
+    if PRT.currentEncounter.inFight then
+      if PRT.currentEncounter.encounter then
+        local healthPercentages = PRT.currentEncounter.encounter.HealthPercentages
+
+        if healthPercentages then
+          PRT.CheckUnitHealthPercentages(healthPercentages)
         end
       end
     end
@@ -373,26 +399,33 @@ local untrackedUnitIDs = {
   "target"
 }
 
+local function IsInterestingUnit(currentEncounter, unitID)
+  local unitName = GetUnitName(unitID)
+  local guid = UnitGUID(unitID)
+  local mobID = PRT.GUIDToMobID(guid)
+
+  return currentEncounter.interestingUnits and (currentEncounter.interestingUnits[unitID] or currentEncounter.interestingUnits[unitName] or currentEncounter.interestingUnits[mobID])
+end
+
+local function IsTrackedUnit(currentEncounter, unitID)
+  return currentEncounter.trackedUnits and currentEncounter.trackedUnits[unitID]
+end
+
 function PRT.AddUnitToTrackedUnits(unitID)
   if PRT.currentEncounter then
     if not tContains(untrackedUnitIDs, unitID) then
       local unitName = GetUnitName(unitID)
       local guid = UnitGUID(unitID)
-      local mobID = PRT.GUIDToMobID(guid)
 
-      if PRT.currentEncounter.interestingUnits then
-        if PRT.currentEncounter.interestingUnits[unitID] or PRT.currentEncounter.interestingUnits[unitName] or PRT.currentEncounter.interestingUnits[mobID] then
-          if PRT.currentEncounter.trackedUnits then
-            if PRT.currentEncounter.trackedUnits[unitID] then
-              if PRT.currentEncounter.trackedUnits[unitID].guid ~= guid then
-                PRT.Debug("Updating tracked unit "..PRT.HighlightString(unitName.." ("..unitID..")"))
-                UpdateTrackedUnit(unitID, unitName, guid)
-              end
-            else
-              PRT.Debug("Adding "..PRT.HighlightString(unitName.." ("..unitID..")"), "to tracked units.")
-              UpdateTrackedUnit(unitID, unitName, guid)
-            end
+      if IsInterestingUnit(PRT.currentEncounter, unitID) then
+        if IsTrackedUnit(PRT.currentEncounter, unitID) then
+          if PRT.currentEncounter.trackedUnits[unitID].guid ~= guid then
+            PRT.Debug("Updating tracked unit ", PRT.HighlightString(unitName.." ("..unitID..")"))
+            UpdateTrackedUnit(unitID, unitName, guid)
           end
+        else
+          PRT.Debug("Adding ", PRT.HighlightString(unitName.." ("..unitID..")"), "to tracked units.")
+          UpdateTrackedUnit(unitID, unitName, guid)
         end
       end
     end
