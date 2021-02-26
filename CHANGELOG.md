@@ -1,4 +1,19 @@
 ===============================================================================
+# Release 2.3.0.0-BETA
+## Bugfixes
+None
+
+## Features
+ - Refactor event handling
+   - Health and power percentages will now be checked by tracking wow events
+     "UNIT_HEALTH" and "UNIT_POWER_UPDATE" which should lead to a far more accurate
+     result
+   - Timers now will only be checked only twice a second instead of on every combat event
+   - Message queue will only processed twice a second now instead of on every
+     combat event
+
+
+===============================================================================
 # Release 2.2.10.0
 ## Bugfixes
 None
