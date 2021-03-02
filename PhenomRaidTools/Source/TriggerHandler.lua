@@ -421,26 +421,26 @@ local function ValidUnit(unitID)
   return UnitExists(unitID) and not UnitIsDead(unitID)
 end
 -- Health Percentages
-function PRT.GetEffectiveUnit(unitID)
+function PRT.GetEffectiveUnit(unit)
   if PRT.currentEncounter.trackedUnits then
     for trackedUnitGUID, trackedUnit in pairs(PRT.currentEncounter.trackedUnits) do
-      if tonumber(unitID) then
+      if tonumber(unit) then
         -- Find by Mob-ID
         local mobID = select(6, strsplit("-", trackedUnitGUID))
-        if mobID == unitID then
+        if mobID == unit then
           if ValidUnit(trackedUnit.unitID) then
             return trackedUnit
           end
         end
-      elseif UnitExists(unitID) then
+      elseif UnitExists(unit) then
         return {
-          unitID = unitID,
-          guid = UnitGUID(unitID),
-          name = UnitName(unitID)
+          unitID = unit,
+          guid = UnitGUID(unit),
+          name = UnitName(unit)
         }
-      elseif type(unitID) == "string" then
+      elseif type(unit) == "string" then
         -- Find by name
-        if trackedUnit.name == unitID then
+        if trackedUnit.name == unit then
           if ValidUnit(trackedUnit.unitID) then
             return trackedUnit
           end
@@ -490,6 +490,7 @@ function PRT.CheckUnitHealthPercentages(percentages)
     end
   end
 end
+
 function PRT.CheckUnitPowerPercentages(percentages)
   if percentages ~= nil then
     for _, percentage in ipairs(percentages) do

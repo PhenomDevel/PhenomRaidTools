@@ -495,11 +495,11 @@ function PRT.PlayerNamesByToken(token)
       end
     end
   else
-    tinsert(playerNames, "N/A")
+    tinsert(playerNames, token)
   end
 
   if PRT.TableUtils.IsEmpty(playerNames) then
-    tinsert(playerNames, "N/A")
+    tinsert(playerNames, token)
   end
 
   return playerNames
