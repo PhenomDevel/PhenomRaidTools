@@ -67,8 +67,8 @@ function MessageHandler.ExecuteMessageAction(message)
     -- Cleanup unused fields
     targetMessage.targets = nil
 
+    PRT.Debug("Try sending new message to", PRT.ClassColoredName(targetMessage.target))
     if UnitExists(targetMessage.target) or tContains(MessageHandler.validTargets, targetMessage.target) then
-      PRT.Debug("Sending new message to", PRT.ClassColoredName(targetMessage.target))
       targetMessage.sender = PRT.db.profile.myName
 
       -- If in test mode send the message through the whipser channel in case we are not in a group
@@ -77,10 +77,11 @@ function MessageHandler.ExecuteMessageAction(message)
       end
 
       AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.addonMessage, PRT.TableToString(targetMessage), "RAID")
+      PRT.Debug("Send message to", PRT.ClassColoredName(targetMessage.target))
     else
       -- Don't spam chat if a configured user is not in the raid. We expect those to happen sometimes
       if targetMessage.target ~= "N/A" then
-        PRT.Error("Target", PRT.HighlightString(targetMessage.target), "does not exist. Skipping message.")
+        PRT.Debug("Target", PRT.HighlightString(targetMessage.target), "does not exist. Skipping message.")
       end
     end
   end
