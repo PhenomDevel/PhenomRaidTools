@@ -140,7 +140,9 @@ function PRT.TabGroupSelected(widget, t, key, itemFunction, emptyItemFunction, w
       item = t[key]
     end
 
-    itemFunction(item, widget, key, t)
+    if item then
+      itemFunction(item, widget, key, t)
+    end
 
     if withDeleteButton then
       local deleteButtonText = L[deleteTextID]
