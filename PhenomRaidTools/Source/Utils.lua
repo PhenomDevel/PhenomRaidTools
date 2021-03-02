@@ -495,11 +495,11 @@ function PRT.PlayerNamesByToken(token)
       end
     end
   else
-    tinsert(playerNames, token)
+    tinsert(playerNames, PRT.ColoredString(token, PRT.db.profile.colors.disabled))
   end
 
   if PRT.TableUtils.IsEmpty(playerNames) then
-    tinsert(playerNames, token)
+    tinsert(playerNames, PRT.ColoredString(token, PRT.db.profile.colors.disabled))
   end
 
   return playerNames
