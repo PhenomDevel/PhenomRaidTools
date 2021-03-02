@@ -1,4 +1,16 @@
 ===============================================================================
+# Release 2.3.1.0-BETA
+## Bugfixes
+ - Fixed a bug that occured when you deleted the last message of an entry
+
+## Features
+ - Added logging when a message should be send to make it easier to see when a placeholder wasn't found
+ - Track units by their guid
+ - Instead of N/A return the placeholder colored in red
+
+
+
+===============================================================================
 # Release 2.3.0.0-BETA
 ## Bugfixes
 None
