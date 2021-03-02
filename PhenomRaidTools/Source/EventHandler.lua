@@ -373,11 +373,11 @@ function PRT:UNIT_HEALTH(_)
   end
 end
 
-local function EnsureTrackedUnit(unitID)
+local function EnsureTrackedUnit(guid)
   if PRT.currentEncounter then
     if PRT.currentEncounter.trackedUnits then
-      if not PRT.currentEncounter.trackedUnits[unitID] then
-        PRT.currentEncounter.trackedUnits[unitID] = {}
+      if not PRT.currentEncounter.trackedUnits[guid] then
+        PRT.currentEncounter.trackedUnits[guid] = {}
       end
     end
   end
@@ -385,18 +385,18 @@ end
 
 local function UpdateTrackedUnit(unitID, name, guid)
   if PRT.currentEncounter.trackedUnits then
-    EnsureTrackedUnit(unitID)
+    EnsureTrackedUnit(guid)
 
-    if guid ~= PRT.currentEncounter.trackedUnits[unitID].guid then
-      PRT.currentEncounter.trackedUnits[unitID].unitID = unitID
-      PRT.currentEncounter.trackedUnits[unitID].guid = guid
-      PRT.currentEncounter.trackedUnits[unitID].name = name
+    if unitID ~= PRT.currentEncounter.trackedUnits[guid].unitID then
+      PRT.currentEncounter.trackedUnits[guid].unitID = unitID
+      PRT.currentEncounter.trackedUnits[guid].guid = guid
+      PRT.currentEncounter.trackedUnits[guid].name = name
     end
   end
 end
 
 local untrackedUnitIDs = {
-  "target"
+  "target",
 }
 
 local function IsInterestingUnit(currentEncounter, unitID)
@@ -407,8 +407,8 @@ local function IsInterestingUnit(currentEncounter, unitID)
   return currentEncounter.interestingUnits and (currentEncounter.interestingUnits[unitID] or currentEncounter.interestingUnits[unitName] or currentEncounter.interestingUnits[mobID])
 end
 
-local function IsTrackedUnit(currentEncounter, unitID)
-  return currentEncounter.trackedUnits and currentEncounter.trackedUnits[unitID]
+local function IsTrackedUnit(currentEncounter, guid)
+  return currentEncounter.trackedUnits and currentEncounter.trackedUnits[guid]
 end
 
 function PRT.AddUnitToTrackedUnits(unitID)
@@ -418,9 +418,9 @@ function PRT.AddUnitToTrackedUnits(unitID)
       local guid = UnitGUID(unitID)
 
       if IsInterestingUnit(PRT.currentEncounter, unitID) then
-        if IsTrackedUnit(PRT.currentEncounter, unitID) then
-          if PRT.currentEncounter.trackedUnits[unitID].guid ~= guid then
-            PRT.Debug("Updating tracked unit ", PRT.HighlightString(unitName.." ("..unitID..")"))
+        if IsTrackedUnit(PRT.currentEncounter, guid) then
+          if PRT.currentEncounter.trackedUnits[guid].unitID ~= unitID then
+            -- PRT.Debug("Updating tracked unit ", PRT.HighlightString(unitName.." ("..unitID..")"))
             UpdateTrackedUnit(unitID, unitName, guid)
           end
         else
