@@ -57,7 +57,8 @@ local function NewEncounter()
     inFight = true,
     encounter = {},
     interestingUnits = {},
-    interestingEvents = {}
+    interestingEvents = {},
+    statistics = {}
   }
 end
 
@@ -151,6 +152,15 @@ local function LogInterestingUnitsAndEvents(currentEncounter)
   end
 end
 
+local function LogEncounterStatistics(currentEncounter)
+  if currentEncounter.statistics then
+    PRT.Debug("Handled event statistics:")
+    for k, value in pairs(currentEncounter.statistics) do
+      PRT.Debug("Handled", PRT.HighlightString(value), "events for", PRT.HighlightString(k))
+    end
+  end
+end
+
 function EventHandler.StartEncounter(event, encounterID, encounterName)
   if PRT.db.profile.enabled then
     wipe(PRT.db.profile.debugLog)
@@ -203,6 +213,8 @@ end
 function EventHandler.StopEncounter(event)
   PRT.Debug("Combat stopped.")
   if PRT.db.profile.senderMode then
+    LogEncounterStatistics(PRT.currentEncounter)
+
     -- Send the last event before unregistering the event
     PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
     PRT:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
@@ -310,6 +322,7 @@ function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
     if PRT.currentEncounter.inFight then
       if PRT.currentEncounter.encounter then
         if PRT.currentEncounter.interestingEvents[combatEvent] or PRT.currentEncounter.interestingEvents[event] then
+          PRT.currentEncounter.statistics.CLEU = (PRT.currentEncounter.statistics.CLEU or 0) + 1
           local timers = PRT.currentEncounter.encounter.Timers
           local rotations = PRT.currentEncounter.encounter.Rotations
           local healthPercentages = PRT.currentEncounter.encounter.HealthPercentages
@@ -345,28 +358,48 @@ function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
   end
 end
 
-function PRT:UNIT_POWER_UPDATE(_)
+local function IsInterestingUnit(currentEncounter, unitID)
+  local unitName = GetUnitName(unitID)
+  local guid = UnitGUID(unitID)
+  local mobID = PRT.GUIDToMobID(guid)
+
+  return currentEncounter.interestingUnits and (currentEncounter.interestingUnits[unitID] or currentEncounter.interestingUnits[unitName] or currentEncounter.interestingUnits[mobID])
+end
+
+local function IsTrackedUnit(currentEncounter, guid)
+  return currentEncounter.trackedUnits and currentEncounter.trackedUnits[guid]
+end
+
+function PRT:UNIT_POWER_UPDATE(_, unitID)
   if PRT.currentEncounter and PRT.db.profile.senderMode then
     if PRT.currentEncounter.inFight then
       if PRT.currentEncounter.encounter then
-        local powerPercentages = PRT.currentEncounter.encounter.PowerPercentages
+        local unitGUID = UnitGUID(unitID)
+        if IsInterestingUnit(PRT.currentEncounter, unitID) and IsTrackedUnit(PRT.currentEncounter, unitGUID) then
+          PRT.currentEncounter.statistics.UNIT_POWER_UPDATE = (PRT.currentEncounter.statistics.UNIT_POWER_UPDATE or 0) + 1
+          local powerPercentages = PRT.currentEncounter.encounter.PowerPercentages
 
-        if powerPercentages then
-          PRT.CheckUnitPowerPercentages(powerPercentages)
+          if powerPercentages then
+            PRT.CheckUnitPowerPercentages(powerPercentages)
+          end
         end
       end
     end
   end
 end
 
-function PRT:UNIT_HEALTH(_)
+function PRT:UNIT_HEALTH(_, unitID)
   if PRT.currentEncounter and PRT.db.profile.senderMode then
     if PRT.currentEncounter.inFight then
       if PRT.currentEncounter.encounter then
-        local healthPercentages = PRT.currentEncounter.encounter.HealthPercentages
+        local unitGUID = UnitGUID(unitID)
+        if IsInterestingUnit(PRT.currentEncounter, unitID) and IsTrackedUnit(PRT.currentEncounter, unitGUID) then
+          PRT.currentEncounter.statistics.UNIT_HEALTH = (PRT.currentEncounter.statistics.UNIT_HEALTH or 0) + 1
+          local healthPercentages = PRT.currentEncounter.encounter.HealthPercentages
 
-        if healthPercentages then
-          PRT.CheckUnitHealthPercentages(healthPercentages)
+          if healthPercentages then
+            PRT.CheckUnitHealthPercentages(healthPercentages)
+          end
         end
       end
     end
@@ -398,18 +431,6 @@ end
 local untrackedUnitIDs = {
   "target",
 }
-
-local function IsInterestingUnit(currentEncounter, unitID)
-  local unitName = GetUnitName(unitID)
-  local guid = UnitGUID(unitID)
-  local mobID = PRT.GUIDToMobID(guid)
-
-  return currentEncounter.interestingUnits and (currentEncounter.interestingUnits[unitID] or currentEncounter.interestingUnits[unitName] or currentEncounter.interestingUnits[mobID])
-end
-
-local function IsTrackedUnit(currentEncounter, guid)
-  return currentEncounter.trackedUnits and currentEncounter.trackedUnits[guid]
-end
 
 function PRT.AddUnitToTrackedUnits(unitID)
   if PRT.currentEncounter then

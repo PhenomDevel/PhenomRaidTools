@@ -531,6 +531,9 @@ end
 -- Unit Helper
 
 function PRT.GUIDToMobID(guid)
+  if not guid then
+    return nil
+  end
   return select(6, strsplit("-", guid))
 end
 
