@@ -1,4 +1,14 @@
 ===============================================================================
+# Release 2.3.2.0-BETA
+## Bugfixes
+None
+
+## Features
+ - Make sure units not affected in combat (maybe instant cc) are still being tracked
+   - E.g. Shade of Bargast
+
+
+===============================================================================
 # Release 2.3.1.1-BETA
 ## Bugfixes
  - Be able to delete condition spell id again
