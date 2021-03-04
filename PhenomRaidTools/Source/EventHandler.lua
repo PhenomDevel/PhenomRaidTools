@@ -14,8 +14,9 @@ local EventHandler = {
   trackedInCombatEvents = {
     "COMBAT_LOG_EVENT_UNFILTERED",
     "UNIT_HEALTH",
-    "UNIT_POWER_UPDATE",
-    "UNIT_COMBAT"
+    "UNIT_POWER_FREQUENT",
+    "UNIT_COMBAT",
+    "INSTANCE_ENCOUNTER_ENGAGE_UNIT"
   },
 
   difficultyIDToNameMapping = {
@@ -165,19 +166,15 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
   if PRT.db.profile.enabled then
     wipe(PRT.db.profile.debugLog)
     if PRT.db.profile.senderMode then
-      PRT.currentEncounter = NewEncounter()
-      PRT.Debug("Starting new encounter", PRT.HighlightString(encounterName),"(", PRT.HighlightString(encounterID), ")" , "|r")
-
       local _, encounter = PRT.FilterEncounterTable(PRT.db.profile.encounters, encounterID)
-
-      PRT.EnsureEncounterTrigger(encounter)
 
       if encounter then
         if encounter.enabled then
-          PRT:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-          PRT:RegisterEvent("UNIT_POWER_UPDATE")
-          PRT:RegisterEvent("UNIT_HEALTH")
+          PRT.currentEncounter = NewEncounter()
+          PRT.Debug("Starting new encounter", PRT.HighlightString(encounterName),"(", PRT.HighlightString(encounterID), ")" , "|r")
 
+          PRT.EnsureEncounterTrigger(encounter)
+          PRT.RegisterEvents(EventHandler.trackedInCombatEvents)
           PRT.currentEncounter.encounter = PRT.TableUtils.CopyTable(encounter)
           PRT.currentEncounter.encounter.startedAt = GetTime()
 
@@ -187,7 +184,7 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
 
           if PRT.db.profile.overlay.sender.enabled then
             PRT.SenderOverlay.Show()
-            PRT.Overlay.SetMoveable(PRT.SenderOverlay.overlayFrame, false)
+            PRT.SenderOverlay.Lock()
             AceTimer:ScheduleRepeatingTimer(PRT.SenderOverlay.UpdateFrame, 1, PRT.currentEncounter.encounter, PRT.db.profile.overlay.sender)
             AceTimer:ScheduleRepeatingTimer(PRT.ProcessMessageQueue, 0.5)
             AceTimer:ScheduleRepeatingTimer(PRT.CheckTimerTimings, 0.5, PRT.currentEncounter.encounter.Timers)
@@ -211,28 +208,24 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
 end
 
 function EventHandler.StopEncounter(event)
-  PRT.Debug("Combat stopped.")
-  if PRT.db.profile.senderMode then
-    LogEncounterStatistics(PRT.currentEncounter)
+  if PRT.db.profile.senderMode and PRT.currentEncounter then
+    PRT.Debug("Combat stopped.")
 
     -- Send the last event before unregistering the event
     PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
-    PRT:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-    PRT:UnregisterEvent("UNIT_POWER_UPDATE")
-    PRT:UnregisterEvent("UNIT_HEALTH")
+    PRT.UnregisterEvents(EventHandler.trackedInCombatEvents)
 
-    if PRT.currentEncounter then
-      PRT.currentEncounter = {}
-    end
+    LogEncounterStatistics(PRT.currentEncounter)
+    PRT.currentEncounter = {}
+  end
 
-    -- Hide overlay if necessary
-    if PRT.db.profile.overlay.sender.hideAfterCombat then
-      PRT.SenderOverlay.Hide()
-    end
+  -- Hide overlay if necessary
+  if PRT.db.profile.overlay.sender.hideAfterCombat then
+    PRT.SenderOverlay.Hide()
   end
 
   if PRT.db.profile.overlay.sender.enabled then
-    PRT.Overlay.SetMoveable(PRT.SenderOverlay.overlayFrame, true)
+    PRT.SenderOverlay.Unlock()
   end
 
   -- Clear ReceiverFrame
@@ -322,7 +315,9 @@ function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
     if PRT.currentEncounter.inFight then
       if PRT.currentEncounter.encounter then
         if PRT.currentEncounter.interestingEvents[combatEvent] or PRT.currentEncounter.interestingEvents[event] then
-          PRT.currentEncounter.statistics.CLEU = (PRT.currentEncounter.statistics.CLEU or 0) + 1
+
+          PRT.currentEncounter.statistics[combatEvent or event] = (PRT.currentEncounter.statistics[combatEvent or event] or 0) + 1
+
           local timers = PRT.currentEncounter.encounter.Timers
           local rotations = PRT.currentEncounter.encounter.Rotations
           local healthPercentages = PRT.currentEncounter.encounter.HealthPercentages
@@ -370,13 +365,13 @@ local function IsTrackedUnit(currentEncounter, guid)
   return currentEncounter.trackedUnits and currentEncounter.trackedUnits[guid]
 end
 
-function PRT:UNIT_POWER_UPDATE(_, unitID)
+function PRT:UNIT_POWER_FREQUENT(event, unitID)
   if PRT.currentEncounter and PRT.db.profile.senderMode then
     if PRT.currentEncounter.inFight then
       if PRT.currentEncounter.encounter then
         local unitGUID = UnitGUID(unitID)
         if IsInterestingUnit(PRT.currentEncounter, unitID) and IsTrackedUnit(PRT.currentEncounter, unitGUID) then
-          PRT.currentEncounter.statistics.UNIT_POWER_UPDATE = (PRT.currentEncounter.statistics.UNIT_POWER_UPDATE or 0) + 1
+          PRT.currentEncounter.statistics[event] = (PRT.currentEncounter.statistics[event] or 0) + 1
           local powerPercentages = PRT.currentEncounter.encounter.PowerPercentages
 
           if powerPercentages then
@@ -388,13 +383,13 @@ function PRT:UNIT_POWER_UPDATE(_, unitID)
   end
 end
 
-function PRT:UNIT_HEALTH(_, unitID)
+function PRT:UNIT_HEALTH(event, unitID)
   if PRT.currentEncounter and PRT.db.profile.senderMode then
     if PRT.currentEncounter.inFight then
       if PRT.currentEncounter.encounter then
         local unitGUID = UnitGUID(unitID)
         if IsInterestingUnit(PRT.currentEncounter, unitID) and IsTrackedUnit(PRT.currentEncounter, unitGUID) then
-          PRT.currentEncounter.statistics.UNIT_HEALTH = (PRT.currentEncounter.statistics.UNIT_HEALTH or 0) + 1
+          PRT.currentEncounter.statistics[event] = (PRT.currentEncounter.statistics[event] or 0) + 1
           local healthPercentages = PRT.currentEncounter.encounter.HealthPercentages
 
           if healthPercentages then
@@ -455,6 +450,16 @@ end
 
 function PRT:UNIT_COMBAT(_, unitID)
   PRT.AddUnitToTrackedUnits(unitID)
+end
+
+function PRT:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
+  for i = 1, 5 do
+    local unitID = "boss"..i
+
+    if UnitExists(unitID) then
+      PRT.AddUnitToTrackedUnits(unitID)
+    end
+  end
 end
 
 function PRT:PLAYER_ENTERING_WORLD(_)

@@ -133,6 +133,14 @@ function SenderOverlay.Show()
   PRT.Overlay.Show(SenderOverlay.overlayFrame)
 end
 
+function SenderOverlay.Lock()
+  PRT.Overlay.SetMoveable(PRT.SenderOverlay.overlayFrame, false)
+end
+
+function SenderOverlay.Unlock()
+  PRT.Overlay.SetMoveable(PRT.SenderOverlay.overlayFrame, true)
+end
+
 function SenderOverlay.Initialize(options)
   if not SenderOverlay.overlayFrame then
     PRT.Debug("Initializing sender overlay")
