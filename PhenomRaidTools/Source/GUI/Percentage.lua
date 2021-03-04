@@ -106,8 +106,13 @@ function Percentage.PercentageWidget(percentageName, percentages, container)
       percentage.checkAgainAfter = widget:GetValue()
     end)
   percentageOptionsGroup:AddChild(unitIDEditBox)
-  percentageOptionsGroup:AddChild(checkAgainCheckBox)
-  percentageOptionsGroup:AddChild(checkAgainAfterSlider)
+
+  local checkAgainGroup = PRT.SimpleGroup()
+  checkAgainGroup:SetLayout("Flow")
+  checkAgainGroup:AddChild(checkAgainCheckBox)
+  checkAgainGroup:AddChild(checkAgainAfterSlider)
+  percentageOptionsGroup:AddChild(checkAgainGroup)
+
   container:AddChild(percentageOptionsGroup)
 
   -- Start Condition

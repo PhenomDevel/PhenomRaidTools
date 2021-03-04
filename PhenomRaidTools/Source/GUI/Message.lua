@@ -357,14 +357,16 @@ local function AddAdvancedActionWidgets(container, message)
   local targetsPreviewString = Message.TargetsPreviewString(message.targets)
   local raidRosterItems = Message.GenerateRaidRosterDropdownItems()
 
+  local targetGroup = PRT.SimpleGroup()
+  targetGroup:SetLayout("Flow")
   local targetsEditBox = PRT.EditBox("messageTargets", targetsString, true)
-  targetsEditBox:SetWidth(500)
+  targetsEditBox:SetRelativeWidth(0.6)
 
   local targetsPreviewLabel = PRT.Label(L["messagePreview"]..PRT.PrepareMessageForDisplay(targetsPreviewString))
-  targetsPreviewLabel:SetWidth(500)
+  targetsPreviewLabel:SetFullWidth(true)
 
   local raidRosterDropdown = PRT.Dropdown("messageRaidRosterAddDropdown", raidRosterItems)
-  raidRosterDropdown:SetWidth(500)
+  raidRosterDropdown:SetRelativeWidth(0.4)
 
   local soundSelect = PRT.SoundSelect("messageSound", (message.soundFileName or L["messageStandardSound"]))
   soundSelect:SetCallback("OnValueChanged",
@@ -406,9 +408,9 @@ local function AddAdvancedActionWidgets(container, message)
     end)
 
   local messagePreviewLabel = PRT.Label(L["messagePreview"]..PRT.PrepareMessageForDisplay(message.message))
-  messagePreviewLabel:SetWidth(500)
+  messagePreviewLabel:SetFullWidth(true)
   local messageEditBox = PRT.EditBox("messageMessage", message.message, true)
-  messageEditBox:SetWidth(500)
+  messageEditBox:SetFullWidth(true)
   messageEditBox:SetCallback("OnEnterPressed",
     function(widget)
       local text = widget:GetText()
@@ -419,12 +421,14 @@ local function AddAdvancedActionWidgets(container, message)
 
 
   local delaySlider = PRT.Slider("messageDelay", message.delay, true)
+  delaySlider:SetRelativeWidth(0.3)
   delaySlider:SetCallback("OnValueChanged",
     function(widget)
       message.delay = tonumber(widget:GetValue())
     end)
 
   local durationSlider = PRT.Slider("messageDuration", message.duration, true)
+  durationSlider:SetRelativeWidth(0.3)
   durationSlider:SetSliderValues(0, 60, 0.5)
   durationSlider:SetCallback("OnValueChanged",
     function(widget)
@@ -442,17 +446,22 @@ local function AddAdvancedActionWidgets(container, message)
       message.targetOverlay = widget:GetValue()
     end)
 
+  targetGroup:AddChild(targetsEditBox)
+  targetGroup:AddChild(raidRosterDropdown)
+  targetGroup:AddChild(targetsPreviewLabel)
 
-  container:AddChild(targetsEditBox)
-  container:AddChild(targetsPreviewLabel)
-  container:AddChild(raidRosterDropdown)
+  container:AddChild(targetGroup)
 
-  container:AddChild(messageEditBox)
-  container:AddChild(messagePreviewLabel)
+  local messageGroup = PRT.SimpleGroup()
+  messageGroup:SetLayout("Flow")
+  messageGroup:AddChild(messageEditBox)
+  messageGroup:AddChild(messagePreviewLabel)
 
-  for _, cooldownGroup in pairs(Cooldowns) do
-    local cooldownIconsGroup = PRT.SimpleGroup()
-    cooldownIconsGroup:SetLayout("Flow")
+  container:AddChild(messageGroup)
+
+  for cooldownGroupName, cooldownGroup in pairs(Cooldowns) do
+    local cooldownGroupContainer = PRT.SimpleGroup(cooldownGroupName)
+    cooldownGroupContainer:SetLayout("Flow")
 
     for _, spellID in ipairs(cooldownGroup) do
       local _, _, icon = GetSpellInfo(spellID)
@@ -467,20 +476,29 @@ local function AddAdvancedActionWidgets(container, message)
           messageEditBox:SetText(message.message)
           messagePreviewLabel:SetText(L["messagePreview"]..PRT.PrepareMessageForDisplay(message.message))
         end)
-      cooldownIconsGroup:AddChild(spellIcon)
+      cooldownGroupContainer:AddChild(spellIcon)
     end
 
-    container:AddChild(cooldownIconsGroup)
+    container:AddChild(cooldownGroupContainer)
   end
 
-  container:AddChild(delaySlider)
-  container:AddChild(durationSlider)
+  local offsetsGroup = PRT.SimpleGroup()
+  offsetsGroup:SetLayout("Flow")
+  offsetsGroup:AddChild(delaySlider)
+  offsetsGroup:AddChild(durationSlider)
+
+  container:AddChild(offsetsGroup)
   container:AddChild(targetOverlayDropdown)
-  container:AddChild(useCustomSoundCheckbox)
+
+  local customSoundGroup = PRT.SimpleGroup()
+  customSoundGroup:SetLayout("Flow")
+  customSoundGroup:AddChild(useCustomSoundCheckbox)
 
   if message.useCustomSound then
-    container:AddChild(soundSelect)
+    customSoundGroup:AddChild(soundSelect)
   end
+
+  container:AddChild(customSoundGroup)
 end
 
 local function SetActionTypeDefaults(action)
