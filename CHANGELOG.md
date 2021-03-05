@@ -1,4 +1,27 @@
 ===============================================================================
+# Release 2.3.3.0-BETA
+## Bugfixes
+None
+
+## Features
+ - Added some more sounds
+  - Phase 1
+  - Phase 2
+  - Phase 3
+  - Phase 4
+  - Phase 5
+  - Heal Cooldown
+  - Soak
+- Only render templates option when in sender mode
+- Only render sender overlay options when in sender mode
+- Disable test encounter select when not in test mode and add test mode description
+- Add action type `raidwarning`
+  - You now can send raid warnings to the group
+    This can be used to send raid warnings to a group which does not use prt yet or a pug.
+    What i had in mind is stuff like `Kill Shade of Bargast` when they reach 60% power or something.
+
+
+===============================================================================
 # Release 2.3.2.0-BETA
 ## Bugfixes
 None
