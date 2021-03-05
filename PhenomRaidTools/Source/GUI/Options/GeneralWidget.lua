@@ -156,11 +156,14 @@ function GeneralOptions.AddTestMode(container, options)
   testModeGroup:SetLayout("Flow")
 
   local testModeCheckbox = PRT.CheckBox("testModeEnabled", options.testMode)
-  local textEncounterIDDropdown = PRT.Dropdown("testModeEncounterID", options.encounters, options.testEncounterID)
+  local textEncounterIDDropdown = PRT.Dropdown("testModeEncounterID", options.encounters, options.testEncounterID, false, true)
+  textEncounterIDDropdown:SetDisabled(not options.testMode)
 
   testModeCheckbox:SetCallback("OnValueChanged",
     function(widget)
       options.testMode = widget:GetValue()
+      PRT.Core.UpdateTree()
+      PRT.Core.ReselectCurrentValue()
     end)
 
   textEncounterIDDropdown:SetCallback("OnValueChanged",
@@ -170,6 +173,12 @@ function GeneralOptions.AddTestMode(container, options)
 
   testModeGroup:AddChild(testModeCheckbox)
   testModeGroup:AddChild(textEncounterIDDropdown)
+
+  if options.testMode then
+    local testModeDescription = PRT.Label(L["testModeDescription"])
+    testModeDescription:SetRelativeWidth(1)
+    testModeGroup:AddChild(testModeDescription)
+  end
 
   container:AddChild(testModeGroup)
 end
