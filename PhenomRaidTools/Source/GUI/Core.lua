@@ -254,17 +254,22 @@ function Core.GenerateOptionsTree()
   return t
 end
 
-function Core.GenerateTemplatesTree()
-  return {
-    value = "templates",
-    text = L["treeTemplates"]
-  }
+function Core.GenerateTemplatesTree(profile)
+  if profile.senderMode then
+    return {
+      value = "templates",
+      text = L["treeTemplates"]
+    }
+  else
+
+    return nil
+  end
 end
 
 function Core.GenerateTreeByProfile(profile)
   local t = {
     Core.GenerateOptionsTree(),
-    Core.GenerateTemplatesTree()
+    Core.GenerateTemplatesTree(profile)
   }
 
   if profile.senderMode then
