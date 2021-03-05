@@ -27,3 +27,12 @@ LSM:Register("sound", "PRT: Revival", folder .. [[Revival.ogg]])
 LSM:Register("sound", "PRT: Divine Hymn", folder .. [[DivineHymn.ogg]])
 LSM:Register("sound", "PRT: Spirit Shell", folder .. [[SpiritShell.ogg]])
 LSM:Register("sound", "PRT: Ashen Hallow", folder .. [[AshenHallow.ogg]])
+
+-- General Sounds
+LSM:Register("sound", "PRT: Phase 1", folder .. [[Phase1.ogg]])
+LSM:Register("sound", "PRT: Phase 2", folder .. [[Phase2.ogg]])
+LSM:Register("sound", "PRT: Phase 3", folder .. [[Phase3.ogg]])
+LSM:Register("sound", "PRT: Phase 4", folder .. [[Phase4.ogg]])
+LSM:Register("sound", "PRT: Phase 5", folder .. [[Phase5.ogg]])
+LSM:Register("sound", "PRT: Heal-CD", folder .. [[HealCD.ogg]])
+LSM:Register("sound", "PRT: Soak", folder .. [[Soak.ogg]])
