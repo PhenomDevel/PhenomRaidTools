@@ -201,10 +201,6 @@ end
 -- Public API
 
 function PRT.AddOverlayWidget(container, options)
-  local senderGroup = PRT.InlineGroup("senderGroup")
-  senderGroup:SetLayout("Flow")
-  Overlay.AddSenderOverlayWidget(senderGroup, options.sender)
-
   local receiversTabs = PRT.TableToTabs(options.receivers)
   local receiversTabGroup = PRT.TabGroup("receiversGroup", receiversTabs)
   receiversTabGroup:SetLayout("List")
@@ -215,6 +211,12 @@ function PRT.AddOverlayWidget(container, options)
 
   PRT.SelectFirstTab(receiversTabGroup, options.receivers)
 
-  container:AddChild(senderGroup)
+  if PRT.db.profile.senderMode then
+    local senderGroup = PRT.InlineGroup("senderGroup")
+    senderGroup:SetLayout("Flow")
+    Overlay.AddSenderOverlayWidget(senderGroup, options.sender)
+    container:AddChild(senderGroup)
+  end
+
   container:AddChild(receiversTabGroup)
 end
