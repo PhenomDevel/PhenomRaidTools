@@ -38,6 +38,8 @@ L = {
   ["testModeGroup"] = "Test mode",
   ["testModeEnabled"] = "Enabled",
   ["testModeEncounterID"] = "Encounter to test",
+  ["testModeDescription"] = "When test mode is enabled some things might work differently. For example if you have a raid warning configured you will be whispered instead because we assume you're not in a raid when testing.\n\n"..
+  "If things do not work like you would think please feel free to ask for help in our discord https://discord.gg/GAYDjBF",
 
   ["messageFilterGroup"] = "Message filter",
   ["messageFilterByDropdown"] = "Filter by",
@@ -424,9 +426,12 @@ L = {
   ["actionTypeCooldown"] = "Cooldown",
   ["actionTypeAdvanced"] = "Advanced",
   ["actionTypeLoadTemplate"] = "Load Template",
+  ["actionTypeRaidWarning"] = "Raid Warning",
+  ["actionTypeRaidMark"] = "Raid Mark",
   ["cooldownActionTargetDropdown"] = "Target",
   ["cooldownActionSpellDropdown"] = "Cooldown",
   ["cooldownActionCustomDropdownItem"] = "*Custom*",
+  ["raidWarningActionNote"] = "Please note that not everything can be displayed within a raid warning correctly e.g. spell icons.",
 
   -- Template
   ["saveAsTemplate"] = "Save as template",

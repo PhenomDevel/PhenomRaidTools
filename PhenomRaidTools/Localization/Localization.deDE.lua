@@ -43,6 +43,8 @@ if GetLocale() == "deDE" then
   L["testModeGroup"] = "Testmodus"
   L["testModeEnabled"] = "Aktiviert"
   L["testModeEncounterID"] = "Zu testender Boss"
+    L["testModeDescription"] = "Wenn der Testmodus aktiviert ist verhalten sich manche Dinge anders. Zum Beispiel wirst Du angeflüstert, wenn eine Schlatzugswarnung konfiguriert ist.\n\n"..
+  "Wenn sich Dinge dennoch anders verhalten als Du es erwarten würdest kannst du gerne auf unserem Discord nach Hilfe fragen https://discord.gg/GAYDjBF"
 
   L["messageFilterGroup"] = "Nachrichtenfilter"
   L["messageFilterByDropdown"] = "Filter nach"
@@ -414,9 +416,12 @@ if GetLocale() == "deDE" then
   L["actionTypeCooldown"] = "Fähigkeit"
   L["actionTypeAdvanced"] = "Erweitert"
   L["actionTypeLoadTemplate"] = "Template laden"
+  L["actionTypeRaidWarning"] = "Schlachtzugswarnung"
+  L["actionTypeRaidMark"] = "Schlachtzugsmarkierung"
   L["cooldownActionTargetDropdown"] = "Ziel"
   L["cooldownActionSpellDropdown"] = "Fähigkeit"
   L["cooldownActionCustomDropdownItem"] = "*Benutzerdefiniert*"
+  L["raidWarningActionNote"] = "Please note that not everything can be displayed within a raid warning correctly e.g. spell icons."
 
   -- Template
   L["saveAsTemplate"] = "Als Vorlage speichern"

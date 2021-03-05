@@ -359,7 +359,7 @@ function PRT.Dropdown(textID, dropdownValues, dropdownValue, withEmpty, orderByK
     dropdownItems[999] = ""
   end
 
-  for _,v in ipairs(dropdownValues) do
+  for _, v in ipairs(dropdownValues) do
     if type(v) == "string" then
       dropdownItems[v] = v
     else
@@ -372,7 +372,7 @@ function PRT.Dropdown(textID, dropdownValues, dropdownValue, withEmpty, orderByK
   if orderByKey then
     local order = {}
 
-    for _,v in ipairs(dropdownValues) do
+    for _, v in ipairs(dropdownValues) do
       local value
       if type(v) == "string" then
         value = v

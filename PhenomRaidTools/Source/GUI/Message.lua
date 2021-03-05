@@ -258,6 +258,27 @@ local function AddLoadTemplateActionWidgets(container, action)
   container:AddChild(templatesDropdown)
 end
 
+local function AddRaidWarningActionWidgets(container, action)
+  local messagePreviewLabel = PRT.Label(L["messagePreview"]..PRT.PrepareMessageForDisplay(action.message))
+  messagePreviewLabel:SetFullWidth(true)
+
+  local messageEditBox = PRT.EditBox("messageMessage", action.message, true)
+  messageEditBox:SetFullWidth(true)
+  messageEditBox:SetCallback("OnEnterPressed",
+    function(widget)
+      local text = widget:GetText()
+      action.message = text
+      widget:ClearFocus()
+      messagePreviewLabel:SetText(L["messagePreview"]..PRT.PrepareMessageForDisplay(action.message))
+    end)
+
+  local note = PRT.Label(L["raidWarningActionNote"])
+
+  container:AddChild(messageEditBox)
+  container:AddChild(messagePreviewLabel)
+  container:AddChild(note)
+end
+
 local function AddCooldownActionWidgets(container, action)
   local possibleTargets = Message.GenerateRaidRosterDropdownItems()
   local possibleCooldowns = Message.CompilePossibleCooldownItems()
@@ -270,7 +291,7 @@ local function AddCooldownActionWidgets(container, action)
     cooldownSpellDropdownValue = action.spellID
   end
 
-  local cooldownSpellDropdown = PRT.Dropdown("cooldownActionSpellDropdown", possibleCooldowns, cooldownSpellDropdownValue)
+  local cooldownSpellDropdown = PRT.Dropdown("cooldownActionSpellDropdown", possibleCooldowns, cooldownSpellDropdownValue, false, true)
   local actionPreview = PRT.Label(L["messagePreview"]..PRT.PrepareMessageForDisplay(CooldownActionPreviewString(action)))
   actionPreview:SetRelativeWidth(1)
   targetDropdown:SetCallback("OnValueChanged",
@@ -507,27 +528,40 @@ local function SetActionTypeDefaults(action)
     action.spellID = nil
   elseif action.type == "advanced" then
   -- Nothing for now
+  elseif action.type == "raidwarning" then
+  -- Nothing for now
+  elseif action.type == "raidmark" then
+  -- Nothing for now
   end
 end
 
 local function AddActionTypeWidgets(container, action)
   local actionTypeDropdownItems = {
-    {
+    [1] = {
       id = "cooldown",
       name = L["actionTypeCooldown"]
     },
-    {
+    [2] = {
+      id = "raidwarning",
+      name = L["actionTypeRaidWarning"]
+    },
+    [3] = {
+      id = "raidmark",
+      name = L["actionTypeRaidMark"],
+      disabled = true
+    },
+    [4] = {
       id = "advanced",
       name = L["actionTypeAdvanced"]
     },
-    {
+    [5] = {
       id = "loadTemplate",
       name = L["actionTypeLoadTemplate"],
       disabled = PRT.TableUtils.IsEmpty(PRT.db.profile.templateStore.messages)
     }
   }
 
-  local actionTypeDropdown = PRT.Dropdown("actionType", actionTypeDropdownItems, action.type or "advanced")
+  local actionTypeDropdown = PRT.Dropdown("actionType", actionTypeDropdownItems, action.type or "advanced", false, true)
   actionTypeDropdown:SetCallback("OnValueChanged",
     function(widget)
       local value = widget:GetValue()
@@ -593,6 +627,10 @@ function PRT.MessageWidget(message, container, saveableAsTemplate)
     container:AddChild(cooldownActionGroup)
   elseif message.type == "loadTemplate" then
     AddLoadTemplateActionWidgets(container, message)
+  elseif message.type == "raidwarning" then
+    AddRaidWarningActionWidgets(container, message)
+  elseif message.type == "raidmark" then
+
   else
     AddAdvancedActionWidgets(container, message)
   end

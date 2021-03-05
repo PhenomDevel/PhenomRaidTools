@@ -3,8 +3,8 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local AceComm = LibStub("AceComm-3.0")
 
 -- Create local copies of API functions which we use
-local UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat =
-  UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat
+local UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat, UnitIsGroupAssistant, SendChatMessage =
+  UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat, UnitIsGroupAssistant, SendChatMessage
 
 local MessageHandler = {
   validTargets = {
@@ -55,8 +55,22 @@ function MessageHandler.ExpandMessageTargets(message)
   return distinctTargets
 end
 
-function MessageHandler.ExecuteMessageAction(message)
+local function ExecuteRaidWarning(message)
+  local msg = PRT.ReplacePlayerNameTokens(message.message)
 
+  PRT.Debug("Sending raid warning", PRT.HighlightString(msg))
+
+  if PRT.db.profile.testMode then
+    SendChatMessage(msg, "WHISPER", nil, PRT.db.profile.myName)
+  elseif UnitInRaid("player") and UnitIsGroupAssistant("player") then
+    SendChatMessage(msg, "RAID_WARNING")
+  end
+end
+
+local function ExecuteRaidMark(message)
+end
+
+local function ExecuteMessage(message)
   local messageTargets = MessageHandler.ExpandMessageTargets(message)
 
   for _, target in ipairs(messageTargets) do
@@ -77,13 +91,23 @@ function MessageHandler.ExecuteMessageAction(message)
       end
 
       AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.addonMessage, PRT.TableToString(targetMessage), "RAID")
-      PRT.Debug("Send message to", PRT.ClassColoredName(targetMessage.target))
+      PRT.Debug("Send message to", PRT.ClassColoredName(targetMessage.target), "with content", PRT.HighlightString(targetMessage.message))
     else
       -- Don't spam chat if a configured user is not in the raid. We expect those to happen sometimes
       if targetMessage.target ~= "N/A" then
         PRT.Debug("Target", PRT.HighlightString(targetMessage.target), "does not exist. Skipping message.")
       end
     end
+  end
+end
+
+function MessageHandler.ExecuteMessageAction(message)
+  if message.type == "raidwarning" then
+    ExecuteRaidWarning(message)
+  elseif message.type == "raidmark" then
+    ExecuteRaidMark(message)
+  else
+    ExecuteMessage(message)
   end
 end
 
