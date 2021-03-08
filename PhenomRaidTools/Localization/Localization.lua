@@ -118,10 +118,10 @@ L = {
   ["defaultTargetsTooltip"] =
   "Comma separated list of targets\n"..
   "Examples:\n"..
-  "- |cFF69CCF0$me|r -> Will be exchanged with the current characters name\n"..
-  "- |cFF69CCF0$target|r -> Will be exchanged with the target of the event\n"..
-  "- |cFF69CCF0$healN|r or |cFF69CCF0$tankN|r or |cFF69CCF0$ddN|r -> N is a number between 1-21. Will be exchanged with the configured raid roster name.\n"..
-  "- |cFF69CCF0$groupN|r -> N is a number between 1-8. Will be exchanged with *all* members of the group.\n"..
+  "- |cFF69CCF0$me|r => Will be exchanged with the current characters name\n"..
+  "- |cFF69CCF0$target|r => Will be exchanged with the target of the event\n"..
+  "- |cFF69CCF0$healN|r or |cFF69CCF0$tankN|r or |cFF69CCF0$ddN|r => N is a number between 1-21. Will be exchanged with the configured raid roster name.\n"..
+  "- |cFF69CCF0$groupN|r => N is a number between 1-8. Will be exchanged with *all* members of the group.\n"..
   "- |cFF69CCF0ALL|r, |cFF69CCF0HEALER|r, |cFF69CCF0TANK|r, |cFF69CCF0DAMAGER|r\n",
   ["defaultUnitID"] = "Unit-ID",
   ["defaultCheckAgain"] = "Check multiple times",
@@ -146,10 +146,10 @@ L = {
   ["messageTargetsTooltip"] =
   "Comma separated list of targets\n"..
   "Examples:\n"..
-  "- |cFF69CCF0$me|r → Will be exchanged with the current characters name\n"..
-  "- |cFF69CCF0$target|r → Will be exchanged with the target of the event\n"..
-  "- |cFF69CCF0$healN|r or |cFF69CCF0$tankN|r or |cFF69CCF0$ddN|r → N is a number between 1-21. Will be exchanged with the configured raid roster name.\n"..
-  "- |cFF69CCF0$groupN|r → N is a number between 1-8. Will be exchanged with *all* members of the group.\n"..
+  "- |cFF69CCF0$me|r => Will be exchanged with the current characters name\n"..
+  "- |cFF69CCF0$target|r => Will be exchanged with the target of the event\n"..
+  "- |cFF69CCF0$healN|r or |cFF69CCF0$tankN|r or |cFF69CCF0$ddN|r => N is a number between 1-21. Will be exchanged with the configured raid roster name.\n"..
+  "- |cFF69CCF0$groupN|r => N is a number between 1-8. Will be exchanged with *all* members of the group.\n"..
   "- |cFF69CCF0ALL|r, |cFF69CCF0HEALER|r, |cFF69CCF0TANK|r, |cFF69CCF0DAMAGER|r\n",
   ["messageMessage"] = "Message",
   ["messageMessageTooltip"] =

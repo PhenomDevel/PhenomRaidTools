@@ -43,8 +43,8 @@ if GetLocale() == "deDE" then
   L["testModeGroup"] = "Testmodus"
   L["testModeEnabled"] = "Aktiviert"
   L["testModeEncounterID"] = "Zu testender Boss"
-    L["testModeDescription"] = "Wenn der Testmodus aktiviert ist verhalten sich manche Dinge anders. Zum Beispiel wirst Du angeflüstert, wenn eine Schlatzugswarnung konfiguriert ist.\n\n"..
-  "Wenn sich Dinge dennoch anders verhalten als Du es erwarten würdest kannst du gerne auf unserem Discord nach Hilfe fragen https://discord.gg/GAYDjBF"
+  L["testModeDescription"] = "Wenn der Testmodus aktiviert ist verhalten sich manche Dinge anders. Zum Beispiel wirst Du angeflüstert, wenn eine Schlatzugswarnung konfiguriert ist.\n\n"..
+    "Wenn sich Dinge dennoch anders verhalten als Du es erwarten würdest kannst du gerne auf unserem Discord nach Hilfe fragen https://discord.gg/GAYDjBF"
 
   L["messageFilterGroup"] = "Nachrichtenfilter"
   L["messageFilterByDropdown"] = "Filter nach"
@@ -113,10 +113,10 @@ if GetLocale() == "deDE" then
   L["defaultTargetsTooltip"] =
     "Kommaseparierte Liste von Empfängern\n"..
     "Beispiele:\n"..
-    "- |cFF69CCF0$me|r → wird mit dem Namen des aktuellen Charakters ausgetauscht\n"..
-    "- |cFF69CCF0$target|r → wird mit dem Ziel des Kampfevents ausgetauscht\n"..
-    "- |cFF69CCF0$healN|r or |cFF69CCF0$tankN|r or |cFF69CCF0$ddN|r → N ist eine Zahl zwischen 1 und 21. Wird mit dem konfigurierten Namen im Raidkader ausgetauscht.\n"..
-    "- |cFF69CCF0$groupN|r → N ist eine Zahl zwischen 1 und 8. Wird mit *allen* Spielern der entsprechenden Gruppe ausgetauscht.\n"..
+    "- |cFF69CCF0$me|r => wird mit dem Namen des aktuellen Charakters ausgetauscht\n"..
+    "- |cFF69CCF0$target|r => wird mit dem Ziel des Kampfevents ausgetauscht\n"..
+    "- |cFF69CCF0$healN|r or |cFF69CCF0$tankN|r or |cFF69CCF0$ddN|r => N ist eine Zahl zwischen 1 und 21. Wird mit dem konfigurierten Namen im Raidkader ausgetauscht.\n"..
+    "- |cFF69CCF0$groupN|r => N ist eine Zahl zwischen 1 und 8. Wird mit *allen* Spielern der entsprechenden Gruppe ausgetauscht.\n"..
     "- |cFF69CCF0ALL|r |cFF69CCF0HEALER|r |cFF69CCF0TANK|r |cFF69CCF0DAMAGER|r\n"
   L["defaultUnitID"] = "Unit-ID"
   L["defaultCheckAgain"] = "Mehrfach prüfen"
@@ -141,10 +141,10 @@ if GetLocale() == "deDE" then
   L["messageTargetsTooltip"] =
     "Kommaseparierte Liste von Empfängern\n"..
     "Beispiele:\n"..
-    "- |cFF69CCF0$me|r → wird mit dem Namen des aktuellen Charakters ausgetauscht\n"..
-    "- |cFF69CCF0$target|r → wird mit dem Ziel des Kampfevents ausgetauscht\n"..
-    "- |cFF69CCF0$healN|r or |cFF69CCF0$tankN|r or |cFF69CCF0$ddN|r → N ist eine Zahl zwischen 1 und 21. Wird mit dem konfigurierten Namen im Raidkader ausgetauscht.\n"..
-    "- |cFF69CCF0$groupN|r → N ist eine Zahl zwischen 1 und 8. Wird mit *allen* Spielern der entsprechenden Gruppe ausgetauscht.\n"..
+    "- |cFF69CCF0$me|r => wird mit dem Namen des aktuellen Charakters ausgetauscht\n"..
+    "- |cFF69CCF0$target|r => wird mit dem Ziel des Kampfevents ausgetauscht\n"..
+    "- |cFF69CCF0$healN|r or |cFF69CCF0$tankN|r or |cFF69CCF0$ddN|r => N ist eine Zahl zwischen 1 und 21. Wird mit dem konfigurierten Namen im Raidkader ausgetauscht.\n"..
+    "- |cFF69CCF0$groupN|r => N ist eine Zahl zwischen 1 und 8. Wird mit *allen* Spielern der entsprechenden Gruppe ausgetauscht.\n"..
     "- |cFF69CCF0ALL|r |cFF69CCF0HEALER|r |cFF69CCF0TANK|r |cFF69CCF0DAMAGER|r\n"
   L["messageMessage"] = "Nachricht"
   L["messageMessageTooltip"] =
