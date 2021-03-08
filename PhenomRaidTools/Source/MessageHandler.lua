@@ -3,8 +3,8 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local AceComm = LibStub("AceComm-3.0")
 
 -- Create local copies of API functions which we use
-local UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat, UnitIsGroupAssistant, SendChatMessage =
-  UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat, UnitIsGroupAssistant, SendChatMessage
+local UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat, UnitIsGroupAssistant, SendChatMessage, UnitIsGroupLeader =
+  UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat, UnitIsGroupAssistant, SendChatMessage, UnitIsGroupLeader
 
 local MessageHandler = {
   validTargets = {
@@ -62,7 +62,7 @@ local function ExecuteRaidWarning(message)
 
   if PRT.db.profile.testMode then
     SendChatMessage(msg, "WHISPER", nil, PRT.db.profile.myName)
-  elseif UnitInRaid("player") and UnitIsGroupAssistant("player") then
+  elseif UnitInRaid("player") and (UnitIsGroupAssistant("player") or UnitIsGroupLeader("player")) then
     SendChatMessage(msg, "RAID_WARNING")
   end
 end
