@@ -72,17 +72,31 @@ local function AddMessageDefaultWidgets(container, t)
     end)
 
   local actionTypeDropdownItems = {
-    {
+    [1] = {
       id = "cooldown",
       name = L["actionTypeCooldown"]
     },
-    {
+    [2] = {
+      id = "raidwarning",
+      name = L["actionTypeRaidWarning"]
+    },
+    [3] = {
+      id = "raidmark",
+      name = L["actionTypeRaidMark"],
+      disabled = true
+    },
+    [4] = {
       id = "advanced",
       name = L["actionTypeAdvanced"]
+    },
+    [5] = {
+      id = "loadTemplate",
+      name = L["actionTypeLoadTemplate"],
+      disabled = PRT.TableUtils.IsEmpty(PRT.db.profile.templateStore.messages)
     }
   }
 
-  local actionTypeDropdown = PRT.Dropdown("actionType", actionTypeDropdownItems, t.defaultMessageType or "cooldown")
+  local actionTypeDropdown = PRT.Dropdown("actionType", actionTypeDropdownItems, t.defaultMessageType or "cooldown", nil, true)
   actionTypeDropdown:SetCallback("OnValueChanged",
     function(widget)
       t.defaultMessageType = widget:GetValue()
