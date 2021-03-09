@@ -57,40 +57,26 @@ function PRT.ConditionWidget(condition, textID)
 
   spellIDEditBox:SetCallback("OnEnterPressed",
     function(widget)
-      local text = tonumber(widget:GetText())
+      local text = widget:GetText()
 
       local _, _, icon, _, _, _, spellId = GetSpellInfo(text)
 
-      if not text then
+      if not spellId then
         condition.spellID = nil
         condition.spellIcon = nil
         spellIcon:SetImage(nil)
         widget:SetText(nil)
-      else
 
-        if not spellId then
+        if not PRT.StringUtils.IsEmpty(text) then
           PRT.Warn("Your entered spell id", PRT.HighlightString(text), "does not exist.")
-          widget:SetText(nil)
-          condition.spellID = nil
-        else
-
-          if spellId then
-            condition.spellID = spellId
-          end
-
-          if icon then
-            condition.spellIcon = icon
-          end
-
-          if not (spellId and icon) then
-            condition.spellIcon = nil
-            condition.spellID = nil
-          end
-
-          spellIcon:SetImage(condition.spellIcon, 0.1, 0.9, 0.1, 0.9)
-          PRT.AddSpellTooltip(spellIcon, condition.spellID)
-          spellIDEditBox:SetText(condition.spellID)
         end
+      else
+        condition.spellID = spellId
+        condition.spellIcon = icon
+        spellIcon:SetImage(condition.spellIcon, 0.1, 0.9, 0.1, 0.9)
+
+        PRT.AddSpellTooltip(spellIcon, condition.spellID)
+        spellIDEditBox:SetText(condition.spellID)
       end
 
       PRT.Core.UpdateTree()
