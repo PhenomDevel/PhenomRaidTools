@@ -20,7 +20,8 @@ function SenderOverlay.GetNextTiming(timer, seconds)
 
   for _, timing in ipairs(timer.timings) do
     for _, second in ipairs(timing.seconds) do
-      if second < (lowestSecond or 999999) and second > seconds then
+      local secondWithOffset = second + (timing.offset or 0)
+      if secondWithOffset < (lowestSecond or 999999) and secondWithOffset > seconds then
         nextTiming = timing
         lowestSecond = second
       end
@@ -53,10 +54,10 @@ function SenderOverlay.UpdateFrame(encounter, options)
             local timeIntoTimerString = PRT.SecondsToClock(timeIntoTimer)
             timerString = timerString.." ("..PRT.ColoredString(timeIntoTimerString, SenderOverlay.timerColor)..")"
 
-            local nextInSeconds = SenderOverlay.GetNextTiming(timer, timeIntoTimer)
+            local nextInSeconds, nextTiming = SenderOverlay.GetNextTiming(timer, timeIntoTimer)
 
             if nextInSeconds then
-              local nextDelta = PRT.Round(nextInSeconds - timeIntoTimer)
+              local nextDelta = PRT.Round((nextInSeconds + nextTiming.offset) - timeIntoTimer)
               timerString = timerString.." [-"..PRT.ColoredString(PRT.SecondsToClock(nextDelta), SenderOverlay.timerColor).."]|n"
             else
               timerString = timerString.."|n"
