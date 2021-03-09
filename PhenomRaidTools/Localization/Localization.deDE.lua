@@ -231,8 +231,8 @@ if GetLocale() == "deDE" then
   -- Conditions
   L["conditionEvent"] = "Event"
   L["conditionEventTooltip"] = "Das Kampfevent bei dem der Auslöser ausgelöst werden soll"
-  L["conditionSpellID"] = "Zauber-ID"
-  L["conditionSpellIDTooltip"] = "Die Zauber-ID bei dem der Auslöser ausgelöst werden soll (kann leer sein)"
+  L["conditionSpellID"] = "Zauber"
+  L["conditionSpellIDTooltip"] = "Die Zauber (Name oder ID) bei dem der Auslöser ausgelöst werden soll (kann leer sein)"
   L["conditionTarget"] = "Ziel"
   L["conditionTargetTooltip"] = "Das Event-Ziel, bei dem der Auslöser ausgelöst werden soll (z.B. der exakte Name eines Gegners, |cFF69CCF0"..UnitName("player").."|r)"
   L["conditionSource"] = "Quelle"
@@ -338,7 +338,7 @@ if GetLocale() == "deDE" then
   L["CN - Lady Inerva Darkvein" ] = "SN - Lady Inerva Dunkelader"
   L["CN - The Council of Blood" ] = "SN - Der Rat des Blutes"
   L["CN - Sludgefist" ] = "SN - Schlickfaust"
-  L["CN - Stoneborne Generals" ] = "SN - Generäle der Steingeborenen"
+  L["CN - Stone Legion Generals" ] = "SN - Generäle der Steingeborenen"
   L["CN - Sire Denathrius" ] = "SN - Graf Denathrius"
 
   -- De Other Side

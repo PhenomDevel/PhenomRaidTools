@@ -243,8 +243,8 @@ L = {
   -- Conditions
   ["conditionEvent"] = "Event",
   ["conditionEventTooltip"] = "Combat event on which the condition should trigger",
-  ["conditionSpellID"] = "Spell-ID",
-  ["conditionSpellIDTooltip"] = "Combat spell-ID on which the condition should trigger (Can be empty)",
+  ["conditionSpellID"] = "Spell",
+  ["conditionSpellIDTooltip"] = "Combat spell (name or id) on which the condition should trigger (Can be empty)",
   ["conditionTarget"] = "Target",
   ["conditionTargetTooltip"] = "The combat target of the event/spell-id combination on which the condition should trigger (e.g. exact name of a unit, |cFF69CCF0"..UnitName("player").."|r)",
   ["conditionSource"] = "Source",
@@ -347,7 +347,7 @@ L = {
   ["CN - Lady Inerva Darkvein" ] = "CN - Lady Inerva Darkvein",
   ["CN - The Council of Blood" ] = "CN - The Council of Blood",
   ["CN - Sludgefist" ] = "CN - Sludgefist",
-  ["CN - Stoneborne Generals" ] = "CN - Stoneborne Generals",
+  ["CN - Stone Legion Generals" ] = "CN - Stone Legion Generals",
   ["CN - Sire Denathrius" ] = "CN - Sire Denathrius",
 
   -- De Other Side

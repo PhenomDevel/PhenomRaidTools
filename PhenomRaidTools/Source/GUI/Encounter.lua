@@ -12,7 +12,7 @@ local Encounter = {
     { id = 2406, name = L["CN - Lady Inerva Darkvein"] },
     { id = 2412, name = L["CN - The Council of Blood"] },
     { id = 2399, name = L["CN - Sludgefist"] },
-    { id = 2417, name = L["CN - Stoneborne Generals"] },
+    { id = 2417, name = L["CN - Stone Legion Generals"] },
     { id = 2407, name = L["CN - Sire Denathrius"] },
 
     -- De Other Side
@@ -124,6 +124,7 @@ local function addTimerOverviewEntry(container, timer)
     addStringByCondition(container, L["encounterOverviewStopTimerOn"], timer.stopCondition)
   end
   addOverviewLine(container, L["encounterOverviewTimings"]..PRT.HighlightString(#timer.timings))
+
   addOverviewEmptyLine(container)
 end
 
