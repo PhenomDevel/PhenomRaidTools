@@ -516,7 +516,8 @@ end
 
 function PRT.PrepareMessageForDisplay(s)
   if s then
-    return PRT.ReplacePlayerNameTokens(PRT.ExchangeSpellIcons(PRT.ExchangeRaidMarker(s:gsub("||", "|"))))
+    local updatedString = PRT.ReplacePlayerNameTokens(PRT.ExchangeSpellIcons(PRT.ExchangeRaidMarker(s:gsub("||", "|"))))
+    return updatedString
   else
     return ""
   end

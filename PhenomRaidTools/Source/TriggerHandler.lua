@@ -390,7 +390,7 @@ function PRT.CheckRotationTriggerCondition(rotations, event, combatEvent, eventS
 
           if rotation.triggerCondition.event and not rotation.triggerCondition.spellID then
             if string.find(rotation.triggerCondition.event, "SPELL_") then
-              PRT.Error("Rotation", PRT.HighlightString(rotation.name), "has a SPELL_* event configured without a spellID.", "This maybe would lead to a lot of messages and is therefore skipped and disabled.")
+              PRT.Error("Rotation", PRT.HighlightString(rotation.name), "has a SPELL_* event configured without a spellID.", "This may lead to a lot of messages and is therefore skipped and disabled.")
               rotation.enabled = false
               return
             end
