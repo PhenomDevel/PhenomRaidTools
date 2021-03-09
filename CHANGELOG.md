@@ -1,4 +1,17 @@
 ===============================================================================
+# Release 2.3.4.0
+## Bugfixes
+ -
+
+## Features
+ - Fix some debug strings
+ - Show next timing in sender overlay with offset
+ - Add all new action types to default options
+ - (!) Be able to use spell name and spell id for conditions
+ - Fix locals for some castle nathria bosses
+
+
+===============================================================================
 # Release 2.3.3.1
 ## Bugfixes
  - Make sure raid warnings are also sent if you're the group leader
