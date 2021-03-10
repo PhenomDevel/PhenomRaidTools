@@ -9,6 +9,7 @@
  - Add all new action types to default options
  - (!) Be able to use spell name and spell id for conditions
  - Fix locals for some castle nathria bosses
+ - Update version for patch 9.0.5
 
 
 ===============================================================================
