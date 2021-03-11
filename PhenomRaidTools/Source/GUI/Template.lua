@@ -47,7 +47,7 @@ local function AddTemplateActions(container, entities, widgetUpdateFn)
 
   deleteDropdown:SetCallback("OnValueChanged",
     function(widget)
-      PRT.ConfirmationDialog("templateMessagesDeleteConfirmation",
+      PRT.ConfirmationDialog(L["Are you sure you want to delete template %s?"]:format(PRT.HighlightString(widget:GetValue())),
         function()
           entities[widget:GetValue()] = nil
           widgetUpdateFn()

@@ -247,3 +247,4 @@ L["You currently filter messages by %s. Therefore only message from players with
 L["You currently filter messages by %s. Therefore only messages from those players will be displayed."] = "Du filterts aktuell alle Nachrichten nach %s. Daher werden Dir nur Nachrichten von den spezifizierten Spielern angezeigt."
 L["yourself"] = "Du"
 L["Start Condition"] = "Start Bedingung"
+L["Are you sure you want to delete template %s?"] = "Bist Du dir sicher, dass Du die Vorlage %s löschen willst?"
