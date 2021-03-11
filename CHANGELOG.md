@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.3.9-ALPHA
+## Bugfixes
+None
+
+## Features
+ - Add new DE translations
+
+
+===============================================================================
 # Release 2.3.8-ALPHA
 ## Bugfixes
  - Add missing locals
