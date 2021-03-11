@@ -1,4 +1,7 @@
 ===============================================================================
+# Release 2.3.10
+
+===============================================================================
 # Release 2.3.10-BETA
 ## Bugfixes
  - Check timings once at the start of combat so triggers with < 0.5 will trigger aswell
