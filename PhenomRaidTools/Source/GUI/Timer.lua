@@ -1,4 +1,5 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local Timer = {}
 
@@ -37,12 +38,12 @@ function Timer.ComposeTimingString(timings)
 end
 
 function Timer.TimingWidget(timing, container, _, timings)
-  local timingOptionsGroup = PRT.InlineGroup("timingOptionsHeading")
+  local timingOptionsGroup = PRT.InlineGroup(L["Options"])
   timingOptionsGroup:SetLayout("Flow")
 
   sort(timing.seconds)
 
-  local nameEditBox = PRT.EditBox("timingName", (timing.name or ""))
+  local nameEditBox = PRT.EditBox(L["Name"], nil, (timing.name or ""))
   nameEditBox:SetCallback("OnEnterPressed",
     function(widget)
       local text = widget:GetText()
@@ -50,7 +51,7 @@ function Timer.TimingWidget(timing, container, _, timings)
       widget:ClearFocus()
     end)
 
-  local secondsEditBox = PRT.EditBox("timingSeconds", strjoin(", ", Timer.ComposeTimingString(timing.seconds)), true)
+  local secondsEditBox = PRT.EditBox(L["Timings"], L["Comma separated list of timings\nsupports different formats\n- 69\n- 1:09\n- 00:09"], strjoin(", ", Timer.ComposeTimingString(timing.seconds)), true)
   secondsEditBox:SetCallback("OnEnterPressed",
     function(widget)
       local text = widget:GetText()
@@ -73,14 +74,14 @@ function Timer.TimingWidget(timing, container, _, timings)
     end)
 
   local messagesTabs = PRT.TableToTabs(timing.messages, true)
-  local messagesTabGroup = PRT.TabGroup("messageHeading", messagesTabs)
+  local messagesTabGroup = PRT.TabGroup(L["Messages"], messagesTabs)
   messagesTabGroup:SetLayout("List")
   messagesTabGroup:SetCallback("OnGroupSelected",
     function(widget, _, key)
-      PRT.TabGroupSelected(widget, timing.messages, key, PRT.MessageWidget, PRT.EmptyMessage, true, "messageDeleteButton")
+      PRT.TabGroupSelected(widget, timing.messages, key, PRT.MessageWidget, PRT.EmptyMessage, true, L["Delete"])
     end)
 
-  local offsetSlider = PRT.Slider("timingOffset", timing.offset, true)
+  local offsetSlider = PRT.Slider(L["Offset"], L["Offset will be applied to all timings."], timing.offset, true)
   offsetSlider:SetSliderValues(-60, 60, 1)
   offsetSlider:SetCallback("OnValueChanged",
     function(widget)
@@ -94,7 +95,7 @@ function Timer.TimingWidget(timing, container, _, timings)
   container:AddChild(timingOptionsGroup)
   container:AddChild(messagesTabGroup)
 
-  local cloneButton = PRT.Button("cloneTiming")
+  local cloneButton = PRT.Button(L["Clone"])
   cloneButton:SetCallback("OnClick",
     function()
       local clone = PRT.TableUtils.CopyTable(timing)
@@ -111,10 +112,10 @@ function Timer.TimerWidget(timerName, timers, container)
   PRT.AddGeneralOptionsWidgets(container, timerName, timers, "timer")
 
   -- Timer Options
-  local timerOptionsGroup = PRT.InlineGroup("timerOptionsHeading")
+  local timerOptionsGroup = PRT.InlineGroup(L["Options"])
   timerOptionsGroup:SetLayout("Flow")
 
-  local triggerAtOccurenceSlider = PRT.Slider("timerOptionsTriggerAtOccurence", (timer.triggerAtOccurence or 1))
+  local triggerAtOccurenceSlider = PRT.Slider(L["Occurrence"], L["After how many occurrences of\nstart condition the timer should start."], (timer.triggerAtOccurence or 1))
   triggerAtOccurenceSlider:SetSliderValues(1, 20, 1)
   triggerAtOccurenceSlider:SetCallback("OnValueChanged",
     function(widget)
@@ -122,7 +123,7 @@ function Timer.TimerWidget(timerName, timers, container)
       timer.triggerAtOccurence = value
     end)
 
-  local resetCounterOnStopCheckbox = PRT.CheckBox("timerOptionsResetCounterOnStop", timer.resetCounterOnStop)
+  local resetCounterOnStopCheckbox = PRT.CheckBox(L["Reset counter on stop"], L["Resets the counter of start conditions\nwhen the timer is stopped."], timer.resetCounterOnStop)
   resetCounterOnStopCheckbox:SetCallback("OnValueChanged",
     function(widget)
       timer.resetCounterOnStop = widget:GetValue()
@@ -143,10 +144,10 @@ function Timer.TimerWidget(timerName, timers, container)
 
   -- Timings
   local timingsTabs = PRT.TableToTabs(timer.timings, true)
-  local timingsTabGroup = PRT.TabGroup("timingOptions", timingsTabs)
+  local timingsTabGroup = PRT.TabGroup(L["Timings"], timingsTabs)
   timingsTabGroup:SetCallback("OnGroupSelected",
     function(widget, _, key)
-      PRT.TabGroupSelected(widget, timer.timings, key, Timer.TimingWidget, PRT.EmptyTiming, true, "timingDeleteButton")
+      PRT.TabGroupSelected(widget, timer.timings, key, Timer.TimingWidget, PRT.EmptyTiming, true, L["Delete"])
     end)
   PRT.SelectFirstTab(timingsTabGroup, timer.timings)
   container:AddChild(timingsTabGroup)
@@ -160,11 +161,11 @@ function PRT.AddTimerOptionsWidgets(container, profile, encounterID)
   local _, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
   local timers = encounter.Timers
 
-  local timerOptionsGroup = PRT.InlineGroup("Options")
+  local timerOptionsGroup = PRT.InlineGroup(L["Options"])
   timerOptionsGroup:SetLayout("Flow")
 
   local hasClipboardTimer = (not PRT.TableUtils.IsEmpty(PRT.db.profile.clipboard.timer))
-  local pasteButtonText = PRT.StringUtils.WrapColorByBoolean(L["pasteTimer"], hasClipboardTimer, "FF696969")
+  local pasteButtonText = PRT.StringUtils.WrapColorByBoolean(L["Paste"], hasClipboardTimer, "FF696969")
   local pasteButton = PRT.Button(pasteButtonText)
   pasteButton:SetDisabled(not hasClipboardTimer)
   pasteButton:SetCallback("OnClick",
@@ -177,7 +178,7 @@ function PRT.AddTimerOptionsWidgets(container, profile, encounterID)
       PRT.db.profile.clipboard.timer = nil
     end)
 
-  local addButton = PRT.Button("newTimer")
+  local addButton = PRT.Button(L["New"])
   addButton:SetCallback("OnClick",
     function()
       local newTimer = PRT.EmptyTimer()

@@ -1,4 +1,5 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local Core = {
   openFrames = {
@@ -108,7 +109,7 @@ end
 function Core.GeneratePowerPercentagesTree(percentages)
   local tree = Core.GeneratePercentagesTree(percentages)
   tree.value = "powerPercentages"
-  tree.text = L["treePowerPercentage"]
+  tree.text = L["Power Percentage"]
   tree.icon = 132849
   tree.iconCoords = {0.1, 0.9, 0.1, 0.9}
 
@@ -118,7 +119,7 @@ end
 function Core.GenerateHealthPercentagesTree(percentages)
   local tree = Core.GeneratePercentagesTree(percentages)
   tree.value = "healthPercentages"
-  tree.text = L["treeHealthPercentage"]
+  tree.text = L["Health Percentage"]
   tree.icon = 648207
   tree.iconCoords = {0.1, 0.9, 0.1, 0.9}
 
@@ -145,7 +146,7 @@ function Core.GenerateRotationsTree(rotations)
   local children = {}
   local t = {
     value = "rotations",
-    text = L["treeRotation"],
+    text = L["Rotaion"],
     icon = 450907,
     iconCoords = {0.1, 0.9, 0.1, 0.9}
   }
@@ -182,7 +183,7 @@ function Core.GenerateTimersTree(timers)
   local children = {}
   local t = {
     value = "timers",
-    text = L["treeTimer"],
+    text = L["Timer"],
     icon = 237538,
     iconCoords = {0.1, 0.9, 0.1, 0.9}
   }
@@ -203,7 +204,7 @@ end
 function Core.GenerateCustomPlaceholdersTree()
   local t = {
     value = "customPlaceholders",
-    text = L["treeCustomPlaceholder"],
+    text = L["Placeholder"],
     icon = 134400,
     iconCoords = {0.1, 0.9, 0.1, 0.9}
   }
@@ -235,7 +236,7 @@ function Core.GenerateEncountersTree(encounters)
 
   local t = {
     value  = "encounters",
-    text = L["treeEncounters"],
+    text = L["Encounter"],
     children = children
   }
   PRT.SortTableByName(encounters)
@@ -249,7 +250,7 @@ end
 function Core.GenerateOptionsTree()
   local t = {
     value = "options",
-    text = L["treeOptions"]
+    text = L["Options"]
   }
   return t
 end
@@ -258,7 +259,7 @@ function Core.GenerateTemplatesTree(profile)
   if profile.senderMode then
     return {
       value = "templates",
-      text = L["treeTemplates"]
+      text = L["Templates"]
     }
   else
 
@@ -405,7 +406,7 @@ end
 -- Public API
 
 function PRT.CreateMainWindow(profile)
-  local mainWindow = PRT.Window("PhenomRaidTools".." - "..PRT.db.profile.version)
+  local mainWindow = PRT.Window("PhenomRaidTools".." - v"..PRT.db.profile.version)
   local mainWindowContent = Core.CreateMainWindowContent(profile)
 
   mainWindow:SetCallback("OnClose",

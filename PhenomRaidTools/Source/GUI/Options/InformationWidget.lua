@@ -1,4 +1,5 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local linkEntries = {
   ["Guide"] = L["Coming soon"],   --"https://docs.google.com/document/d/1UcXri0Fs9D1EhR4VPSqXpzOktuvGgbEObbHdHnwKSrs/edit?usp=sharing",

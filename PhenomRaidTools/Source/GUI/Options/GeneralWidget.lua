@@ -1,42 +1,18 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 -- Create local copies of API functions which we use
 local InterfaceOptionsFrame_OpenToCategory = InterfaceOptionsFrame_OpenToCategory
 
 local GeneralOptions = {
-  runModes = {
-    {
-      id = "receiver",
-      name = L["receiver"]
-    },
-    {
-      id = "sender",
-      name = L["sender"]
-    },
-    {
-      id = "sender+receiver",
-      name = L["sender+receiver"]
-    }
-  },
-
-  senderModeSelections = {
-    "sender",
-    "sender+receiver"
-  },
-
-  receiverModeSelections = {
-    "receiver",
-    "sender+receiver"
-  },
-
   messageFilterTypes = {
     {
       id = "names",
-      name = "Names"
+      name = L["Names"]
     },
     {
       id = "guildRank",
-      name = "Guild Rank"
+      name = L["Guild Rank"]
     }
   }
 }
@@ -46,7 +22,7 @@ local GeneralOptions = {
 -- General Options
 
 function GeneralOptions.AddMessageFilterByNamesWidgets(container, options)
-  local namesEditBox = PRT.EditBox("messageFilterNamesEditBox", strjoin(", ", unpack(options.requiredNames)), true)
+  local namesEditBox = PRT.EditBox(L["Names"], L["Comma separated list of player names."], strjoin(", ", unpack(options.requiredNames)), true)
   namesEditBox:SetCallback("OnEnterPressed",
     function(widget)
       local text = widget:GetText()
@@ -66,7 +42,7 @@ function GeneralOptions.AddMessageFilterByGuildRankWidgets(container, options)
     tinsert(guildRankDropdownItems, { id = i, name = guildRank})
   end
 
-  local guildRankDropdown = PRT.Dropdown("messageFilterGuildRankDropdown", guildRankDropdownItems, options.requiredGuildRank)
+  local guildRankDropdown = PRT.Dropdown(L["Guild Rank"], L["Filter out all messages\nbelow selected guild rank."], guildRankDropdownItems, options.requiredGuildRank)
   guildRankDropdown:SetCallback("OnValueChanged",
     function(_, _, key)
       options.requiredGuildRank = key
@@ -80,25 +56,33 @@ function GeneralOptions.MessageFilterExplanationString(options)
 
   if options.filterBy == "names" then
     if PRT.TableUtils.IsEmpty(options.requiredNames) then
-      message = L["messageFilterExplanationNoNames"]
+      message = L["You currently filter messages by %s, but haven't configured any name yet. Therefore all messages from all players will be displayed."]:format(
+        PRT.HighlightString(L["player names"])
+      )
     else
-      message = L["messageFilterExplanationNames"]
+      message = L["You currently filter messages by %s. Therefore only messages from those players will be displayed."]:format(
+        PRT.HighlightString(L["player names"])
+      )
     end
   elseif options.filterBy == "guildRank" then
-    message = L["messageFilterExplanationGuildRank"]
+    message = L["You currently filter messages by %s. Therefore only message from players with the configured guild rank or higher will be displayed."]:format(
+      PRT.HighlightString(L["guild rank"])
+    )
   end
 
   if options.alwaysIncludeMyself then
-    message = message..L["messageFilterExplanationAlwaysIncludeMyself"]
+    message = message..L["In addition you always include %s as valid sender."]:format(
+      PRT.HighlightString(L["yourself"])
+    )
   end
 
   return message
 end
 
 function GeneralOptions.AddMessageFilter(container, options)
-  local messageFilterGroup = PRT.InlineGroup("messageFilterGroup")
-  local alwaysIncludeMyselfCheckBox = PRT.CheckBox("messageFilterAlwaysIncludeMyself", options.alwaysIncludeMyself)
-  local filterTypeDropDown = PRT.Dropdown("messageFilterByDropdown", GeneralOptions.messageFilterTypes, options.filterBy)
+  local messageFilterGroup = PRT.InlineGroup(L["Message Filter"])
+  local alwaysIncludeMyselfCheckBox = PRT.CheckBox(L["Include myself"], L["Always includes yourself as valid sender."], options.alwaysIncludeMyself)
+  local filterTypeDropDown = PRT.Dropdown(L["Filter by"], nil, GeneralOptions.messageFilterTypes, options.filterBy)
   local messageFilterExplanationString = GeneralOptions.MessageFilterExplanationString(options)
   local messageFilterExplanation = PRT.Label(messageFilterExplanationString)
   messageFilterExplanation:SetRelativeWidth(1)
@@ -134,11 +118,11 @@ function GeneralOptions.AddMessageFilter(container, options)
 end
 
 function GeneralOptions.AddRunMode(container, options)
-  local runModeGroup = PRT.InlineGroup("runModeGroup")
+  local runModeGroup = PRT.InlineGroup(L["Modes"])
   runModeGroup:SetLayout("Flow")
 
-  local senderCheckBox = PRT.CheckBox("sender", options.senderMode)
-  local receiverCheckBox = PRT.CheckBox("receiver", options.receiverMode)
+  local senderCheckBox = PRT.CheckBox(L["Sender Mode"], L["Activates the sender mode."], options.senderMode)
+  local receiverCheckBox = PRT.CheckBox(L["Receiver Mode"], L["Activates the receiver mode."], options.receiverMode)
 
   senderCheckBox:SetCallback("OnValueChanged",
     function(widget)
@@ -160,11 +144,11 @@ function GeneralOptions.AddRunMode(container, options)
 end
 
 function GeneralOptions.AddTestMode(container, options)
-  local testModeGroup = PRT.InlineGroup("testModeGroup")
+  local testModeGroup = PRT.InlineGroup(L["Test Mode"])
   testModeGroup:SetLayout("Flow")
 
-  local testModeCheckbox = PRT.CheckBox("testModeEnabled", options.testMode)
-  local textEncounterIDDropdown = PRT.Dropdown("testModeEncounterID", options.encounters, options.testEncounterID, false, true)
+  local testModeCheckbox = PRT.CheckBox(L["Enabled"], L["Activates the test mode."], options.testMode)
+  local textEncounterIDDropdown = PRT.Dropdown(L["Select Encounter"], nil, options.encounters, options.testEncounterID, false, true)
   textEncounterIDDropdown:SetDisabled(not options.testMode)
 
   testModeCheckbox:SetCallback("OnValueChanged",
@@ -183,7 +167,7 @@ function GeneralOptions.AddTestMode(container, options)
   testModeGroup:AddChild(textEncounterIDDropdown)
 
   if options.testMode then
-    local testModeDescription = PRT.Label(L["testModeDescription"])
+    local testModeDescription = PRT.Label(L["You are currently in test mode. Some triggers behave slightly different in test mode."])
     testModeDescription:SetRelativeWidth(1)
     testModeGroup:AddChild(testModeDescription)
   end
@@ -192,8 +176,8 @@ function GeneralOptions.AddTestMode(container, options)
 end
 
 function GeneralOptions.AddDebugMode(container, options)
-  local debugModeGroup = PRT.InlineGroup("debugModeGroup")
-  local debugModeCheckbox = PRT.CheckBox("debugModeEnabled", options.debugMode, true)
+  local debugModeGroup = PRT.InlineGroup(L["Debug Mode"])
+  local debugModeCheckbox = PRT.CheckBox(L["Enabled"], L["Activates the debug mode."], options.debugMode, true)
   debugModeCheckbox:SetCallback("OnValueChanged",
     function(widget)
       options.debugMode = widget:GetValue()
@@ -205,7 +189,7 @@ function GeneralOptions.AddDebugMode(container, options)
   debugModeGroup:AddChild(debugModeCheckbox)
 
   if options.debugMode then
-    local debugLogMultilineEditBox = PRT.MultiLineEditBox("optionsDebugLog")
+    local debugLogMultilineEditBox = PRT.MultiLineEditBox(L["Debug Log"])
     debugLogMultilineEditBox:SetRelativeWidth(1)
     debugLogMultilineEditBox:DisableButton(true)
     debugLogMultilineEditBox:SetHeight(200)
@@ -229,9 +213,9 @@ end
 -- Public API
 
 function PRT.AddGeneralWidgets(container, options)
-  local enabledCheckbox = PRT.CheckBox("optionsEnabled", options.enabled)
-  local versionCheckButton = PRT.Button("optionsVersionCheck")
-  local profilesOptionsButton = PRT.Button("optionsOpenProfiles")
+  local enabledCheckbox = PRT.CheckBox(L["Enabled"], nil, options.enabled)
+  local versionCheckButton = PRT.Button(L["Version Check"])
+  local profilesOptionsButton = PRT.Button(L["Profiles"])
 
   enabledCheckbox:SetRelativeWidth(1)
   enabledCheckbox:SetCallback("OnValueChanged",
@@ -243,7 +227,7 @@ function PRT.AddGeneralWidgets(container, options)
   GeneralOptions.AddRunMode(container, options)
 
   if not options.senderMode and options.receiverMode then
-    local helpLabel = PRT.Label("optionsReceiverModeHelp")
+    local helpLabel = PRT.Label(L["You are currently in receiver only mode. Therefore some features are disabled because they only relate to the sender mode."])
     container:AddChild(helpLabel)
   end
 

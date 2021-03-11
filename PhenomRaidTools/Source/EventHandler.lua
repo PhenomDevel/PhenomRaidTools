@@ -1,4 +1,5 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local AceTimer = LibStub("AceTimer-3.0")
 

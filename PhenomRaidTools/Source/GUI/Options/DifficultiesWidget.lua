@@ -1,4 +1,5 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local Difficulties = {
   difficultyStrings = {
@@ -8,18 +9,19 @@ local Difficulties = {
   }
 }
 
+
 -------------------------------------------------------------------------------
 -- Public API
 
 function PRT.AddDifficultyWidgets(container, options)
-  local explanationLabel = PRT.Label("optionsDifficultyExplanation")
+  local explanationLabel = PRT.Label(L["PhenomRaidTools will only load for the configured difficulties."])
   explanationLabel:SetRelativeWidth(1)
 
-  local dungeonGroup = PRT.InlineGroup("dungeonHeading")
+  local dungeonGroup = PRT.InlineGroup(L["Dungeon"])
   dungeonGroup:SetLayout("Flow")
 
   for _, difficulty in ipairs(Difficulties.difficultyStrings) do
-    local widget = PRT.CheckBox("dungeonDifficulty"..difficulty, options["dungeon"][difficulty])
+    local widget = PRT.CheckBox(L[difficulty], nil, options["dungeon"][difficulty])
     widget:SetCallback("OnValueChanged",
       function()
         options["dungeon"][difficulty] = widget:GetValue()
@@ -27,11 +29,11 @@ function PRT.AddDifficultyWidgets(container, options)
     dungeonGroup:AddChild(widget)
   end
 
-  local raidGroup = PRT.InlineGroup("raidHeading")
+  local raidGroup = PRT.InlineGroup(L["Raid"])
   raidGroup:SetLayout("Flow")
 
   for _, difficulty in ipairs(Difficulties.difficultyStrings) do
-    local widget = PRT.CheckBox("raidDifficulty"..difficulty, options["raid"][difficulty])
+    local widget = PRT.CheckBox(L[difficulty], nil, options["raid"][difficulty])
     widget:SetCallback("OnValueChanged",
       function()
         options["raid"][difficulty] = widget:GetValue()

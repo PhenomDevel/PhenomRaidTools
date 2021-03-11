@@ -1,4 +1,5 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local Overlay = {}
 
@@ -7,13 +8,13 @@ local Overlay = {}
 -- Private Helper
 
 function Overlay.AddPositionSliderGroup(container, overlayFrame, options)
-  local positionGroup = PRT.InlineGroup("overlayPositionGroup")
+  local positionGroup = PRT.InlineGroup(L["Position"])
   positionGroup:SetLayout("List")
 
   local screenWidth = PRT.Round(GetScreenWidth())
   local screenHeight = PRT.Round(GetScreenHeight())
 
-  local positionXSlider = PRT.Slider("optionsPositionX", PRT.Round(options.left, 1))
+  local positionXSlider = PRT.Slider(L["X Offset"], nil, PRT.Round(options.left, 1))
   positionXSlider:SetRelativeWidth(1)
   positionXSlider:SetSliderValues(0, screenWidth, 0.1)
   positionXSlider:SetCallback("OnValueChanged",
@@ -24,7 +25,7 @@ function Overlay.AddPositionSliderGroup(container, overlayFrame, options)
       PRT.Overlay.UpdateFrame(overlayFrame, options)
     end)
 
-  local positionYSlider = PRT.Slider("optionsPositionY", PRT.Round(options.top, 1))
+  local positionYSlider = PRT.Slider(L["Y Offset"], nil, PRT.Round(options.top, 1))
   positionYSlider:SetRelativeWidth(1)
   positionYSlider:SetSliderValues(0, screenHeight, 0.1)
   positionYSlider:SetCallback("OnValueChanged",
@@ -42,11 +43,11 @@ function Overlay.AddPositionSliderGroup(container, overlayFrame, options)
 end
 
 function Overlay.FontGroup(options, overlayFrame)
-  local fontGroup = PRT.InlineGroup("overlayFontGroup")
+  local fontGroup = PRT.InlineGroup(L["Font"])
   fontGroup:SetLayout("Flow")
 
-  local fontSizeSlider = PRT.Slider("overlayFontSize", options.fontSize)
-  local fontSelect = PRT.FontSelect("optionsFontSelect", options.fontName)
+  local fontSizeSlider = PRT.Slider(L["Size"], nil, options.fontSize)
+  local fontSelect = PRT.FontSelect(L["Font"], options.fontName)
 
   fontSizeSlider:SetSliderValues(6, 72, 1)
   fontSizeSlider:SetCallback("OnValueChanged",
@@ -75,16 +76,16 @@ function Overlay.FontGroup(options, overlayFrame)
 end
 
 function Overlay.AddSoundGroup(container, options)
-  local soundGroup = PRT.InlineGroup("overlaySoundGroup")
+  local soundGroup = PRT.InlineGroup(L["Sound"])
   soundGroup:SetLayout("Flow")
 
-  local enableSoundCheckbox = PRT.CheckBox("overlayEnableSound", options.enableSound)
+  local enableSoundCheckbox = PRT.CheckBox(L["Enabled"], options.enableSound)
   enableSoundCheckbox:SetCallback("OnValueChanged",
     function()
       options.enableSound = enableSoundCheckbox:GetValue()
     end)
 
-  local defaultSoundFileSelect = PRT.SoundSelect("overlayDefaultSoundFile", (options.defaultSoundFileName or options.defaultSoundFile))
+  local defaultSoundFileSelect = PRT.SoundSelect(L["Default Sound"], (options.defaultSoundFileName or options.defaultSoundFile))
   defaultSoundFileSelect:SetCallback("OnValueChanged",
     function(widget, _, value)
       local defaultSoundFile = AceGUIWidgetLSMlists.sound[value]
@@ -102,10 +103,10 @@ function Overlay.AddSoundGroup(container, options)
 end
 
 function Overlay.AddSenderOverlayWidget(container, options)
-  local hideDisabledTriggersCheckbox = PRT.CheckBox("optionsHideDisabledTriggers", options.hideDisabledTriggers)
-  local showOverlayCheckbox = PRT.CheckBox("optionsShowOverlay", options.enabled)
-  local hideOverlayAfterCombatCheckbox = PRT.CheckBox("optionsHideOverlayAfterCombat", options.hideAfterCombat)
-  local backdropColor =  PRT.ColorPicker("overlayBackdropColor", options.backdropColor)
+  local hideDisabledTriggersCheckbox = PRT.CheckBox(L["Hide disabled triggers"], nil, options.hideDisabledTriggers)
+  local showOverlayCheckbox = PRT.CheckBox(L["Enabled"], nil, options.enabled)
+  local hideOverlayAfterCombatCheckbox = PRT.CheckBox(L["Hide after combat"], nil, options.hideAfterCombat)
+  local backdropColor =  PRT.ColorPicker(L["Backdrop Color"], options.backdropColor)
 
   -- Initialize widgets
   hideDisabledTriggersCheckbox:SetRelativeWidth(1)
@@ -153,7 +154,7 @@ end
 
 function Overlay.AddReceiverOverlayWidget(options, container, index)
   local overlayFrame = PRT.ReceiverOverlay.overlayFrames[index]
-  local labelEditBox = PRT.EditBox("overlayLabel", options.label)
+  local labelEditBox = PRT.EditBox(L["Overlay"], nil, options.label)
   labelEditBox:SetCallback("OnEnterPressed",
     function(widget)
       local text = widget:GetText()
@@ -163,7 +164,7 @@ function Overlay.AddReceiverOverlayWidget(options, container, index)
       widget:ClearFocus()
     end)
 
-  local fontColor =  PRT.ColorPicker("overlayFontColor", options.fontColor)
+  local fontColor =  PRT.ColorPicker(L["Font Color"], options.fontColor)
   fontColor:SetCallback("OnValueConfirmed",
     function(_, _, r, g, b, a)
       options.fontColor.hex = PRT.RGBAToHex(r, g, b, a)
@@ -175,7 +176,7 @@ function Overlay.AddReceiverOverlayWidget(options, container, index)
       PRT.ReceiverOverlay.UpdateFrame(overlayFrame, options)
     end)
 
-  local lockedCheckBox = PRT.CheckBox("overlayLocked", options.locked)
+  local lockedCheckBox = PRT.CheckBox(L["Locked"], options.locked)
   lockedCheckBox:SetRelativeWidth(1)
   lockedCheckBox:SetCallback("OnValueChanged",
     function(widget)
@@ -202,7 +203,7 @@ end
 
 function PRT.AddOverlayWidget(container, options)
   local receiversTabs = PRT.TableToTabs(options.receivers)
-  local receiversTabGroup = PRT.TabGroup("receiversGroup", receiversTabs)
+  local receiversTabGroup = PRT.TabGroup(L["Receivers"], receiversTabs)
   receiversTabGroup:SetLayout("List")
   receiversTabGroup:SetCallback("OnGroupSelected",
     function(widget, _, key)
@@ -212,7 +213,7 @@ function PRT.AddOverlayWidget(container, options)
   PRT.SelectFirstTab(receiversTabGroup, options.receivers)
 
   if PRT.db.profile.senderMode then
-    local senderGroup = PRT.InlineGroup("senderGroup")
+    local senderGroup = PRT.InlineGroup(L["Sender"])
     senderGroup:SetLayout("Flow")
     Overlay.AddSenderOverlayWidget(senderGroup, options.sender)
     container:AddChild(senderGroup)

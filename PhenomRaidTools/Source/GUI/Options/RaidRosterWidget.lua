@@ -1,4 +1,5 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local RaidRoster = {
   tankCount = 3,
@@ -53,30 +54,30 @@ end
 -- Public API
 
 function PRT.AddRaidRosterWidget(container, options)
-  local importByGroupButton = PRT.Button("optionsRaidRosterImportByGroup")
+  local importByGroupButton = PRT.Button(L["Import raid"])
   importByGroupButton:SetCallback("OnClick",
     function(_)
-      PRT.ConfirmationDialog(L["importByGroupConfirmationText"],
+      PRT.ConfirmationDialog(L["Are you sure you want to import your current group?"],
         RaidRoster.ImportRaidRosterByGroup, nil, options, container)
     end)
 
-  local clearRaidRosterButton = PRT.Button("optionsRaidRosterClear")
+  local clearRaidRosterButton = PRT.Button(L["Clear"])
   clearRaidRosterButton:SetCallback("OnClick",
     function(_)
-      PRT.ConfirmationDialog(L["clearRaidRosterConfirmationText"],
+      PRT.ConfirmationDialog(L["Are you sure you want to clear the current raid roster?"],
         RaidRoster.ClearRaidRoster, nil, options, container)
     end)
 
-  local explanationLabel = PRT.Label("optionsRaidRosterExplanation")
+  local explanationLabel = PRT.Label(L["You can import or define your raid roster and use the placeholder within your triggers."])
   explanationLabel:SetRelativeWidth(1)
 
-  local tankGroup = PRT.InlineGroup("raidRosterTanksHeading")
+  local tankGroup = PRT.InlineGroup(L["Tanks"])
   tankGroup:SetLayout("Flow")
 
   for i = 1, RaidRoster.tankCount do
     local id = "tank"..i
     local value = options[id]
-    local tankEditBox = PRT.EditBox(id, value)
+    local tankEditBox = PRT.EditBox(L[id], nil, value)
     tankEditBox:SetCallback("OnEnterPressed",
       function(widget)
         local text = widget:GetText()
@@ -90,13 +91,13 @@ function PRT.AddRaidRosterWidget(container, options)
     tankGroup:AddChild(tankEditBox)
   end
 
-  local healGroup = PRT.InlineGroup("raidRosterHealerHeading")
+  local healGroup = PRT.InlineGroup(L["Healer"])
   healGroup:SetLayout("Flow")
 
   for i = 1, RaidRoster.healerCount do
     local id = "heal"..i
     local value = options[id]
-    local healEditBox = PRT.EditBox(id, value)
+    local healEditBox = PRT.EditBox(L[id], nil, value)
     healEditBox:SetCallback("OnEnterPressed", function(widget)
       local text = widget:GetText()
       if text ~= "" then
@@ -110,13 +111,13 @@ function PRT.AddRaidRosterWidget(container, options)
     healGroup:AddChild(healEditBox)
   end
 
-  local ddGroup = PRT.InlineGroup("raidRosterDDHeading")
+  local ddGroup = PRT.InlineGroup(L["Damage"])
   ddGroup:SetLayout("Flow")
 
   for i = 1, RaidRoster.ddCount do
     local id = "dd"..i
     local value = options[id]
-    local healEditBox = PRT.EditBox(id, value)
+    local healEditBox = PRT.EditBox(L[id], nil, value)
     healEditBox:SetCallback("OnEnterPressed", function(widget)
       local text = widget:GetText()
       if text ~= "" then

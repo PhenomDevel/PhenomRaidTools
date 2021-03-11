@@ -1,4 +1,5 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local Condition = {
   defaultEvents = {
@@ -32,8 +33,8 @@ function PRT.ConditionWidget(condition, textID)
   local conditionEventsFull = table.mergecopy(Condition.defaultEvents, additionalEvents)
 
   -- Create new group for spell inputs
-  local eventDropDown = PRT.Dropdown("conditionEvent", conditionEventsFull, condition.event, true)
-  local spellIDEditBox = PRT.EditBox("conditionSpellID", condition.spellID, true)
+  local eventDropDown = PRT.Dropdown(L["Event"], nil, conditionEventsFull, condition.event, true)
+  local spellIDEditBox = PRT.EditBox(L["Spell"], L["Can be either of\n- valid unique spell ID\n- spell name known to the player character"], condition.spellID, true)
   local eventGroup = PRT.SimpleGroup()
   eventGroup:SetLayout("Flow")
 
@@ -84,8 +85,8 @@ function PRT.ConditionWidget(condition, textID)
     end)
 
   -- Add unit group
-  local targetEditBox = PRT.EditBox("conditionTarget", condition.target, true)
-  local sourceEditBox = PRT.EditBox("conditionSource", condition.source, true)
+  local targetEditBox = PRT.EditBox(L["Target"], L["Can be either of\n- Unit-Name\n- Unit-ID (boss1, player ...)\n- Numeric Unit-ID"], condition.target, true)
+  local sourceEditBox = PRT.EditBox(L["Source"], L["Can be either of\n- Unit-Name\n- Unit-ID (boss1, player ...)\n- Numeric Unit-ID"], condition.source, true)
   local unitGroup = PRT.SimpleGroup()
   unitGroup:SetLayout("Flow")
 

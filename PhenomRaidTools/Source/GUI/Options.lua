@@ -1,4 +1,5 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 -------------------------------------------------------------------------------
 -- Public API
@@ -7,34 +8,34 @@ function PRT.AddOptionWidgets(container, profile)
   local optionsTabs = {
     {
       value = "general",
-      text = L["optionsTabGeneral"]
+      text = L["General"]
     },
     {
       value = "raidRoster",
-      text = L["optionsTabRaidRoster"] ,
+      text = L["Raidroster"] ,
       disabled = not profile.senderMode
     },
     {
       value = "customPlaceholders",
-      text = L["optionsTabCustomPlaceholders"] ,
+      text = L["Custom Placeholder"] ,
       disabled = not profile.senderMode
     },
     {
       value = "difficulties",
-      text = L["optionsTabDifficulties"]
+      text = L["Difficulties"]
     },
     {
       value = "overlay",
-      text = L["optionsTabOverlays"]
+      text = L["Overlays"]
     },
     {
       value = "defaults",
-      text = L["optionsTabDefaults"] ,
+      text = L["Trigger Defaults"] ,
       disabled = not profile.senderMode
     },
     {
       value = "information",
-      text = L["optionsTabInformation"]
+      text = L["Information"]
     }
   }
 

@@ -1,4 +1,5 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 
 -------------------------------------------------------------------------------
@@ -13,10 +14,10 @@ function PRT.AddCustomPlaceholderOptions(container, profile, encounterID)
     CustomPlaceholders = {}
   end
 
-  local removeAllButton = PRT.Button("removeAllButton")
+  local removeAllButton = PRT.Button(L["Remove all"])
   removeAllButton:SetCallback("OnClick",
     function()
-      PRT.ConfirmationDialog("removeAllCustomPlaceholderConfirmation",
+      PRT.ConfirmationDialog(L["Are you sure you want to remove all custom placeholders?"],
         function()
           wipe(CustomPlaceholders)
           container:ReleaseChildren()

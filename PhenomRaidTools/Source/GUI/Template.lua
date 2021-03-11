@@ -1,4 +1,5 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 
 -------------------------------------------------------------------------------
@@ -8,7 +9,7 @@ local function AddTemplateMessageWidgets(container, messages, messageName)
   local currentMessage = messages[messageName]
 
   local actionsGroup = PRT.SimpleGroup()
-  local messageTemplateNameEditBox = PRT.EditBox("messageTemplateName", messageName)
+  local messageTemplateNameEditBox = PRT.EditBox(L["Template Name"], nil, messageName)
   messageTemplateNameEditBox:SetCallback("OnEnterPressed",
     function(widget)
       local newName = widget:GetText()
@@ -41,8 +42,8 @@ local function AddTemplateActions(container, entities, widgetUpdateFn)
     tinsert(messageTemplatesDropdownItems, name)
   end
 
-  local deleteDropdown = PRT.Dropdown("templateMessagesDeleteDropdown", messageTemplatesDropdownItems)
-  local newButton = PRT.Button("templateMessageNewButton")
+  local deleteDropdown = PRT.Dropdown(L["Delete"], nil, messageTemplatesDropdownItems)
+  local newButton = PRT.Button(L["New"])
 
   deleteDropdown:SetCallback("OnValueChanged",
     function(widget)
@@ -74,7 +75,7 @@ local function AddMessageTemplateWidgets(container, messages)
   end
 
   if PRT.TableUtils.IsEmpty(messages) then
-    local emptyLabel = PRT.Label("templateMessagesEmptyDescription")
+    local emptyLabel = PRT.Label(L["There are currently no templates."])
     container:AddChild(emptyLabel)
     AddTemplateActions(container, messages, widgetUpdateFn)
   else
@@ -103,31 +104,31 @@ function PRT.AddTemplateWidgets(container, profile)
   local tabs = {
     {
       value = "messages",
-      text = L["templatesTabGroupMessages"]
+      text = L["Messages"]
     },
     {
       value = "timers",
-      text = L["templatesTabGroupTimers"],
+      text = L["Timers"],
       disabled = true
     },
     {
       value = "rotations",
-      text = L["templatesTabGroupRotations"],
+      text = L["Rotations"],
       disabled = true
     },
     {
       value = "healthPercentages",
-      text = L["templatesTabGroupHealthPercentages"],
+      text = L["Health Percentages"],
       disabled = true
     },
     {
       value = "powerPercentages",
-      text = L["templatesTabGroupPowerPercentages"],
+      text = L["Power Percentages"],
       disabled = true
     }
   }
 
-  local templatesTabGroup = PRT.TabGroup("templatesTabGroup", tabs)
+  local templatesTabGroup = PRT.TabGroup(L["Templates"], tabs)
   templatesTabGroup:SetFullHeight(true)
   templatesTabGroup:SetCallback("OnGroupSelected",
     function(widget, _, key)

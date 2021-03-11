@@ -1,4 +1,5 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local Trigger = {}
 
@@ -22,14 +23,10 @@ local function AddActionsWidgets(container, triggerName, triggers, copyStorePath
   actionsGroup:SetLayout("Flow")
 
   -- Clone
-  local cloneButton = PRT.Button("triggerCloneButton")
+  local cloneButton = PRT.Button(L["Clone"])
   cloneButton:SetCallback("OnClick",
     function()
-      local text = L["cloneConfirmationText"]
-      if triggerName then
-        text = text.." "..PRT.HighlightString(triggerName)
-      end
-      PRT.ConfirmationDialog(text,
+      PRT.ConfirmationDialog(L["Are you sure you want to clone %s?"]:format(PRT.HighlightString(triggerName)),
         function()
           local clone = PRT.TableUtils.CopyTable(triggers[triggerIndex])
           clone.name = clone.name.."- Clone"..random(0,100000)
@@ -41,7 +38,7 @@ local function AddActionsWidgets(container, triggerName, triggers, copyStorePath
     end)
 
   -- Copy
-  local copyButton = PRT.Button("copyTimer")
+  local copyButton = PRT.Button(L["Copy"])
   copyButton:SetCallback("OnClick",
     function()
       local copy = PRT.TableUtils.CopyTable(trigger)
@@ -51,13 +48,11 @@ local function AddActionsWidgets(container, triggerName, triggers, copyStorePath
     end)
 
   -- Delete
-  local deleteButton = PRT.Button("triggerDeleteButton")
+  local deleteButton = PRT.Button(L["Delete"])
   deleteButton:SetCallback("OnClick",
     function()
-      local text = L["deleteConfirmationText"]
-      if triggerName then
-        text = text.." "..PRT.HighlightString(triggerName)
-      end
+      local text = L["Are you sure you want to delete %s?"]:format(PRT.HighlightString(triggerName))
+
       PRT.ConfirmationDialog(text,
         function()
           tremove(triggers, triggerIndex)
@@ -80,10 +75,10 @@ end
 function PRT.AddEnabledDifficultiesGroup(container, trigger)
   EnsureEnabledDifficulties(trigger)
 
-  local enabledDifficultiesGroup = PRT.InlineGroup("Enable for")
+  local enabledDifficultiesGroup = PRT.InlineGroup(L["Enable on"])
   enabledDifficultiesGroup:SetLayout("Flow")
 
-  local normalCheckbox = PRT.CheckBox("dungeonDifficultyNormal", trigger.enabledDifficulties.Normal or nil)
+  local normalCheckbox = PRT.CheckBox(L["Normal"], nil, trigger.enabledDifficulties.Normal or nil)
   normalCheckbox:SetRelativeWidth(0.33)
   normalCheckbox:SetCallback("OnValueChanged",
     function(widget)
@@ -91,7 +86,7 @@ function PRT.AddEnabledDifficultiesGroup(container, trigger)
       PRT.Core.UpdateTree()
     end)
 
-  local heroicCheckbox = PRT.CheckBox("dungeonDifficultyHeroic", trigger.enabledDifficulties.Heroic or nil)
+  local heroicCheckbox = PRT.CheckBox(L["Heroic"], nil, trigger.enabledDifficulties.Heroic or nil)
   heroicCheckbox:SetRelativeWidth(0.33)
   heroicCheckbox:SetCallback("OnValueChanged",
     function(widget)
@@ -99,7 +94,7 @@ function PRT.AddEnabledDifficultiesGroup(container, trigger)
       PRT.Core.UpdateTree()
     end)
 
-  local mythicCheckbox = PRT.CheckBox("dungeonDifficultyMythic", trigger.enabledDifficulties.Mythic or nil)
+  local mythicCheckbox = PRT.CheckBox(L["Mythic"], nil, trigger.enabledDifficulties.Mythic or nil)
   mythicCheckbox:SetRelativeWidth(0.33)
   mythicCheckbox:SetCallback("OnValueChanged",
     function(widget)
@@ -115,7 +110,7 @@ function PRT.AddEnabledDifficultiesGroup(container, trigger)
 end
 
 function PRT.AddDescription(container, trigger)
-  local descriptionMultiLineEditBox = PRT.MultiLineEditBox("descriptionMultiLineEditBox", trigger.description or "")
+  local descriptionMultiLineEditBox = PRT.MultiLineEditBox(L["Description"], trigger.description or "")
   descriptionMultiLineEditBox:SetCallback("OnEnterPressed",
     function(widget)
       local text = widget:GetText()
@@ -131,7 +126,7 @@ function PRT.AddGeneralOptionsWidgets(container, triggerName, triggers, copyStor
 
   local generalOptionsGroup = PRT.SimpleGroup()
 
-  local enabledCheckbox = PRT.CheckBox("triggerEnabled", trigger.enabled)
+  local enabledCheckbox = PRT.CheckBox(L["Enabled"], nil, trigger.enabled)
   enabledCheckbox:SetRelativeWidth(1)
   enabledCheckbox:SetCallback("OnValueChanged",
     function(widget)
@@ -139,7 +134,7 @@ function PRT.AddGeneralOptionsWidgets(container, triggerName, triggers, copyStor
       PRT.Core.UpdateTree()
     end)
 
-  local nameEditBox = PRT.EditBox("triggerName", trigger.name)
+  local nameEditBox = PRT.EditBox(L["Name"], nil, trigger.name)
   nameEditBox:SetRelativeWidth(1)
   nameEditBox:SetCallback("OnEnterPressed",
     function(widget)

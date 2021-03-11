@@ -1,17 +1,17 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
-
+local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 -------------------------------------------------------------------------------
 -- Public API
 
 function PRT.CreateImportFrame(successFunction)
   if not PRT.Core.FrameExists("importFrame") then
-    local importFrame = PRT.Frame("importFrame")
+    local importFrame = PRT.Frame(L["Import"])
     importFrame:SetLayout("Fill")
     local childs = {importFrame.frame:GetChildren()}
     childs[1]:SetText("Import")
 
-    local importDataBox = PRT.MultiLineEditBox()
+    local importDataBox = PRT.MultiLineEditBox(L["Import String"])
     importDataBox:SetFocus()
     importDataBox:DisableButton(true)
 
@@ -40,14 +40,14 @@ end
 
 function PRT.CreateExportFrame(t)
   if not PRT.Core.FrameExists("exportFrame") then
-    local exportFrame = PRT.Frame("exportFrame")
+    local exportFrame = PRT.Frame(L["Export"])
     exportFrame:SetLayout("Fill")
     exportFrame:SetCallback("OnClose",
       function()
         PRT.Core.UnregisterFrame("exportFrame")
       end)
 
-    local exportDataBox = PRT.MultiLineEditBox(nil, PRT.TableToString(t))
+    local exportDataBox = PRT.MultiLineEditBox(L["Export String"], PRT.TableToString(t))
     exportDataBox:SetLabel("String")
     exportDataBox:SetFocus()
     exportDataBox:DisableButton(true)

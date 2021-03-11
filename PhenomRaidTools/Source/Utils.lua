@@ -1,4 +1,5 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local AceSerializer = LibStub("AceSerializer-3.0")
 local LibDeflate = LibStub("LibDeflate")
@@ -32,10 +33,10 @@ local GetRaidRosterInfo, GetUnitName, GetNumGroupMembers, UnitInParty, UnitInRai
 
 function PRT.MaybeAddStartCondition(container, trigger)
   if trigger.hasStartCondition then
-    local startConditionGroup = PRT.ConditionWidget(trigger.startCondition, "conditionStartHeading")
+    local startConditionGroup = PRT.ConditionWidget(trigger.startCondition, L["Start Condition"])
     startConditionGroup:SetLayout("Flow")
 
-    local removeStartConditionButton = PRT.Button("conditionRemoveStartCondition")
+    local removeStartConditionButton = PRT.Button(L["Remove"])
     removeStartConditionButton:SetCallback("OnClick",
       function()
         trigger.hasStartCondition = false
@@ -45,7 +46,7 @@ function PRT.MaybeAddStartCondition(container, trigger)
     startConditionGroup:AddChild(removeStartConditionButton)
     container:AddChild(startConditionGroup)
   else
-    local addStartConditionButton = PRT.Button("conditionAddStartCondition")
+    local addStartConditionButton = PRT.Button(L["Add Start Condition"])
     addStartConditionButton:SetCallback("OnClick",
       function()
         trigger.hasStartCondition = true
@@ -58,10 +59,10 @@ end
 
 function PRT.MaybeAddStopCondition(container, trigger)
   if trigger.hasStopCondition then
-    local stopConditionGroup = PRT.ConditionWidget(trigger.stopCondition, "conditionStopHeading")
+    local stopConditionGroup = PRT.ConditionWidget(trigger.stopCondition, L["Stop Condition"])
     stopConditionGroup:SetLayout("Flow")
 
-    local removeStopConditionButton = PRT.Button("conditionRemoveStopCondition")
+    local removeStopConditionButton = PRT.Button(L["Remove"])
     removeStopConditionButton:SetCallback("OnClick",
       function()
         trigger.hasStopCondition = false
@@ -71,7 +72,7 @@ function PRT.MaybeAddStopCondition(container, trigger)
     stopConditionGroup:AddChild(removeStopConditionButton)
     container:AddChild(stopConditionGroup)
   else
-    local addStopConditionButton = PRT.Button("conditionAddStopCondition")
+    local addStopConditionButton = PRT.Button(L["Add Stop Condition"])
     addStopConditionButton:SetCallback("OnClick",
       function()
         trigger.hasStopCondition = true
@@ -82,15 +83,11 @@ function PRT.MaybeAddStopCondition(container, trigger)
   end
 end
 
-function PRT.NewTriggerDeleteButton(container, t, idx, textID, entityName)
-  local deleteButton = PRT.Button(textID)
+function PRT.NewTriggerDeleteButton(container, t, idx, label, entityName)
+  local deleteButton = PRT.Button(label)
   deleteButton:SetCallback("OnClick",
     function()
-      local text = L["deleteConfirmationText"]
-      if entityName then
-        text = text.." "..PRT.HighlightString(entityName)
-      end
-      PRT.ConfirmationDialog(text,
+      PRT.ConfirmationDialog(L["Are you sure you want to delete %s?"]:format(PRT.HighlightString(entityName)),
         function()
           tremove(t, idx)
           PRT.Core.UpdateTree()
@@ -102,33 +99,10 @@ function PRT.NewTriggerDeleteButton(container, t, idx, textID, entityName)
   return deleteButton
 end
 
-function PRT.NewCloneButton(container, t, idx, textID, entityName)
-  local cloneButton = PRT.Button(textID)
-
-  cloneButton:SetCallback("OnClick",
-    function()
-      local text = L["cloneConfirmationText"]
-      if entityName then
-        text = text.." "..PRT.HighlightString(entityName)
-      end
-      PRT.ConfirmationDialog(text,
-        function()
-          local clone = PRT.TableUtils.CopyTable(t[idx])
-          clone.name = clone.name.."- Clone"..random(0,100000)
-          tinsert(t, clone)
-          PRT.Core.UpdateTree()
-          PRT.mainWindowContent:DoLayout()
-          container:ReleaseChildren()
-        end)
-    end)
-
-  return cloneButton
-end
-
 function PRT.ConfirmationDialog(text, successFn, bodyWidgets, ...)
   if not PRT.Core.FrameExists(text) then
     local args = {...}
-    local confirmationFrame = PRT.Window("confirmationWindow")
+    local confirmationFrame = PRT.Window(L["Confirmation"])
     confirmationFrame:SetLayout("Flow")
     confirmationFrame:EnableResize(false)
     confirmationFrame.frame:SetFrameStrata("DIALOG")
@@ -143,7 +117,7 @@ function PRT.ConfirmationDialog(text, successFn, bodyWidgets, ...)
 
     confirmationFrame:SetWidth(max(430, textLabel.label:GetStringWidth() + 50))
 
-    local okButton = PRT.Button("confirmationDialogOk")
+    local okButton = PRT.Button(L["OK"])
     okButton:SetCallback("OnClick",
       function(_)
         if successFn then
@@ -153,7 +127,7 @@ function PRT.ConfirmationDialog(text, successFn, bodyWidgets, ...)
         end
       end)
 
-    local cancelButton = PRT.Button("confirmationDialogCancel")
+    local cancelButton = PRT.Button(L["Cancel"])
     cancelButton:SetCallback("OnClick",
       function(_)
         confirmationFrame:Hide()

@@ -1,4 +1,5 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 local AceGUI = LibStub("AceGUI-3.0")
 local Media = LibStub("LibSharedMedia-3.0")
 
@@ -21,7 +22,7 @@ local GameFontHighlightSmall = GameFontHighlightSmall
 -- Local Helper
 
 function AceHelper.AddTooltip(widget, tooltip)
-  if tooltip and widget then
+  if widget then
     widget:SetCallback("OnEnter",
       function()
         GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
@@ -32,13 +33,16 @@ function AceHelper.AddTooltip(widget, tooltip)
           GameTooltip:AddLine(widget.text:GetText())
         end
 
-        if type(tooltip) == "table" then
-          for _, entry in ipairs(tooltip) do
-            GameTooltip:AddLine(entry, 1, 1, 1)
+        if tooltip then
+          if type(tooltip) == "table" then
+            for _, entry in ipairs(tooltip) do
+              GameTooltip:AddLine(entry, 1, 1, 1)
+            end
+          else
+            GameTooltip:AddLine(tooltip, 1, 1, 1)
           end
-        else
-          GameTooltip:AddLine(tooltip, 1, 1, 1)
         end
+
         GameTooltip:Show()
       end)
 
@@ -126,7 +130,7 @@ function PRT.TableToTabs(t, withNewTab, newTabText)
   return tabs
 end
 
-function PRT.TabGroupSelected(widget, t, key, itemFunction, emptyItemFunction, withDeleteButton, deleteTextID)
+function PRT.TabGroupSelected(widget, t, key, itemFunction, emptyItemFunction, withDeleteButton, deleteButtonLabel)
   widget:ReleaseChildren()
 
   if key == "new" then
@@ -145,18 +149,16 @@ function PRT.TabGroupSelected(widget, t, key, itemFunction, emptyItemFunction, w
     end
 
     if withDeleteButton then
-      local deleteButtonText = L[deleteTextID]
       local deleteButton = AceGUI:Create("Button")
-      deleteButton:SetText(deleteButtonText)
+      deleteButton:SetText(deleteButtonLabel)
       deleteButton:SetCallback("OnClick",
         function()
-          local text = L["deleteTabEntryConfirmationText"]
-          PRT.ConfirmationDialog(text,
+          PRT.ConfirmationDialog(L["Are you sure you want to delete %s?"]:format(PRT.HighlightString(item.name)),
             function()
               AceHelper.RemoveTab(widget, t, key)
             end)
         end)
-
+      AceHelper.AddTooltip(deleteButton, deleteButtonLabel)
       widget:AddChild(deleteButton)
     end
   end
@@ -177,11 +179,10 @@ end
 -------------------------------------------------------------------------------
 -- Container
 
-function PRT.TabGroup(textID, tabs)
-  local text = L[textID]
+function PRT.TabGroup(label, tabs)
   local container = AceGUI:Create("TabGroup")
 
-  container:SetTitle(text)
+  container:SetTitle(label)
   container:SetTabs(tabs)
   container:SetLayout("List")
   container:SetFullWidth(true)
@@ -191,13 +192,12 @@ function PRT.TabGroup(textID, tabs)
   return container
 end
 
-function PRT.InlineGroup(textID)
-  local text = L[textID]
+function PRT.InlineGroup(label)
   local container = AceGUI:Create("InlineGroup")
 
   container:SetFullWidth(true)
   container:SetLayout("List")
-  container:SetTitle(text)
+  container:SetTitle(label)
 
   return container
 end
@@ -228,14 +228,13 @@ function PRT.ScrollFrame()
   return container
 end
 
-function PRT.Frame(titleID)
-  local titleText = L[titleID]
+function PRT.Frame(label)
   local container = AceGUI:Create("Frame")
 
   container:SetLayout("List")
   container:SetFullHeight(true)
   container:SetAutoAdjustHeight(true)
-  container:SetTitle(titleText)
+  container:SetTitle(label)
 
   return container
 end
@@ -249,12 +248,11 @@ function PRT.TreeGroup(tree)
   return container
 end
 
-function PRT.Window(titleID)
-  local titleText = L[titleID]
+function PRT.Window(label)
   local container = AceGUI:Create("Window")
   container.frame:SetFrameStrata("HIGH")
 
-  container:SetTitle(titleText)
+  container:SetTitle(label)
   container:SetLayout("Fill")
 
   return container
@@ -264,17 +262,10 @@ end
 -------------------------------------------------------------------------------
 -- Widgets
 
-function PRT.Button(textID, addTooltip)
-  local text = L[textID]
-
+function PRT.Button(label, tooltip)
   local widget = AceGUI:Create("Button")
-
-  if addTooltip then
-    local tooltip = L[textID.."Tooltip"]
-    AceHelper.AddTooltip(widget, tooltip)
-  end
-
-  widget:SetText(text)
+  widget:SetText(label)
+  AceHelper.AddTooltip(widget, tooltip)
 
   return widget
 end
@@ -290,46 +281,31 @@ function PRT.Heading(textID)
   return widget
 end
 
-function PRT.Label(textID, fontSize)
-  local text = L[textID]
-
+function PRT.Label(label, fontSize)
   local widget = AceGUI:Create("Label")
   widget:SetJustifyV("CENTER")
 
-  widget:SetText(text)
+  widget:SetText(label)
   widget:SetFont(GameFontHighlightSmall:GetFont(), (fontSize or 14), "OUTLINE")
   widget:SetWidth(widget.label:GetStringWidth())
 
   return widget
 end
 
-function PRT.EditBox(textID, value, addTooltip)
-  local text = L[textID]
-
+function PRT.EditBox(label, tooltip, value)
   local widget = AceGUI:Create("EditBox")
-
-  if addTooltip then
-    local tooltip = L[textID.."Tooltip"]
-    AceHelper.AddTooltip(widget, tooltip)
-  end
-
-  widget:SetLabel(text)
+  widget:SetLabel(label)
   widget:SetText(value)
   widget:SetWidth(AceHelper.widgetDefaultWidth)
+  AceHelper.AddTooltip(widget, tooltip)
 
   return widget
 end
 
-function PRT.MultiLineEditBox(textID, value, addTooltip)
-  local text = L[textID]
+function PRT.MultiLineEditBox(label, value)
   local widget = AceGUI:Create("MultiLineEditBox")
+  widget:SetLabel(label)
 
-  if addTooltip then
-    local tooltip = L[textID.."Tooltip"]
-    AceHelper.AddTooltip(widget, tooltip)
-  end
-
-  widget:SetLabel(text)
   if value then
     widget:SetText(value)
   end
@@ -337,23 +313,18 @@ function PRT.MultiLineEditBox(textID, value, addTooltip)
   return widget
 end
 
-function PRT.ColorPicker(textID, value)
-  local text = L[textID]
-
+function PRT.ColorPicker(label, value)
   local widget = AceGUI:Create("ColorPicker")
-
-  widget:SetLabel(text)
+  widget:SetLabel(label)
   widget:SetColor((value.r or 0), (value.g or 0), (value.b or 0), (value.a or 0))
   widget:SetHasAlpha(false)
-  --widget:SetRelativeWidth(1)
   widget:SetWidth(AceHelper.widgetDefaultWidth)
+  AceHelper.AddTooltip(widget, nil)
 
   return widget
 end
 
-function PRT.Dropdown(textID, dropdownValues, dropdownValue, withEmpty, orderByKey)
-  local text = L[textID]
-
+function PRT.Dropdown(label, tooltip, dropdownValues, dropdownValue, withEmpty, orderByKey)
   local dropdownItems = {}
   if withEmpty then
     dropdownItems[999] = ""
@@ -386,7 +357,7 @@ function PRT.Dropdown(textID, dropdownValues, dropdownValue, withEmpty, orderByK
     widget:SetList(dropdownItems)
   end
 
-  widget:SetLabel(text)
+  widget:SetLabel(label)
   widget:SetText(dropdownItems[dropdownValue])
   widget:SetWidth(AceHelper.widgetDefaultWidth)
 
@@ -402,22 +373,17 @@ function PRT.Dropdown(textID, dropdownValues, dropdownValue, withEmpty, orderByK
     end
   end
 
+  AceHelper.AddTooltip(widget, tooltip)
+
   return widget
 end
 
-function PRT.CheckBox(textID, value, addTooltip)
-  local text = L[textID]
-
+function PRT.CheckBox(label, tooltip, value)
   local widget = AceGUI:Create("CheckBox")
-
-  if addTooltip then
-    local tooltip = L[textID.."Tooltip"]
-    AceHelper.AddTooltip(widget, tooltip)
-  end
-
-  widget:SetLabel(text)
+  widget:SetLabel(label)
   widget:SetValue(value)
   widget:SetWidth(AceHelper.widgetDefaultWidth)
+  AceHelper.AddTooltip(widget, tooltip)
 
   return widget
 end
@@ -430,40 +396,38 @@ function PRT.Icon(value, spellID)
   return widget
 end
 
-function PRT.Slider(textID, value)
-  local text = L[textID]
+function PRT.Slider(label, tooltip, value)
   local widget = AceGUI:Create("Slider")
 
   widget:SetSliderValues(0, 60, 1)
-  widget:SetLabel(text)
+  widget:SetLabel(label)
   if value then
     widget:SetValue(value)
   end
   widget:SetWidth(AceHelper.widgetDefaultWidth)
+  AceHelper.AddTooltip(widget, tooltip)
 
   return widget
 end
 
-function PRT.SoundSelect(textID, value)
-  local text = L[textID]
-
+function PRT.SoundSelect(label, value)
   local widget = AceGUI:Create("LSM30_Sound")
   widget:SetList(AceGUIWidgetLSMlists.sound)
-  widget:SetLabel(text)
+  widget:SetLabel(label)
   widget:SetText(value)
   widget:SetWidth(AceHelper.widgetDefaultWidth)
+  AceHelper.AddTooltip(widget, nil)
 
   return widget
 end
 
-function PRT.FontSelect(textID, value)
-  local text = L[textID]
-
+function PRT.FontSelect(label, value)
   local widget = AceGUI:Create("LSM30_Font")
   widget:SetList(AceGUIWidgetLSMlists.font)
-  widget:SetLabel(text)
-  widget:SetWidth(AceHelper.widgetDefaultWidth)
+  widget:SetLabel(label)
   widget:SetText(value)
+  widget:SetWidth(AceHelper.widgetDefaultWidth)
+  AceHelper.AddTooltip(widget, nil)
 
   return widget
 end

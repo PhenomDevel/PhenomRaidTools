@@ -1,9 +1,29 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local specialWidgetNames = {
   "defaultTargetOverlay",
   "defaultMessageType"
 }
+
+local defaultTranslations = {
+  ["rotationDefaults"] = L["Rotation"],
+  ["defaultIgnoreAfterActivation"] = L["Ignore after activation"],
+  ["defaultShouldRestart"] = L["Restart"],
+  ["defaultIgnoreDuration"] = L["Ignore for"],
+  ["conditionDefaults"] = L["Condition"],
+  ["defaultEvent"] = L["Event"],
+  ["aditionalEvents"] = L["Additional Events"],
+  ["messageDefaults"] = L["Message"],
+  ["defaultDuration"] = L["Duration"],
+  ["defaultTargets"] = L["Targets"],
+  ["defaultMessage"] = L["Message"],
+  ["percentageDefaults"] = L["Percentage"],
+  ["defaultUnitID"] = L["Unit"],
+  ["defaultCheckAgain"] = L["Check again"],
+  ["defaultCheckAgainAfter"] = L["Check after"],
+}
+
 
 -------------------------------------------------------------------------------
 -- Private Helper
@@ -15,26 +35,26 @@ local function addDefaultsWidgets(container, t)
       if tContains(specialWidgetNames, k) then
       -- do nothing
       elseif type(v) == "boolean" then
-        widget = PRT.CheckBox(k, v)
+        widget = PRT.CheckBox(defaultTranslations[k], nil, v)
         widget:SetCallback("OnValueChanged",
           function()
             t[k] = widget:GetValue()
           end)
       elseif type(v) == "string" then
-        widget = PRT.EditBox(k, v)
+        widget = PRT.EditBox(defaultTranslations[k], nil, v)
         widget:SetCallback("OnEnterPressed",
           function()
             t[k] = widget:GetText()
             widget:ClearFocus()
           end)
       elseif type(v) == "number" then
-        widget = PRT.Slider(k, v)
+        widget = PRT.Slider(defaultTranslations[k], nil, v)
         widget:SetCallback("OnValueChanged",
           function()
             t[k] = widget:GetValue()
           end)
       elseif type(v) == "table" then
-        widget = PRT.EditBox(k, strjoin(", ", unpack(v)), true)
+        widget = PRT.EditBox(defaultTranslations[k], nil, strjoin(", ", unpack(v)), true)
         widget:SetWidth(300)
         widget:SetCallback("OnEnterPressed",
           function()
@@ -65,7 +85,7 @@ local function AddMessageDefaultWidgets(container, t)
     tinsert(targetOverlayDropdownItems, targetOverlayItem)
   end
 
-  local targetOverlayDropdown = PRT.Dropdown("messageTargetOverlay", targetOverlayDropdownItems, (t.defaultTargetOverlay or 1))
+  local targetOverlayDropdown = PRT.Dropdown(L["Target Overlay"], L["Overlay on which the message should show up"], targetOverlayDropdownItems, (t.defaultTargetOverlay or 1))
   targetOverlayDropdown:SetCallback("OnValueChanged",
     function(widget)
       t.defaultTargetOverlay = widget:GetValue()
@@ -74,29 +94,29 @@ local function AddMessageDefaultWidgets(container, t)
   local actionTypeDropdownItems = {
     [1] = {
       id = "cooldown",
-      name = L["actionTypeCooldown"]
+      name = L["Cooldown"]
     },
     [2] = {
       id = "raidwarning",
-      name = L["actionTypeRaidWarning"]
+      name = L["Raidwarning"]
     },
     [3] = {
       id = "raidmark",
-      name = L["actionTypeRaidMark"],
+      name = L["Raidmark"],
       disabled = true
     },
     [4] = {
       id = "advanced",
-      name = L["actionTypeAdvanced"]
+      name = L["Advanced"]
     },
     [5] = {
       id = "loadTemplate",
-      name = L["actionTypeLoadTemplate"],
+      name = L["Load Template"],
       disabled = PRT.TableUtils.IsEmpty(PRT.db.profile.templateStore.messages)
     }
   }
 
-  local actionTypeDropdown = PRT.Dropdown("actionType", actionTypeDropdownItems, t.defaultMessageType or "cooldown", nil, true)
+  local actionTypeDropdown = PRT.Dropdown(L["Type"], nil, actionTypeDropdownItems, t.defaultMessageType or "cooldown", nil, true)
   actionTypeDropdown:SetCallback("OnValueChanged",
     function(widget)
       t.defaultMessageType = widget:GetValue()
@@ -111,13 +131,13 @@ end
 -- Public API
 
 function PRT.AddDefaultsGroups(container, options)
-  local explanationLabel = PRT.Label("optionsDefaultsExplanation")
+  local explanationLabel = PRT.Label(L["The defined default values will be used when creating new messages."])
   explanationLabel:SetRelativeWidth(1)
   container:AddChild(explanationLabel)
 
   if options then
     for k, v in pairs(options) do
-      local groupWidget = PRT.InlineGroup(k)
+      local groupWidget = PRT.InlineGroup(defaultTranslations[k])
       groupWidget:SetLayout("Flow")
       addDefaultsWidgets(groupWidget, v)
 

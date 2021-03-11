@@ -15,8 +15,8 @@ embeds.xml
 PhenomRaidTools.lua
 
 # Localization
-Localization/Localization.lua
-Localization/Localization.deDE.lua
+Localization/enUS.lua
+Localization/deDE.lua
 
 # Media
 Source/Media.lua
@@ -54,4 +54,5 @@ Source/GUI/Options/GeneralWidget.lua
 Source/GUI/Options/OverlayWidget.lua
 Source/GUI/Options/RaidRosterWidget.lua
 Source/GUI/Options/CustomPlaceholdersWidget.lua
+Source/GUI/Options/InformationWidget.lua
 Source/GUI/Options.lua

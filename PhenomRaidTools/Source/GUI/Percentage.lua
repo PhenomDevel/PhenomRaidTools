@@ -1,4 +1,5 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local Percentage = {
   operatorValues = {
@@ -30,15 +31,15 @@ local Percentage = {
 -- Local Helper
 
 function Percentage.PercentageEntryWidget(entry, container, _, entries)
-  local percentageEntryOptionsGroup = PRT.InlineGroup("percentageEntryOptionsHeading")
+  local percentageEntryOptionsGroup = PRT.InlineGroup(L["Options"])
 
-  local operatorDropdown = PRT.Dropdown("percentageEntryOperatorDropdown", Percentage.operatorValues, entry.operator)
+  local operatorDropdown = PRT.Dropdown(L["Operator"], nil, Percentage.operatorValues, entry.operator)
   operatorDropdown:SetCallback("OnValueChanged",
     function(_, _, key)
       entry.operator = key
     end)
 
-  local valueSlider = PRT.Slider("percentageEntryPercent", entry.value)
+  local valueSlider = PRT.Slider(L["Percentage"], nil, entry.value)
   valueSlider:SetSliderValues(0, 100, 1)
   valueSlider:SetCallback("OnValueChanged",
     function(widget)
@@ -48,11 +49,11 @@ function Percentage.PercentageEntryWidget(entry, container, _, entries)
     end)
 
   local messagesTabs = PRT.TableToTabs(entry.messages, true)
-  local messagesTabGroup = PRT.TabGroup("messageHeading", messagesTabs)
+  local messagesTabGroup = PRT.TabGroup(L["Messages"], messagesTabs)
   messagesTabGroup:SetLayout("List")
   messagesTabGroup:SetCallback("OnGroupSelected",
     function(widget, _, key)
-      PRT.TabGroupSelected(widget, entry.messages, key, PRT.MessageWidget, PRT.EmptyMessage, true, "messageDeleteButton")
+      PRT.TabGroupSelected(widget, entry.messages, key, PRT.MessageWidget, PRT.EmptyMessage, true, L["Delete"])
     end)
 
   PRT.SelectFirstTab(messagesTabGroup, entry.messages)
@@ -64,7 +65,7 @@ function Percentage.PercentageEntryWidget(entry, container, _, entries)
   container:AddChild(percentageEntryOptionsGroup)
   container:AddChild(messagesTabGroup)
 
-  local cloneButton = PRT.Button("clonePercentageEntry")
+  local cloneButton = PRT.Button(L["Clone"])
   cloneButton:SetCallback("OnClick",
     function()
       local clone = PRT.TableUtils.CopyTable(entry)
@@ -81,11 +82,11 @@ function Percentage.PercentageWidget(percentageName, percentages, container)
   PRT.AddGeneralOptionsWidgets(container, percentageName, percentages, "percentage")
 
   -- Percentage Options
-  local percentageOptionsGroup = PRT.InlineGroup("percentageOptionsHeading")
+  local percentageOptionsGroup = PRT.InlineGroup(L["Options"])
   percentageOptionsGroup:SetLayout("Flow")
-  local unitIDEditBox = PRT.EditBox("percentageUnitID", percentage.unitID, true)
-  local checkAgainCheckBox = PRT.CheckBox("percentageCheckAgain", percentage.checkAgain)
-  local checkAgainAfterSlider = PRT.Slider("percentageCheckAgainAfter", percentage.checkAgainAfter)
+  local unitIDEditBox = PRT.EditBox(L["Unit"], L["Can be either of\n- Unit-Name\n- Unit-ID (boss1, player ...)\n- Numeric Unit-ID"], percentage.unitID, true)
+  local checkAgainCheckBox = PRT.CheckBox(L["Check again"], nil, percentage.checkAgain)
+  local checkAgainAfterSlider = PRT.Slider(L["Check after"], nil, percentage.checkAgainAfter)
 
   checkAgainAfterSlider:SetDisabled(not percentage.checkAgain)
   unitIDEditBox:SetCallback("OnEnterPressed",
@@ -126,7 +127,7 @@ function Percentage.PercentageWidget(percentageName, percentages, container)
   local valuesTabGroupWidget = PRT.TabGroup(nil, tabs)
   valuesTabGroupWidget:SetCallback("OnGroupSelected",
     function(widget, _, key)
-      PRT.TabGroupSelected(widget, percentage.values, key, Percentage.PercentageEntryWidget, PRT.EmptyPercentageEntry, true, "percentageEntryDeleteButton")
+      PRT.TabGroupSelected(widget, percentage.values, key, Percentage.PercentageEntryWidget, PRT.EmptyPercentageEntry, true, L["Delete"])
     end)
 
   PRT.SelectFirstTab(valuesTabGroupWidget, percentage.values)
@@ -141,11 +142,11 @@ function PRT.AddPowerPercentageOptions(container, profile, encounterID)
   local _, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
   local percentages = encounter.PowerPercentages
 
-  local percentageOptionsGroup = PRT.InlineGroup("Options")
+  local percentageOptionsGroup = PRT.InlineGroup(L["Options"])
   percentageOptionsGroup:SetLayout("Flow")
 
   local hasClipboardPercentage = (not PRT.TableUtils.IsEmpty(PRT.db.profile.clipboard.percentage))
-  local pasteButtonText = PRT.StringUtils.WrapColorByBoolean(L["pastePercentage"], hasClipboardPercentage, "FF696969")
+  local pasteButtonText = PRT.StringUtils.WrapColorByBoolean(L["Paste"], hasClipboardPercentage, "FF696969")
   local pasteButton = PRT.Button(pasteButtonText)
   pasteButton:SetDisabled(not hasClipboardPercentage)
   pasteButton:SetCallback("OnClick",
@@ -158,7 +159,7 @@ function PRT.AddPowerPercentageOptions(container, profile, encounterID)
       PRT.db.profile.clipboard.percentage = nil
     end)
 
-  local addButton = PRT.Button("newPowerPercentage")
+  local addButton = PRT.Button(L["New"])
   addButton:SetCallback("OnClick",
     function()
       local newPercentage = PRT.EmptyPercentage()
@@ -188,11 +189,11 @@ function PRT.AddHealthPercentageOptions(container, profile, encounterID)
   local _, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
   local percentages = encounter.HealthPercentages
 
-  local percentageOptionsGroup = PRT.InlineGroup("Options")
+  local percentageOptionsGroup = PRT.InlineGroup(L["Options"])
   percentageOptionsGroup:SetLayout("Flow")
 
   local hasClipboardPercentage = (not PRT.TableUtils.IsEmpty(PRT.db.profile.clipboard.percentage))
-  local pasteButtonText = PRT.StringUtils.WrapColorByBoolean(L["pastePercentage"], hasClipboardPercentage, "FF696969")
+  local pasteButtonText = PRT.StringUtils.WrapColorByBoolean(L["Paste"], hasClipboardPercentage, "FF696969")
   local pasteButton = PRT.Button(pasteButtonText)
   pasteButton:SetDisabled(not hasClipboardPercentage)
   pasteButton:SetCallback("OnClick",
@@ -205,7 +206,7 @@ function PRT.AddHealthPercentageOptions(container, profile, encounterID)
       PRT.db.profile.clipboard.percentage = nil
     end)
 
-  local addButton = PRT.Button("newHealthPercentage")
+  local addButton = PRT.Button(L["New"])
   addButton:SetCallback("OnClick",
     function()
       local newPercentage = PRT.EmptyPercentage()
