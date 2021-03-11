@@ -71,7 +71,7 @@ function GeneralOptions.MessageFilterExplanationString(options)
   end
 
   if options.alwaysIncludeMyself then
-    message = message..L["In addition you always include %s as valid sender."]:format(
+    message = message.." "..L["In addition you always include %s as valid sender."]:format(
       PRT.HighlightString(L["yourself"])
     )
   end
