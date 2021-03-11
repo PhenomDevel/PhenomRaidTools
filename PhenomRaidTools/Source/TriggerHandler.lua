@@ -436,11 +436,12 @@ function PRT.GetEffectiveUnits(unit)
           end
         end
       elseif UnitExists(unit) then
-        tinsert({
-          unitID = unit,
-          guid = UnitGUID(unit),
-          name = UnitName(unit)
-        })
+        tinsert(matchedUnits,
+          {
+            unitID = unit,
+            guid = UnitGUID(unit),
+            name = UnitName(unit)
+          })
       elseif type(unit) == "string" then
         -- Find by name
         if trackedUnit.name == unit then

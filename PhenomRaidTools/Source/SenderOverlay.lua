@@ -58,7 +58,7 @@ function SenderOverlay.UpdateFrame(encounter, options)
             local nextInSeconds, nextTiming = SenderOverlay.GetNextTiming(timer, timeIntoTimer)
 
             if nextInSeconds then
-              local nextDelta = PRT.Round((nextInSeconds + nextTiming.offset) - timeIntoTimer)
+              local nextDelta = PRT.Round((nextInSeconds + (nextTiming.offset or 0)) - timeIntoTimer)
               timerString = timerString.." [-"..PRT.ColoredString(PRT.SecondsToClock(nextDelta), SenderOverlay.timerColor).."]|n"
             else
               timerString = timerString.."|n"

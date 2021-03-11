@@ -1,4 +1,14 @@
 ===============================================================================
+# Release 2.3.7-ALPHA
+## Bugfixes
+ - Fix sender overlay when offset is empty
+ - Some small fixes
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.3.6-ALPHA
 ## Bugfixes
 None
