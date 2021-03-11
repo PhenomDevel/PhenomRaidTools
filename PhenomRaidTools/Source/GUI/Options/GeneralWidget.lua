@@ -136,18 +136,26 @@ end
 function GeneralOptions.AddRunMode(container, options)
   local runModeGroup = PRT.InlineGroup("runModeGroup")
   runModeGroup:SetLayout("Flow")
-  local runModeDropdown = PRT.Dropdown("runModeDropdown", GeneralOptions.runModes, options.runMode)
-  runModeDropdown:SetCallback("OnValueChanged",
+
+  local senderCheckBox = PRT.CheckBox("sender", options.senderMode)
+  local receiverCheckBox = PRT.CheckBox("receiver", options.receiverMode)
+
+  senderCheckBox:SetCallback("OnValueChanged",
     function(widget)
-      local text = widget:GetValue()
-      options.senderMode = tContains(GeneralOptions.senderModeSelections, text)
-      options.receiverMode = tContains(GeneralOptions.receiverModeSelections, text)
-      options.runMode = text
+      options.senderMode = widget:GetValue()
       PRT.Core.UpdateTree()
       PRT.Core.ReselectCurrentValue()
     end)
 
-  runModeGroup:AddChild(runModeDropdown)
+  receiverCheckBox:SetCallback("OnValueChanged",
+    function(widget)
+      options.receiverMode = widget:GetValue()
+      PRT.Core.UpdateTree()
+      PRT.Core.ReselectCurrentValue()
+    end)
+
+  runModeGroup:AddChild(senderCheckBox)
+  runModeGroup:AddChild(receiverCheckBox)
   container:AddChild(runModeGroup)
 end
 
