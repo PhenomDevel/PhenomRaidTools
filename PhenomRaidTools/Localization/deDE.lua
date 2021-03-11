@@ -28,10 +28,14 @@ L["After how many occurrences of\\nstart condition the timer should start."] = "
 L[ [=[After how many seconds the
 message should be displayed.]=] ] = [=[Nach wie vielen Sekunden
 soll die Nachricht angezeigt werden.]=]
+L[ [=[After how many seconds the
+message should be displayed.]=] ] = [=[Nach wie vielen Sekunden die
+Nachricht angezeigt werden soll.]=]
 L["Always includes yourself as valid sender."] = "Akzeptiert dich immer als validen Absender."
 L["Are you sure you want to clear the current raid roster?"] = "Bist Du dir sicher, dass du den Raidkader leeren willst?"
 L["Are you sure you want to clone %s?"] = "Bist Du dir sicher, dass Du %s klonen willst?"
 L["Are you sure you want to delete %s?"] = "Bist Du dir sicher, dass Du %s löschen willst?"
+L["Are you sure you want to delete template %s?"] = "Bist Du dir sicher, dass Du die Vorlage %s löschen willst?"
 L["Are you sure you want to import your current group?\""] = "Bist Du dir sicher, dass Du die aktuelle Gruppe importieren willst?"
 L["Are you sure you want to merge encounters?"] = "Bist Du dir sicher, dass Du die Bosse zusammenführen willst?"
 L["Are you sure you want to remove all custom placeholders?"] = "Bist Du dir sicher, dass Du alle benutzerdefinierten Platzhalter löschen willst?"
@@ -56,6 +60,25 @@ L[ [=[Can be either of
 - spell name known to the player character]=] ] = [=[Kann eins der folgenden sein
 - valide eindeutige Zauber-ID
 - Zauber-Name eines vom Charakter bekannten Zaubers]=]
+L[ [=[Can be either of
+- Player name
+- Custom Placeholder (e.g. $tank1)
+- $target (event target)]=] ] = [=[Kann eins der folgenden sein
+- Spielername
+- Benutzerdefinierter Platzhalter (z.B. $tank1)
+- $target (Ereignis-Ziel)]=]
+L[ [=[Can be either of
+- Unit-Name
+- Unit-ID (boss1, player ...)
+- Numeric Unit-ID]=] ] = [=[Kann eins der folgenden sein
+- Einheitenname
+- Einheiten-ID (boss1, player, ...)
+- Numerische Einheiten-ID]=]
+L[ [=[Can be either of
+- valid unique spell ID
+- spell name known to the player character]=] ] = [=[Kann eins der folgenden sein
+- valide eindeutige Zauber-ID
+- Zaubername, welcher dem Charakter bekannt ist]=]
 L["Cancel"] = "Abbrechen"
 L["Check after"] = "Prüfen nach"
 L["Check again"] = "Erneut prüfen"
@@ -109,6 +132,9 @@ L["Export String"] = "Export Daten"
 L["Filter by"] = "Einschränken nach"
 L[ [=[Filter out all messages
 below selected guild rank.]=] ] = "Alle Nachrichten unter dem ausgewählten Gildenrank filtern."
+L[ [=[Filter out all messages
+below selected guild rank.]=] ] = [=[Alle Nachrichten unter
+einem bestimmten Gildenrank filtern.]=]
 L["Font"] = "Schrift"
 L["Font Color"] = "Schriftfarbe"
 L["General"] = "Allgemein"
@@ -185,6 +211,9 @@ L["Restart"] = "Neustarten"
 L[ [=[Restarts the rotation when
 no more entries are found.]=] ] = [=[Startet die Rotation neu,
 wenn keine Einträge mehr gefunden werden.]=]
+L[ [=[Restarts the rotation when
+no more entries are found.]=] ] = [=[Startet die Rotation neu,
+wenn keine Einträge mehr gefunden werden.]=]
 L["Rotation"] = true
 L["Rotation Entry"] = "Rotationseintrag"
 L["Rotations"] = "Rotationen"
@@ -193,6 +222,9 @@ L["Select Encounter"] = "Boss auswählen"
 L[ [=[Selected player/placeholder will be
 added to the list of targets.]=] ] = [=[Ausgewählter Spieler/Platzhalter
 wird der Liste der Empfänger hinzugefügt.]=]
+L[ [=[Selected player/placeholder will be
+added to the list of targets.]=] ] = [=[Ausgewählter Spieler/Platzhalter wird
+der Liste der Ziele hinzugefügt.]=]
 L["Sender"] = "Absender"
 L["Sender Mode"] = "Absender Modus"
 L["Size"] = "Größe"
@@ -246,5 +278,3 @@ L["You currently filter messages by %s, but haven't configured any name yet. The
 L["You currently filter messages by %s. Therefore only message from players with the configured guild rank or higher will be displayed."] = "Du filterts aktuell alle Nachrichten nach %s. Daher werden nur Nachrichten von Spielern mit dem angegebenen Gildenrank oder höher angezeigt."
 L["You currently filter messages by %s. Therefore only messages from those players will be displayed."] = "Du filterts aktuell alle Nachrichten nach %s. Daher werden Dir nur Nachrichten von den spezifizierten Spielern angezeigt."
 L["yourself"] = "Du"
-L["Start Condition"] = "Start Bedingung"
-L["Are you sure you want to delete template %s?"] = "Bist Du dir sicher, dass Du die Vorlage %s löschen willst?"
