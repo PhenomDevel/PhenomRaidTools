@@ -1,7 +1,19 @@
 ===============================================================================
+# Release 2.3.5
+## Bugfixes
+None
+
+## Features
+ - Change version concept to semantic versioning
+ - Add credits tab to options
+ - Always query all units with the given unit-id/name until one is found
+ - Change to AceLocale instead of own system
+
+
+===============================================================================
 # Release 2.3.4.0
 ## Bugfixes
- -
+None
 
 ## Features
  - Fix some debug strings
