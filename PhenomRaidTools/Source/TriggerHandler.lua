@@ -421,7 +421,9 @@ local function ValidUnit(unitID)
   return UnitExists(unitID) and not UnitIsDead(unitID)
 end
 -- Health Percentages
-function PRT.GetEffectiveUnit(unit)
+function PRT.GetEffectiveUnits(unit)
+  local matchedUnits = {}
+
   if PRT.currentEncounter.trackedUnits then
     for trackedUnitGUID, trackedUnit in pairs(PRT.currentEncounter.trackedUnits) do
       if tonumber(unit) then
@@ -429,25 +431,27 @@ function PRT.GetEffectiveUnit(unit)
         local mobID = select(6, strsplit("-", trackedUnitGUID))
         if mobID == unit then
           if ValidUnit(trackedUnit.unitID) then
-            return trackedUnit
+            tinsert(matchedUnits, trackedUnit)
           end
         end
       elseif UnitExists(unit) then
-        return {
+        tinsert({
           unitID = unit,
           guid = UnitGUID(unit),
           name = UnitName(unit)
-        }
+        })
       elseif type(unit) == "string" then
         -- Find by name
         if trackedUnit.name == unit then
           if ValidUnit(trackedUnit.unitID) then
-            return trackedUnit
+            tinsert(matchedUnits, trackedUnit)
           end
         end
       end
     end
   end
+
+  return matchedUnits
 end
 
 function TriggerHandler.ExecutePercentageValue(percentage, percentageValue)
@@ -468,19 +472,24 @@ function PRT.CheckUnitHealthPercentages(percentages)
         TriggerHandler.CheckStopIgnorePercentageCondition(percentage)
         for _, percentageValue in ipairs(percentage.values) do
           if percentageValue.ignored ~= true and percentageValue.executed ~= true then
-            local effectiveUnit = PRT.GetEffectiveUnit(percentage.unitID)
+            local effectiveUnits = PRT.GetEffectiveUnits(percentage.unitID)
 
-            if effectiveUnit and effectiveUnit.name == UnitName(effectiveUnit.unitID) then
-              if UnitExists(effectiveUnit.unitID) and (not UnitIsDead(effectiveUnit.unitID)) then
-                local unitCurrentHP = UnitHealth(effectiveUnit.unitID)
-                local unitMaxHP = UnitHealthMax(effectiveUnit.unitID)
-                local unitHPPercent = PRT.Round(unitCurrentHP / unitMaxHP * 100, 0)
-                local percentageValueMatched = TriggerHandler.FilterPercentagesTable({percentageValue}, unitHPPercent)
+            for _, effectiveUnit in pairs(effectiveUnits) do
+              if effectiveUnit and effectiveUnit.name == UnitName(effectiveUnit.unitID) then
+                if UnitExists(effectiveUnit.unitID) and (not UnitIsDead(effectiveUnit.unitID)) then
+                  local unitCurrentHP = UnitHealth(effectiveUnit.unitID)
+                  local unitMaxHP = UnitHealthMax(effectiveUnit.unitID)
+                  local unitHPPercent = PRT.Round(unitCurrentHP / unitMaxHP * 100, 0)
+                  local percentageValueMatched = TriggerHandler.FilterPercentagesTable({percentageValue}, unitHPPercent)
 
-                if percentageValueMatched and percentageValue.messages then
-                  PRT.Debug("Unit health percentage matched with unit ", PRT.HighlightString(effectiveUnit.unitID),
-                    unitHPPercent, percentageValueMatched.operator, percentageValueMatched.value)
-                  TriggerHandler.ExecutePercentageValue(percentage, percentageValue)
+                  if percentageValueMatched and percentageValue.messages then
+                    PRT.Debug(L["%s (%s) health match (%s%% %s %s%%)"]:format(
+                      effectiveUnit.unitID, effectiveUnit.name, unitHPPercent, percentageValueMatched.operator, percentageValueMatched.value))
+                    TriggerHandler.ExecutePercentageValue(percentage, percentageValue)
+
+                    -- NOTE: Stop after first match
+                    break
+                  end
                 end
               end
             end
@@ -498,20 +507,25 @@ function PRT.CheckUnitPowerPercentages(percentages)
         TriggerHandler.CheckStopIgnorePercentageCondition(percentage)
         for _, percentageValue in ipairs(percentage.values) do
           if percentageValue.ignored ~= true and percentageValue.executed ~= true then
-            local effectiveUnit = PRT.GetEffectiveUnit(percentage.unitID)
+            local effectiveUnits = PRT.GetEffectiveUnits(percentage.unitID)
 
-            if effectiveUnit and effectiveUnit.name == UnitName(effectiveUnit.unitID) then
-              if UnitExists(effectiveUnit.unitID) and (not UnitIsDead(effectiveUnit.unitID)) then
-                local unitCurrentPower = UnitPower(effectiveUnit.unitID)
-                local unitMaxPower = UnitPowerMax(effectiveUnit.unitID)
-                local unitPowerPercent = PRT.Round(unitCurrentPower / unitMaxPower * 100, 0)
-                local percentageValueMatched = TriggerHandler.FilterPercentagesTable(percentage.values, unitPowerPercent)
+            for _, effectiveUnit in pairs(effectiveUnits) do
+              if effectiveUnit and effectiveUnit.name == UnitName(effectiveUnit.unitID) then
+                if UnitExists(effectiveUnit.unitID) and (not UnitIsDead(effectiveUnit.unitID)) then
+                  local unitCurrentPower = UnitPower(effectiveUnit.unitID)
+                  local unitMaxPower = UnitPowerMax(effectiveUnit.unitID)
+                  local unitPowerPercent = PRT.Round(unitCurrentPower / unitMaxPower * 100, 0)
+                  local percentageValueMatched = TriggerHandler.FilterPercentagesTable(percentage.values, unitPowerPercent)
 
-                if percentageValueMatched and percentageValue.messages then
                   if percentageValueMatched and percentageValue.messages then
-                    PRT.Debug("Unit power percentage matched with unit ", PRT.HighlightString(effectiveUnit.unitID),
-                      unitPowerPercent, percentageValueMatched.operator, percentageValueMatched.value)
-                    TriggerHandler.ExecutePercentageValue(percentage, percentageValue)
+                    if percentageValueMatched and percentageValue.messages then
+                      PRT.Debug("Unit power percentage matched with unit", PRT.HighlightString(effectiveUnit.unitID),
+                        unitPowerPercent, percentageValueMatched.operator, percentageValueMatched.value)
+                      TriggerHandler.ExecutePercentageValue(percentage, percentageValue)
+
+                      -- NOTE: Stop after first match
+                      break
+                    end
                   end
                 end
               end
