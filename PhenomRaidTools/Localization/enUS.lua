@@ -225,3 +225,4 @@ L["You currently filter messages by %s, but haven't configured any name yet. The
 L["You currently filter messages by %s. Therefore only message from players with the configured guild rank or higher will be displayed."] = true
 L["You currently filter messages by %s. Therefore only messages from those players will be displayed."] = true
 L["yourself"] = true
+L["Start Condition"] = true

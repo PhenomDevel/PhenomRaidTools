@@ -135,7 +135,7 @@ function Timer.TimerWidget(timerName, timers, container)
   container:AddChild(timerOptionsGroup)
 
   -- Start Condition
-  local startConditionGroup = PRT.ConditionWidget(timer.startCondition, "conditionStartHeading")
+  local startConditionGroup = PRT.ConditionWidget(timer.startCondition, L["Start Condition"])
   startConditionGroup:SetLayout("Flow")
   container:AddChild(startConditionGroup)
 
