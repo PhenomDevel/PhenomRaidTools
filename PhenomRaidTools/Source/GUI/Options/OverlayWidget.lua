@@ -79,7 +79,7 @@ function Overlay.AddSoundGroup(container, options)
   local soundGroup = PRT.InlineGroup(L["Sound"])
   soundGroup:SetLayout("Flow")
 
-  local enableSoundCheckbox = PRT.CheckBox(L["Enabled"], options.enableSound)
+  local enableSoundCheckbox = PRT.CheckBox(L["Enabled"], nil, options.enableSound)
   enableSoundCheckbox:SetCallback("OnValueChanged",
     function()
       options.enableSound = enableSoundCheckbox:GetValue()
@@ -176,7 +176,7 @@ function Overlay.AddReceiverOverlayWidget(options, container, index)
       PRT.ReceiverOverlay.UpdateFrame(overlayFrame, options)
     end)
 
-  local lockedCheckBox = PRT.CheckBox(L["Locked"], options.locked)
+  local lockedCheckBox = PRT.CheckBox(L["Locked"], nil, options.locked)
   lockedCheckBox:SetRelativeWidth(1)
   lockedCheckBox:SetCallback("OnValueChanged",
     function(widget)
