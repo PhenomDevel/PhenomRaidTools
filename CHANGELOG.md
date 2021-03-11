@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.3.8-ALPHA
+## Bugfixes
+ - Add missing locals
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.3.7-ALPHA
 ## Bugfixes
  - Fix sender overlay when offset is empty
