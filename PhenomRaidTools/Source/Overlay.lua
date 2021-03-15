@@ -1,5 +1,6 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
+local Media = LibStub("LibSharedMedia-3.0")
 
 local Overlay = {}
 local padding = 15
@@ -42,7 +43,15 @@ function Overlay.UpdateSize(frame, options)
 end
 
 function Overlay.UpdateFont(frame, options)
-  frame.text:SetFont((options.font or GameFontHighlightSmall:GetFont()), options.fontSize, "OUTLINE")
+  local font
+
+  if Media:HashTable("font")[options.fontName] then
+    font = options.font
+  else
+    font = GameFontHighlightSmall:GetFont()
+  end
+
+  frame.text:SetFont(font, options.fontSize, "OUTLINE")
 end
 
 function Overlay.UpdateBackdrop(frame, options)

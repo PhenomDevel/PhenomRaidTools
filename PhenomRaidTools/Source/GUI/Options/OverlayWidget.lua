@@ -1,6 +1,6 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
-
+local Media = LibStub("LibSharedMedia-3.0")
 local Overlay = {}
 
 
@@ -201,6 +201,14 @@ local function ImportReceiverOverlaySettingsSuccess(overlayOptions, importedRece
   overlayOptions.receivers = importedReceiverOptions
   PRT.ReceiverOverlay.ReInitialize(overlayOptions.receivers)
   PRT.ReceiverOverlay.ShowPlaceholders(overlayOptions.receivers)
+
+  -- ToDo check if fonts are existing
+  for _, receiverOptions in pairs(overlayOptions.receivers) do
+    if not Media:HashTable("font")[receiverOptions.fontName] then
+      receiverOptions.font = nil
+      receiverOptions.fontName = nil
+    end
+  end
 end
 
 -------------------------------------------------------------------------------
