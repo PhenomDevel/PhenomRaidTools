@@ -197,21 +197,25 @@ function Overlay.AddReceiverOverlayWidget(options, container, index)
   Overlay.AddPositionSliderGroup(container, overlayFrame, options)
 end
 
+local function ImportReceiverOverlaySettingsSuccess(overlayOptions, importedReceiverOptions)
+  overlayOptions.receivers = importedReceiverOptions
+  PRT.ReceiverOverlay.ReInitialize(overlayOptions.receivers)
+  PRT.ReceiverOverlay.ShowPlaceholders(overlayOptions.receivers)
+end
 
 -------------------------------------------------------------------------------
 -- Public API
 
 function PRT.AddOverlayWidget(container, options)
+  -- Widgets
   local receiversTabs = PRT.TableToTabs(options.receivers)
-  local receiversTabGroup = PRT.TabGroup(L["Receivers"], receiversTabs)
-  receiversTabGroup:SetLayout("List")
-  receiversTabGroup:SetCallback("OnGroupSelected",
-    function(widget, _, key)
-      PRT.TabGroupSelected(widget, options.receivers, key, Overlay.AddReceiverOverlayWidget)
-    end)
+  local receiversTabGroup = PRT.TabGroup(nil, receiversTabs)
+  local receiversGroup = PRT.InlineGroup(L["Receivers"])
+  local receiverActionGroup = PRT.SimpleGroup()
+  local receiverImportButton = PRT.Button(L["Import"])
+  local receiverExportButton = PRT.Button(L["Export"])
 
-  PRT.SelectFirstTab(receiversTabGroup, options.receivers)
-
+  -- Sender Settings
   if PRT.db.profile.senderMode then
     local senderGroup = PRT.InlineGroup(L["Sender"])
     senderGroup:SetLayout("Flow")
@@ -219,5 +223,33 @@ function PRT.AddOverlayWidget(container, options)
     container:AddChild(senderGroup)
   end
 
-  container:AddChild(receiversTabGroup)
+  -- Receiver Settings
+  receiverImportButton:SetCallback("OnClick",
+    function()
+      PRT.CreateImportFrame(
+        function(t)
+          ImportReceiverOverlaySettingsSuccess(options, t)
+          PRT.ReSelectTab(receiversTabGroup)
+        end)
+    end)
+
+  receiverExportButton:SetCallback("OnClick",
+    function()
+      PRT.CreateExportFrame(options.receivers)
+    end)
+
+  receiverActionGroup:SetLayout("Flow")
+  receiverActionGroup:AddChild(receiverImportButton)
+  receiverActionGroup:AddChild(receiverExportButton)
+
+  receiversTabGroup:SetLayout("List")
+  receiversTabGroup:SetCallback("OnGroupSelected",
+    function(widget, _, key)
+      PRT.TabGroupSelected(widget, options.receivers, key, Overlay.AddReceiverOverlayWidget)
+    end)
+
+  PRT.SelectFirstTab(receiversTabGroup, options.receivers)
+  receiversGroup:AddChild(receiverActionGroup)
+  receiversGroup:AddChild(receiversTabGroup)
+  container:AddChild(receiversGroup)
 end

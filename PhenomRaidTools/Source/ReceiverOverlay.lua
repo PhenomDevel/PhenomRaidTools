@@ -71,6 +71,13 @@ function ReceiverOverlay.ShowPlaceholder(frame, options, _)
   PRT.Overlay.UpdateSize(frame)
 end
 
+function ReceiverOverlay.ShowPlaceholders(receiverOptions)
+  for i, receiverOverlay in ipairs(receiverOptions) do
+    local frame = PRT.ReceiverOverlay.overlayFrames[i]
+    ReceiverOverlay.ShowPlaceholder(frame, receiverOverlay)
+  end
+end
+
 function ReceiverOverlay.UpdateFrameText()
   for frameIndex, frame in ipairs(ReceiverOverlay.overlayFrames) do
     local text = ""
@@ -144,11 +151,11 @@ function ReceiverOverlay.ShowAll()
   end
 end
 
-function ReceiverOverlay.Initialize(receivers)
-  if not ReceiverOverlay.overlayFrames then
+function ReceiverOverlay.Initialize(receiverOptions)
+  if PRT.TableUtils.IsEmpty(ReceiverOverlay.overlayFrames) then
     ReceiverOverlay.overlayFrames = {}
 
-    for i, receiver in ipairs(receivers) do
+    for i, receiver in ipairs(receiverOptions) do
       PRT.Debug("Initializing receiver overlay", i)
       local receiverOverlay = ReceiverOverlay.CreateOverlay(receiver)
 
@@ -165,6 +172,12 @@ function ReceiverOverlay.Initialize(receivers)
   end
 end
 
+function ReceiverOverlay.ReInitialize(receiverOptions)
+  ReceiverOverlay.HideAll()
+  ReceiverOverlay.overlayFrames = nil
+  ReceiverOverlay.Initialize(receiverOptions)
+  ReceiverOverlay.ShowAll()
+end
 
 -------------------------------------------------------------------------------
 -- Public API
