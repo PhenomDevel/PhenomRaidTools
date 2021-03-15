@@ -500,8 +500,7 @@ local function AddAdvancedActionWidgets(container, message)
     cooldownGroupContainer:SetLayout("Flow")
 
     for _, spellID in ipairs(cooldownGroup) do
-      local _, _, icon = GetSpellInfo(spellID)
-      local spellIcon = PRT.Icon(icon, spellID)
+      local spellIcon = PRT.Icon(spellID)
       spellIcon:SetHeight(cooldownIconSize + 4)
       spellIcon:SetWidth(cooldownIconSize + 4)
       spellIcon:SetImageSize(cooldownIconSize, cooldownIconSize)

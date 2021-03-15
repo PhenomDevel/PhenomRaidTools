@@ -388,12 +388,19 @@ function PRT.CheckBox(label, tooltip, value)
   return widget
 end
 
-function PRT.Icon(value, spellID)
+function PRT.Icon(spellID)
+  local _, _, icon, _, _, _ = GetSpellInfo(spellID)
   local widget = AceGUI:Create("Icon")
-  widget:SetImage(value, 0.1, 0.9, 0.1, 0.9)
+  widget:SetImage(icon, 0.1, 0.9, 0.1, 0.9)
   PRT.AddSpellTooltip(widget, spellID)
 
   return widget
+end
+
+function PRT.UpdateIcon(widget, spellID)
+  local _, _, icon, _, _, _ = GetSpellInfo(spellID)
+  widget:SetImage(icon, 0.1, 0.9, 0.1, 0.9)
+  PRT.AddSpellTooltip(widget, spellID)
 end
 
 function PRT.Slider(label, tooltip, value)
