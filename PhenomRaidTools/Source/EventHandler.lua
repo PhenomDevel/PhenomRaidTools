@@ -173,6 +173,7 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
         if encounter.enabled then
           PRT.currentEncounter = NewEncounter()
           PRT.Debug("Starting new encounter", PRT.HighlightString(encounterName),"(", PRT.HighlightString(encounterID), ")" , "|r")
+          PRT.Debug(L["Running PhenomRaidTools version %s"]:format(PRT.HighlightString(PRT.db.profile.version)))
 
           PRT.EnsureEncounterTrigger(encounter)
           PRT.RegisterEvents(EventHandler.trackedInCombatEvents)
@@ -183,15 +184,16 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
           CompileInterestingEvents(PRT.currentEncounter)
           LogInterestingUnitsAndEvents(PRT.currentEncounter)
 
+          AceTimer:ScheduleRepeatingTimer(PRT.ProcessMessageQueue, 0.5)
+
+          -- Make sure timings are once queried at the start so timing with < 0.5s will trigger
+          AceTimer:ScheduleTimer(PRT.CheckTimerTimings, 0.1, PRT.currentEncounter.encounter.Timers)
+          AceTimer:ScheduleRepeatingTimer(PRT.CheckTimerTimings, 0.5, PRT.currentEncounter.encounter.Timers)
+
           if PRT.db.profile.overlay.sender.enabled then
+            AceTimer:ScheduleRepeatingTimer(PRT.SenderOverlay.UpdateFrame, 1, PRT.currentEncounter.encounter, PRT.db.profile.overlay.sender)
             PRT.SenderOverlay.Show()
             PRT.SenderOverlay.Lock()
-            AceTimer:ScheduleRepeatingTimer(PRT.SenderOverlay.UpdateFrame, 1, PRT.currentEncounter.encounter, PRT.db.profile.overlay.sender)
-            AceTimer:ScheduleRepeatingTimer(PRT.ProcessMessageQueue, 0.5)
-
-            -- Make sure timings are once queried at the start so timing with < 0.5s will trigger
-            AceTimer:ScheduleTimer(PRT.CheckTimerTimings, 0.1, PRT.currentEncounter.encounter.Timers)
-            AceTimer:ScheduleRepeatingTimer(PRT.CheckTimerTimings, 0.5, PRT.currentEncounter.encounter.Timers)
           end
         else
           PRT.Warn("Found encounter but it is disabled. Skipping encounter.")
