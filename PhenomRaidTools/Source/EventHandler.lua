@@ -462,8 +462,10 @@ function PRT:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
   for i = 1, 5 do
     local unitID = "boss"..i
 
-    if UnitExists(unitID) then
-      PRT.AddUnitToTrackedUnits(unitID)
+    if IsInterestingUnit(PRT.currentEncounter, unitID) then
+      if UnitExists(unitID) then
+        PRT.AddUnitToTrackedUnits(unitID)
+      end
     end
   end
 end
