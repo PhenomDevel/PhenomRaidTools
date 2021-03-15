@@ -1,4 +1,23 @@
 ===============================================================================
+# Release 2.3.13
+## Bugfixes
+None
+
+## Features
+ - Make sure receiver overlay and options are rendered correctly even if the font does not exist
+
+
+===============================================================================
+# Release 2.3.12
+## Bugfixes
+- Make sure timers are checking even if sender overlay is not shown
+
+## Features
+ - Be able to import/export overlay options
+ - Added missing deDE locals
+
+
+===============================================================================
 # Release 2.3.11
 ## Bugfixes
  - Make sure timers are checked and execute even if you have the sender overlay deactivated
