@@ -7,19 +7,22 @@ If you want to access the addon just use `/prt` or the minimap icon in game and 
 ## About
 PhenomRaidTools is an addon to use next to the usual raid utility addons like `WeakAuras2`, `DBM`, and `BigWigs`. With PhenomRaidTools you'll be able to configure your own timers, rotations and other triggers to show messages on the screen. You can choose when and how the messages should be displayed as well as who in the raid team should see the messages.
 
+## Guide
+For a brief introduction into the addon please read: https://github.com/PhenomDevel/PhenomRaidTools/blob/master/doc/PhenomRaidTools_Beginner_Guide.pdf
+
 ## Sender & Receiver
-PhenomRaidTools supports two run modes. Sender mode and receiver mode. As sender all your configured triggers which send messages which will be executed and send messages through an addon channel. Every player who matches your configured targets within messages will get a message displayed. 
+PhenomRaidTools supports two run modes. Sender mode and receiver mode. As sender all your configured triggers which send messages which will be executed and send messages through an addon channel. Every player who matches your configured targets within messages will get a message displayed.
 As receiver you'll only get messages displayed when you are a valid message target of the received messages. You can alos filter messages so you won't get spammed.
 
 ## Trigger
 There are four different types of triggers which will send the configured messages based on different condition which all can be configured.
 
 ### Timer
-You can configure your own timers for a fight. Those can be used for e.g. healing cooldowns or strategic positioning. 
+You can configure your own timers for a fight. Those can be used for e.g. healing cooldowns or strategic positioning.
 You can setup a start condition for when the timer should start counting and a stop condition which can be used for restarting timers. This can be useful if you have a timer for an encounter phase which repeats itself.
 
 ### Rotation
-Rotations have a trigger condition for when to count up. Everytime the trigger condition is met a certain action will be executed if there is one for the given index. 
+Rotations have a trigger condition for when to count up. Everytime the trigger condition is met a certain action will be executed if there is one for the given index.
 Like for timers you can configure start and stop conditions. This can be helpful if you only want a rotation to count in a certain phase or to restart it on certain events.
 
 ### Health Percentage
