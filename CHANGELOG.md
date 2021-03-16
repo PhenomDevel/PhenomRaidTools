@@ -1,4 +1,14 @@
 ===============================================================================
+# Release 2.3.14
+## Bugfixes
+None
+
+## Features
+ - Update unit tracking for boss units
+ - Added condition presets for each encounter (except inerva :))
+
+
+===============================================================================
 # Release 2.3.13
 ## Bugfixes
 None
