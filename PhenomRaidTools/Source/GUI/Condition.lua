@@ -74,7 +74,7 @@ local encounterPhaseMapping = {
   },
   -- Sire Denathrius
   [2407] = {
-    { id = "phase2start", name = L["Phase 2 Start"], event = "SPELL_CAST_START", spellID = 328276},
+    { id = "phase2start", name = L["Phase 2 Start"], event = "SPELL_CAST_START", spellID = 328117},
     { id = "phase3start", name = L["Phase 3 Start"], event = "SPELL_CAST_SUCCESS", spellID = 326005},
   }
 }
