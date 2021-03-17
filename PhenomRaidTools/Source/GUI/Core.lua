@@ -146,7 +146,7 @@ function Core.GenerateRotationsTree(rotations)
   local children = {}
   local t = {
     value = "rotations",
-    text = L["Rotaion"],
+    text = L["Rotation"],
     icon = 450907,
     iconCoords = {0.1, 0.9, 0.1, 0.9}
   }
