@@ -9,7 +9,6 @@ externals:
   PhenomRaidTools/Libs/AceDBOptions-3.0: https://repos.wowace.com/wow/ace3/trunk/AceDBOptions-3.0
   PhenomRaidTools/Libs/AceEvent-3.0: https://repos.wowace.com/wow/ace3/trunk/AceEvent-3.0
   PhenomRaidTools/Libs/AceGUI-3.0: https://repos.wowace.com/wow/ace3/trunk/AceGUI-3.0
-  PhenomRaidTools/Libs/AceGUI-3.0-SharedMediaWidgets: https://repos.wowace.com/wow/ace3/trunk/AceGUI-3.0-SharedMediaWidgets
   PhenomRaidTools/Libs/AceLocale-3.0: https://repos.wowace.com/wow/ace3/trunk/AceLocale-3.0
   PhenomRaidTools/Libs/AceSerializer-3.0: https://repos.wowace.com/wow/ace3/trunk/AceSerializer-3.0
   PhenomRaidTools/Libs/AceTimer-3.0: https://repos.wowace.com/wow/ace3/trunk/AceTimer-3.0
