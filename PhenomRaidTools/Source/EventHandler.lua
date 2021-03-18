@@ -256,12 +256,14 @@ end
 
 function PRT.RegisterEvents(events)
   for _, event in ipairs(events) do
+    PRT.Debug("Registering event", PRT.HighlightString(event))
     PRT:RegisterEvent(event)
   end
 end
 
 function PRT.UnregisterEvents(events)
   for _, event in ipairs(events) do
+    PRT.Debug("Unregistering event", PRT.HighlightString(event))
     PRT:UnregisterEvent(event)
   end
 end
@@ -277,7 +279,6 @@ end
 function PRT:ENCOUNTER_START(event, encounterID, encounterName)
   -- We only start a real encounter if PRT is enabled (correct dungeon/raid difficulty) and we're not in test mode
   if PRT.enabled and not self.db.profile.testMode then
-    PRT.RegisterEvents(EventHandler.trackedInCombatEvents)
     EventHandler.StartEncounter(event, encounterID, encounterName)
   end
 end
@@ -294,7 +295,6 @@ function PRT:PLAYER_REGEN_DISABLED(event)
 
     if encounter then
       if encounter.enabled then
-        PRT.RegisterEvents(EventHandler.trackedInCombatEvents)
         EventHandler.StartEncounter(event, encounter.id, encounter.name)
       else
         PRT.Warn("The selected encounter is disabled. Please enable it before testing.")
@@ -310,13 +310,11 @@ end
 
 function PRT:ENCOUNTER_END(event)
   EventHandler.StopEncounter(event)
-  PRT.UnregisterEvents(EventHandler.trackedInCombatEvents)
 end
 
 function PRT:PLAYER_REGEN_ENABLED(event)
   if not PRT.PlayerInParty() or self.db.profile.testMode then
     EventHandler.StopEncounter(event)
-    PRT.UnregisterEvents(EventHandler.trackedInCombatEvents)
   end
 end
 
