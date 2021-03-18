@@ -19,10 +19,10 @@ function ReceiverOverlay.ClearMessageStack()
 end
 
 function ReceiverOverlay.AddMessage(messageTable)
-  local receiverOverlayFrame = PRT.db.profile.overlay.receivers[(messageTable.targetOverlay or 1)]
+  local receiverOverlayOptions = PRT.db.profile.overlay.receivers[(messageTable.targetOverlay or 1)]
 
   messageTable.expirationTime = GetTime() + (messageTable.duration or 5)
-  if receiverOverlayFrame.enableSound then
+  if receiverOverlayOptions.enableSound then
     local soundFile = messageTable.soundFile
     local customWillPlay
 
@@ -31,9 +31,9 @@ function ReceiverOverlay.AddMessage(messageTable)
     end
 
     if not customWillPlay then
-      if receiverOverlayFrame.defaultSoundFile then
+      if receiverOverlayOptions.defaultSoundFile then
         -- Play default soundfile if configured sound does not exist
-        PlaySoundFile(receiverOverlayFrame.defaultSoundFile, "Master")
+        PlaySoundFile(receiverOverlayOptions.defaultSoundFile, "Master")
       else
         PRT.Warn("Tried to play default sound but there was a problem. Try selecting another sound as default sound.")
       end
@@ -80,9 +80,21 @@ end
 
 function ReceiverOverlay.UpdateFrameText()
   for frameIndex, frame in ipairs(ReceiverOverlay.overlayFrames) do
+    local receiverOverlayOptions = PRT.db.profile.overlay.receivers[frameIndex]
     local text = ""
 
-    for _, message in pairs(ReceiverOverlay.messageStack) do
+    local startIndex = 1
+    local step = 1
+    local endIndex = #ReceiverOverlay.messageStack
+
+    if (receiverOverlayOptions.growDirection or "UP") == "UP" then
+      startIndex = #ReceiverOverlay.messageStack
+      endIndex = 1
+      step = -1
+    end
+
+    for i = startIndex, endIndex, step do
+      local message = ReceiverOverlay.messageStack[i]
       if message ~= "" then
         -- Add text only to corresponding frame
         if (message.targetOverlay or 1) == frameIndex then
@@ -102,7 +114,6 @@ function ReceiverOverlay.UpdateFrameText()
     end
 
     frame.text:SetText(text)
-    PRT.Overlay.UpdateSize(frame)
   end
 end
 
@@ -115,11 +126,14 @@ end
 
 function ReceiverOverlay.CreateOverlay(options)
   local overlayFrame = PRT.Overlay.CreateOverlay(options, true)
-  overlayFrame:ClearAllPoints()
-  overlayFrame:SetPoint("CENTER", "UIParent", "CENTER", options.left, -options.top)
+
+  if options.growDirection == "UP" then
+    overlayFrame.text:SetPoint("BOTTOM", 0, 15)
+  else
+    overlayFrame.text:SetPoint("TOP", 0, -15)
+  end
 
   overlayFrame.text:SetJustifyH("CENTER")
-  overlayFrame.text:SetPoint("CENTER")
   overlayFrame.text:SetFont((options.font or GameFontHighlightSmall:GetFont()), options.fontSize, "OUTLINE")
 
   PRT.Overlay.SetMoveable(overlayFrame, false)

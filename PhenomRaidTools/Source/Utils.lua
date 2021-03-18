@@ -561,3 +561,23 @@ function PRT.UnitIDByGroupType(idx)
     return "party"..idx
   end
 end
+
+function PRT.IsEnabled()
+  return PRT.db.profile.enabled
+end
+
+function PRT.IsSender()
+  return PRT.db.profile.senderMode
+end
+
+function PRT.IsReceiver()
+  return PRT.db.profile.receiverMode
+end
+
+function PRT.InFight()
+  return PRT.currentEncounter.inFight
+end
+
+function PRT.HasEncounter()
+  return not PRT.TableUtils.IsEmpty(PRT.currentEncounter.encounter)
+end

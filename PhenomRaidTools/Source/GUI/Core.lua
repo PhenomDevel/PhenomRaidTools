@@ -256,7 +256,7 @@ function Core.GenerateOptionsTree()
 end
 
 function Core.GenerateTemplatesTree(profile)
-  if profile.senderMode then
+  if PRT.IsSender() then
     return {
       value = "templates",
       text = L["Templates"]
@@ -273,7 +273,7 @@ function Core.GenerateTreeByProfile(profile)
     Core.GenerateTemplatesTree(profile)
   }
 
-  if profile.senderMode then
+  if PRT.IsSender() then
     tinsert(t, Core.GenerateEncountersTree(profile.encounters))
   end
 

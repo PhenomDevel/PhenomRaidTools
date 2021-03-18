@@ -3,6 +3,17 @@ local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 local Media = LibStub("LibSharedMedia-3.0")
 local Overlay = {}
 
+local growDirectionDropdownOptions = {
+  {
+    id = "UP",
+    name = L["Up"]
+  },
+  {
+    id = "DOWN",
+    name = L["Down"]
+  }
+}
+
 
 -------------------------------------------------------------------------------
 -- Private Helper
@@ -177,7 +188,6 @@ function Overlay.AddReceiverOverlayWidget(options, container, index)
     end)
 
   local lockedCheckBox = PRT.CheckBox(L["Locked"], nil, options.locked)
-  lockedCheckBox:SetRelativeWidth(1)
   lockedCheckBox:SetCallback("OnValueChanged",
     function(widget)
       local v = widget:GetValue()
@@ -187,11 +197,22 @@ function Overlay.AddReceiverOverlayWidget(options, container, index)
       PRT.ReceiverOverlay.UpdateFrame(overlayFrame, options)
     end)
 
+  local growDirectionDropdown = PRT.Dropdown(L["Grow Direction"], nil, growDirectionDropdownOptions, (options.growDirection or "UP"))
+  growDirectionDropdown:SetCallback("OnValueChanged",
+    function(widget)
+      options.growDirection = widget:GetValue()
+    end)
+
   local fontGroup = Overlay.FontGroup(options, overlayFrame)
   fontGroup:AddChild(fontColor)
 
-  container:AddChild(labelEditBox)
-  container:AddChild(lockedCheckBox)
+  local optionsGroup = PRT.SimpleGroup()
+  optionsGroup:SetLayout("Flow")
+
+  optionsGroup:AddChild(lockedCheckBox)
+  optionsGroup:AddChild(labelEditBox)
+  optionsGroup:AddChild(growDirectionDropdown)
+  container:AddChild(optionsGroup)
   Overlay.AddSoundGroup(container, options)
   container:AddChild(fontGroup)
   Overlay.AddPositionSliderGroup(container, overlayFrame, options)
@@ -224,7 +245,7 @@ function PRT.AddOverlayWidget(container, options)
   local receiverExportButton = PRT.Button(L["Export"])
 
   -- Sender Settings
-  if PRT.db.profile.senderMode then
+  if PRT.IsSender() then
     local senderGroup = PRT.InlineGroup(L["Sender"])
     senderGroup:SetLayout("Flow")
     Overlay.AddSenderOverlayWidget(senderGroup, options.sender)

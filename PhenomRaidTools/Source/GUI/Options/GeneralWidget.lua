@@ -121,8 +121,8 @@ function GeneralOptions.AddRunMode(container, options)
   local runModeGroup = PRT.InlineGroup(L["Modes"])
   runModeGroup:SetLayout("Flow")
 
-  local senderCheckBox = PRT.CheckBox(L["Sender Mode"], L["Activates the sender mode."], options.senderMode)
-  local receiverCheckBox = PRT.CheckBox(L["Receiver Mode"], L["Activates the receiver mode."], options.receiverMode)
+  local senderCheckBox = PRT.CheckBox(L["Sender Mode"], L["Activates the sender mode."], PRT.IsSender())
+  local receiverCheckBox = PRT.CheckBox(L["Receiver Mode"], L["Activates the receiver mode."], PRT.IsReceiver())
 
   senderCheckBox:SetCallback("OnValueChanged",
     function(widget)
@@ -226,16 +226,16 @@ function PRT.AddGeneralWidgets(container, options)
   container:AddChild(enabledCheckbox)
   GeneralOptions.AddRunMode(container, options)
 
-  if not options.senderMode and options.receiverMode then
+  if not PRT.IsSender() and PRT.IsReceiver() then
     local helpLabel = PRT.Label(L["You are currently in receiver only mode. Therefore some features are disabled because they only relate to the sender mode."])
     container:AddChild(helpLabel)
   end
 
-  if options.receiverMode then
+  if PRT.IsReceiver() then
     GeneralOptions.AddMessageFilter(container, options.messageFilter)
   end
 
-  if options.senderMode then
+  if PRT.IsSender() then
     GeneralOptions.AddTestMode(container, options)
   end
 

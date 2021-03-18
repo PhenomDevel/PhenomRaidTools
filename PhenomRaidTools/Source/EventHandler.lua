@@ -42,7 +42,7 @@ local GetTime, CombatLogGetCurrentEventInfo, UnitGUID, GetInstanceInfo =
 
 function EventHandler.StartReceiveMessages()
   if PRT.db.profile.enabled then
-    if PRT.db.profile.receiverMode then
+    if PRT.IsReceiver() then
       PRT.ReceiverOverlay.ShowAll()
       AceTimer:ScheduleRepeatingTimer(PRT.ReceiverOverlay.UpdateFrameText, 0.01)
     else
@@ -164,9 +164,11 @@ local function LogEncounterStatistics(currentEncounter)
 end
 
 function EventHandler.StartEncounter(event, encounterID, encounterName)
-  if PRT.db.profile.enabled then
+  if PRT.IsEnabled() then
+
     wipe(PRT.db.profile.debugLog)
-    if PRT.db.profile.senderMode then
+
+    if PRT.IsSender() then
       local _, encounter = PRT.FilterEncounterTable(PRT.db.profile.encounters, encounterID)
 
       if encounter then
@@ -189,6 +191,10 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
           -- Make sure timings are once queried at the start so timing with < 0.5s will trigger
           AceTimer:ScheduleTimer(PRT.CheckTimerTimings, 0.1, PRT.currentEncounter.encounter.Timers)
           AceTimer:ScheduleRepeatingTimer(PRT.CheckTimerTimings, 0.5, PRT.currentEncounter.encounter.Timers)
+
+          if PRT.IsReceiver() then
+            PRT.ReceiverOverlay.ReInitialize(PRT.db.profile.overlay.receivers)
+          end
 
           if PRT.db.profile.overlay.sender.enabled then
             AceTimer:ScheduleRepeatingTimer(PRT.SenderOverlay.UpdateFrame, 1, PRT.currentEncounter.encounter, PRT.db.profile.overlay.sender)
@@ -214,7 +220,7 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
 end
 
 function EventHandler.StopEncounter(event)
-  if PRT.db.profile.senderMode and PRT.currentEncounter then
+  if PRT.IsSender() and PRT.currentEncounter then
     PRT.Debug("Combat stopped.")
 
     -- Send the last event before unregistering the event
@@ -235,7 +241,7 @@ function EventHandler.StopEncounter(event)
   end
 
   -- Clear ReceiverFrame
-  if PRT.db.profile.receiverMode then
+  if PRT.IsReceiver() then
     PRT.ReceiverOverlay.ClearMessageStack()
     PRT.ReceiverOverlay.UpdateFrameText()
     PRT.ReceiverOverlay.HideAll()
@@ -315,7 +321,7 @@ function PRT:PLAYER_REGEN_ENABLED(event)
 end
 
 function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
-  if PRT.currentEncounter and PRT.db.profile.senderMode then
+  if PRT.currentEncounter and PRT.IsSender() then
     local _, combatEvent, _, sourceGUID, sourceName, _, _, targetGUID, targetName, _, _, eventSpellID, _, _ = CombatLogGetCurrentEventInfo()
 
     if PRT.currentEncounter.inFight then
@@ -372,7 +378,7 @@ local function IsTrackedUnit(currentEncounter, guid)
 end
 
 function PRT:UNIT_POWER_FREQUENT(event, unitID)
-  if PRT.currentEncounter and PRT.db.profile.senderMode then
+  if PRT.currentEncounter and PRT.IsSender() then
     if PRT.currentEncounter.inFight then
       if PRT.currentEncounter.encounter then
         local unitGUID = UnitGUID(unitID)
@@ -390,7 +396,7 @@ function PRT:UNIT_POWER_FREQUENT(event, unitID)
 end
 
 function PRT:UNIT_HEALTH(event, unitID)
-  if PRT.currentEncounter and PRT.db.profile.senderMode then
+  if PRT.currentEncounter and PRT.IsSender() then
     if PRT.currentEncounter.inFight then
       if PRT.currentEncounter.encounter then
         local unitGUID = UnitGUID(unitID)

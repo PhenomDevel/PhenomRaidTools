@@ -95,6 +95,8 @@ end
 
 function Overlay.CreateOverlay(options, withBackdrop)
   local overlayFrame = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
+  overlayFrame:SetWidth(1)
+  overlayFrame:SetHeight(1)
   overlayFrame:EnableMouse(true)
   overlayFrame:SetMovable(true)
   overlayFrame:SetClampedToScreen(true)
@@ -119,16 +121,12 @@ function Overlay.CreateOverlay(options, withBackdrop)
           bottom = 4
         }});
 
-    Overlay.UpdateBackdrop(overlayFrame, options)
+    overlayFrame:SetBackdropColor(0, 0, 0, 0);
   end
 
-  overlayFrame:SetFrameStrata("MEDIUM")
-  overlayFrame:SetPoint("TOPLEFT", "UIParent", "TOPLEFT", options.left, -options.top)
-
-  overlayFrame.text = overlayFrame:CreateFontString(nil, "ARTWORK")
-  overlayFrame.text:SetJustifyH("CENTER")
+  overlayFrame:SetPoint("CENTER", 0, 0)
+  overlayFrame.text = overlayFrame:CreateFontString(overlayFrame, "OVERLAY")
   overlayFrame.text:SetFont(GameFontHighlightSmall:GetFont(), options.fontSize, "OUTLINE")
-  overlayFrame.text:SetPoint("TOPLEFT", padding, -padding)
   overlayFrame.text:SetText("")
 
   return overlayFrame

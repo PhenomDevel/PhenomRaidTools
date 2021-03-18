@@ -146,7 +146,7 @@ function PRT:OnAddonMessage(message)
     if UnitAffectingCombat("player") then
       local _, messageTable = PRT.StringToTable(message)
 
-      if PRT.db.profile.receiverMode then
+      if PRT.IsReceiver() then
         if MessageHandler.IsValidSender(messageTable) then
           if MessageHandler.IsMessageForMe(messageTable) then
             PRT.Debug("Received message from", PRT.ClassColoredName(messageTable.sender))

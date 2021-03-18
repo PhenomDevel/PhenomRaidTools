@@ -112,6 +112,7 @@ function SenderOverlay.UpdateFrame(encounter, options)
 
   SenderOverlay.overlayFrame.text:SetText(overlayText)
   PRT.Overlay.UpdateSize(SenderOverlay.overlayFrame, options)
+  PRT.Overlay.UpdateBackdrop(SenderOverlay.overlayFrame, options)
 end
 
 function SenderOverlay.ShowPlaceholder(overlayFrame, options)
@@ -124,6 +125,7 @@ function SenderOverlay.CreateOverlay(options)
   SenderOverlay.overlayFrame = PRT.Overlay.CreateOverlay(options, true)
   SenderOverlay.overlayFrame.text:SetJustifyH("LEFT")
   SenderOverlay.overlayFrame:SetPoint("TOPLEFT", "UIParent", "TOPLEFT", options.left, -options.top)
+  SenderOverlay.overlayFrame.text:SetPoint("TOPLEFT", 15, -15)
   SenderOverlay.overlayFrame.text:SetFont((options.font or GameFontHighlightSmall:GetFont()), options.fontSize, "OUTLINE")
 end
 

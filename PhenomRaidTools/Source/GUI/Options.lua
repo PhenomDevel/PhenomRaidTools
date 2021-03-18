@@ -13,12 +13,12 @@ function PRT.AddOptionWidgets(container, profile)
     {
       value = "raidRoster",
       text = L["Raidroster"] ,
-      disabled = not profile.senderMode
+      disabled = not PRT.IsSender()
     },
     {
       value = "customPlaceholders",
       text = L["Custom Placeholder"] ,
-      disabled = not profile.senderMode
+      disabled = not PRT.IsSender()
     },
     {
       value = "difficulties",
@@ -31,7 +31,7 @@ function PRT.AddOptionWidgets(container, profile)
     {
       value = "defaults",
       text = L["Trigger Defaults"] ,
-      disabled = not profile.senderMode
+      disabled = not PRT.IsSender()
     },
     {
       value = "information",
