@@ -1,4 +1,15 @@
 ===============================================================================
+# Release 2.4.0
+## Bugfixes
+None
+
+## Features
+ - [#28] Add more locals
+ - Be able to choose grow direction for receiver overlays
+   - This also will fixate the position. In the past the message were centered vertically
+
+
+===============================================================================
 # Release 2.3.16
 ## Bugfixes
  - Fix sire phase 2 condition preset
