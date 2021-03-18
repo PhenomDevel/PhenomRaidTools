@@ -27,15 +27,29 @@ L["Advanced"] = true
 L["After how many occurrences of\\nstart condition the timer should start."] = true
 L[ [=[After how many seconds the
 message should be displayed.]=] ] = true
+L[ [=[After how many seconds the
+message should be displayed.]=] ] = true
 L["Always includes yourself as valid sender."] = true
 L["Are you sure you want to clear the current raid roster?"] = true
 L["Are you sure you want to clone %s?"] = true
 L["Are you sure you want to delete %s?"] = true
+L["Are you sure you want to delete template %s?"] = true
 L["Are you sure you want to import your current group?\""] = true
 L["Are you sure you want to merge encounters?"] = true
 L["Are you sure you want to remove all custom placeholders?"] = true
 L["Are you sure you want to save this message as template?"] = true
 L["Backdrop Color"] = true
+L[ [=[Can be either of
+- Player name
+- Custom Placeholder (e.g. $tank1)
+- $target (event target)]=] ] = true
+L[ [=[Can be either of
+- Unit-Name
+- Unit-ID (boss1, player ...)
+- Numeric Unit-ID]=] ] = true
+L[ [=[Can be either of
+- valid unique spell ID
+- spell name known to the player character]=] ] = true
 L[ [=[Can be either of
 - Player name
 - Custom Placeholder (e.g. $tank1)
@@ -96,12 +110,15 @@ L["Export String"] = true
 L["Filter by"] = true
 L[ [=[Filter out all messages
 below selected guild rank.]=] ] = true
+L[ [=[Filter out all messages
+below selected guild rank.]=] ] = true
 L["Font"] = true
 L["Font Color"] = true
 L["General"] = true
 L["Group"] = true
-L["Guild Rank"] = true
+L["Grow Direction"] = true
 L["guild rank"] = true
+L["Guild Rank"] = true
 L["Healer"] = true
 L["Health"] = true
 L["Health Percentage"] = true
@@ -171,11 +188,15 @@ L["Resets the counter of start conditions\\nwhen the timer is stopped."] = true
 L["Restart"] = true
 L[ [=[Restarts the rotation when
 no more entries are found.]=] ] = true
+L[ [=[Restarts the rotation when
+no more entries are found.]=] ] = true
 L["Rotation"] = true
 L["Rotation Entry"] = true
 L["Rotations"] = true
 L["Save as template"] = true
 L["Select Encounter"] = true
+L[ [=[Selected player/placeholder will be
+added to the list of targets.]=] ] = true
 L[ [=[Selected player/placeholder will be
 added to the list of targets.]=] ] = true
 L["Sender"] = true
@@ -225,5 +246,3 @@ L["You currently filter messages by %s, but haven't configured any name yet. The
 L["You currently filter messages by %s. Therefore only message from players with the configured guild rank or higher will be displayed."] = true
 L["You currently filter messages by %s. Therefore only messages from those players will be displayed."] = true
 L["yourself"] = true
-L["Start Condition"] = true
-L["Are you sure you want to delete template %s?"] = true
