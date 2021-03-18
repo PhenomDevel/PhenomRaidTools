@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.4.6
+## Bugfixes
+ - Remove LibDeflate from external lib list because of broken build
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.4.5
 ## Bugfixes
  - Fix overlay options to sometimes break the game
