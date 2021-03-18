@@ -28,6 +28,14 @@ LSM:Register("sound", "PRT: Divine Hymn", folder .. [[DivineHymn.ogg]])
 LSM:Register("sound", "PRT: Spirit Shell", folder .. [[SpiritShell.ogg]])
 LSM:Register("sound", "PRT: Ashen Hallow", folder .. [[AshenHallow.ogg]])
 
+LSM:Register("sound", "PRT: Ancestral Guidance", folder .. [[AncestralGuidance.ogg]])
+LSM:Register("sound", "PRT: Ancestral Protection Totem", folder .. [[AncestralProtectionTotem.ogg]])
+LSM:Register("sound", "PRT: Avenging Wrath", folder .. [[AvengingWrath.ogg]])
+LSM:Register("sound", "PRT: Invoke Chi-Ji, the Red Crane", folder .. [[InvokeChiJi.ogg]])
+LSM:Register("sound", "PRT: Mana Tide Totem", folder .. [[ManaTideTotem.ogg]])
+LSM:Register("sound", "PRT: Vampiric Embrace", folder .. [[VampiricEmbrace.ogg]])
+LSM:Register("sound", "PRT: Invoke Yu'lon, the Jade Serpent", folder .. [[InvokeYulon.ogg]])
+
 -- General Sounds
 LSM:Register("sound", "PRT: Phase 1", folder .. [[Phase1.ogg]])
 LSM:Register("sound", "PRT: Phase 2", folder .. [[Phase2.ogg]])
