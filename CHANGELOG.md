@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.4.7
+## Bugfixes
+ - Make sure events are only tracked if you are in sender mode
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.4.6
 ## Bugfixes
  - Remove LibDeflate from external lib list because of broken build
