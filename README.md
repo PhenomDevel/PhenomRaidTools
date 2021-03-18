@@ -8,7 +8,7 @@ If you want to access the addon just use `/prt` or the minimap icon in game and 
 PhenomRaidTools is an addon to use next to the usual raid utility addons like `WeakAuras2`, `DBM`, and `BigWigs`. With PhenomRaidTools you'll be able to configure your own timers, rotations and other triggers to show messages on the screen. You can choose when and how the messages should be displayed as well as who in the raid team should see the messages.
 
 ## Guide
-For a brief introduction into the addon please read: https://github.com/PhenomDevel/PhenomRaidTools/blob/master/doc/PhenomRaidTools_Beginner_Guide.pdf
+For a brief introduction into the addon please read: [PhenomRaidTools Beginner Guide](https://github.com/PhenomDevel/PhenomRaidTools/blob/master/doc/PhenomRaidTools_Beginner_Guide.pdf)
 
 ## Sender & Receiver
 PhenomRaidTools supports two run modes. Sender mode and receiver mode. As sender all your configured triggers which send messages which will be executed and send messages through an addon channel. Every player who matches your configured targets within messages will get a message displayed.
