@@ -55,7 +55,7 @@ end
 
 function Overlay.FontGroup(options, overlayFrame)
   local fontGroup = PRT.InlineGroup(L["Font"])
-  fontGroup:SetLayout("Flow")
+  fontGroup:SetLayout("List")
 
   local fontSizeSlider = PRT.Slider(L["Size"], nil, options.fontSize)
   local fontSelect = PRT.FontSelect(L["Font"], options.fontName)
@@ -80,6 +80,19 @@ function Overlay.FontGroup(options, overlayFrame)
       widget:ClearFocus()
     end)
 
+  local fontColor =  PRT.ColorPicker(L["Font Color"], options.fontColor)
+  fontColor:SetCallback("OnValueConfirmed",
+    function(_, _, r, g, b, a)
+      options.fontColor.hex = PRT.RGBAToHex(r, g, b, a)
+      options.fontColor.r = r
+      options.fontColor.g = g
+      options.fontColor.b = b
+      options.fontColor.a = a
+      PRT.ReceiverOverlay.ShowPlaceholder(overlayFrame, options)
+      PRT.ReceiverOverlay.UpdateFrame(overlayFrame, options)
+    end)
+
+  fontGroup:AddChild(fontColor)
   fontGroup:AddChild(fontSizeSlider)
   fontGroup:AddChild(fontSelect)
 
@@ -88,7 +101,7 @@ end
 
 function Overlay.AddSoundGroup(container, options)
   local soundGroup = PRT.InlineGroup(L["Sound"])
-  soundGroup:SetLayout("Flow")
+  soundGroup:SetLayout("List")
 
   local enableSoundCheckbox = PRT.CheckBox(L["Enabled"], nil, options.enableSound)
   enableSoundCheckbox:SetCallback("OnValueChanged",
@@ -175,19 +188,8 @@ function Overlay.AddReceiverOverlayWidget(options, container, index)
       widget:ClearFocus()
     end)
 
-  local fontColor =  PRT.ColorPicker(L["Font Color"], options.fontColor)
-  fontColor:SetCallback("OnValueConfirmed",
-    function(_, _, r, g, b, a)
-      options.fontColor.hex = PRT.RGBAToHex(r, g, b, a)
-      options.fontColor.r = r
-      options.fontColor.g = g
-      options.fontColor.b = b
-      options.fontColor.a = a
-      PRT.ReceiverOverlay.ShowPlaceholder(overlayFrame, options)
-      PRT.ReceiverOverlay.UpdateFrame(overlayFrame, options)
-    end)
-
   local lockedCheckBox = PRT.CheckBox(L["Locked"], nil, options.locked)
+  lockedCheckBox:SetRelativeWidth(1)
   lockedCheckBox:SetCallback("OnValueChanged",
     function(widget)
       local v = widget:GetValue()
@@ -204,15 +206,10 @@ function Overlay.AddReceiverOverlayWidget(options, container, index)
     end)
 
   local fontGroup = Overlay.FontGroup(options, overlayFrame)
-  fontGroup:AddChild(fontColor)
 
-  local optionsGroup = PRT.SimpleGroup()
-  optionsGroup:SetLayout("Flow")
-
-  optionsGroup:AddChild(lockedCheckBox)
-  optionsGroup:AddChild(labelEditBox)
-  optionsGroup:AddChild(growDirectionDropdown)
-  container:AddChild(optionsGroup)
+  container:AddChild(lockedCheckBox)
+  container:AddChild(labelEditBox)
+  container:AddChild(growDirectionDropdown)
   Overlay.AddSoundGroup(container, options)
   container:AddChild(fontGroup)
   Overlay.AddPositionSliderGroup(container, overlayFrame, options)
@@ -231,6 +228,7 @@ local function ImportReceiverOverlaySettingsSuccess(overlayOptions, importedRece
     end
   end
 end
+
 
 -------------------------------------------------------------------------------
 -- Public API
