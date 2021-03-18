@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.4.5
+## Bugfixes
+ - Fix overlay options to sometimes break the game
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.4.4
 ## Bugfixes
  - Fix curseforge build
