@@ -1,5 +1,5 @@
 ===============================================================================
-# Release 2.4.8
+# Release 2.4.8-BETA
 ## Bugfixes
  - Make sure sender backdrop ist shown when options are open
  - Fix typo
