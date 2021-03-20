@@ -106,7 +106,7 @@ function Timer.TimingWidget(timing, container, _, timings)
 end
 
 function Timer.TimerWidget(timerName, timers, container)
-  local _, timer = PRT.FilterTableByName(timers, timerName)
+  local _, timer = PRT.TableUtils.GetBy(timers, "name", timerName)
 
   -- General Options
   PRT.AddGeneralOptionsWidgets(container, timerName, timers, "timer")
@@ -158,7 +158,7 @@ end
 -- Public API
 
 function PRT.AddTimerOptionsWidgets(container, profile, encounterID)
-  local _, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
+  local _, encounter = PRT.TableUtils.GetBy(profile.encounters, "id", tonumber(encounterID))
   local timers = encounter.Timers
 
   local timerOptionsGroup = PRT.InlineGroup(L["Options"])
@@ -194,7 +194,7 @@ function PRT.AddTimerOptionsWidgets(container, profile, encounterID)
 end
 
 function PRT.AddTimerWidget(container, profile, encounterID, timerName)
-  local _, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)
+  local _, encounter = PRT.TableUtils.GetBy(profile.encounters, "id", encounterID)
   local timers = encounter.Timers
 
   Timer.TimerWidget(timerName, timers, container)

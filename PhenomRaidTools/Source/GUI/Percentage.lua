@@ -76,7 +76,7 @@ function Percentage.PercentageEntryWidget(entry, container, _, entries)
 end
 
 function Percentage.PercentageWidget(percentageName, percentages, container)
-  local _, percentage = PRT.FilterTableByName(percentages, percentageName)
+  local _, percentage = PRT.TableUtils.GetBy(percentages, "name", percentageName)
 
   -- General Options
   PRT.AddGeneralOptionsWidgets(container, percentageName, percentages, "percentage")
@@ -139,7 +139,7 @@ end
 -- Public API Power Percentage
 
 function PRT.AddPowerPercentageOptions(container, profile, encounterID)
-  local _, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
+  local _, encounter = PRT.TableUtils.GetBy(profile.encounters, "id", tonumber(encounterID))
   local percentages = encounter.PowerPercentages
 
   local percentageOptionsGroup = PRT.InlineGroup(L["Options"])
@@ -175,7 +175,7 @@ function PRT.AddPowerPercentageOptions(container, profile, encounterID)
 end
 
 function PRT.AddPowerPercentageWidget(container, profile, encounterID, percentageName)
-  local _, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)
+  local _, encounter = PRT.TableUtils.GetBy(profile.encounters, "id", encounterID)
   local percentages = encounter.PowerPercentages
 
   Percentage.PercentageWidget(percentageName, percentages, container)
@@ -186,7 +186,7 @@ end
 -- Public API Health Percentage
 
 function PRT.AddHealthPercentageOptions(container, profile, encounterID)
-  local _, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
+  local _, encounter = PRT.TableUtils.GetBy(profile.encounters, "id", tonumber(encounterID))
   local percentages = encounter.HealthPercentages
 
   local percentageOptionsGroup = PRT.InlineGroup(L["Options"])
@@ -222,7 +222,7 @@ function PRT.AddHealthPercentageOptions(container, profile, encounterID)
 end
 
 function PRT.AddHealthPercentageWidget(container, profile, encounterID, percentageName)
-  local _, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)
+  local _, encounter = PRT.TableUtils.GetBy(profile.encounters, "id", encounterID)
   local percentages = encounter.HealthPercentages
 
   Percentage.PercentageWidget(percentageName, percentages, container)

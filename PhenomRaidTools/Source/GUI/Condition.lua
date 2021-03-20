@@ -126,7 +126,7 @@ function PRT.ConditionWidget(condition, textID)
 
     presetsDropdown:SetCallback("OnValueChanged",
       function(widget, _, key)
-        local _, phasePreset = PRT.FilterTableByID(encounterPresets, key)
+        local _, phasePreset = PRT.TableUtils.GetBy(encounterPresets, "id", key)
         local icon = select(3, GetSpellInfo(phasePreset.spellID))
         ClearConditionValues(condition)
         SetValueIfPresent(condition, phasePreset, "event")

@@ -286,7 +286,7 @@ function Core.OnGroupSelected(container, key, profile)
   local mainKey, encounterID, triggerType, triggerName = strsplit("\001", key)
 
   if encounterID then
-    local _, selectedEncounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
+    local _, selectedEncounter = PRT.TableUtils.GetBy(profile.encounters, "id", tonumber(encounterID))
     PRT.currentEncounter = {}
     PRT.currentEncounter.encounter = selectedEncounter
   end

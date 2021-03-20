@@ -38,6 +38,16 @@ function TableUtils.IsEmpty(t)
   return false
 end
 
+function TableUtils.GetBy(t, key, expectedValue)
+  if t then
+    for i, v in ipairs(t) do
+      if v[key] == expectedValue then
+        return i, v
+      end
+    end
+  end
+end
+
 function TableUtils.CopyTable(orig, copies)
   copies = copies or {}
   local orig_type = type(orig)

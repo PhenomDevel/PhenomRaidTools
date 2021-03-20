@@ -1,9 +1,6 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
-local AceSerializer = LibStub("AceSerializer-3.0")
-local LibDeflate = LibStub("LibDeflate")
-
 local classColors = {
   [0] = nil,
   [1] = "FFC79C6E",
@@ -176,34 +173,6 @@ end
 -------------------------------------------------------------------------------
 -- Table Helper
 
-function PRT.TableToString(t)
-  local serialized = AceSerializer:Serialize(t)
-  local compressed = LibDeflate:CompressDeflate(serialized, {level = 9})
-
-  return LibDeflate:EncodeForPrint(compressed)
-end
-
-function PRT.StringToTable(s)
-  if s and s ~= "" then
-    local decoded = LibDeflate:DecodeForPrint(s)
-    if decoded then
-      local decompressed = LibDeflate:DecompressDeflate(decoded)
-
-      if decompressed then
-        local worked, t = AceSerializer:Deserialize(decompressed)
-
-        return worked, t
-      else
-        PRT.Error("String could not be decompressed. Aborting import.")
-      end
-    else
-      PRT.Error("String could not be decoded. Aborting import.")
-    end
-  end
-
-  return nil
-end
-
 function table.mergemany(...)
   local tNew = {}
 
@@ -228,36 +197,6 @@ function table.mergecopy(t1, t2)
   end
 
   return t3
-end
-
-function PRT.FilterEncounterTable(encounters, id)
-  if encounters then
-    for i, v in ipairs(encounters) do
-      if v.id == id then
-        return i, v
-      end
-    end
-  end
-end
-
-function PRT.FilterTableByName(t, name)
-  if t then
-    for i, v in ipairs(t) do
-      if v.name == name then
-        return i, v
-      end
-    end
-  end
-end
-
-function PRT.FilterTableByID(t, id)
-  if t then
-    for i, v in ipairs(t) do
-      if v.id == id then
-        return i, v
-      end
-    end
-  end
 end
 
 function PRT.CompareByName(a, b)

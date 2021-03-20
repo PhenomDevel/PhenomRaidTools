@@ -138,7 +138,7 @@ local function MergeEncounters(a, b)
 end
 
 local function importSuccess(encounter)
-  local _, existingEncounter = PRT.FilterEncounterTable(PRT.db.profile.encounters, encounter.id)
+  local _, existingEncounter = PRT.TableUtils.GetBy(PRT.db.profile.encounters, "id", encounter.id)
 
   if not existingEncounter then
     tinsert(PRT.db.profile.encounters, encounter)
@@ -235,7 +235,7 @@ function PRT.AddEncountersWidgets(container, profile)
 end
 
 function PRT.AddEncounterOptions(container, profile, encounterID)
-  local encounterIndex, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
+  local encounterIndex, encounter = PRT.TableUtils.GetBy(profile.encounters, "id", tonumber(encounterID))
 
   local encounterOptionsGroup = PRT.InlineGroup(L["Options"])
   local enabledCheckBox = PRT.CheckBox(L["Enabled"], nil, encounter.enabled)
@@ -252,7 +252,7 @@ function PRT.AddEncounterOptions(container, profile, encounterID)
   encounterIDEditBox:SetCallback("OnEnterPressed",
     function(widget)
       local id = tonumber(widget:GetText())
-      local _, existingEncounter = PRT.FilterEncounterTable(profile.encounters, id)
+      local _, existingEncounter = PRT.TableUtils.GetBy(profile.encounters, "id", id)
 
       if not existingEncounter then
         if id ~= "" and id ~= nil then
@@ -286,9 +286,9 @@ function PRT.AddEncounterOptions(container, profile, encounterID)
   encounterSelectDropdown:SetRelativeWidth(0.5)
   encounterSelectDropdown:SetCallback("OnValueChanged",
     function(widget, _, id)
-      local _, entry = PRT.FilterTableByID(Encounter.currentEncounters, id)
+      local _, entry = PRT.TableUtils.GetBy(Encounter.currentEncounters, "id", id)
       -- TODO: Refactor and put together with above id function
-      local _, existingEncounter = PRT.FilterEncounterTable(profile.encounters, id)
+      local _, existingEncounter = PRT.TableUtils.GetBy(profile.encounters, "id", id)
 
       if not existingEncounter then
         if id ~= "" and id ~= nil then

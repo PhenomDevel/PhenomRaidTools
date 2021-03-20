@@ -31,7 +31,7 @@ function Rotation.RotationEntryWidget(entry, container, _, entries)
 end
 
 function Rotation.RotationWidget(rotationName, rotations, container)
-  local _, rotation = PRT.FilterTableByName(rotations, rotationName)
+  local _, rotation = PRT.TableUtils.GetBy(rotations, "name", rotationName)
 
   -- General Options
   PRT.AddGeneralOptionsWidgets(container, rotationName, rotations, "rotation")
@@ -95,7 +95,7 @@ end
 -- Public API
 
 function PRT.AddRotationOptions(container, profile, encounterID)
-  local _, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
+  local _, encounter = PRT.TableUtils.GetBy(profile.encounters, "id", tonumber(encounterID))
   local rotations = encounter.Rotations
 
   local rotationOptionsGroup = PRT.InlineGroup(L["Options"])
@@ -131,7 +131,7 @@ function PRT.AddRotationOptions(container, profile, encounterID)
 end
 
 function PRT.AddRotationWidget(container, profile, encounterID, rotationName)
-  local _, encounter = PRT.FilterEncounterTable(profile.encounters, encounterID)
+  local _, encounter = PRT.TableUtils.GetBy(profile.encounters, "id", encounterID)
   local rotations = encounter.Rotations
 
   Rotation.RotationWidget(rotationName, rotations, container)

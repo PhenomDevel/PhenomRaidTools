@@ -169,7 +169,7 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
     wipe(PRT.db.profile.debugLog)
 
     if PRT.IsSender() then
-      local _, encounter = PRT.FilterEncounterTable(PRT.db.profile.encounters, encounterID)
+      local _, encounter = PRT.TableUtils.GetBy(PRT.db.profile.encounters, "id", encounterID)
 
       if encounter then
         if encounter.enabled then
@@ -291,7 +291,7 @@ function PRT:PLAYER_REGEN_DISABLED(event)
   if self.db.profile.testMode then
     PRT.Debug("You are currently in test mode.")
 
-    local _, encounter = PRT.FilterEncounterTable(self.db.profile.encounters, self.db.profile.testEncounterID)
+    local _, encounter = PRT.TableUtils.GetBy(self.db.profile.encounters, "id", self.db.profile.testEncounterID)
 
     if encounter then
       if encounter.enabled then

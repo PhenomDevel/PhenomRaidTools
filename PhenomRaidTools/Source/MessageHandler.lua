@@ -86,12 +86,14 @@ local function ExecuteMessage(message)
     if UnitExists(targetMessage.target) or tContains(MessageHandler.validTargets, targetMessage.target) then
       targetMessage.sender = PRT.db.profile.myName
 
+      local serializedMessage = PRT.Serialize(targetMessage)
+
       -- If in test mode send the message through the whipser channel in case we are not in a group
       if not PRT.PlayerInParty() then
-        AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.addonMessage, PRT.TableToString(targetMessage), "WHISPER", PRT.db.profile.myName)
+        AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.addonMessage, serializedMessage, "WHISPER", PRT.db.profile.myName)
       end
 
-      AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.addonMessage, PRT.TableToString(targetMessage), "RAID")
+      AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.addonMessage, serializedMessage, "RAID")
       PRT.Debug("Send message to", PRT.ClassColoredName(targetMessage.target), "with content", PRT.HighlightString(targetMessage.message))
     else
       -- Don't spam chat if a configured user is not in the raid. We expect those to happen sometimes
@@ -144,7 +146,7 @@ end
 function PRT:OnAddonMessage(message)
   if PRT.db.profile.enabled then
     if UnitAffectingCombat("player") then
-      local _, messageTable = PRT.StringToTable(message)
+      local _, messageTable = PRT.Deserialize(message)
 
       if PRT.IsReceiver() then
         if MessageHandler.IsValidSender(messageTable) then
@@ -162,7 +164,7 @@ end
 
 function PRT:OnVersionRequest(message)
   if PRT.db.profile.enabled then
-    local _, messageTable = PRT.StringToTable(message)
+    local _, messageTable = PRT.Deserialize(message)
 
     if messageTable.requestor then
       PRT.Debug("Version request from:", messageTable.requestor)
@@ -173,14 +175,14 @@ function PRT:OnVersionRequest(message)
         version = PRT.db.profile.version
       }
 
-      AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.versionResponse, PRT.TableToString(response), "RAID")
+      AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.versionResponse, PRT.Serialize(response), "RAID")
     end
   end
 end
 
 function PRT:OnVersionResponse(message)
   if PRT.db.profile.enabled then
-    local _, messageTable = PRT.StringToTable(message)
+    local _, messageTable = PRT.Deserialize(message)
     PRT.Debug("Version response from:", PRT.ClassColoredName(messageTable.name), PRT.HighlightString(messageTable.version))
     PRT.db.profile.versionCheck[messageTable.name] = messageTable.version
   end

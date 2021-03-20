@@ -6,7 +6,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 -- Public API
 
 function PRT.AddCustomPlaceholderOptions(container, profile, encounterID)
-  local _, encounter = PRT.FilterEncounterTable(profile.encounters, tonumber(encounterID))
+  local _, encounter = PRT.TableUtils.GetBy(profile.encounters, "id", tonumber(encounterID))
   local CustomPlaceholders = encounter.CustomPlaceholders
 
   if not CustomPlaceholders then

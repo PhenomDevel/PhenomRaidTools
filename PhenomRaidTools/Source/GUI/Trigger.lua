@@ -17,7 +17,7 @@ local function EnsureEnabledDifficulties(trigger)
 end
 
 local function AddActionsWidgets(container, triggerName, triggers, copyStorePath)
-  local triggerIndex, trigger = PRT.FilterTableByName(triggers, triggerName)
+  local triggerIndex, trigger = PRT.TableUtils.GetBy(triggers, "name", triggerName)
 
   local actionsGroup = PRT.SimpleGroup(nil)
   actionsGroup:SetLayout("Flow")
@@ -122,7 +122,7 @@ function PRT.AddDescription(container, trigger)
 end
 
 function PRT.AddGeneralOptionsWidgets(container, triggerName, triggers, copyStorePath)
-  local _, trigger = PRT.FilterTableByName(triggers, triggerName)
+  local _, trigger = PRT.TableUtils.GetBy(triggers, "name", triggerName)
 
   local generalOptionsGroup = PRT.SimpleGroup()
 
