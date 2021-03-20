@@ -2,7 +2,7 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local linkEntries = {
-  ["Guide"] = "https://discord.com/channels/596662921753526275/715142878208458763/821419041049804860",
+  ["Guide"] = "https://cdn.discordapp.com/attachments/715142878208458763/821419040504676372/PhenomRaidTools_Beginner_Guide.pdf",
   ["Discord"] = "https://discord.gg/GAYDjBF"
 }
 
