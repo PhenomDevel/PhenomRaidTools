@@ -26,6 +26,16 @@ function TableUtils.Remove(t, pred)
   return t
 end
 
+function TableUtils.Count(t)
+  if t and type(t) == "table" then
+    local count = 0
+    for _, _ in pairs(t) do
+      count = count + 1
+    end
+    return count
+  end
+end
+
 function TableUtils.IsEmpty(t)
   if t then
     if next(t) == nil then

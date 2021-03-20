@@ -195,7 +195,10 @@ local defaults =  {
     templateStore = {
       messages = {}
     },
-    debugLog = {}
+    debugLog = {},
+    processedMigrations = {
+
+    }
   }
 }
 
@@ -210,7 +213,6 @@ local options = {
 function PRT:OnInitialize()
   -- Register DB
   self.db = LibStub("AceDB-3.0"):New("PhenomRaidToolsDB", defaults, true)
-
   options = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db)
 
   -- Register Options
@@ -220,7 +222,7 @@ function PRT:OnInitialize()
   -- Initialize Minimap Icon
   LibDBIcon:Register("PhenomRaidTools", PhenomRaidToolsLDB, self.db.profile.minimap)
 
-  local encounterIdx, _ = PRT.FilterEncounterTable(self.db.profile.encounters, 9999)
+  local encounterIdx, _ = PRT.TableUtils.GetBy(self.db.profile.encounters, "id", 9999)
 
   if not encounterIdx and PRT.TableUtils.IsEmpty(self.db.profile.encounters) then
     table.insert(self.db.profile.encounters, PRT.ExampleEncounter())
@@ -245,6 +247,9 @@ function PRT:OnInitialize()
   self.db.RegisterCallback(self, "OnProfileChanged", "RefreshConfig")
   self.db.RegisterCallback(self, "OnProfileCopied", "RefreshConfig")
   self.db.RegisterCallback(self, "OnProfileReset", "RefreshConfig")
+
+  -- Check if profile db needs migration
+  AceTimer:ScheduleTimer(PRT.MigrateProfileDB, 1, self.db.profile)
 end
 
 function PRT:RefreshConfig()
@@ -255,6 +260,9 @@ function PRT:RefreshConfig()
 
   PRT.ReceiverOverlay.Initialize(PRT.db.profile.overlay.receivers)
   PRT.SenderOverlay.Initialize(PRT.db.profile.overlay.sender)
+
+  -- Check if profile db needs migration
+  AceTimer:ScheduleTimer(PRT.MigrateProfileDB, 1, self.db.profile)
 end
 
 function PRT:OnEnable()
