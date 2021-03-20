@@ -8,6 +8,8 @@
 ## SavedVariables: PhenomRaidToolsDB
 ## X-Category: Raid
 
+
+
 # Init
 embeds.xml
 PhenomRaidTools.lua
@@ -18,6 +20,12 @@ Localization/deDE.lua
 
 # Media
 Source/Media.lua
+
+# Utils
+Source/Utils/GuildUtils.lua
+Source/Utils/TableUtils.lua
+Source/Utils/StringUtils.lua
+Source/Utils/Log.lua
 
 # Source
 Source/Utils.lua
@@ -30,11 +38,6 @@ Source/Overlay.lua
 Source/SenderOverlay.lua
 Source/ReceiverOverlay.lua
 Source/VersionMigration.lua
-
-# Utils
-Source/Utils/GuildUtils.lua
-Source/Utils/TableUtils.lua
-Source/Utils/StringUtils.lua
 
 # GUI Source
 Source/GUI/AceHelper.lua
