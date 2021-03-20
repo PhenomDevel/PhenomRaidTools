@@ -1,4 +1,19 @@
 ===============================================================================
+# Release 2.4.8
+## Bugfixes
+ - Make sure sender backdrop ist shown when options are open
+ - Fix typo
+
+## Features
+ - Refactoring and performance enhancements
+ - Ability to migrate data on addon load (for future developments)
+ - Add guide link into discord on inforamtion panel
+ - Changed some rendering for the option tabs
+ - Completly expand encounter when clicked
+   - You now don't have to expand every trigger type by itself
+
+
+===============================================================================
 # Release 2.4.7
 ## Bugfixes
  - Make sure events are only tracked if you are in sender mode
