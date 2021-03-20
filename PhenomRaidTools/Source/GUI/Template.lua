@@ -33,7 +33,7 @@ local function AddTemplateMessageWidgets(container, messages, messageName)
   PRT.MessageWidget(messages[messageName], container)
 end
 
-local function AddTemplateActions(container, entities, widgetUpdateFn)
+local function AddTemplateActions(container, entities, widgetUpdateFn, templateTabGroup)
   local actionsGroup = PRT.SimpleGroup()
   actionsGroup:SetLayout("Flow")
 
@@ -61,6 +61,9 @@ local function AddTemplateActions(container, entities, widgetUpdateFn)
 
       entities[newMessageName] = newMessage
       widgetUpdateFn()
+      if templateTabGroup then
+        templateTabGroup:SelectTab(newMessageName)
+      end
     end)
 
   actionsGroup:AddChild(deleteDropdown)
@@ -76,8 +79,8 @@ local function AddMessageTemplateWidgets(container, messages)
 
   if PRT.TableUtils.IsEmpty(messages) then
     local emptyLabel = PRT.Label(L["There are currently no templates."])
-    container:AddChild(emptyLabel)
     AddTemplateActions(container, messages, widgetUpdateFn)
+    container:AddChild(emptyLabel)
   else
     local templateTabs = PRT.TableToTabs(messages)
     local templatesGroup = PRT.TabGroup(nil, templateTabs)
@@ -91,7 +94,7 @@ local function AddMessageTemplateWidgets(container, messages)
 
     templatesGroup:SelectTab(templateTabs[1].value)
 
-    AddTemplateActions(container, messages, widgetUpdateFn)
+    AddTemplateActions(container, messages, widgetUpdateFn, templatesGroup)
     container:AddChild(templatesGroup)
   end
 end
