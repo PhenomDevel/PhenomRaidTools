@@ -373,6 +373,28 @@ function Core.UpdateScrollFrame()
   end
 end
 
+local function ExpandTreeEntry(statusTable, key)
+  local mainKey, encounterID, triggerType, triggerName = strsplit("\001", key)
+
+  -- Always expoand the clicked entry if not top level
+  if mainKey and encounterID then
+    statusTable.groups[key] = not statusTable.groups[key]
+  end
+
+  -- Only expand if we clicked an encounter
+  if mainKey and encounterID and not triggerType and not triggerName and statusTable.groups[key] then
+    local timerKey = key.."\001".."timers"
+    local rotationKey = key.."\001".."rotations"
+    local healthPercentageKey = key.."\001".."healthPercentages"
+    local powerPercentageKey = key.."\001".."powerPercentages"
+
+    statusTable.groups[timerKey] = true
+    statusTable.groups[rotationKey] = true
+    statusTable.groups[healthPercentageKey] = true
+    statusTable.groups[powerPercentageKey] = true
+  end
+end
+
 function Core.CreateMainWindowContent(profile)
   -- Create a sroll frame for the tree group content
   local treeContentScrollFrame = PRT.ScrollFrame()
@@ -380,8 +402,14 @@ function Core.CreateMainWindowContent(profile)
   -- Generate tree group for the main menue structure
   local tree = Core.GenerateTreeByProfile(profile)
   local treeGroup = PRT.TreeGroup(tree)
+  local treeGroupStatus = { groups = {} }
   treeGroup:SetTreeWidth(600)
   PRT.mainWindowContent = treeGroup
+  treeGroup:SetCallback("OnClick",
+    function(_, _, key)
+      ExpandTreeEntry(treeGroupStatus, key)
+      treeGroup:RefreshTree()
+    end)
   treeGroup:SetCallback("OnGroupSelected",
     function(_, _, key)
       treeGroup.selectedValue = key
@@ -389,7 +417,7 @@ function Core.CreateMainWindowContent(profile)
     end)
 
   -- Expand encounters by default
-  local treeGroupStatus = { groups = {} }
+
   treeGroup:SetStatusTable(treeGroupStatus)
   treeGroupStatus.groups["encounters"] = true
   treeGroup:SelectByValue("options")
