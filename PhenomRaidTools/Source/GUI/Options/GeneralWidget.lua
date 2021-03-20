@@ -124,6 +124,9 @@ function GeneralOptions.AddRunMode(container, options)
   local senderCheckBox = PRT.CheckBox(L["Sender Mode"], L["Activates the sender mode."], PRT.IsSender())
   local receiverCheckBox = PRT.CheckBox(L["Receiver Mode"], L["Activates the receiver mode."], PRT.IsReceiver())
 
+  senderCheckBox:SetRelativeWidth(0.33)
+  receiverCheckBox:SetRelativeWidth(0.33)
+
   senderCheckBox:SetCallback("OnValueChanged",
     function(widget)
       options.senderMode = widget:GetValue()

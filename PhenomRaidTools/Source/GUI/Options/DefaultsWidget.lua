@@ -68,6 +68,7 @@ local function addDefaultsWidgets(container, t)
       end
 
       if widget then
+        widget:SetRelativeWidth(0.33)
         container:AddChild(widget)
       end
     end
@@ -86,6 +87,7 @@ local function AddMessageDefaultWidgets(container, t)
   end
 
   local targetOverlayDropdown = PRT.Dropdown(L["Target Overlay"], L["Overlay on which the message should show up"], targetOverlayDropdownItems, (t.defaultTargetOverlay or 1))
+  targetOverlayDropdown:SetRelativeWidth(0.33)
   targetOverlayDropdown:SetCallback("OnValueChanged",
     function(widget)
       t.defaultTargetOverlay = widget:GetValue()
@@ -117,6 +119,7 @@ local function AddMessageDefaultWidgets(container, t)
   }
 
   local actionTypeDropdown = PRT.Dropdown(L["Type"], nil, actionTypeDropdownItems, t.defaultMessageType or "cooldown", nil, true)
+  actionTypeDropdown:SetRelativeWidth(0.33)
   actionTypeDropdown:SetCallback("OnValueChanged",
     function(widget)
       t.defaultMessageType = widget:GetValue()

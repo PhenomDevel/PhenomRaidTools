@@ -78,6 +78,7 @@ function PRT.AddRaidRosterWidget(container, options)
     local id = "tank"..i
     local value = options[id]
     local tankEditBox = PRT.EditBox(L[id], nil, value)
+    tankEditBox:SetRelativeWidth(0.33)
     tankEditBox:SetCallback("OnEnterPressed",
       function(widget)
         local text = widget:GetText()
@@ -98,6 +99,7 @@ function PRT.AddRaidRosterWidget(container, options)
     local id = "heal"..i
     local value = options[id]
     local healEditBox = PRT.EditBox(L[id], nil, value)
+    healEditBox:SetRelativeWidth(0.33)
     healEditBox:SetCallback("OnEnterPressed", function(widget)
       local text = widget:GetText()
       if text ~= "" then
@@ -117,8 +119,9 @@ function PRT.AddRaidRosterWidget(container, options)
   for i = 1, RaidRoster.ddCount do
     local id = "dd"..i
     local value = options[id]
-    local healEditBox = PRT.EditBox(L[id], nil, value)
-    healEditBox:SetCallback("OnEnterPressed", function(widget)
+    local ddEditBox = PRT.EditBox(L[id], nil, value)
+    ddEditBox:SetRelativeWidth(0.33)
+    ddEditBox:SetCallback("OnEnterPressed", function(widget)
       local text = widget:GetText()
       if text ~= "" then
         options[id] = text
@@ -127,7 +130,7 @@ function PRT.AddRaidRosterWidget(container, options)
       end
       widget:ClearFocus()
     end)
-    ddGroup:AddChild(healEditBox)
+    ddGroup:AddChild(ddEditBox)
   end
 
   container:AddChild(explanationLabel)

@@ -20,13 +20,13 @@ local growDirectionDropdownOptions = {
 
 function Overlay.AddPositionSliderGroup(container, overlayFrame, options)
   local positionGroup = PRT.InlineGroup(L["Position"])
-  positionGroup:SetLayout("List")
+  positionGroup:SetLayout("Flow")
 
   local screenWidth = PRT.Round(GetScreenWidth())
   local screenHeight = PRT.Round(GetScreenHeight())
 
   local positionXSlider = PRT.Slider(L["X Offset"], nil, PRT.Round(options.left, 1))
-  positionXSlider:SetRelativeWidth(1)
+  positionXSlider:SetRelativeWidth(0.5)
   positionXSlider:SetSliderValues(0, screenWidth, 0.1)
   positionXSlider:SetCallback("OnValueChanged",
     function(widget)
@@ -37,7 +37,7 @@ function Overlay.AddPositionSliderGroup(container, overlayFrame, options)
     end)
 
   local positionYSlider = PRT.Slider(L["Y Offset"], nil, PRT.Round(options.top, 1))
-  positionYSlider:SetRelativeWidth(1)
+  positionYSlider:SetRelativeWidth(0.5)
   positionYSlider:SetSliderValues(0, screenHeight, 0.1)
   positionYSlider:SetCallback("OnValueChanged",
     function(widget)
@@ -55,10 +55,15 @@ end
 
 function Overlay.FontGroup(options, overlayFrame)
   local fontGroup = PRT.InlineGroup(L["Font"])
-  fontGroup:SetLayout("List")
+  fontGroup:SetLayout("Flow")
 
+  local fontColor =  PRT.ColorPicker(L["Font Color"], options.fontColor)
   local fontSizeSlider = PRT.Slider(L["Size"], nil, options.fontSize)
   local fontSelect = PRT.FontSelect(L["Font"], options.fontName)
+
+  fontColor:SetRelativeWidth(0.33)
+  fontSizeSlider:SetRelativeWidth(0.33)
+  fontSelect:SetRelativeWidth(0.33)
 
   fontSizeSlider:SetSliderValues(6, 72, 1)
   fontSizeSlider:SetCallback("OnValueChanged",
@@ -80,7 +85,6 @@ function Overlay.FontGroup(options, overlayFrame)
       widget:ClearFocus()
     end)
 
-  local fontColor =  PRT.ColorPicker(L["Font Color"], options.fontColor)
   fontColor:SetCallback("OnValueConfirmed",
     function(_, _, r, g, b, a)
       options.fontColor.hex = PRT.RGBAToHex(r, g, b, a)
@@ -132,15 +136,20 @@ function Overlay.AddSenderOverlayWidget(container, options)
   local hideOverlayAfterCombatCheckbox = PRT.CheckBox(L["Hide after combat"], nil, options.hideAfterCombat)
   local backdropColor =  PRT.ColorPicker(L["Backdrop Color"], options.backdropColor)
 
+  hideDisabledTriggersCheckbox:SetRelativeWidth(0.33)
+  showOverlayCheckbox:SetRelativeWidth(0.33)
+  hideOverlayAfterCombatCheckbox:SetRelativeWidth(0.33)
+
+  local optionsGroup = PRT.SimpleGroup()
+  optionsGroup:SetLayout("Flow")
+
   -- Initialize widgets
-  hideDisabledTriggersCheckbox:SetRelativeWidth(1)
   hideDisabledTriggersCheckbox:SetCallback("OnValueChanged",
     function(widget)
       local value = widget:GetValue()
       options.hideDisabledTriggers = value
     end)
 
-  showOverlayCheckbox:SetRelativeWidth(1)
   showOverlayCheckbox:SetCallback("OnValueChanged",
     function(widget)
       local value = widget:GetValue()
@@ -153,7 +162,6 @@ function Overlay.AddSenderOverlayWidget(container, options)
       end
     end)
 
-  hideOverlayAfterCombatCheckbox:SetRelativeWidth(1)
   hideOverlayAfterCombatCheckbox:SetCallback("OnValueChanged", function(widget) options.hideAfterCombat = widget:GetValue() end)
 
   backdropColor:SetHasAlpha(true)
@@ -167,10 +175,10 @@ function Overlay.AddSenderOverlayWidget(container, options)
       PRT.Overlay.UpdateBackdrop(PRT.SenderOverlay.overlayFrame, options)
     end)
 
-
-  container:AddChild(showOverlayCheckbox)
-  container:AddChild(hideOverlayAfterCombatCheckbox)
-  container:AddChild(hideDisabledTriggersCheckbox)
+  optionsGroup:AddChild(showOverlayCheckbox)
+  optionsGroup:AddChild(hideOverlayAfterCombatCheckbox)
+  optionsGroup:AddChild(hideDisabledTriggersCheckbox)
+  container:AddChild(optionsGroup)
   container:AddChild(backdropColor)
   container:AddChild(Overlay.FontGroup(options, PRT.SenderOverlay.overlayFrame))
   Overlay.AddPositionSliderGroup(container, PRT.SenderOverlay.overlayFrame, options)
@@ -178,7 +186,18 @@ end
 
 function Overlay.AddReceiverOverlayWidget(options, container, index)
   local overlayFrame = PRT.ReceiverOverlay.overlayFrames[index]
+
+  local optionsGroup = PRT.SimpleGroup()
+  optionsGroup:SetLayout("Flow")
+
+  local lockedCheckBox = PRT.CheckBox(L["Locked"], nil, options.locked)
   local labelEditBox = PRT.EditBox(L["Overlay"], nil, options.label)
+  local growDirectionDropdown = PRT.Dropdown(L["Grow Direction"], nil, growDirectionDropdownOptions, (options.growDirection or "UP"))
+
+  lockedCheckBox:SetRelativeWidth(0.33)
+  labelEditBox:SetRelativeWidth(0.33)
+  growDirectionDropdown:SetRelativeWidth(0.33)
+
   labelEditBox:SetCallback("OnEnterPressed",
     function(widget)
       local text = widget:GetText()
@@ -188,8 +207,6 @@ function Overlay.AddReceiverOverlayWidget(options, container, index)
       widget:ClearFocus()
     end)
 
-  local lockedCheckBox = PRT.CheckBox(L["Locked"], nil, options.locked)
-  lockedCheckBox:SetRelativeWidth(1)
   lockedCheckBox:SetCallback("OnValueChanged",
     function(widget)
       local v = widget:GetValue()
@@ -199,7 +216,6 @@ function Overlay.AddReceiverOverlayWidget(options, container, index)
       PRT.ReceiverOverlay.UpdateFrame(overlayFrame, options)
     end)
 
-  local growDirectionDropdown = PRT.Dropdown(L["Grow Direction"], nil, growDirectionDropdownOptions, (options.growDirection or "UP"))
   growDirectionDropdown:SetCallback("OnValueChanged",
     function(widget)
       options.growDirection = widget:GetValue()
@@ -207,9 +223,10 @@ function Overlay.AddReceiverOverlayWidget(options, container, index)
 
   local fontGroup = Overlay.FontGroup(options, overlayFrame)
 
-  container:AddChild(lockedCheckBox)
-  container:AddChild(labelEditBox)
-  container:AddChild(growDirectionDropdown)
+  optionsGroup:AddChild(lockedCheckBox)
+  optionsGroup:AddChild(labelEditBox)
+  optionsGroup:AddChild(growDirectionDropdown)
+  container:AddChild(optionsGroup)
   Overlay.AddSoundGroup(container, options)
   container:AddChild(fontGroup)
   Overlay.AddPositionSliderGroup(container, overlayFrame, options)
