@@ -50,6 +50,6 @@ If you like the addon and want to support it's development you can simply do so 
 - Leave feedback, suggestions or bug reports
 - Star the project on github
 - Post your encounter strings in discord so others can profit
-- If you really have to much money and want to support me just donate any amount you feel comfortable with on https://streamlabs.com/phenomgamestv/tip
+- If you really have too much money and want to support me just donate any amount you feel comfortable with on https://streamlabs.com/phenomgamestv/tip
 
 Thank you very much.
