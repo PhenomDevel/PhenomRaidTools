@@ -1,4 +1,15 @@
 ===============================================================================
+# Release 2.4.9
+## Bugfixes
+None
+
+## Features
+ - Refactoring and performance enhancements
+ - Update guide link
+ - Select tab when creating a new template
+
+
+===============================================================================
 # Release 2.4.8-BETA
 ## Bugfixes
  - Make sure sender backdrop ist shown when options are open
