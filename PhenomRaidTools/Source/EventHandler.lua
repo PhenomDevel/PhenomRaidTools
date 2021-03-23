@@ -179,7 +179,7 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
 
           PRT.EnsureEncounterTrigger(encounter)
           PRT.RegisterEvents(EventHandler.trackedInCombatEvents)
-          PRT.currentEncounter.encounter = PRT.TableUtils.CopyTable(encounter)
+          PRT.currentEncounter.encounter = PRT.TableUtils.Clone(encounter)
           PRT.currentEncounter.encounter.startedAt = GetTime()
 
           CompileInterestingUnits(PRT.currentEncounter)

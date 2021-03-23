@@ -223,7 +223,7 @@ function TriggerHandler.SendMessagesAfterDelayWithEventInfo(messages, _event, _c
       AceTimer:ScheduleTimer(
         function()
           -- Make sure we are not changing the configured message itself
-          local messageForReceiver = PRT.TableUtils.CopyTable(message)
+          local messageForReceiver = PRT.TableUtils.Clone(message)
 
           if targetName then
             messageForReceiver.message = messageForReceiver.message:gsub("$target", targetName)

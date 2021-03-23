@@ -248,7 +248,7 @@ local function AddLoadTemplateActionWidgets(container, action)
       local templateMessage = PRT.db.profile.templateStore.messages[widget:GetValue()]
 
       if templateMessage then
-        local newAction = PRT.TableUtils.CopyTable(templateMessage)
+        local newAction = PRT.TableUtils.Clone(templateMessage)
         PRT.TableUtils.OverwriteValues(action, newAction)
         container:ReleaseChildren()
         PRT.MessageWidget(action, container)
@@ -405,6 +405,7 @@ local function AddAdvancedActionWidgets(container, message)
   raidRosterDropdown:SetRelativeWidth(0.4)
 
   local soundSelect = PRT.SoundSelect(L["Sound"], (message.soundFileName or L["PRT: Default"]))
+  soundSelect:SetRelativeWidth(0.5)
   soundSelect:SetCallback("OnValueChanged",
     function(widget, _, value)
       local path = AceGUIWidgetLSMlists.sound[value]
@@ -418,6 +419,7 @@ local function AddAdvancedActionWidgets(container, message)
     end)
 
   local useCustomSoundCheckbox = PRT.CheckBox(L["Custom Sound"], nil, message.useCustomSound)
+  useCustomSoundCheckbox:SetRelativeWidth(0.5)
   useCustomSoundCheckbox:SetCallback("OnValueChanged",
     function(widget)
       local value = widget:GetValue()
@@ -616,7 +618,7 @@ local function AddTemplateWidgets(container, message)
             -- make sure a message always has a type
             message.type = message.type or "advanced"
 
-            PRT.db.profile.templateStore.messages[templateName] = PRT.TableUtils.CopyTable(message)
+            PRT.db.profile.templateStore.messages[templateName] = PRT.TableUtils.Clone(message)
             saveAsTemplateNameEditbox:SetText("")
           end
         end,
@@ -644,7 +646,7 @@ function PRT.MessageWidget(message, container, saveableAsTemplate)
   elseif message.type == "raidwarning" then
     AddRaidWarningActionWidgets(container, message)
   elseif message.type == "raidmark" then
-
+    
   else
     AddAdvancedActionWidgets(container, message)
   end

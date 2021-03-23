@@ -130,7 +130,49 @@ function PRT.TableToTabs(t, withNewTab, newTabText)
   return tabs
 end
 
-function PRT.TabGroupSelected(widget, t, key, itemFunction, emptyItemFunction, withDeleteButton, deleteButtonLabel)
+function PRT.TabGroupDeleteButton(container, t, key, label)
+  local item = t[key]
+  local deleteButton = AceGUI:Create("Button")
+  deleteButton:SetText(label)
+  deleteButton:SetCallback("OnClick",
+    function()
+      local confirmationLabel
+      if item.name then
+        confirmationLabel = "Are you sure you want to delete %s?"
+      else
+        confirmationLabel = "Are you sure you want to delete this item?"
+      end
+      PRT.ConfirmationDialog(L[confirmationLabel]:format(PRT.HighlightString(item.name)),
+        function()
+          AceHelper.RemoveTab(container, t, key)
+        end)
+    end)
+  AceHelper.AddTooltip(deleteButton, label)
+  container:AddChild(deleteButton)
+end
+
+function PRT.TabGroupCloneButton(container, t, key, label)
+  local item = t[key]
+  local cloneButton = AceGUI:Create("Button")
+  cloneButton:SetText(label)
+  cloneButton:SetCallback("OnClick",
+    function()
+      if item.name then
+        confirmationLabel = "Are you sure you want to clone %s?"
+      else
+        confirmationLabel = "Are you sure you want to clone this item?"
+      end
+      PRT.ConfirmationDialog(L[confirmationLabel]:format(PRT.HighlightString(item.name)),
+        function()
+          local clonedItem = PRT.TableUtils.Clone(item)
+          AceHelper.AddNewTab(container, t, clonedItem)
+        end)
+    end)
+  AceHelper.AddTooltip(cloneButton, label)
+  container:AddChild(cloneButton)
+end
+
+function PRT.TabGroupSelected(widget, t, key, itemFunction, emptyItemFunction, withDeleteButton, deleteButtonLabel, withCloneButton, cloneButtonLabel)
   widget:ReleaseChildren()
 
   if key == "new" then
@@ -149,17 +191,11 @@ function PRT.TabGroupSelected(widget, t, key, itemFunction, emptyItemFunction, w
     end
 
     if withDeleteButton then
-      local deleteButton = AceGUI:Create("Button")
-      deleteButton:SetText(deleteButtonLabel)
-      deleteButton:SetCallback("OnClick",
-        function()
-          PRT.ConfirmationDialog(L["Are you sure you want to delete %s?"]:format(PRT.HighlightString(item.name)),
-            function()
-              AceHelper.RemoveTab(widget, t, key)
-            end)
-        end)
-      AceHelper.AddTooltip(deleteButton, deleteButtonLabel)
-      widget:AddChild(deleteButton)
+      PRT.TabGroupDeleteButton(widget, t, key, deleteButtonLabel)
+    end
+
+    if withCloneButton then
+      PRT.TabGroupCloneButton(widget, t, key, cloneButtonLabel)
     end
   end
 

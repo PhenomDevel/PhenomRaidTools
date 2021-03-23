@@ -75,7 +75,7 @@ local function ExecuteMessage(message)
   local messageTargets = MessageHandler.ExpandMessageTargets(message)
 
   for _, target in ipairs(messageTargets) do
-    local targetMessage = PRT.TableUtils.CopyTable(message)
+    local targetMessage = PRT.TableUtils.Clone(message)
     targetMessage.target = target
     targetMessage.message = PRT.ReplacePlayerNameTokens(targetMessage.message)
 

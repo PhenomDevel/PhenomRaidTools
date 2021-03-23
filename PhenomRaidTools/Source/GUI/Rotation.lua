@@ -13,7 +13,7 @@ function Rotation.RotationEntryWidget(entry, container, _, entries)
   messagesTabGroup:SetLayout("List")
   messagesTabGroup:SetCallback("OnGroupSelected",
     function(widget, _, key)
-      PRT.TabGroupSelected(widget, entry.messages, key, PRT.MessageWidget, PRT.EmptyMessage, true, L["Delete"])
+      PRT.TabGroupSelected(widget, entry.messages, key, PRT.MessageWidget, PRT.EmptyMessage, true, L["Delete"], true, L["Clone"])
     end)
 
   PRT.SelectFirstTab(messagesTabGroup, entry.messages)
@@ -23,7 +23,7 @@ function Rotation.RotationEntryWidget(entry, container, _, entries)
   local cloneButton = PRT.Button(L["Clone"])
   cloneButton:SetCallback("OnClick",
     function()
-      local clone = PRT.TableUtils.CopyTable(entry)
+      local clone = PRT.TableUtils.Clone(entry)
       tinsert(entries, clone)
       PRT.Core.ReselectCurrentValue()
     end)

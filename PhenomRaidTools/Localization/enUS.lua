@@ -32,8 +32,10 @@ message should be displayed.]=] ] = true
 L["Always includes yourself as valid sender."] = true
 L["Are you sure you want to clear the current raid roster?"] = true
 L["Are you sure you want to clone %s?"] = true
+L["Are you sure you want to clone this item?"] = true
 L["Are you sure you want to delete %s?"] = true
 L["Are you sure you want to delete template %s?"] = true
+L["Are you sure you want to delete this item?"] = true
 L["Are you sure you want to import your current group?\""] = true
 L["Are you sure you want to merge encounters?"] = true
 L["Are you sure you want to remove all custom placeholders?"] = true

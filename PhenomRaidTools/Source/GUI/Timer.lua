@@ -98,7 +98,7 @@ function Timer.TimingWidget(timing, container, _, timings)
   local cloneButton = PRT.Button(L["Clone"])
   cloneButton:SetCallback("OnClick",
     function()
-      local clone = PRT.TableUtils.CopyTable(timing)
+      local clone = PRT.TableUtils.Clone(timing)
       tinsert(timings, clone)
       PRT.Core.ReselectCurrentValue()
     end)

@@ -58,7 +58,7 @@ function TableUtils.GetBy(t, key, expectedValue)
   end
 end
 
-function TableUtils.CopyTable(orig, copies)
+function TableUtils.Clone(orig, copies)
   copies = copies or {}
   local orig_type = type(orig)
   local copy
@@ -69,9 +69,9 @@ function TableUtils.CopyTable(orig, copies)
       copy = {}
       copies[orig] = copy
       for orig_key, orig_value in next, orig, nil do
-        copy[TableUtils.CopyTable(orig_key, copies)] = TableUtils.CopyTable(orig_value, copies)
+        copy[TableUtils.Clone(orig_key, copies)] = TableUtils.Clone(orig_value, copies)
       end
-      setmetatable(copy, TableUtils.CopyTable(getmetatable(orig), copies))
+      setmetatable(copy, TableUtils.Clone(getmetatable(orig), copies))
     end
   else
     copy = orig

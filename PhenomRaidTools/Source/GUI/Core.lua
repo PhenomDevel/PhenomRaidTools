@@ -377,7 +377,7 @@ local function ExpandTreeEntry(statusTable, key)
   local mainKey, encounterID, triggerType, triggerName = strsplit("\001", key)
 
   -- Always expoand the clicked entry if not top level
-  if mainKey and encounterID then
+  if mainKey and encounterID and not triggerType then
     statusTable.groups[key] = not statusTable.groups[key]
   end
 

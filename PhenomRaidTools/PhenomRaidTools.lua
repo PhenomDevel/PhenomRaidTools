@@ -282,7 +282,6 @@ function PRT:Open()
     PRT.Info("Can't open during combat")
   else
     if (PRT.mainWindow and not PRT.mainWindow:IsShown()) or not PRT.mainWindow then
-
       PRT.CreateMainWindow(self.db.profile)
     end
   end
@@ -331,7 +330,7 @@ function PRT:VersionCheck(_)
       self.db.profile.versionCheck[name] = ""
     end
 
-    AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.versionRequest, PRT.TableToString(request), "RAID")
+    AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.versionRequest, PRT.Serialize(request), "RAID")
     AceTimer:ScheduleTimer(PRT.PrintPartyOrRaidVersions, 5)
   else
     PRT.Info("You are currently running version", PRT.ColoredString(self.db.profile.version, self.db.profile.colors.highlight))
