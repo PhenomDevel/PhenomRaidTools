@@ -53,7 +53,7 @@ function Percentage.PercentageEntryWidget(entry, container, _, entries)
   messagesTabGroup:SetLayout("List")
   messagesTabGroup:SetCallback("OnGroupSelected",
     function(widget, _, key)
-      PRT.TabGroupSelected(widget, entry.messages, key, PRT.MessageWidget, PRT.EmptyMessage, true, L["Delete"])
+      PRT.TabGroupSelected(widget, entry.messages, key, PRT.MessageWidget, PRT.EmptyMessage, true, L["Delete"], true, L["Clone"])
     end)
 
   PRT.SelectFirstTab(messagesTabGroup, entry.messages)
@@ -64,15 +64,6 @@ function Percentage.PercentageEntryWidget(entry, container, _, entries)
 
   container:AddChild(percentageEntryOptionsGroup)
   container:AddChild(messagesTabGroup)
-
-  local cloneButton = PRT.Button(L["Clone"])
-  cloneButton:SetCallback("OnClick",
-    function()
-      local clone = PRT.TableUtils.Clone(entry)
-      tinsert(entries, clone)
-      PRT.Core.ReselectCurrentValue()
-    end)
-  container:AddChild(cloneButton)
 end
 
 function Percentage.PercentageWidget(percentageName, percentages, container)
@@ -127,7 +118,7 @@ function Percentage.PercentageWidget(percentageName, percentages, container)
   local valuesTabGroupWidget = PRT.TabGroup(nil, tabs)
   valuesTabGroupWidget:SetCallback("OnGroupSelected",
     function(widget, _, key)
-      PRT.TabGroupSelected(widget, percentage.values, key, Percentage.PercentageEntryWidget, PRT.EmptyPercentageEntry, true, L["Delete"])
+      PRT.TabGroupSelected(widget, percentage.values, key, Percentage.PercentageEntryWidget, PRT.EmptyPercentageEntry, true, L["Delete"], true, L["Clone"])
     end)
 
   PRT.SelectFirstTab(valuesTabGroupWidget, percentage.values)

@@ -130,7 +130,7 @@ function PRT.TableToTabs(t, withNewTab, newTabText)
   return tabs
 end
 
-function PRT.TabGroupDeleteButton(container, t, key, label)
+function PRT.TabGroupDeleteButton(container, tabGroup, t, key, label)
   local item = t[key]
   local deleteButton = AceGUI:Create("Button")
   deleteButton:SetText(label)
@@ -144,19 +144,20 @@ function PRT.TabGroupDeleteButton(container, t, key, label)
       end
       PRT.ConfirmationDialog(L[confirmationLabel]:format(PRT.HighlightString(item.name)),
         function()
-          AceHelper.RemoveTab(container, t, key)
+          AceHelper.RemoveTab(tabGroup, t, key)
         end)
     end)
   AceHelper.AddTooltip(deleteButton, label)
   container:AddChild(deleteButton)
 end
 
-function PRT.TabGroupCloneButton(container, t, key, label)
+function PRT.TabGroupCloneButton(container, tabGroup, t, key, label)
   local item = t[key]
   local cloneButton = AceGUI:Create("Button")
   cloneButton:SetText(label)
   cloneButton:SetCallback("OnClick",
     function()
+      local confirmationLabel
       if item.name then
         confirmationLabel = "Are you sure you want to clone %s?"
       else
@@ -165,7 +166,7 @@ function PRT.TabGroupCloneButton(container, t, key, label)
       PRT.ConfirmationDialog(L[confirmationLabel]:format(PRT.HighlightString(item.name)),
         function()
           local clonedItem = PRT.TableUtils.Clone(item)
-          AceHelper.AddNewTab(container, t, clonedItem)
+          AceHelper.AddNewTab(tabGroup, t, clonedItem)
         end)
     end)
   AceHelper.AddTooltip(cloneButton, label)
@@ -190,13 +191,18 @@ function PRT.TabGroupSelected(widget, t, key, itemFunction, emptyItemFunction, w
       itemFunction(item, widget, key, t)
     end
 
+    local actionGroup = PRT.SimpleGroup()
+    actionGroup:SetLayout("Flow")
+
     if withDeleteButton then
-      PRT.TabGroupDeleteButton(widget, t, key, deleteButtonLabel)
+      PRT.TabGroupDeleteButton(actionGroup, widget, t, key, deleteButtonLabel)
     end
 
     if withCloneButton then
-      PRT.TabGroupCloneButton(widget, t, key, cloneButtonLabel)
+      PRT.TabGroupCloneButton(actionGroup, widget, t, key, cloneButtonLabel)
     end
+
+    widget:AddChild(actionGroup)
   end
 
   PRT.Core.UpdateScrollFrame()

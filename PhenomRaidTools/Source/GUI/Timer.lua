@@ -78,7 +78,7 @@ function Timer.TimingWidget(timing, container, _, timings)
   messagesTabGroup:SetLayout("List")
   messagesTabGroup:SetCallback("OnGroupSelected",
     function(widget, _, key)
-      PRT.TabGroupSelected(widget, timing.messages, key, PRT.MessageWidget, PRT.EmptyMessage, true, L["Delete"])
+      PRT.TabGroupSelected(widget, timing.messages, key, PRT.MessageWidget, PRT.EmptyMessage, true, L["Delete"], true, L["Clone"])
     end)
 
   local offsetSlider = PRT.Slider(L["Offset"], L["Offset will be applied to all timings."], timing.offset, true)
@@ -94,15 +94,6 @@ function Timer.TimingWidget(timing, container, _, timings)
   timingOptionsGroup:AddChild(offsetSlider)
   container:AddChild(timingOptionsGroup)
   container:AddChild(messagesTabGroup)
-
-  local cloneButton = PRT.Button(L["Clone"])
-  cloneButton:SetCallback("OnClick",
-    function()
-      local clone = PRT.TableUtils.Clone(timing)
-      tinsert(timings, clone)
-      PRT.Core.ReselectCurrentValue()
-    end)
-  container:AddChild(cloneButton)
 end
 
 function Timer.TimerWidget(timerName, timers, container)
@@ -147,7 +138,7 @@ function Timer.TimerWidget(timerName, timers, container)
   local timingsTabGroup = PRT.TabGroup(L["Timings"], timingsTabs)
   timingsTabGroup:SetCallback("OnGroupSelected",
     function(widget, _, key)
-      PRT.TabGroupSelected(widget, timer.timings, key, Timer.TimingWidget, PRT.EmptyTiming, true, L["Delete"])
+      PRT.TabGroupSelected(widget, timer.timings, key, Timer.TimingWidget, PRT.EmptyTiming, true, L["Delete"], true, L["Clone"])
     end)
   PRT.SelectFirstTab(timingsTabGroup, timer.timings)
   container:AddChild(timingsTabGroup)
