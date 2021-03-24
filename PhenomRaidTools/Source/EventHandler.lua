@@ -366,9 +366,9 @@ end
 local function IsInterestingUnit(currentEncounter, unitID)
   local unitName = GetUnitName(unitID)
   local guid = UnitGUID(unitID)
-  local mobID = PRT.GUIDToMobID(guid)
+  local npcID = PRT.GUIDToNPCID(guid)
 
-  return currentEncounter.interestingUnits and (currentEncounter.interestingUnits[unitID] or currentEncounter.interestingUnits[unitName] or currentEncounter.interestingUnits[mobID])
+  return currentEncounter.interestingUnits and (currentEncounter.interestingUnits[unitID] or currentEncounter.interestingUnits[unitName] or currentEncounter.interestingUnits[npcID])
 end
 
 local function IsTrackedUnit(currentEncounter, guid)

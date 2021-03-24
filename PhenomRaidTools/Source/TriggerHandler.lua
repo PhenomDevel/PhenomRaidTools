@@ -24,8 +24,8 @@ function TriggerHandler.UnitExistsInTrackedUnits(conditionUnitID, eventUnitGUID)
     for _, trackedUnit in pairs(PRT.currentEncounter.trackedUnits) do
       if tonumber(conditionUnitID) then
         -- Find by Mob-ID
-        local mobID = PRT.GUIDToMobID(trackedUnit.guid)
-        if mobID == conditionUnitID and trackedUnit.guid == eventUnitGUID then
+        local npcID = PRT.GUIDToNPCID(trackedUnit.guid)
+        if npcID == conditionUnitID and trackedUnit.guid == eventUnitGUID then
           return true
         end
       elseif UnitExists(conditionUnitID) and trackedUnit.guid == eventUnitGUID then
@@ -429,8 +429,8 @@ function PRT.GetEffectiveUnits(unit)
     for trackedUnitGUID, trackedUnit in pairs(PRT.currentEncounter.trackedUnits) do
       if tonumber(unit) then
         -- Find by Mob-ID
-        local mobID = select(6, strsplit("-", trackedUnitGUID))
-        if mobID == unit then
+        local npcID = PRT.GUIDToNPCID(trackedUnitGUID)
+        if npcID == unit then
           if ValidUnit(trackedUnit.unitID) then
             tinsert(matchedUnits, trackedUnit)
           end

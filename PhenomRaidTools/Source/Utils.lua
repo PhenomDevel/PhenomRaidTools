@@ -369,7 +369,7 @@ end
 -------------------------------------------------------------------------------
 -- Unit Helper
 
-function PRT.GUIDToMobID(guid)
+function PRT.GUIDToNPCID(guid)
   if not guid then
     return nil
   end
