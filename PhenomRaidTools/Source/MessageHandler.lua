@@ -145,7 +145,7 @@ function MessageHandler.IsMessageForMe(message)
 end
 
 function PRT:OnAddonMessage(message)
-  if PRT.db.profile.enabled then
+  if PRT.IsEnabled() then
     if UnitAffectingCombat("player") then
       local _, messageTable = PRT.Deserialize(message)
 
@@ -164,7 +164,7 @@ function PRT:OnAddonMessage(message)
 end
 
 function PRT:OnVersionRequest(message)
-  if PRT.db.profile.enabled then
+  if PRT.IsEnabled() then
     local _, messageTable = PRT.Deserialize(message)
 
     if messageTable.requestor then
@@ -182,7 +182,7 @@ function PRT:OnVersionRequest(message)
 end
 
 function PRT:OnVersionResponse(message)
-  if PRT.db.profile.enabled then
+  if PRT.IsEnabled() then
     local _, messageTable = PRT.Deserialize(message)
     PRT.Debug("Version response from:", PRT.ClassColoredName(messageTable.name), PRT.HighlightString(messageTable.version))
     PRT.db.profile.versionCheck[messageTable.name] = messageTable.version

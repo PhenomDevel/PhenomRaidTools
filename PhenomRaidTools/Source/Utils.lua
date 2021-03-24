@@ -438,10 +438,17 @@ function PRT.IsReceiver()
   return PRT.db.profile.receiverMode
 end
 
-function PRT.InFight()
+function PRT.IsInFight()
   return PRT.currentEncounter.inFight
 end
 
 function PRT.HasEncounter()
   return not PRT.TableUtils.IsEmpty(PRT.currentEncounter.encounter)
+end
+
+function PRT.IsDevelopmentVersion()
+  local versionString = PRT.db.profile.version
+  local numericVersionString = string.gsub(versionString, "[.]", "")
+
+  return not tonumber(numericVersionString)
 end
