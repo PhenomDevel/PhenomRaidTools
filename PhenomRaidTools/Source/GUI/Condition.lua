@@ -114,8 +114,8 @@ function PRT.ConditionWidget(condition, textID)
   local eventGroup = PRT.SimpleGroup()
   local spellIcon = PRT.Icon(condition.spellID)
 
-  local targetEditBox = PRT.EditBox(L["Target"], L["Can be either of\n- Unit-Name\n- Unit-ID (boss1, player ...)\n- Numeric Unit-ID"], condition.target, true)
-  local sourceEditBox = PRT.EditBox(L["Source"], L["Can be either of\n- Unit-Name\n- Unit-ID (boss1, player ...)\n- Numeric Unit-ID"], condition.source, true)
+  local targetEditBox = PRT.EditBox(L["Target"], L["Can be either of\n- Unit-Name\n- Unit-ID (boss1, player ...)\n- NPC-ID"], condition.target, true)
+  local sourceEditBox = PRT.EditBox(L["Source"], L["Can be either of\n- Unit-Name\n- Unit-ID (boss1, player ...)\n- NPC-ID"], condition.source, true)
   local unitGroup = PRT.SimpleGroup()
 
   -- Maybe add preset Dropdown select if anything is define for the currently selected encounter id

@@ -53,7 +53,7 @@ L[ [=[Can be either of
 L[ [=[Can be either of
 - Unit-Name
 - Unit-ID (boss1, player ...)
-- Numeric Unit-ID]=] ] = [=[Kann eins der folgenden sein
+- NPC-ID]=] ] = [=[Kann eins der folgenden sein
 - Name einer Einheit
 - ID einer Einheit (boss1, player...)
 - Numerische ID einer Einheit]=]
@@ -72,7 +72,7 @@ L[ [=[Can be either of
 L[ [=[Can be either of
 - Unit-Name
 - Unit-ID (boss1, player ...)
-- Numeric Unit-ID]=] ] = [=[Kann eins der folgenden sein
+- NPC-ID]=] ] = [=[Kann eins der folgenden sein
 - Einheitenname
 - Einheiten-ID (boss1, player, ...)
 - Numerische Einheiten-ID]=]

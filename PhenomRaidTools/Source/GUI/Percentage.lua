@@ -75,7 +75,7 @@ function Percentage.PercentageWidget(percentageName, percentages, container)
   -- Percentage Options
   local percentageOptionsGroup = PRT.InlineGroup(L["Options"])
   percentageOptionsGroup:SetLayout("Flow")
-  local unitIDEditBox = PRT.EditBox(L["Unit"], L["Can be either of\n- Unit-Name\n- Unit-ID (boss1, player ...)\n- Numeric Unit-ID"], percentage.unitID, true)
+  local unitIDEditBox = PRT.EditBox(L["Unit"], L["Can be either of\n- Unit-Name\n- Unit-ID (boss1, player ...)\n- NPC-ID"], percentage.unitID, true)
   local checkAgainCheckBox = PRT.CheckBox(L["Check again"], nil, percentage.checkAgain)
   local checkAgainAfterSlider = PRT.Slider(L["Check after"], nil, percentage.checkAgainAfter)
 

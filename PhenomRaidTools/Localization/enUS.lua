@@ -48,7 +48,7 @@ L[ [=[Can be either of
 L[ [=[Can be either of
 - Unit-Name
 - Unit-ID (boss1, player ...)
-- Numeric Unit-ID]=] ] = true
+- NPC-ID]=] ] = true
 L[ [=[Can be either of
 - valid unique spell ID
 - spell name known to the player character]=] ] = true
@@ -59,7 +59,7 @@ L[ [=[Can be either of
 L[ [=[Can be either of
 - Unit-Name
 - Unit-ID (boss1, player ...)
-- Numeric Unit-ID]=] ] = true
+- NPC-ID]=] ] = true
 L[ [=[Can be either of
 - valid unique spell ID
 - spell name known to the player character]=] ] = true
