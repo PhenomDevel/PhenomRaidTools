@@ -1,4 +1,18 @@
 ===============================================================================
+# Release 2.5.0-BETA
+## Bugfixes
+None
+
+## Features
+ - Be able to create versions of encounters and switch between them
+   - You now can create, clone and delete versions of encounters. This can
+     be used to easily test stuff or just import an existing version of
+     another user without pumping up your current versions. The import and
+     export of whole encounters is no more supported due to this change. You now
+     only can import/export encounter versions.
+
+
+===============================================================================
 # Release 2.4.12
 ## Bugfixes
 None
