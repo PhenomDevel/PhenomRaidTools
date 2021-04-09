@@ -56,7 +56,7 @@ L[ [=[Can be either of
 - NPC-ID]=] ] = [=[Kann eins der folgenden sein
 - Name einer Einheit
 - ID einer Einheit (boss1, player...)
-- Numerische ID einer Einheit]=]
+- NPC-ID]=]
 L[ [=[Can be either of
 - valid unique spell ID
 - spell name known to the player character]=] ] = [=[Kann eins der folgenden sein
@@ -69,13 +69,6 @@ L[ [=[Can be either of
 - Spielername
 - Benutzerdefinierter Platzhalter (z.B. $tank1)
 - $target (Ereignis-Ziel)]=]
-L[ [=[Can be either of
-- Unit-Name
-- Unit-ID (boss1, player ...)
-- NPC-ID]=] ] = [=[Kann eins der folgenden sein
-- Einheitenname
-- Einheiten-ID (boss1, player, ...)
-- Numerische Einheiten-ID]=]
 L[ [=[Can be either of
 - valid unique spell ID
 - spell name known to the player character]=] ] = [=[Kann eins der folgenden sein
@@ -126,6 +119,7 @@ L["Duration"] = "Dauer"
 L["Enable on"] = "Aktivieren für"
 L["Enabled"] = "Aktiviert"
 L["Encounter"] = "Boss"
+L["Encounter found. Do you want to import the new version?"] = "Boss gefunden. Bist Du dir sicher, dass Du die neue Version importieren willst?"
 L["Encounter-ID"] = "Boss-ID"
 L["Entries %s"] = "Einträge %s"
 L["Event"] = "Ereignis"
@@ -222,6 +216,7 @@ L["Rotation Entry"] = "Rotationseintrag"
 L["Rotations"] = "Rotationen"
 L["Save as template"] = "Als Vorlage speichern"
 L["Select Encounter"] = "Boss auswählen"
+L["Select version"] = "Version auswählen"
 L[ [=[Selected player/placeholder will be
 added to the list of targets.]=] ] = [=[Ausgewählter Spieler/Platzhalter
 wird der Liste der Empfänger hinzugefügt.]=]
@@ -270,6 +265,8 @@ L["Types\\n%s - Only the first player found within the group will be messaged\\n
 %s - Alle gefundenen Spieler werden benachrichtigt]=]
 L["Unit"] = "Einheit"
 L["Version Check"] = "Versionsüberprüfung"
+L["Version name"] = "Versionsname"
+L["Versions"] = "Versionen"
 L["Will show a countdown of 5 seconds"] = "Zeigt einen Countdown von 5 Sekunden an."
 L["X Offset"] = "X Versatz"
 L["Y Offset"] = "Y Versatz"

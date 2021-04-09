@@ -112,7 +112,7 @@ local function importVersionSuccess(encounter, encounterVersionData)
   if encounter then
     PRT.ConfirmationDialog(L["Encounter found. Do you want to import the new version?"],
       function()
-        encounterVersionData.name = encounterVersionData.name.."- Import: "..PRT.Now()
+        encounterVersionData.name = encounterVersionData.name.." - Import: "..PRT.Now()
         tinsert(encounter.versions, encounterVersionData)
         encounter.selectedVersion = PRT.TableUtils.Count(encounter.versions)
         PRT.Info("Encounter version imported successfully.")
@@ -187,6 +187,7 @@ local function AddVersionWidgets(container, profile, encounterID)
   cloneVersionButton:SetCallback("OnClick",
     function()
       local clonedEncounterVersion = PRT.TableUtils.Clone(selectedVersionEncounter)
+      clonedEncounterVersion.name = clonedEncounterVersion.name.." - Clone: "..PRT.Now()
       tinsert(encounter.versions, clonedEncounterVersion)
       encounter.selectedVersion = PRT.TableUtils.Count(encounter.versions)
       PRT.Core.UpdateTree()

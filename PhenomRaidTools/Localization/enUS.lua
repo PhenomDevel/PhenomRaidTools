@@ -48,7 +48,10 @@ L[ [=[Can be either of
 L[ [=[Can be either of
 - Unit-Name
 - Unit-ID (boss1, player ...)
-- NPC-ID]=] ] = true
+- NPC-ID]=] ] = [=[Can be either of
+- Unit-Name
+- Unit-ID (boss1, player ...)
+- Numeric Unit-ID]=]
 L[ [=[Can be either of
 - valid unique spell ID
 - spell name known to the player character]=] ] = true
@@ -56,10 +59,6 @@ L[ [=[Can be either of
 - Player name
 - Custom Placeholder (e.g. $tank1)
 - $target (event target)]=] ] = true
-L[ [=[Can be either of
-- Unit-Name
-- Unit-ID (boss1, player ...)
-- NPC-ID]=] ] = true
 L[ [=[Can be either of
 - valid unique spell ID
 - spell name known to the player character]=] ] = true
@@ -104,6 +103,7 @@ L["Duration"] = true
 L["Enable on"] = true
 L["Enabled"] = true
 L["Encounter"] = true
+L["Encounter found. Do you want to import the new version?"] = true
 L["Encounter-ID"] = true
 L["Entries %s"] = true
 L["Event"] = true
@@ -197,6 +197,7 @@ L["Rotation Entry"] = true
 L["Rotations"] = true
 L["Save as template"] = true
 L["Select Encounter"] = true
+L["Select version"] = true
 L[ [=[Selected player/placeholder will be
 added to the list of targets.]=] ] = true
 L[ [=[Selected player/placeholder will be
@@ -237,6 +238,8 @@ L["Type"] = true
 L["Types\\n%s - Only the first player found within the group will be messaged\\n%s - All players will be messaged"] = true
 L["Unit"] = true
 L["Version Check"] = true
+L["Version name"] = true
+L["Versions"] = true
 L["Will show a countdown of 5 seconds"] = true
 L["X Offset"] = true
 L["Y Offset"] = true

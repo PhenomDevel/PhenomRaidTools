@@ -219,7 +219,7 @@ function Core.GenerateEncounterTree(encounter)
 
   local t = {
     value = encounter.id,
-    text = Core.DisabledText(encounter.name.."("..encounter.selectedVersion..")", encounter.enabled),
+    text = Core.DisabledText(encounter.name.." (v"..encounter.selectedVersion..")", encounter.enabled),
   }
 
   if selectedEncounter then

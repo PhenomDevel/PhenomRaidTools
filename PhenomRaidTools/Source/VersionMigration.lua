@@ -23,7 +23,7 @@ local migrationFunctions = {
             encounter
           }
 
-          encounter.name = PRT.Now().." "..encounter.name
+          encounter.name = encounter.name
         else
           PRT.Debug("Skipping encounter", PRT.HighlightString(encounter.name), "because it seems this encounter already got migrated.")
         end
