@@ -52,15 +52,17 @@ end
 function PRT.MigrateProfileDB(profile)
   local pendingMigrations = GetPendingMigrations(profile)
 
-  PRT.Debug("You have", PRT.HighlightString(PRT.TableUtils.Count(pendingMigrations)), "pending migrations. They will be applied to your profile now.")
+  if PRT.TableUtils.Count(pendingMigrations) > 0 then
+    PRT.Debug("You have", PRT.HighlightString(PRT.TableUtils.Count(pendingMigrations)), "pending migrations. They will be applied to your profile now.")
 
-  -- if PRT.IsDevelopmentVersion() then
-  --   PRT.Debug("Skipping migrations due to development version.")
-  -- else
-  for _, migration in pairs(pendingMigrations) do
-    PRT.Debug("Applying migration for version", PRT.HighlightString(migration.version))
-    migration.migrationFunction(profile)
-    profile.processedMigrations[migration.version] = true
+    -- if PRT.IsDevelopmentVersion() then
+    --   PRT.Debug("Skipping migrations due to development version.")
+    -- else
+    for _, migration in pairs(pendingMigrations) do
+      PRT.Debug("Applying migration for version", PRT.HighlightString(migration.version))
+      migration.migrationFunction(profile)
+      profile.processedMigrations[migration.version] = true
+    end
+    --end
   end
-  --end
 end
