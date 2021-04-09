@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.5.1-BETA
+## Bugfixes
+ - Actually add example encounter to encounter list on new profile
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.5.0-BETA
 ## Bugfixes
 None
