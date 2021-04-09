@@ -184,157 +184,164 @@ function PRT.ExampleEncounter()
     enabled = true,
     id = 9999,
     name = "Example",
-    Timers = {
+    selectedVersion = 1,
+    versions = {
       {
         enabled = true,
-        startCondition = {
-          event = "PLAYER_REGEN_DISABLED",
-          spellID = nil,
-          source = nil,
-          target = nil,
-        },
-        stopCondition = {
-          event = nil,
-          spellID = nil,
-          source = nil,
-          target = nil,
-        },
-        name = "Phase 1 Timer",
-        timings = {
+        name = "Example Version 1",
+        Timers = {
           {
-            seconds = {1, 7},
-            messages = {
+            enabled = true,
+            startCondition = {
+              event = "PLAYER_REGEN_DISABLED",
+              spellID = nil,
+              source = nil,
+              target = nil,
+            },
+            stopCondition = {
+              event = nil,
+              spellID = nil,
+              source = nil,
+              target = nil,
+            },
+            name = "Phase 1 Timer",
+            timings = {
               {
-                message = "Message 1 and 7 seconds into Encounter",
-                duration = 5,
-                targets = {
-                  "ALL"
-                },
-                delay = 0
+                seconds = {1, 7},
+                messages = {
+                  {
+                    message = "Message 1 and 7 seconds into Encounter",
+                    duration = 5,
+                    targets = {
+                      "ALL"
+                    },
+                    delay = 0
+                  }
+                }
+              },
+              {
+                seconds = {5},
+                messages = {
+                  {
+                    message = "Message with raid marker {rt1}",
+                    duration = 5,
+                    targets = {
+                      "ALL"
+                    },
+                    delay = 0
+                  }
+                }
               }
             }
+          }
+        },
+
+        Rotations = {
+          {
+            enabled = true,
+            triggerCondition = {
+              event = "SPELL_CAST_START",
+              spellID = 188196,
+              spellIcon = 136048,
+              spellName = "Lightning Bolt",
+              source = nil,
+              target = nil,
+            },
+            name = "Lightning Bolt Cast started",
+            entries = {
+              {
+                messages = {
+                  {
+                    message = "You cast {spell:188196}",
+                    duration = 5,
+                    targets = {
+                      "ALL"
+                    },
+                    delay = 0
+                  }
+                }
+              }
+            },
+            shouldRestart = true,
+            ignoreAfterActivation = false,
+            ignoreDuration = 0
           },
           {
-            seconds = {5},
-            messages = {
+            enabled = false,
+            triggerCondition = {
+              event = "SPELL_CAST_SUCCESS",
+              source = nil,
+              target = nil,
+            },
+            name = "Disabled Rotation",
+            entries = {
               {
-                message = "Message with raid marker {rt1}",
-                duration = 5,
-                targets = {
-                  "ALL"
-                },
-                delay = 0
+                messages = {
+                }
               }
-            }
+            },
+            shouldRestart = true,
+            ignoreAfterActivation = false,
+            ignoreDuration = 0
           }
+        },
+
+        HealthPercentages = {
+          {
+            enabled = true,
+            name = "Above 60 %",
+            unitID = "player",
+            values = {
+              {
+                value = 60,
+                operator = "greater",
+                messages = {
+                  {
+                    message = "You are above 60%% HP",
+                    duration = 5,
+                    targets = {
+                      "ALL"
+                    },
+                    delay = 0
+                  }
+                }
+              }
+            },
+            ignoreAfterActivation = false,
+            ignoreDuration = nil
+          }
+        },
+
+        PowerPercentages = {
+          {
+            enabled = true,
+            name = "Above 90% Power",
+            unitID = "player",
+            values = {
+              {
+                value = 90,
+                operator = "greater",
+                messages = {
+                  {
+                    message = "You are above 90%% Power",
+                    duration = 5,
+                    targets = {
+                      "ALL"
+                    },
+                    delay = 0
+                  }
+                }
+              }
+            },
+            ignoreAfterActivation = false,
+            ignoreDuration = nil
+          }
+        },
+
+        CustomPlaceholders = {
+
         }
       }
-    },
-
-    Rotations = {
-      {
-        enabled = true,
-        triggerCondition = {
-          event = "SPELL_CAST_START",
-          spellID = 188196,
-          spellIcon = 136048,
-          spellName = "Lightning Bolt",
-          source = nil,
-          target = nil,
-        },
-        name = "Lightning Bolt Cast started",
-        entries = {
-          {
-            messages = {
-              {
-                message = "You cast {spell:188196}",
-                duration = 5,
-                targets = {
-                  "ALL"
-                },
-                delay = 0
-              }
-            }
-          }
-        },
-        shouldRestart = true,
-        ignoreAfterActivation = false,
-        ignoreDuration = 0
-      },
-      {
-        enabled = false,
-        triggerCondition = {
-          event = "SPELL_CAST_SUCCESS",
-          source = nil,
-          target = nil,
-        },
-        name = "Disabled Rotation",
-        entries = {
-          {
-            messages = {
-            }
-          }
-        },
-        shouldRestart = true,
-        ignoreAfterActivation = false,
-        ignoreDuration = 0
-      }
-    },
-
-    HealthPercentages = {
-      {
-        enabled = true,
-        name = "Above 60 %",
-        unitID = "player",
-        values = {
-          {
-            value = 60,
-            operator = "greater",
-            messages = {
-              {
-                message = "You are above 60%% HP",
-                duration = 5,
-                targets = {
-                  "ALL"
-                },
-                delay = 0
-              }
-            }
-          }
-        },
-        ignoreAfterActivation = false,
-        ignoreDuration = nil
-      }
-    },
-
-    PowerPercentages = {
-      {
-        enabled = true,
-        name = "Above 90% Power",
-        unitID = "player",
-        values = {
-          {
-            value = 90,
-            operator = "greater",
-            messages = {
-              {
-                message = "You are above 90%% Power",
-                duration = 5,
-                targets = {
-                  "ALL"
-                },
-                delay = 0
-              }
-            }
-          }
-        },
-        ignoreAfterActivation = false,
-        ignoreDuration = nil
-      }
-    },
-
-    CustomPlaceholders = {
-
     }
   }
 end

@@ -261,6 +261,11 @@ function PRT:RefreshConfig()
   PRT.ReceiverOverlay.Initialize(PRT.db.profile.overlay.receivers)
   PRT.SenderOverlay.Initialize(PRT.db.profile.overlay.sender)
 
+  local encounterIdx, _ = PRT.TableUtils.GetBy(self.db.profile.encounters, "id", 9999)
+  if not encounterIdx and PRT.TableUtils.IsEmpty(self.db.profile.encounters) then
+    table.insert(self.db.profile.encounters, PRT.ExampleEncounter())
+  end
+
   -- Check if profile db needs migration
   AceTimer:ScheduleTimer(PRT.MigrateProfileDB, 1, self.db.profile)
 end
