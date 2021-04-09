@@ -108,51 +108,122 @@ local function addPercentageOverviewEntry(container, prefix, percentage)
   addOverviewEmptyLine(container)
 end
 
-local function MergeTriggers(a, b)
-  if b then
-    for _, bTrigger in ipairs(b) do
-      local newName = "* "..bTrigger.name
-
-      if not a then
-        a = {}
-      end
-
-      for _, aTrigger in ipairs(a) do
-        if aTrigger.name == newName then
-          newName = "*"..newName
-        end
-      end
-
-      bTrigger.name = newName
-      tinsert(a, bTrigger)
-    end
-  end
-end
-
-local function MergeEncounters(a, b)
-  MergeTriggers(a.Timers, b.Timers)
-  MergeTriggers(a.Rotations, b.Rotations)
-  MergeTriggers(a.HealthPercentages, b.HealthPercentages)
-  MergeTriggers(a.PowerPercentages, b.PowerPercentages)
-  MergeTriggers(a.CustomPlaceholders, b.CustomPlaceholders)
-end
-
-local function importSuccess(encounter)
-  local _, existingEncounter = PRT.TableUtils.GetBy(PRT.db.profile.encounters, "id", encounter.id)
-
-  if not existingEncounter then
-    tinsert(PRT.db.profile.encounters, encounter)
-    PRT.mainWindow:ReleaseChildren()
-    PRT.mainWindow:AddChild(PRT.Core.CreateMainWindowContent(PRT.db.profile))
-    PRT.Info("Encounter imported successfully.")
-  else
-    PRT.ConfirmationDialog(L["Are you sure you want to merge encounters?"],
+local function importVersionSuccess(encounter, encounterVersionData)
+  if encounter then
+    PRT.ConfirmationDialog(L["Encounter found. Do you want to import the new version?"],
       function()
-        MergeEncounters(existingEncounter, encounter)
-        PRT.Info("Encounter was successfully merged.")
+        encounterVersionData.name = encounterVersionData.name.."- Import: "..PRT.Now()
+        tinsert(encounter.versions, encounterVersionData)
+        encounter.selectedVersion = PRT.TableUtils.Count(encounter.versions)
+        PRT.Info("Encounter version imported successfully.")
         PRT.Core.UpdateTree()
+        PRT.Core.ReselectCurrentValue()
       end)
+  else
+    PRT.Warn("There was no encounter found. Therefore the version was not imported.")
   end
+end
+
+local function AddVersionWidgets(container, profile, encounterID)
+  local refreshContainer = function()
+    container:ReleaseChildren()
+    AddVersionWidgets(container, profile, encounterID)
+  end
+
+  local _, encounter = PRT.GetEncounterById(profile.encounters, tonumber(encounterID))
+  local _, selectedVersionEncounter = PRT.GetSelectedVersionEncounterByID(profile.encounters, tonumber(encounterID))
+  local versionNames = {}
+
+  for i = 1, PRT.TableUtils.Count(encounter.versions) do
+    tinsert(versionNames, { id = i, name = i.." - "..encounter.versions[i].name })
+  end
+
+  local selectedVersionEncounterName = ""
+
+  if selectedVersionEncounter then
+    selectedVersionEncounterName = selectedVersionEncounter.name
+  end
+
+  local activeVersionDropdown = PRT.Dropdown(L["Select version"], nil, versionNames)
+  local versionNameEditBox = PRT.EditBox(L["Version name"], nil, selectedVersionEncounterName)
+
+  local newVersionButton = PRT.Button(L["New"])
+  local cloneVersionButton = PRT.Button(L["Clone"])
+  local deleteVersionButton = PRT.Button(L["Delete"])
+  local importVersionButton = PRT.Button(L["Import"])
+  local exportVersionButton = PRT.Button(L["Export"])
+
+  activeVersionDropdown:SetDisabled(not selectedVersionEncounter)
+  activeVersionDropdown:SetRelativeWidth(1)
+
+  versionNameEditBox:SetDisabled(not selectedVersionEncounter)
+  versionNameEditBox:SetRelativeWidth(1)
+
+  deleteVersionButton:SetDisabled(not selectedVersionEncounter)
+
+  activeVersionDropdown:SetCallback("OnValueChanged",
+    function(widget)
+      encounter.selectedVersion = widget:GetValue()
+      PRT.Core.UpdateTree()
+      refreshContainer()
+    end)
+
+  versionNameEditBox:SetCallback("OnEnterPressed",
+    function(widget)
+      local value = widget:GetText()
+      selectedVersionEncounter.name = value
+      widget:ClearFocus()
+      refreshContainer()
+    end)
+
+  newVersionButton:SetCallback("OnClick",
+    function()
+      tinsert(encounter.versions, PRT.NewEncounterVersion(encounter))
+      encounter.selectedVersion = PRT.TableUtils.Count(encounter.versions)
+      PRT.Core.UpdateTree()
+      refreshContainer()
+    end)
+
+  cloneVersionButton:SetCallback("OnClick",
+    function()
+      local clonedEncounterVersion = PRT.TableUtils.Clone(selectedVersionEncounter)
+      tinsert(encounter.versions, clonedEncounterVersion)
+      encounter.selectedVersion = PRT.TableUtils.Count(encounter.versions)
+      PRT.Core.UpdateTree()
+      refreshContainer()
+    end)
+
+  deleteVersionButton:SetCallback("OnClick",
+    function()
+      PRT.ConfirmationDialog(L["Are you sure you want to delete %s?"]:format(PRT.HighlightString(selectedVersionEncounterName)),
+        function()
+          tremove(encounter.versions, encounter.selectedVersion)
+          encounter.selectedVersion = PRT.TableUtils.Count(encounter.versions)
+          PRT.Core.UpdateTree()
+          refreshContainer()
+        end)
+    end)
+
+  importVersionButton:SetCallback("OnClick",
+    function()
+      PRT.CreateImportFrame(
+        function(encounterVersionData)
+          importVersionSuccess(encounter, encounterVersionData)
+        end)
+    end)
+
+  exportVersionButton:SetCallback("OnClick",
+    function()
+      PRT.CreateExportFrame(selectedVersionEncounter)
+    end)
+
+  container:AddChild(versionNameEditBox)
+  container:AddChild(activeVersionDropdown)
+  container:AddChild(newVersionButton)
+  container:AddChild(cloneVersionButton)
+  container:AddChild(deleteVersionButton)
+  container:AddChild(importVersionButton)
+  container:AddChild(exportVersionButton)
 end
 
 
@@ -166,40 +237,42 @@ function Encounter.OverviewWidget(encounter)
   local healthPercentageGroup = PRT.InlineGroup(PRT.TextureString(648207).." "..L["Health Percentages"])
   local powerPercentageGroup = PRT.InlineGroup(PRT.TextureString(132849).." "..L["Power Percentages"])
 
-  -- Timers
-  if not PRT.TableUtils.IsEmpty(encounter.Timers) then
-    for _, v in ipairs(encounter.Timers) do
-      addTimerOverviewEntry(timerGroup, v)
+  if encounter then
+    -- Timers
+    if not PRT.TableUtils.IsEmpty(encounter.Timers) then
+      for _, v in ipairs(encounter.Timers) do
+        addTimerOverviewEntry(timerGroup, v)
+      end
+
+      overviewGroup:AddChild(timerGroup)
     end
 
-    overviewGroup:AddChild(timerGroup)
-  end
+    -- Rotations
+    if not PRT.TableUtils.IsEmpty(encounter.Rotations) then
+      for _, v in ipairs(encounter.Rotations) do
+        addRotationOverviewEntry(rotationsGroup, v)
+      end
 
-  -- Rotations
-  if not PRT.TableUtils.IsEmpty(encounter.Rotations) then
-    for _, v in ipairs(encounter.Rotations) do
-      addRotationOverviewEntry(rotationsGroup, v)
+      overviewGroup:AddChild(rotationsGroup)
     end
 
-    overviewGroup:AddChild(rotationsGroup)
-  end
+    -- Health Percentages
+    if not PRT.TableUtils.IsEmpty(encounter.HealthPercentages) then
+      for _, v in ipairs(encounter.HealthPercentages) do
+        addPercentageOverviewEntry(healthPercentageGroup, L["Health"], v)
+      end
 
-  -- Health Percentages
-  if not PRT.TableUtils.IsEmpty(encounter.HealthPercentages) then
-    for _, v in ipairs(encounter.HealthPercentages) do
-      addPercentageOverviewEntry(healthPercentageGroup, L["Health"], v)
+      overviewGroup:AddChild(healthPercentageGroup)
     end
 
-    overviewGroup:AddChild(healthPercentageGroup)
-  end
+    -- Power Percentages
+    if not PRT.TableUtils.IsEmpty(encounter.PowerPercentages) then
+      for _, v in ipairs(encounter.PowerPercentages) do
+        addPercentageOverviewEntry(powerPercentageGroup, L["Power"], v)
+      end
 
-  -- Power Percentages
-  if not PRT.TableUtils.IsEmpty(encounter.PowerPercentages) then
-    for _, v in ipairs(encounter.PowerPercentages) do
-      addPercentageOverviewEntry(powerPercentageGroup, L["Power"], v)
+      overviewGroup:AddChild(powerPercentageGroup)
     end
-
-    overviewGroup:AddChild(powerPercentageGroup)
   end
 
   return overviewGroup
@@ -221,14 +294,7 @@ function PRT.AddEncountersWidgets(container, profile)
       PRT.mainWindowContent:SelectByPath("encounters", newEncounter.id)
     end)
 
-  local importButton = PRT.Button(L["Import"])
-  importButton:SetCallback("OnClick",
-    function()
-      PRT.CreateImportFrame(importSuccess)
-    end)
-
   encounterOptionsGroup:SetLayout("Flow")
-  encounterOptionsGroup:AddChild(importButton)
   encounterOptionsGroup:AddChild(addButton)
 
   container:AddChild(encounterOptionsGroup)
@@ -236,15 +302,15 @@ end
 
 function PRT.AddEncounterOptions(container, profile, encounterID)
   local encounterIndex, encounter = PRT.TableUtils.GetBy(profile.encounters, "id", tonumber(encounterID))
+  local _, selectedVersionEncounter = PRT.GetSelectedVersionEncounterByID(profile.encounters, tonumber(encounterID))
 
   local encounterOptionsGroup = PRT.InlineGroup(L["Options"])
   local enabledCheckBox = PRT.CheckBox(L["Enabled"], nil, encounter.enabled)
   local encounterIDEditBox = PRT.EditBox(L["Encounter-ID"], nil, encounter.id)
   local encounterNameEditBox = PRT.EditBox(L["Name"], nil, encounter.name)
   local encounterSelectDropdown = PRT.Dropdown(L["Select Encounter"], nil, Encounter.currentEncounters, nil, nil, true)
-  local exportButton = PRT.Button(L["Export"])
   local deleteButton = PRT.NewTriggerDeleteButton(container, profile.encounters, encounterIndex, L["Delete"], encounter.name)
-  local overviewGroup = Encounter.OverviewWidget(encounter)
+  local overviewGroup = Encounter.OverviewWidget(selectedVersionEncounter)
 
   encounterOptionsGroup:SetLayout("Flow")
 
@@ -252,7 +318,7 @@ function PRT.AddEncounterOptions(container, profile, encounterID)
   encounterIDEditBox:SetCallback("OnEnterPressed",
     function(widget)
       local id = tonumber(widget:GetText())
-      local _, existingEncounter = PRT.TableUtils.GetBy(profile.encounters, "id", id)
+      local _, existingEncounter = PRT.GetSelectedVersionEncounterByID(profile.encounters, id)
 
       if not existingEncounter then
         if id ~= "" and id ~= nil then
@@ -288,7 +354,7 @@ function PRT.AddEncounterOptions(container, profile, encounterID)
     function(widget, _, id)
       local _, entry = PRT.TableUtils.GetBy(Encounter.currentEncounters, "id", id)
       -- TODO: Refactor and put together with above id function
-      local _, existingEncounter = PRT.TableUtils.GetBy(profile.encounters, "id", id)
+      local _, existingEncounter = PRT.GetSelectedVersionEncounterByID(profile.encounters, id)
 
       if not existingEncounter then
         if id ~= "" and id ~= nil then
@@ -314,11 +380,6 @@ function PRT.AddEncounterOptions(container, profile, encounterID)
       widget:SetValue(nil)
     end)
 
-  exportButton:SetCallback("OnClick",
-    function()
-      PRT.CreateExportFrame(encounter)
-    end)
-
   enabledCheckBox:SetRelativeWidth(1)
   enabledCheckBox:SetCallback("OnValueChanged",
     function(widget)
@@ -326,13 +387,17 @@ function PRT.AddEncounterOptions(container, profile, encounterID)
       PRT.Core.UpdateTree()
     end)
 
+  local encounterVersionOptionsGroup = PRT.InlineGroup(L["Versions"])
+  encounterVersionOptionsGroup:SetLayout("Flow")
+  AddVersionWidgets(encounterVersionOptionsGroup, profile, encounterID)
+
   encounterOptionsGroup:AddChild(enabledCheckBox)
   encounterOptionsGroup:AddChild(encounterIDEditBox)
   encounterOptionsGroup:AddChild(encounterNameEditBox)
   encounterOptionsGroup:AddChild(encounterSelectDropdown)
-  encounterOptionsGroup:AddChild(exportButton)
   encounterOptionsGroup:AddChild(deleteButton)
 
   container:AddChild(encounterOptionsGroup)
+  container:AddChild(encounterVersionOptionsGroup)
   container:AddChild(overviewGroup)
 end

@@ -213,20 +213,24 @@ function Core.GenerateCustomPlaceholdersTree()
 end
 
 function Core.GenerateEncounterTree(encounter)
+  local selectedEncounter = encounter.versions[(encounter.selectedVersion or 1)]
   -- Ensure that encounter has all trigger tables!
-  PRT.EnsureEncounterTrigger(encounter)
+  PRT.EnsureEncounterTrigger(selectedEncounter)
 
   local t = {
     value = encounter.id,
-    text = Core.DisabledText(encounter.name, encounter.enabled),
-    children = {
-      Core.GenerateTimersTree(encounter.Timers),
-      Core.GenerateRotationsTree(encounter.Rotations),
-      Core.GenerateHealthPercentagesTree(encounter.HealthPercentages),
-      Core.GeneratePowerPercentagesTree(encounter.PowerPercentages),
+    text = Core.DisabledText(encounter.name.."("..encounter.selectedVersion..")", encounter.enabled),
+  }
+
+  if selectedEncounter then
+    t.children =  {
+      Core.GenerateTimersTree(selectedEncounter.Timers),
+      Core.GenerateRotationsTree(selectedEncounter.Rotations),
+      Core.GenerateHealthPercentagesTree(selectedEncounter.HealthPercentages),
+      Core.GeneratePowerPercentagesTree(selectedEncounter.PowerPercentages),
       Core.GenerateCustomPlaceholdersTree()
     }
-  }
+  end
 
   return t
 end
@@ -239,9 +243,13 @@ function Core.GenerateEncountersTree(encounters)
     text = L["Encounter"],
     children = children
   }
+
   PRT.SortTableByName(encounters)
+
   for _, encounter in ipairs(encounters) do
-    tinsert(children, Core.GenerateEncounterTree(encounter))
+    if encounter.versions then
+      tinsert(children, Core.GenerateEncounterTree(encounter))
+    end
   end
 
   return t
@@ -286,7 +294,7 @@ function Core.OnGroupSelected(container, key, profile)
   local mainKey, encounterID, triggerType, triggerName = strsplit("\001", key)
 
   if encounterID then
-    local _, selectedEncounter = PRT.TableUtils.GetBy(profile.encounters, "id", tonumber(encounterID))
+    local _, selectedEncounter = PRT.GetSelectedVersionEncounterByID(profile.encounters, tonumber(encounterID))
     PRT.currentEncounter = {}
     PRT.currentEncounter.encounter = selectedEncounter
   end
@@ -307,6 +315,8 @@ function Core.OnGroupSelected(container, key, profile)
   elseif encounterID and not triggerType and not triggerName then
     PRT.AddEncounterOptions(container, profile, encounterID)
 
+    -- TODO Provide encounter directly
+
     -- encounter trigger type selected
   elseif triggerType and not triggerName then
     if triggerType == "timers" then
@@ -317,6 +327,8 @@ function Core.OnGroupSelected(container, key, profile)
       PRT.AddHealthPercentageOptions(container, profile, encounterID)
     elseif triggerType == "powerPercentages" then
       PRT.AddPowerPercentageOptions(container, profile, encounterID)
+    elseif triggerType == "bossMods" then
+      PRT.AddBossModOptions(container, profile, encounterID)
     elseif triggerType == "customPlaceholders" then
       PRT.AddCustomPlaceholderOptions(container, profile, encounterID)
     end

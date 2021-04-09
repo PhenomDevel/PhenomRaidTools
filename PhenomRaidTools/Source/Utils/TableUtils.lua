@@ -50,9 +50,9 @@ end
 
 function TableUtils.GetBy(t, key, expectedValue)
   if t then
-    for i, v in ipairs(t) do
+    for idx, v in ipairs(t) do
       if v[key] == expectedValue then
-        return i, v
+        return idx, v
       end
     end
   end

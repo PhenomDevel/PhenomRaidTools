@@ -137,11 +137,9 @@ end
 -------------------------------------------------------------------------------
 -- Encounter
 
-function PRT.EmptyEncounter()
+function PRT.EmptyEncounterVersion(encounterName)
   return {
-    enabled = true,
-    id = random(0,100000),
-    name = "Encounter Name"..random(0,100000),
+    name = encounterName.." Version 1",
     Timers = {
     },
 
@@ -153,8 +151,30 @@ function PRT.EmptyEncounter()
 
     PowerPercentages = {
     },
+
     CustomPlaceholders = {
 
+    }
+  }
+end
+
+function PRT.NewEncounterVersion(encounter)
+  local encounterVersion = PRT.EmptyEncounterVersion("")
+  encounterVersion.name = encounter.name.." Version "..(PRT.TableUtils.Count(encounter.versions) + 1)
+  encounterVersion.enabled = true
+
+  return encounterVersion
+end
+
+function PRT.EmptyEncounter()
+  local name = "Encounter Name"..random(0,100000)
+  return {
+    enabled = true,
+    id = random(0,100000),
+    name = name,
+    selectedVersion = 1,
+    versions = {
+      [1] = PRT.EmptyEncounterVersion(name)
     }
   }
 end

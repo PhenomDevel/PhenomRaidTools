@@ -169,7 +169,7 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
     wipe(PRT.db.profile.debugLog)
 
     if PRT.IsSender() then
-      local _, encounter = PRT.TableUtils.GetBy(PRT.db.profile.encounters, "id", encounterID)
+      local _, encounter = PRT.GetSelectedVersionEncounterByID(PRT.db.profile.encounters, encounterID)--PRT.TableUtils.GetBy(PRT.db.profile.encounters, "id", encounterID)
 
       if encounter then
         if encounter.enabled then

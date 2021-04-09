@@ -232,6 +232,16 @@ function PRT.EnsureEncounterTrigger(encounter)
   end
 end
 
+function PRT.GetEncounterById(encounters, id)
+  local _, encounter = PRT.TableUtils.GetBy(encounters, "id", id)
+  return id, encounter
+end
+
+function PRT.GetSelectedVersionEncounterByID(encounters, id)
+  local _, encounter = PRT.TableUtils.GetBy(encounters, "id", id)
+  return id, encounter.versions[encounter.selectedVersion]
+end
+
 
 -------------------------------------------------------------------------------
 -- String Helper
@@ -363,6 +373,14 @@ end
 
 function PRT.RGBAToHex(r,g,b,a)
   return format("%02x%02x%02x%02x", (a * 255), (r * 255), (g * 255), (b * 255))
+end
+
+
+-------------------------------------------------------------------------------
+-- Date Helper
+
+function PRT.Now()
+  return date("%d.%m.%y - %H:%M:%S")
 end
 
 

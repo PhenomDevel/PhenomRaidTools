@@ -149,7 +149,7 @@ end
 -- Public API
 
 function PRT.AddTimerOptionsWidgets(container, profile, encounterID)
-  local _, encounter = PRT.TableUtils.GetBy(profile.encounters, "id", tonumber(encounterID))
+  local _, encounter = PRT.GetSelectedVersionEncounterByID(profile.encounters, tonumber(encounterID))
   local timers = encounter.Timers
 
   local timerOptionsGroup = PRT.InlineGroup(L["Options"])
@@ -185,7 +185,7 @@ function PRT.AddTimerOptionsWidgets(container, profile, encounterID)
 end
 
 function PRT.AddTimerWidget(container, profile, encounterID, timerName)
-  local _, encounter = PRT.TableUtils.GetBy(profile.encounters, "id", encounterID)
+  local _, encounter = PRT.GetSelectedVersionEncounterByID(profile.encounters, encounterID)
   local timers = encounter.Timers
 
   Timer.TimerWidget(timerName, timers, container)
