@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.5.2-BETA
+## Bugfixes
+ - Do not throw an exception when you don't have a routine for a boss you pulled
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.5.1-BETA
 ## Bugfixes
  - Actually add example encounter to encounter list on new profile

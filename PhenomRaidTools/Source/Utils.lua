@@ -239,7 +239,10 @@ end
 
 function PRT.GetSelectedVersionEncounterByID(encounters, id)
   local _, encounter = PRT.TableUtils.GetBy(encounters, "id", id)
-  return id, encounter.versions[encounter.selectedVersion]
+
+  if encounter then
+    return id, encounter.versions[encounter.selectedVersion]
+  end
 end
 
 

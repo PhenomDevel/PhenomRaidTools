@@ -74,6 +74,11 @@ L[ [=[Can be either of
 - spell name known to the player character]=] ] = [=[Kann eins der folgenden sein
 - valide eindeutige Zauber-ID
 - Zaubername, welcher dem Charakter bekannt ist]=]
+L["Can be either of\\n- Player name\\n- Custom Placeholder (e.g. $tank1)\\n- $target (event target)\\n- TANK, HEALER, DAMAGER"] = [=[Kann eins der folgenden sein
+- Spielername
+- Benutzerdefinierter Platzhalter
+- $target (Event-Ziel)
+- TANK, HEALER, DAMAGER]=]
 L["Cancel"] = "Abbrechen"
 L["Check after"] = "Prüfen nach"
 L["Check again"] = "Erneut prüfen"

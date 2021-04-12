@@ -395,7 +395,7 @@ local function AddAdvancedActionWidgets(container, message)
 
   local targetGroup = PRT.SimpleGroup()
   targetGroup:SetLayout("Flow")
-  local targetsEditBox = PRT.EditBox(L["Targets"], L["Can be either of\n- Player name\n- Custom Placeholder (e.g. $tank1)\n- $target (event target)"], targetsString, true)
+  local targetsEditBox = PRT.EditBox(L["Targets"], L["Can be either of\n- Player name\n- Custom Placeholder (e.g. $tank1)\n- $target (event target)\n- TANK, HEALER, DAMAGER"], targetsString, true)
   targetsEditBox:SetRelativeWidth(0.6)
 
   local targetsPreviewLabel = PRT.Label(L["Preview: "]..PRT.PrepareMessageForDisplay(targetsPreviewString))
@@ -646,7 +646,7 @@ function PRT.MessageWidget(message, container, saveableAsTemplate)
   elseif message.type == "raidwarning" then
     AddRaidWarningActionWidgets(container, message)
   elseif message.type == "raidmark" then
-    
+
   else
     AddAdvancedActionWidgets(container, message)
   end

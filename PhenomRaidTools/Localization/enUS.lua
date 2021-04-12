@@ -62,6 +62,7 @@ L[ [=[Can be either of
 L[ [=[Can be either of
 - valid unique spell ID
 - spell name known to the player character]=] ] = true
+L["Can be either of\\n- Player name\\n- Custom Placeholder (e.g. $tank1)\\n- $target (event target)\\n- TANK, HEALER, DAMAGER"] = true
 L["Cancel"] = true
 L["Check after"] = true
 L["Check again"] = true
