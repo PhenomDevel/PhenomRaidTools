@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.5.3-BETA
+## Bugfixes
+None
+
+## Features
+ - Cleanup
+
+
+===============================================================================
 # Release 2.5.2-BETA
 ## Bugfixes
  - Do not throw an exception when you don't have a routine for a boss you pulled
