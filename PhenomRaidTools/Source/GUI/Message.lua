@@ -261,10 +261,10 @@ end
 
 local function AddRaidWarningActionWidgets(container, action)
   local messagePreviewLabel = PRT.Label(L["Preview: "]..PRT.PrepareMessageForDisplay(action.message))
-  messagePreviewLabel:SetFullWidth(true)
+  messagePreviewLabel:SetRelativeWidth(1)
 
   local messageEditBox = PRT.EditBox(L["Message"], nil, action.message, true)
-  messageEditBox:SetFullWidth(true)
+  messageEditBox:SetRelativeWidth(1)
   messageEditBox:SetCallback("OnEnterPressed",
     function(widget)
       local text = widget:GetText()
@@ -399,7 +399,7 @@ local function AddAdvancedActionWidgets(container, message)
   targetsEditBox:SetRelativeWidth(0.6)
 
   local targetsPreviewLabel = PRT.Label(L["Preview: "]..PRT.PrepareMessageForDisplay(targetsPreviewString))
-  targetsPreviewLabel:SetFullWidth(true)
+  targetsPreviewLabel:SetRelativeWidth(1)
 
   local raidRosterDropdown = PRT.Dropdown(L["Add Target"], L["Selected player/placeholder will be\nadded to the list of targets."], raidRosterItems)
   raidRosterDropdown:SetRelativeWidth(0.4)
@@ -446,9 +446,9 @@ local function AddAdvancedActionWidgets(container, message)
     end)
 
   local messagePreviewLabel = PRT.Label(L["Preview: "]..PRT.PrepareMessageForDisplay(message.message))
-  messagePreviewLabel:SetFullWidth(true)
+  messagePreviewLabel:SetRelativeWidth(1)
   local messageEditBox = PRT.EditBox(L["Message"], L["Supports following special symbols\n- $target (event target)\n- Custom placeholders (e.g. $tank1)\n- Spell icons (e.g. {spell:17}\n- Raidmarks (e.g. {rt1})"], message.message, true)
-  messageEditBox:SetFullWidth(true)
+  messageEditBox:SetRelativeWidth(1)
   messageEditBox:SetCallback("OnEnterPressed",
     function(widget)
       local text = widget:GetText()
