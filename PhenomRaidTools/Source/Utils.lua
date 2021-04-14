@@ -203,11 +203,6 @@ function PRT.CompareByName(a, b)
   return a.name < b.name
 end
 
-function PRT.SortTableByName(t)
-  table.sort(t, PRT.CompareByName)
-end
-
-
 
 -------------------------------------------------------------------------------
 -- Encounter Helper

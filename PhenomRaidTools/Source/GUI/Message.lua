@@ -201,7 +201,7 @@ function Message.GenerateRaidRosterDropdownItems()
   tinsert(raidRosterItems, { id = "$target", name = "$target"})
 
   raidRosterItems = table.mergecopy(raidRosterItems, Message.ColoredRaidPlayerNames())
-  PRT.SortTableByName(raidRosterItems)
+  PRT.TableUtils.SortByKey(raidRosterItems, "name")
   return raidRosterItems
 end
 

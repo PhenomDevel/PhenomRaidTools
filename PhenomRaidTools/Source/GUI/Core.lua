@@ -244,7 +244,7 @@ function Core.GenerateEncountersTree(encounters)
     children = children
   }
 
-  PRT.SortTableByName(encounters)
+  PRT.TableUtils.SortByKey(encounters, "name")
 
   for _, encounter in ipairs(encounters) do
     if encounter.versions then
