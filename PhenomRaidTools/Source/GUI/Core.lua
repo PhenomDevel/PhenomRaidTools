@@ -95,7 +95,7 @@ function Core.GeneratePercentagesTree(percentages)
 
   if percentages then
     if getn(percentages) > 0 then
-      PRT.SortTableByName(percentages)
+      PRT.TableUtils.SortByKey(percentages, "name")
       t.children = children
       for _, percentage in ipairs(percentages) do
         tinsert(children, Core.GeneratePercentageTree(percentage))
@@ -153,7 +153,7 @@ function Core.GenerateRotationsTree(rotations)
 
   if rotations then
     if getn(rotations) > 0 then
-      PRT.SortTableByName(rotations)
+      PRT.TableUtils.SortByKey(rotations, "name")
       t.children = children
       for _, rotation in ipairs(rotations) do
         tinsert(children, Core.GenerateRotationTree(rotation))
@@ -190,7 +190,7 @@ function Core.GenerateTimersTree(timers)
 
   if timers then
     if getn(timers) > 0 then
-      PRT.SortTableByName(timers)
+      PRT.TableUtils.SortByKey(timers, "name")
       t.children = children
       for _, timer in ipairs(timers) do
         tinsert(children, Core.GenerateTimerTree(timer))
