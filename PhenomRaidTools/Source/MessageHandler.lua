@@ -4,8 +4,8 @@ local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 local AceComm = LibStub("AceComm-3.0")
 
 -- Create local copies of API functions which we use
-local UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat, UnitIsGroupAssistant, SendChatMessage, UnitIsGroupLeader =
-  UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat, UnitIsGroupAssistant, SendChatMessage, UnitIsGroupLeader
+local UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat, UnitIsGroupAssistant, SendChatMessage, UnitIsGroupLeader, GetRealmName =
+  UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat, UnitIsGroupAssistant, SendChatMessage, UnitIsGroupLeader, GetRealmName
 
 local MessageHandler = {
   validTargets = {
@@ -19,7 +19,8 @@ local MessageHandler = {
   validPlayerTargets = {
     "ALL",
     UnitName("player"),
-    GetUnitName("player", true)
+    GetUnitName("player", true),
+    UnitName("player").."-"..GetRealmName()
   }
 }
 
