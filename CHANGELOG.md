@@ -1,4 +1,16 @@
 ===============================================================================
+# Release 2.5.5-BETA
+## Bugfixes
+ - Encounter versions are now always enabled
+
+## Features
+ - Move encounter start debug logging to better position
+ - Add created at for encounter versions
+ - Add more specific phase 2 condition preset for sire denathrius
+ - Rename old phase 2 condition preset of sire denathrius to intermission start
+
+
+===============================================================================
 # Release 2.5.4-BETA
 ## Bugfixes
 None
