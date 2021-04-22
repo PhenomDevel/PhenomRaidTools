@@ -74,8 +74,15 @@ local encounterPhaseMapping = {
   },
   -- Sire Denathrius
   [2407] = {
-    { id = "phase2start", name = L["Phase 2 Start"], event = "SPELL_CAST_START", spellID = 328117},
+    { id = "intermission1Start", name = L["Intermission 1 Start"], event = "SPELL_CAST_START", spellID = 328117},
+    { id = "phase2start", name = L["Phase 2 Start"], event = "SPELL_CAST_SUCCESS", spellID = 329697},
     { id = "phase3start", name = L["Phase 3 Start"], event = "SPELL_CAST_SUCCESS", spellID = 326005},
+  },
+
+  -- Sanctum of Domination
+  -- Guardian of the First Ones
+  [2436] = {
+    { id = "intermissionStart", name = L["Intermission Start"], event = "SPELL_AURA_APPLIED", spellID = 352385 }
   }
 }
 
