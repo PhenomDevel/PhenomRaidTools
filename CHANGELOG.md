@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.5.6-BETA
+## Bugfixes
+None
+
+## Features
+ - Make sure character name with realm name is also a valid target
+
+
+===============================================================================
 # Release 2.5.5-BETA
 ## Bugfixes
  - Encounter versions are now always enabled
