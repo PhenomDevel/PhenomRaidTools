@@ -1,4 +1,14 @@
 ===============================================================================
+# Release 2.7.0-BETA
+## Bugfixes
+None
+
+## Features
+ - Add new action type raid target
+   - With this you can set raid targets to specific players in your group
+
+
+===============================================================================
 # Release 2.6.0
 
 

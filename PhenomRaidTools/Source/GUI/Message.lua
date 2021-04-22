@@ -280,6 +280,30 @@ local function AddRaidWarningActionWidgets(container, action)
   container:AddChild(note)
 end
 
+local function AddRaidTargetActionWidgets(container, action)
+  local possibleTargets = Message.ColoredRaidPlayerNames()
+  local targetDropdown = PRT.Dropdown(L["Target"], L["Player who should be marked"], possibleTargets, action.targets[1], true)
+  local raidTargetDropdown = PRT.Dropdown(L["Raidtarget"], nil, PRT.Static.Tables.RaidTargets, action.raidtarget, true)
+
+  targetDropdown:SetCallback("OnValueChanged",
+    function(widget)
+      wipe(action.targets)
+      tinsert(action.targets, widget:GetValue())
+    end)
+
+  raidTargetDropdown:SetCallback("OnValueChanged",
+    function(widget)
+      local value = widget:GetValue()
+      if value == 999 then
+        value = 0
+      end
+      action.raidtarget = value
+    end)
+
+  container:AddChild(targetDropdown)
+  container:AddChild(raidTargetDropdown)
+end
+
 local function AddCooldownActionWidgets(container, action)
   local possibleTargets = Message.GenerateRaidRosterDropdownItems()
   local possibleCooldowns = Message.CompilePossibleCooldownItems()
@@ -546,7 +570,7 @@ local function SetActionTypeDefaults(action)
   -- Nothing for now
   elseif action.type == "raidwarning" then
   -- Nothing for now
-  elseif action.type == "raidmark" then
+  elseif action.type == "raidtarget" then
   -- Nothing for now
   end
 end
@@ -562,9 +586,9 @@ local function AddActionTypeWidgets(container, action)
       name = L["Raidwarning"]
     },
     [3] = {
-      id = "raidmark",
-      name = L["Raidmark"],
-      disabled = true
+      id = "raidtarget",
+      name = L["Raidtarget"],
+    -- disabled = true
     },
     [4] = {
       id = "advanced",
@@ -645,8 +669,8 @@ function PRT.MessageWidget(message, container, saveableAsTemplate)
     AddLoadTemplateActionWidgets(container, message)
   elseif message.type == "raidwarning" then
     AddRaidWarningActionWidgets(container, message)
-  elseif message.type == "raidmark" then
-
+  elseif message.type == "raidtarget" then
+    AddRaidTargetActionWidgets(container, message)
   else
     AddAdvancedActionWidgets(container, message)
   end

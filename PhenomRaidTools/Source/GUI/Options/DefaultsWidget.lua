@@ -103,8 +103,8 @@ local function AddMessageDefaultWidgets(container, t)
       name = L["Raidwarning"]
     },
     [3] = {
-      id = "raidmark",
-      name = L["Raidmark"],
+      id = "raidtarget",
+      name = L["Raidtarget"],
       disabled = true
     },
     [4] = {

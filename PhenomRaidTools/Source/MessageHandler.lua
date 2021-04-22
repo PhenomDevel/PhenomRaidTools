@@ -3,9 +3,8 @@ local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local AceComm = LibStub("AceComm-3.0")
 
--- Create local copies of API functions which we use
-local UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat, UnitIsGroupAssistant, SendChatMessage, UnitIsGroupLeader, GetRealmName =
-  UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat, UnitIsGroupAssistant, SendChatMessage, UnitIsGroupLeader, GetRealmName
+local UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat, UnitIsGroupAssistant, SendChatMessage, UnitIsGroupLeader, GetRealmName, GetRaidTargetIndex, SetRaidTarget =
+  UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat, UnitIsGroupAssistant, SendChatMessage, UnitIsGroupLeader, GetRealmName, GetRaidTargetIndex, SetRaidTarget
 
 local MessageHandler = {
   validTargets = {
@@ -69,8 +68,29 @@ local function ExecuteRaidWarning(message)
   end
 end
 
-local function ExecuteRaidMark(message)
+local function ExecuteRaidTarget(message)
+  if message.targets and message.targets[1] then
+    local target = message.targets[1]
+    local raidTargetName = "N/A"
 
+    if message.raidtarget then
+      raidTargetName = PRT.Static.Tables.RaidTargets[message.raidtarget].name
+    end
+
+    if PRT.db.profile.testMode then
+      target = "player"
+      PRT.Debug("Overwriting target raidtarget action to", PRT.HighlightString("player"), "due to test mode")
+    end
+
+    if PRT.db.profile.testMode or (UnitInRaid(target) and UnitExists(target)) then
+      if not (GetRaidTargetIndex(target) == message.raidtarget) then
+        PRT.Debug("Setting raid target", raidTargetName, "for unit", PRT.HighlightString(target))
+        SetRaidTarget(target, message.raidtarget)
+      else
+        PRT.Debug("Skipped setting raid target", raidTargetName, "because unit already has this raid target")
+      end
+    end
+  end
 end
 
 local function ExecuteMessage(message)
@@ -109,8 +129,8 @@ end
 function MessageHandler.ExecuteMessageAction(message)
   if message.type == "raidwarning" then
     ExecuteRaidWarning(message)
-  elseif message.type == "raidmark" then
-    ExecuteRaidMark(message)
+  elseif message.type == "raidtarget" then
+    ExecuteRaidTarget(message)
   else
     ExecuteMessage(message)
   end

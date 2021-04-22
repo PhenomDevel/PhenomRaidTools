@@ -281,7 +281,7 @@ function PRT.TextureString(id, size)
   end
 end
 
-function PRT.ExchangeRaidMarker(s)
+function PRT.ExchangeRaidTargets(s)
   return string.gsub(s, "{rt([^}])}", "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%1:16|t")
 end
 
@@ -362,7 +362,7 @@ end
 
 function PRT.PrepareMessageForDisplay(s)
   if s then
-    local updatedString = PRT.ReplacePlayerNameTokens(PRT.ExchangeSpellIcons(PRT.ExchangeRaidMarker(s:gsub("||", "|"))))
+    local updatedString = PRT.ReplacePlayerNameTokens(PRT.ExchangeSpellIcons(PRT.ExchangeRaidTargets(s:gsub("||", "|"))))
     return updatedString
   else
     return ""
