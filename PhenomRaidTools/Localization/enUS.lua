@@ -86,6 +86,7 @@ L["Confirmation"] = true
 L["Cooldown"] = true
 L["Copy"] = true
 L["Countdown"] = true
+L["Created at:"] = true
 L["Custom Placeholder"] = true
 L["Custom Placeholders"] = true
 L["Custom Sound"] = true

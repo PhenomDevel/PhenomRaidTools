@@ -15,6 +15,19 @@ local Encounter = {
     { id = 2399, name = L["CN - Sludgefist"] },
     { id = 2417, name = L["CN - Stone Legion Generals"] },
     { id = 2407, name = L["CN - Sire Denathrius"] },
+
+    -- Sanctum of Domination
+    { id = 10999, name = L["--- Sanctum of Domination ---"], disabled = true},
+    { id = 2423, name = L["SoD - The Tarragrue"] },
+    { id = 10000, name = L["SoD - The Eye of the Jailer"] },
+    { id = 10001, name = L["SoD - The Nine"] },
+    { id = 10002, name = L["SoD - Remnant of Ner'zhul"] },
+    { id = 10003, name = L["SoD - Soulrender Dormazain"] },
+    { id = 10004, name = L["SoD - Painsmith Raznal"] },
+    { id = 2436, name = L["SoD - Guardian of the First Ones"] },
+    { id = 10005, name = L["SoD - Fatescribe Roh-Kalo"] },
+    { id = 10006, name = L["SoD - Kel'Thuzad"] },
+    { id = 10007, name = L["SoD - Sylvanas Windrunner"] },
   }
 }
 
@@ -113,6 +126,7 @@ local function importVersionSuccess(encounter, encounterVersionData)
     PRT.ConfirmationDialog(L["Encounter found. Do you want to import the new version?"],
       function()
         encounterVersionData.name = encounterVersionData.name.." - Import: "..PRT.Now()
+        encounterVersionData.createdAt = PRT.Now()
         tinsert(encounter.versions, encounterVersionData)
         encounter.selectedVersion = PRT.TableUtils.Count(encounter.versions)
         PRT.Info("Encounter version imported successfully.")
@@ -147,11 +161,20 @@ local function AddVersionWidgets(container, profile, encounterID)
   local activeVersionDropdown = PRT.Dropdown(L["Select version"], nil, versionNames)
   local versionNameEditBox = PRT.EditBox(L["Version name"], nil, selectedVersionEncounterName)
 
+  local createdAt = "N/A"
+
+  if selectedVersionEncounter and selectedVersionEncounter.createdAt then
+    createdAt = selectedVersionEncounter.createdAt
+  end
+
+  local versionCreatedAtLabel = PRT.Label(L["Created at:"].." "..createdAt)
   local newVersionButton = PRT.Button(L["New"])
   local cloneVersionButton = PRT.Button(L["Clone"])
   local deleteVersionButton = PRT.Button(L["Delete"])
   local importVersionButton = PRT.Button(L["Import"])
   local exportVersionButton = PRT.Button(L["Export"])
+
+  versionCreatedAtLabel:SetRelativeWidth(1)
 
   activeVersionDropdown:SetDisabled(not selectedVersionEncounter)
   activeVersionDropdown:SetRelativeWidth(1)
@@ -178,7 +201,9 @@ local function AddVersionWidgets(container, profile, encounterID)
 
   newVersionButton:SetCallback("OnClick",
     function()
-      tinsert(encounter.versions, PRT.NewEncounterVersion(encounter))
+      local newEncounterVersion = PRT.NewEncounterVersion(encounter)
+      newEncounterVersion.createdAt = PRT.Now()
+      tinsert(encounter.versions, newEncounterVersion)
       encounter.selectedVersion = PRT.TableUtils.Count(encounter.versions)
       PRT.Core.UpdateTree()
       refreshContainer()
@@ -188,6 +213,7 @@ local function AddVersionWidgets(container, profile, encounterID)
     function()
       local clonedEncounterVersion = PRT.TableUtils.Clone(selectedVersionEncounter)
       clonedEncounterVersion.name = clonedEncounterVersion.name.." - Clone: "..PRT.Now()
+      clonedEncounterVersion.createdAt = PRT.Now()
       tinsert(encounter.versions, clonedEncounterVersion)
       encounter.selectedVersion = PRT.TableUtils.Count(encounter.versions)
       PRT.Core.UpdateTree()
@@ -220,6 +246,11 @@ local function AddVersionWidgets(container, profile, encounterID)
 
   container:AddChild(versionNameEditBox)
   container:AddChild(activeVersionDropdown)
+
+  if selectedVersionEncounter then
+    container:AddChild(versionCreatedAtLabel)
+  end
+
   container:AddChild(newVersionButton)
   container:AddChild(cloneVersionButton)
   container:AddChild(deleteVersionButton)

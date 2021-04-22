@@ -106,6 +106,7 @@ L["Confirmation"] = "Bestätigung"
 L["Cooldown"] = "Zauber"
 L["Copy"] = "Kopieren"
 L["Countdown"] = true
+L["Created at:"] = "Erstellt am:"
 L["Custom Placeholder"] = "Benutzerdefinierter Platzhalter"
 L["Custom Placeholders"] = "Benutzerdefinierte Platzhalter"
 L["Custom Sound"] = "Benutzerdefinierter Sound"

@@ -139,6 +139,7 @@ end
 
 function PRT.EmptyEncounterVersion(encounterName)
   return {
+    enabled = true,
     name = encounterName.." Version 1",
     Timers = {
     },
