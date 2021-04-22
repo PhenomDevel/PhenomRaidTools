@@ -169,12 +169,12 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
     wipe(PRT.db.profile.debugLog)
 
     if PRT.IsSender() then
-      local _, encounter = PRT.GetSelectedVersionEncounterByID(PRT.db.profile.encounters, encounterID)--PRT.TableUtils.GetBy(PRT.db.profile.encounters, "id", encounterID)
+      PRT.Debug("Starting new encounter", PRT.HighlightString(encounterName),"(", PRT.HighlightString(encounterID), ")" , "|r")
+      local _, encounter = PRT.GetSelectedVersionEncounterByID(PRT.db.profile.encounters, encounterID)
 
       if encounter then
         if encounter.enabled then
           PRT.currentEncounter = NewEncounter()
-          PRT.Debug("Starting new encounter", PRT.HighlightString(encounterName),"(", PRT.HighlightString(encounterID), ")" , "|r")
           PRT.Debug(L["Running PhenomRaidTools version %s"]:format(PRT.HighlightString(PRT.db.profile.version)))
 
           PRT.EnsureEncounterTrigger(encounter)
