@@ -45,55 +45,55 @@ PRT.Static = {
     SupportedEvents = {
       {
         id = "ENCOUNTER_START",
-        name = L["Encounter start"]..(" - ENCOUNTER_START")
+        name = L["Encounter start"].." - |cFF69CCF0ENCOUNTER_START|r"
       },
       {
         id = "ENCOUNTER_END",
-        name = L["Encounter end"].." - ENCOUNTER_END"
+        name = L["Encounter end"].." - |cFF69CCF0ENCOUNTER_END|r"
       },
       {
         id = "SPELL_CAST_SUCCESS",
-        name = L["Spell cast successfully"].." - SPELL_CAST_SUCCESS"
+        name = L["Spell cast successfully"].." - |cFF69CCF0SPELL_CAST_SUCCESS|r"
       },
       {
         id = "SPELL_CAST_START",
-        name = L["Spell cast started"].." - SPELL_CAST_START"
+        name = L["Spell cast started"].." - |cFF69CCF0SPELL_CAST_START|r"
       },
       {
         id = "SPELL_CAST_FAILED",
-        name = L["Spell cast canceled"].." - SPELL_CAST_FAILED"
+        name = L["Spell cast canceled"].." - |cFF69CCF0SPELL_CAST_FAILED|r"
       },
       {
         id = "SPELL_AURA_REMOVED",
-        name = L["Buff/Debuff removed"].." - SPELL_AURA_REMOVED"
+        name = L["Buff/Debuff removed"].." - |cFF69CCF0SPELL_AURA_REMOVED|r"
       },
       {
         id = "SPELL_AURA_APPLIED",
-        name = L["Buff/Debuff applied"].." - SPELL_AURA_APPLIED"
+        name = L["Buff/Debuff applied"].." - |cFF69CCF0SPELL_AURA_APPLIED|r"
       },
       {
         id = "SPELL_AURA_REFRESH",
-        name = L["Buff/Debuff refreshed"].." - SPELL_AURA_REFRESH"
+        name = L["Buff/Debuff refreshed"].." - |cFF69CCF0SPELL_AURA_REFRESH|r"
       },
       {
         id = "SPELL_INTERRUPT",
-        name = L["Spell interrupted"].." - SPELL_INTERRUPT"
+        name = L["Spell interrupted"].." - |cFF69CCF0SPELL_INTERRUPT|r"
       },
       {
         id = "PLAYER_REGEN_DISABLED",
-        name = L["Player entered combat"].." - PLAYER_REGEN_DISABLED"
+        name = L["Player entered combat"].." - |cFF69CCF0PLAYER_REGEN_DISABLED|r"
       },
       {
         id = "PLAYER_REGEN_ENABLED",
-        name = L["Player left combat"].." - PLAYER_REGEN_ENABLED"
+        name = L["Player left combat"].." - |cFF69CCF0PLAYER_REGEN_ENABLED|r"
       },
       {
         id = "UNIT_DIED",
-        name = L["Unit died"].." - UNIT_DIED"
+        name = L["Unit died"].." - |cFF69CCF0UNIT_DIED|r"
       },
       {
         id = "PARTY_KILL",
-        name = L["Unit killed"].." - PARTY_KILL"
+        name = L["Unit killed"].." - |cFF69CCF0PARTY_KILL|r"
       },
     }
   }
