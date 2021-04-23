@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.7.1
+## Bugfixes
+ - Make sure encounter id is set for new version aswell
+
+## Features
+ - Add description for condition events
+
+
+===============================================================================
 # Release 2.7.0-BETA
 ## Bugfixes
 None
