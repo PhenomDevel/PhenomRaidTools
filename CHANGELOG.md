@@ -1,4 +1,14 @@
 ===============================================================================
+# Release 2.7.3
+## Bugfixes
+None
+
+## Features
+ - Highlight event name in condition dropdown
+ - Add created at on first version of an encounter aswell
+
+
+===============================================================================
 # Release 2.7.2
 ## Bugfixes
 None
