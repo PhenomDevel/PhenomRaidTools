@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.7.2
+## Bugfixes
+None
+
+## Features
+ - Add missing locals
+
+
+===============================================================================
 # Release 2.7.1
 ## Bugfixes
  - Make sure encounter id is set for new version aswell
