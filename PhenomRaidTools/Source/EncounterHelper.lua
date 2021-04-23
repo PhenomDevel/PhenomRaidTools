@@ -142,6 +142,7 @@ function PRT.EmptyEncounterVersion(encounterId, encounterName)
     id = encounterId,
     enabled = true,
     name = encounterName.." Version 1",
+    createdAt = PRT.Now(),
     Timers = {
     },
 

@@ -202,7 +202,6 @@ local function AddVersionWidgets(container, profile, encounterID)
   newVersionButton:SetCallback("OnClick",
     function()
       local newEncounterVersion = PRT.NewEncounterVersion(encounter)
-      newEncounterVersion.createdAt = PRT.Now()
       tinsert(encounter.versions, newEncounterVersion)
       encounter.selectedVersion = PRT.TableUtils.Count(encounter.versions)
       PRT.Core.UpdateTree()
