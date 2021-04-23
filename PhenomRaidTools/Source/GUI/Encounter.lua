@@ -350,7 +350,7 @@ function PRT.AddEncounterOptions(container, profile, encounterID)
   encounterIDEditBox:SetCallback("OnEnterPressed",
     function(widget)
       local id = tonumber(widget:GetText())
-      local _, existingEncounter = PRT.GetSelectedVersionEncounterByID(profile.encounters, id)
+      local _, existingEncounter = PRT.GetEncounterById(profile.encounters, id)
 
       if not existingEncounter then
         if id ~= "" and id ~= nil then
