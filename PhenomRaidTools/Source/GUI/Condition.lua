@@ -1,26 +1,6 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
-local Condition = {
-  defaultEvents = {
-    "SPELL_CAST_SUCCESS",
-    "SPELL_CAST_START",
-    "SPELL_CAST_FAILED",
-    "SPELL_AURA_REMOVED",
-    "SPELL_AURA_APPLIED",
-    "SPELL_AURA_APPLIED_DOSE",
-    "SPELL_AURA_REMOVED_DOSE",
-    "SPELL_AURA_REFRESH",
-    "SPELL_INTERRUPT",
-    "ENCOUNTER_START",
-    "ENCOUNTER_END",
-    "PLAYER_REGEN_DISABLED",
-    "PLAYER_REGEN_ENABLED",
-    "UNIT_DIED",
-    "PARTY_KILL"
-  }
-}
-
 local encounterPhaseMapping = {
   -- Shriekwing
   [2398] = {
@@ -110,26 +90,27 @@ end
 function PRT.ConditionWidget(condition, textID)
   local conditionGroup = PRT.InlineGroup(textID)
 
-  -- Generate event list
-  local additionalEvents = PRT.db.profile.triggerDefaults.conditionDefaults.additionalEvents
-  local conditionEventsFull = table.mergecopy(Condition.defaultEvents, additionalEvents)
-
   -- Create new group for spell inputs
-  local eventDropDown = PRT.Dropdown(L["Event"], nil, conditionEventsFull, condition.event, true)
+  local eventDropDown = PRT.Dropdown(L["Event"], nil, PRT.Static.Tables.SupportedEvents, condition.event, true)
+  eventDropDown:SetWidth(400)
   local spellIDEditBox = PRT.EditBox(L["Spell"], L["Can be either of\n- valid unique spell ID\n- spell name known to the player character"], condition.spellID, true)
+  spellIDEditBox:SetWidth(400)
 
   local eventGroup = PRT.SimpleGroup()
   local spellIcon = PRT.Icon(condition.spellID)
 
   local targetEditBox = PRT.EditBox(L["Target"], L["Can be either of\n- Unit-Name\n- Unit-ID (boss1, player ...)\n- NPC-ID"], condition.target, true)
+  targetEditBox:SetWidth(400)
   local sourceEditBox = PRT.EditBox(L["Source"], L["Can be either of\n- Unit-Name\n- Unit-ID (boss1, player ...)\n- NPC-ID"], condition.source, true)
+  sourceEditBox:SetWidth(400)
   local unitGroup = PRT.SimpleGroup()
 
   -- Maybe add preset Dropdown select if anything is define for the currently selected encounter id
-  local encounterPresets = encounterPhaseMapping[PRT.currentEncounter.encounter.id]
+  local encounterPresets = encounterPhaseMapping[tonumber(PRT.currentEncounter.encounter.id)]
+
   if not PRT.TableUtils.IsEmpty(encounterPresets) then
     local presetsDropdown = PRT.Dropdown(L["Encounter Presets"], nil, encounterPresets, true)
-    presetsDropdown:SetWidth(300)
+    presetsDropdown:SetWidth(400)
 
     presetsDropdown:SetCallback("OnValueChanged",
       function(widget, _, key)
@@ -143,7 +124,7 @@ function PRT.ConditionWidget(condition, textID)
         condition.spellIcon = icon
         PRT.UpdateIcon(spellIcon, phasePreset.spellID)
 
-        eventDropDown:SetText(condition.event)
+        eventDropDown:SetValue(condition.event)
         spellIDEditBox:SetText(condition.spellID)
         targetEditBox:SetText(condition.target)
         sourceEditBox:SetText(condition.source)

@@ -158,7 +158,6 @@ local defaults =  {
         defaultCheckAgainAfter = 5,
       },
       conditionDefaults = {
-        additionalEvents = {},
         defaultEvent = "SPELL_CAST_START"
       },
       messageDefaults = {

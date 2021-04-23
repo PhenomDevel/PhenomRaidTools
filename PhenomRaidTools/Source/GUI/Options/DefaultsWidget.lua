@@ -3,7 +3,8 @@ local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local specialWidgetNames = {
   "defaultTargetOverlay",
-  "defaultMessageType"
+  "defaultMessageType",
+  "defaultEvent"
 }
 
 local defaultTranslations = {
@@ -129,6 +130,25 @@ local function AddMessageDefaultWidgets(container, t)
   container:AddChild(targetOverlayDropdown)
 end
 
+local function AddConditionDefaults(container, t)
+  local eventDropDown = PRT.Dropdown(L["Event"], nil, PRT.Static.Tables.SupportedEvents, t.defaultEvent, true)
+  eventDropDown:SetRelativeWidth(1)
+  eventDropDown:SetCallback("OnValueChanged",
+    function(widget)
+      local text = widget:GetValue()
+
+      if text == "" then
+        t.defaultEvent= nil
+      else
+        t.defaultEvent = text
+      end
+
+      widget:ClearFocus()
+    end)
+
+  container:AddChild(eventDropDown)
+end
+
 
 -------------------------------------------------------------------------------
 -- Public API
@@ -146,6 +166,8 @@ function PRT.AddDefaultsGroups(container, options)
 
       if k == "messageDefaults" then
         AddMessageDefaultWidgets(groupWidget, v)
+      elseif k == "conditionDefaults" then
+        AddConditionDefaults(groupWidget, v)
       end
 
       container:AddChild(groupWidget)

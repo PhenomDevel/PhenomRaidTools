@@ -28,8 +28,8 @@ Source/Utils/StringUtils.lua
 Source/Utils/Log.lua
 
 # Source
-Source/Static.lua
 Source/Utils.lua
+Source/Static.lua
 Source/EncounterHelper.lua
 Source/EventHandler.lua
 Source/MessageHandler.lua
