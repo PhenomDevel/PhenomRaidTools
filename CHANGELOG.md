@@ -1,4 +1,15 @@
 ===============================================================================
+# Release 2.7.4
+## Bugfixes
+ - Make sure encounter versions do not disable the execution
+ - Make sure encounter disabled status is the only disabled status
+ - Migrate all encounter versions to be "enabled"
+
+## Features
+None
+
+
+===============================================================================
 # Release 2.7.3
 ## Bugfixes
 None
