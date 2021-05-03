@@ -1,6 +1,9 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
+local AceTimer = LibStub("AceTimer-3.0")
+
+
 -------------------------------------------------------------------------------
 -- Public API
 
@@ -34,6 +37,10 @@ function PRT.AddOptionWidgets(container, profile)
       disabled = not PRT.IsSender()
     },
     {
+      value = "spellDatabase",
+      text = L["Spell Database"],
+    },
+    {
       value = "information",
       text = L["Information"]
     }
@@ -43,6 +50,10 @@ function PRT.AddOptionWidgets(container, profile)
   optionsTabsGroup:SetLayout("Flow")
   optionsTabsGroup:SetCallback("OnGroupSelected",
     function(container, _, key)
+
+      if container.backgroundTimer then
+        AceTimer:CancelTimer(container.backgroundTimer)
+      end
       container:ReleaseChildren()
 
       if key ==  "general" then
@@ -59,6 +70,8 @@ function PRT.AddOptionWidgets(container, profile)
         PRT.AddCustomPlaceholdersWidget(container, PRT.db.profile.customPlaceholders)
       elseif key == "information" then
         PRT.AddInformationWidgets(container)
+      elseif key == "spellDatabase" then
+        PRT.AddSpellCacheWidget(container)
       end
 
       if PRT.mainWindowContent.scrollFrame then

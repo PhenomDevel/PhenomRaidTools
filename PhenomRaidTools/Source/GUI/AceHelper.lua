@@ -312,15 +312,17 @@ function PRT.Button(label, tooltip)
   return widget
 end
 
-function PRT.Heading(textID)
-  local text = L[textID]
-
+function PRT.Heading(label)
   local widget = AceGUI:Create("Heading")
 
-  widget:SetText(text)
+  widget:SetText(label)
   widget:SetFullWidth(true)
 
   return widget
+end
+
+function PRT.UpdateLabelWidth(widget)
+  widget:SetWidth(widget.label:GetStringWidth())
 end
 
 function PRT.Label(label, fontSize)

@@ -34,6 +34,7 @@ local PhenomRaidToolsLDB = LibStub("LibDataBroker-1.1"):NewDataObject("PhenomRai
 
 -------------------------------------------------------------------------------
 -- Ace standard functions
+
 local function NewDefaultReceiverOverlay(id, name, fontSize, r, g, b)
   return {
     id = id,
@@ -58,6 +59,14 @@ local function NewDefaultReceiverOverlay(id, name, fontSize, r, g, b)
 end
 
 local defaults =  {
+  global = {
+    spellCache = {
+      completed = false,
+      lastCheckedId = 0,
+      spells = {},
+      status = "running"
+    }
+  },
   profile = {
     mainWindow = {
       width = nil,
@@ -249,6 +258,8 @@ function PRT:OnInitialize()
 
   -- Check if profile db needs migration
   AceTimer:ScheduleTimer(PRT.MigrateProfileDB, 1, self.db.profile)
+
+  PRT.SpellCache.Build(self.db.global.spellCache)
 end
 
 function PRT:RefreshConfig()
