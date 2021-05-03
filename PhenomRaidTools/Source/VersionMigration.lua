@@ -30,6 +30,19 @@ local migrationFunctions = {
       end
     end
   },
+
+  [2] = {
+    version = "2.7.4",
+    migrationFunction = function(profile)
+      PRT.Debug("Enabling all encounter versions. Some of them got disabled on migration 2.5.0.")
+
+      for _, encounter in ipairs(profile.encounters) do
+        for _, encounterVersion in ipairs(encounter.versions) do
+          encounterVersion.enabled = true
+        end
+      end
+    end
+  }
 }
 
 local function GetPendingMigrations(profile)
@@ -50,19 +63,21 @@ end
 -- Public API
 
 function PRT.MigrateProfileDB(profile)
+  --if PRT.IsDevelopmentVersion() then
+  --profile.processedMigrations["2.7.4"] = false
+  --   PRT.Debug("Skipping migrations due to development version.")
+  --end
+
+
   local pendingMigrations = GetPendingMigrations(profile)
 
   if PRT.TableUtils.Count(pendingMigrations) > 0 then
-    PRT.Debug("You have", PRT.HighlightString(PRT.TableUtils.Count(pendingMigrations)), "pending migrations. They will be applied to your profile now.")
+    PRT.Debug("You have", PRT.HighlightString(PRT.TableUtils.Count(pendingMigrations)), "pending migration(s). They will be applied to your profile now.")
 
-    -- if PRT.IsDevelopmentVersion() then
-    --   PRT.Debug("Skipping migrations due to development version.")
-    -- else
     for _, migration in pairs(pendingMigrations) do
       PRT.Debug("Applying migration for version", PRT.HighlightString(migration.version))
       migration.migrationFunction(profile)
       profile.processedMigrations[migration.version] = true
     end
-    --end
   end
 end
