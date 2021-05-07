@@ -1,4 +1,23 @@
 ===============================================================================
+# Release 2.8.0-ALPHA
+## Bugfixes
+None
+
+## Features
+ - Add new option tab `Spell Database`
+   - This is a tab where you can search all spells in the game. The database
+     will be generated in the background. This process takes around 2-3 hours
+     and will be globally available for all characters. Once it's finished you'll be able
+     to search for any given spell in the database. The database will be
+     updated once the wow patch version changes.
+  - Add new function to export timers as ExRT Note.
+    - This will only work for timers including messages of type `cooldown`.
+      Also the timer start condition will be used as ExRT start condition for the timers
+      aswell. So it should only start counting the timer when the configured
+      event/spell combination was found.
+
+
+===============================================================================
 # Release 2.7.4
 ## Bugfixes
  - Make sure encounter versions do not disable the execution
