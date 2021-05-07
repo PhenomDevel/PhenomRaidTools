@@ -24,7 +24,7 @@ function SpellCache.Invalidate(spellCache)
   spellCache.lastCheckedId = 0
   spellCache.spells = {}
   spellCache.status = "running"
-
+  spellCache.startedAt = PRT.Now()
   PRT.Debug("Spell database will be updated in the background.")
 end
 
@@ -42,7 +42,6 @@ function SpellCache.Build(spellCache)
   SpellCache.CheckWowVersion(spellCache)
 
   if not spellCache.completed then
-
     local backgroundRoutine = coroutine.create(
       function()
         local id = spellCache.lastCheckedId or 0
@@ -75,6 +74,7 @@ function SpellCache.Build(spellCache)
 
         PRT.Debug("Building of spell database completed. Found", PRT.HighlightString(PRT.TableUtils.Count(spellCache.spells)), "spells")
 
+        spellCache.completedAt = PRT.Now()
         spellCache.completed = true
         spellCache.status = "completed"
       end)
