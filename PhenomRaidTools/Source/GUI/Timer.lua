@@ -7,6 +7,89 @@ local Timer = {}
 -------------------------------------------------------------------------------
 -- Local Helper
 
+local function AddExRTExportSelectorWidget(container, context)
+  local timerGroup = PRT.InlineGroup(L["Timers"])
+
+  for _, timer in ipairs(context.timers) do
+    local timerCheckbox = PRT.CheckBox(timer.name)
+    timerCheckbox:SetRelativeWidth(1)
+    timerCheckbox:SetCallback("OnValueChanged",
+      function(widget)
+        local value = widget:GetValue()
+        if value then
+          context.selectedTimers[timer.name] = timer
+        elseif context.selectedTimers[timer.name] then
+          context.selectedTimers[timer.name] = nil
+        end
+      end)
+
+    timerGroup:AddChild(timerCheckbox)
+  end
+
+  local removeEmptyCheckbox = PRT.CheckBox(L["Include empty lines"])
+  removeEmptyCheckbox:SetCallback("OnValueChanged",
+    function(widget)
+      local value = widget:GetValue()
+      context.includeEmptyLines = value
+    end)
+
+  container:AddChild(timerGroup)
+  container:AddChild(removeEmptyCheckbox)
+end
+
+local function AddExRTExportResultWidget(container, context)
+  local timers = {}
+
+  for _, timer in pairs(context.selectedTimers) do
+    tinsert(timers, timer)
+  end
+
+  PRT.TableUtils.SortByKey(timers, "name")
+
+  local exportString = PRT.ExRTExportFromTimers(timers, context.includeEmptyLines)
+
+  container:ReleaseChildren()
+  container:SetLayout("Fill")
+
+  local exportTextBox = PRT.MultiLineEditBox(L["ExRT Note"], exportString)
+  exportTextBox:SetFocus()
+  exportTextBox:DisableButton(true)
+  exportTextBox:HighlightText()
+  container:AddChild(exportTextBox)
+end
+
+local function AddExRTExportWidget(container, timers)
+  local exrtExportButton = PRT.Button(L["Generate ExRT Note"])
+  exrtExportButton:SetCallback("OnClick",
+    function()
+      local exrtExportContext = {
+        timers = timers,
+        selectedTimers = {},
+        includeEmptyLines = false
+      }
+
+      local modalContainer = PRT.SimpleGroup()
+      local description = PRT.Label(L["This feature will export your selected timers to a ExRT note. This will only work for message of type %s."]:format(PRT.HighlightString("cooldown")))
+      local exportButton = PRT.Button(L["Export"])
+
+      description:SetRelativeWidth(1)
+      exportButton:SetCallback("OnClick",
+        function()
+          AddExRTExportResultWidget(modalContainer, exrtExportContext)
+        end)
+
+      -- Add widgets to modal container
+      modalContainer:AddChild(description)
+      AddExRTExportSelectorWidget(modalContainer, exrtExportContext)
+      modalContainer:AddChild(exportButton)
+
+      local modal = PRT.CreateModal(modalContainer, L["ExRT Note Generator"])
+      modal:EnableResize(false)
+    end)
+
+  container:AddChild(exrtExportButton)
+end
+
 function Timer.ParseTiming(timing)
   if strmatch(timing, ":") then
     local minute, second = strsplit(":", timing)
@@ -181,6 +264,7 @@ function PRT.AddTimerOptionsWidgets(container, profile, encounterID)
 
   timerOptionsGroup:AddChild(addButton)
   timerOptionsGroup:AddChild(pasteButton)
+  AddExRTExportWidget(timerOptionsGroup, timers)
   container:AddChild(timerOptionsGroup)
 end
 

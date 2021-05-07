@@ -50,11 +50,11 @@ function PRT.AddOptionWidgets(container, profile)
   optionsTabsGroup:SetLayout("Flow")
   optionsTabsGroup:SetCallback("OnGroupSelected",
     function(container, _, key)
+      container:ReleaseChildren()
 
       if container.backgroundTimer then
         AceTimer:CancelTimer(container.backgroundTimer)
       end
-      container:ReleaseChildren()
 
       if key ==  "general" then
         PRT.AddGeneralWidgets(container, PRT.db.profile)

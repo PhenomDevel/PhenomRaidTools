@@ -40,6 +40,7 @@ Source/Overlay.lua
 Source/SenderOverlay.lua
 Source/ReceiverOverlay.lua
 Source/VersionMigration.lua
+Source/ExRTExport.lua
 
 # GUI Source
 Source/GUI/AceHelper.lua
@@ -62,3 +63,4 @@ Source/GUI/Options/RaidRosterWidget.lua
 Source/GUI/Options/CustomPlaceholdersWidget.lua
 Source/GUI/Options/InformationWidget.lua
 Source/GUI/Options.lua
+Source/GUI/ModalFrame.lua

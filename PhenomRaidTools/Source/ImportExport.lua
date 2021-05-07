@@ -68,7 +68,7 @@ function PRT.CreateImportFrame(successFunction)
   end
 end
 
-function PRT.CreateExportFrame(t)
+function PRT.CreateExportFrame(data)
   if not PRT.Core.FrameExists("exportFrame") then
     local exportFrame = PRT.Frame(L["Export"])
     exportFrame:SetLayout("Fill")
@@ -77,7 +77,12 @@ function PRT.CreateExportFrame(t)
         PRT.Core.UnregisterFrame("exportFrame")
       end)
 
-    local exportDataBox = PRT.MultiLineEditBox(L["Export String"], PRT.Serialize(t))
+    local exportData = data
+    if type(data) == "table" then
+      exportData = PRT.Serialize(data)
+    end
+
+    local exportDataBox = PRT.MultiLineEditBox(L["Export String"], exportData)
     exportDataBox:SetLabel("String")
     exportDataBox:SetFocus()
     exportDataBox:DisableButton(true)

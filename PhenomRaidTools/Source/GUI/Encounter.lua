@@ -19,15 +19,15 @@ local Encounter = {
     -- Sanctum of Domination
     { id = 10999, name = L["--- Sanctum of Domination ---"], disabled = true},
     { id = 2423, name = L["SoD - The Tarragrue"] },
-    { id = 10000, name = L["SoD - The Eye of the Jailer"] },
-    { id = 10001, name = L["SoD - The Nine"] },
-    { id = 10002, name = L["SoD - Remnant of Ner'zhul"] },
-    { id = 10003, name = L["SoD - Soulrender Dormazain"] },
-    { id = 10004, name = L["SoD - Painsmith Raznal"] },
+    { id = 2433, name = L["SoD - The Eye of the Jailer"] },
+    { id = 0, name = L["SoD - The Nine"] },
+    { id = 2432, name = L["SoD - Remnant of Ner'zhul"] },
+    { id = 2434, name = L["SoD - Soulrender Dormazain"] },
+    { id = 0, name = L["SoD - Painsmith Raznal"] },
     { id = 2436, name = L["SoD - Guardian of the First Ones"] },
-    { id = 10005, name = L["SoD - Fatescribe Roh-Kalo"] },
-    { id = 10006, name = L["SoD - Kel'Thuzad"] },
-    { id = 10007, name = L["SoD - Sylvanas Windrunner"] },
+    { id = 2431, name = L["SoD - Fatescribe Roh-Kalo"] },
+    { id = 2422, name = L["SoD - Kel'Thuzad"] },
+    { id = 0, name = L["SoD - Sylvanas Windrunner"] },
   }
 }
 

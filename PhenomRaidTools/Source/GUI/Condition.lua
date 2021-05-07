@@ -60,10 +60,38 @@ local encounterPhaseMapping = {
   },
 
   -- Sanctum of Domination
+
+  -- The Tarragrue
+  [2423] = {
+
+  },
+  -- Eye of the Jailer
+  [2433] = {
+    { id = "intermissionStart", name = L["Intermission Start"], event = "SPELL_AURA_APPLIED", spellID = 348805},
+    { id = "phase3start", name = L["Phase 3 Start"], event = "SPELL_CAST_START", spellID = 348974},
+  },
+  -- Remnant of Ner'zhul
+  [2432] = {
+
+  },
+  -- Soulrender Dormazin
+  [2434] = {
+
+  },
   -- Guardian of the First Ones
   [2436] = {
     { id = "intermissionStart", name = L["Intermission Start"], event = "SPELL_AURA_APPLIED", spellID = 352385 }
-  }
+  },
+  -- Fatescribe Roh-Kalo
+  [2431] = {
+    { id = "intermissionStart", name = L["Intermission Start"], event = "SPELL_AURA_APPLIED", spellID = 351969 }
+  },
+  -- Kel'Thuzad
+  [2422] = {
+
+  },
+
+
 }
 
 
