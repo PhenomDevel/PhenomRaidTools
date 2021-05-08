@@ -54,8 +54,6 @@ local Cooldowns = {
 
     31884, -- Wings
 
-    15286, -- Embrace
-
     33891, -- Tree
 
     197721, -- Flourish
@@ -74,6 +72,8 @@ local Cooldowns = {
 
     316958, -- Ashen Hallow
 
+    97462, -- Rallying Cry
+
   },
 
   utility = {
@@ -81,20 +81,20 @@ local Cooldowns = {
 
     106898, -- Stampeding Roar
 
-    97462, -- Rallying Cry
-
     16191, -- Mana Tide
 
     64901, -- Symbol of Hope
+    108281, -- Ancestral Guidance
+    15286, -- Embrace
+
   },
 
   immunities = {
-    31224, -- Cloak of Shadows
-    204018, -- Blessing of Spellwarding
     642, -- Divine Shield
     45438, -- Iceblock
     186265, -- Turtle
     196555, -- Netherwalk
+    31224, -- Cloak of Shadows
   }
 }
 
