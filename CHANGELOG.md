@@ -1,4 +1,15 @@
 ===============================================================================
+# Release 2.8.1-BETA
+## Bugfixes
+None
+
+## Features
+ - Add encounter name to ExRT exported note
+ - Make sure all colored names are escaped so the colors will be displayed properly
+   in ExRT note
+
+
+===============================================================================
 # Release 2.8.0-ALPHA
 ## Bugfixes
 None
