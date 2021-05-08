@@ -16,7 +16,7 @@ local function IsValidMessage(message)
   return (message.type == "cooldown")
 end
 
-local function SecondsToTimePrefix(seconds, startCondition)
+local function SecondsToTimePrefix(seconds, startCondition, triggerAtOccurence)
   local timePrefixString
 
   timePrefixString = string.format("{time:%s", PRT.SecondsToClock(seconds))
@@ -25,7 +25,7 @@ local function SecondsToTimePrefix(seconds, startCondition)
     local translatedEvent = ExRTCombatEventTranslations[startCondition.event]
 
     if translatedEvent and startCondition.spellID then
-      timePrefixString = timePrefixString..string.format(",%s:%s:0", translatedEvent, startCondition.spellID)
+      timePrefixString = timePrefixString..string.format(",%s:%s:%s", translatedEvent, startCondition.spellID, triggerAtOccurence or 0)
     else
       PRT.Debug(string.format("Could not translate start condition event %s to ExRT event. ExRT note timers might not work correctly.",
         PRT.HighlightString(startCondition.event)))
@@ -44,6 +44,7 @@ local function CollectMessagesPerTiming(timer)
     for _, timeInSeconds in ipairs(timing.seconds) do
       if not messagesPerTiming[timeInSeconds] then
         messagesPerTiming[timeInSeconds] = {
+          triggerAtOccurence = timer.triggerAtOccurence,
           startCondition = timer.startCondition,
           messages = {}
         }
@@ -86,7 +87,7 @@ local function GenerateTimingString(entry, includeEmptyLines)
   local timingString
   local contents = GenerateTimingContent(messages)
 
-  timingString = SecondsToTimePrefix(timeInSeconds, startCondition)
+  timingString = SecondsToTimePrefix(timeInSeconds, startCondition, entry.triggerAtOccurence)
 
   local contentsString = strjoin(" ", unpack(contents))
 
