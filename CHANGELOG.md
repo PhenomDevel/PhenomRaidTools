@@ -1,4 +1,14 @@
 ===============================================================================
+# Release 2.8.2-BETA
+## Bugfixes
+None
+
+## Features
+ - ExRT note export now also takes `Occurence` into account so the ExRT note
+   timers start correctly
+
+
+===============================================================================
 # Release 2.8.1-BETA
 ## Bugfixes
 None
