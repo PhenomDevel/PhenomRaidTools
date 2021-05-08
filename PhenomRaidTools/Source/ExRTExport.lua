@@ -119,9 +119,13 @@ function PRT.ExRTExportFromTimer(timer, includeEmptyLines)
   local collectedMessagePerTiming = CollectMessagesPerTiming(localTimer)
   local timingStrings = MessagePerStringToExRTNote(collectedMessagePerTiming, includeEmptyLines)
 
-  local title = PRT.ColoredString(timer.name, "FFffc526")
+  local title = PRT.ColoredString(string.format("== %s ==", timer.name), "FFffc526")
   local content = strjoin("\n", unpack(timingStrings))
-  local finalString = string.gsub(string.format("%s\n%s", title, content), "|", "||")
+  local finalString
+
+  if not PRT.TableUtils.IsEmpty(timingStrings) then
+    finalString = string.format("%s\n\n%s", title, content)
+  end
 
   return finalString
 end
