@@ -37,7 +37,7 @@ local function AddExRTExportSelectorWidget(container, context)
   container:AddChild(removeEmptyCheckbox)
 end
 
-local function AddExRTExportResultWidget(container, context)
+local function AddExRTExportResultWidget(container, encounter, context)
   local timers = {}
 
   for _, timer in pairs(context.selectedTimers) do
@@ -46,19 +46,20 @@ local function AddExRTExportResultWidget(container, context)
 
   PRT.TableUtils.SortByKey(timers, "name")
 
-  local exportString = PRT.ExRTExportFromTimers(timers, context.includeEmptyLines)
+  local exportString = PRT.ColoredString(encounter.name, "FF00c234")
+  exportString = exportString.."\n"..PRT.ExRTExportFromTimers(timers, context.includeEmptyLines)
 
   container:ReleaseChildren()
   container:SetLayout("Fill")
 
-  local exportTextBox = PRT.MultiLineEditBox(L["ExRT Note"], exportString)
+  local exportTextBox = PRT.MultiLineEditBox(L["ExRT Note"], string.gsub(exportString, "|", "||"))
   exportTextBox:SetFocus()
   exportTextBox:DisableButton(true)
   exportTextBox:HighlightText()
   container:AddChild(exportTextBox)
 end
 
-local function AddExRTExportWidget(container, timers)
+local function AddExRTExportWidget(container, encounter, timers)
   local exrtExportButton = PRT.Button(L["Generate ExRT Note"])
   exrtExportButton:SetCallback("OnClick",
     function()
@@ -75,7 +76,7 @@ local function AddExRTExportWidget(container, timers)
       description:SetRelativeWidth(1)
       exportButton:SetCallback("OnClick",
         function()
-          AddExRTExportResultWidget(modalContainer, exrtExportContext)
+          AddExRTExportResultWidget(modalContainer, encounter, exrtExportContext)
         end)
 
       -- Add widgets to modal container
@@ -232,8 +233,9 @@ end
 -- Public API
 
 function PRT.AddTimerOptionsWidgets(container, profile, encounterID)
-  local _, encounter = PRT.GetSelectedVersionEncounterByID(profile.encounters, tonumber(encounterID))
-  local timers = encounter.Timers
+  local _, encounter = PRT.GetEncounterById(profile.encounters, tonumber(encounterID))
+  local _, selectedEncounter = PRT.GetSelectedVersionEncounterByID(profile.encounters, tonumber(encounterID))
+  local timers = selectedEncounter.Timers
 
   local timerOptionsGroup = PRT.InlineGroup(L["Options"])
   timerOptionsGroup:SetLayout("Flow")
@@ -248,7 +250,7 @@ function PRT.AddTimerOptionsWidgets(container, profile, encounterID)
       PRT.Core.UpdateTree()
       PRT.mainWindowContent:DoLayout()
       PRT.mainWindowContent:SelectByPath("encounters", encounterID, "timers", PRT.db.profile.clipboard.timer.name)
-      PRT.Debug("Pasted timer", PRT.HighlightString(PRT.db.profile.clipboard.timer.name), "to", PRT.HighlightString(encounter.name))
+      PRT.Debug("Pasted timer", PRT.HighlightString(PRT.db.profile.clipboard.timer.name), "to", PRT.HighlightString(selectedEncounter.name))
       PRT.db.profile.clipboard.timer = nil
     end)
 
@@ -264,7 +266,7 @@ function PRT.AddTimerOptionsWidgets(container, profile, encounterID)
 
   timerOptionsGroup:AddChild(addButton)
   timerOptionsGroup:AddChild(pasteButton)
-  AddExRTExportWidget(timerOptionsGroup, timers)
+  AddExRTExportWidget(timerOptionsGroup, encounter, timers)
   container:AddChild(timerOptionsGroup)
 end
 
