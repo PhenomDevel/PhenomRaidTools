@@ -50,7 +50,7 @@ function Core.DisabledText(text, enabled)
   if enabled then
     return text
   else
-    return PRT.ColoredString(text, PRT.db.profile.colors.disabled)
+    return PRT.ColoredString(text, PRT.Static.Colors.Disabled)
   end
 end
 

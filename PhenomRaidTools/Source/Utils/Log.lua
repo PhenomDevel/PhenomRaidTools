@@ -36,30 +36,30 @@ end
 
 function PRT.Info(...)
   if PRT.db.profile.enabled then
-    PRT:Print(PRT.ColoredString("[Info]", PRT.db.profile.colors.info), ...)
+    PRT:Print(PRT.ColoredString("[Info]", PRT.Static.Colors.Info), ...)
 
     if PRT.currentEncounter and PRT.currentEncounter.inFight then
-      tinsert(PRT.db.profile.debugLog, {PRT.ColoredString("[Info]", PRT.db.profile.colors.info), ...})
+      tinsert(PRT.db.profile.debugLog, {PRT.ColoredString("[Info]", PRT.Static.Colors.Info), ...})
     end
   end
 end
 
 function PRT.Warn(...)
   if PRT.db.profile.enabled then
-    PRT:Print(PRT.ColoredString("[Warn]", PRT.db.profile.colors.warn), ...)
+    PRT:Print(PRT.ColoredString("[Warn]", PRT.Static.Colors.Warn), ...)
 
     if PRT.currentEncounter and PRT.currentEncounter.inFight then
-      tinsert(PRT.db.profile.debugLog, {PRT.ColoredString("[Warn]", PRT.db.profile.colors.warn), ...})
+      tinsert(PRT.db.profile.debugLog, {PRT.ColoredString("[Warn]", PRT.Static.Colors.Warn), ...})
     end
   end
 end
 
 function PRT.Error(...)
   if PRT.db.profile.enabled then
-    PRT:Print(PRT.ColoredString("[Error]", PRT.db.profile.colors.error), ...)
+    PRT:Print(PRT.ColoredString("[Error]", PRT.Static.Colors.Error), ...)
 
     if PRT.currentEncounter and PRT.currentEncounter.inFight then
-      tinsert(PRT.db.profile.debugLog, {PRT.ColoredString("[Error]", PRT.db.profile.colors.error), ...})
+      tinsert(PRT.db.profile.debugLog, {PRT.ColoredString("[Error]", PRT.Static.Colors.Error), ...})
     end
   end
 end
@@ -67,10 +67,10 @@ end
 function PRT.Debug(...)
   if PRT.db.profile.enabled then
     if PRT.db.profile.debugMode then
-      PRT:Print(PRT.ColoredString("[Debug]", PRT.db.profile.colors.debug), ...)
+      PRT:Print(PRT.ColoredString("[Debug]", PRT.Static.Colors.Debug), ...)
 
       if PRT.currentEncounter and PRT.currentEncounter.inFight then
-        tinsert(PRT.db.profile.debugLog, {PRT.ColoredString("[Debug]", PRT.db.profile.colors.debug), ...})
+        tinsert(PRT.db.profile.debugLog, {PRT.ColoredString("[Debug]", PRT.Static.Colors.Debug), ...})
       end
     end
   end

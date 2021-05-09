@@ -266,7 +266,7 @@ function PRT.ColoredString(s, color)
 end
 
 function PRT.HighlightString(s)
-  return "`"..PRT.ColoredString(s, PRT.db.profile.colors.highlight).."`"
+  return "`"..PRT.ColoredString(s, PRT.Static.Colors.Highlight).."`"
 end
 
 function PRT.TextureStringBySpellID(spellID, size)
@@ -341,11 +341,11 @@ function PRT.PlayerNamesByToken(token)
       end
     end
   else
-    tinsert(playerNames, PRT.ColoredString(token, PRT.db.profile.colors.disabled))
+    tinsert(playerNames, PRT.ColoredString(token, PRT.Static.Colors.Disabled))
   end
 
   if PRT.TableUtils.IsEmpty(playerNames) then
-    tinsert(playerNames, PRT.ColoredString(token, PRT.db.profile.colors.disabled))
+    tinsert(playerNames, PRT.ColoredString(token, PRT.Static.Colors.Disabled))
   end
 
   return playerNames

@@ -6,6 +6,20 @@ local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 -- Public API
 
 PRT.Static = {
+  Colors = {
+    Header = "FF5cdb7e",
+    SubHeader = "FFb1db5c",
+
+    Error = "FFff6363",
+    Debug = "FFdcabff",
+    Info = "FF6bfdff",
+    Warn = "FFffc526",
+
+    Highlight = "FF69CCF0",
+    Disabled = "FFed3939",
+    Enabled = "FF00c234",
+    Success = "FF76ff68"
+  },
   Tables = {
     RaidTargets = {
       [1] = {

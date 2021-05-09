@@ -21,6 +21,29 @@ local GeneralOptions = {
 -------------------------------------------------------------------------------
 -- General Options
 
+function GeneralOptions.AddChangelogWidgets(container)
+  local changelogLines = {
+    PRT.ColoredString(L["Latest Features"], PRT.Static.Colors.Header),
+    PRT.ColoredString(L["Ability to export timers as ExRT note"], PRT.Static.Colors.SubHeader),
+    L["- Export any timer as ExRT note"],
+    L["- %s This only works for messages with type %s"]:format(PRT.ColoredString("(!)", PRT.Static.Colors.Disabled), PRT.HighlightString(L["cooldown"])),
+    L["- To do so you have to navigate to %s within any encounter and click %s"]:format(PRT.HighlightString(L["Timers"]), PRT.HighlightString(L["Generate ExRT Note"])),
+    "",
+    PRT.ColoredString(L["Spell database options tab"], PRT.Static.Colors.SubHeader),
+    L["- Within the spell database you can search any spell the game has to over"],
+    L["- The spell database will be updated each patch automatically"]
+  }
+
+  local changelogGroup = PRT.InlineGroup(L["Changelog"])
+  local changelogString = strjoin("\n", unpack(changelogLines))
+  local changeLogLabel = PRT.Label(changelogString)
+
+  changeLogLabel:SetRelativeWidth(1)
+
+  changelogGroup:AddChild(changeLogLabel)
+  container:AddChild(changelogGroup)
+end
+
 function GeneralOptions.AddMessageFilterByNamesWidgets(container, options)
   local namesEditBox = PRT.EditBox(L["Names"], L["Comma separated list of player names."], strjoin(", ", unpack(options.requiredNames)), true)
   namesEditBox:SetCallback("OnEnterPressed",
@@ -228,6 +251,7 @@ function PRT.AddGeneralWidgets(container, options)
 
   container:AddChild(enabledCheckbox)
   GeneralOptions.AddRunMode(container, options)
+  GeneralOptions.AddChangelogWidgets(container)
 
   if not PRT.IsSender() and PRT.IsReceiver() then
     local helpLabel = PRT.Label(L["You are currently in receiver only mode. Therefore some features are disabled because they only relate to the sender mode."])

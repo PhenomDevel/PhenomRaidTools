@@ -35,9 +35,9 @@ local function addOverviewHeader(container, header, enabled)
   local coloredText
 
   if not enabled then
-    coloredText = PRT.ColoredString(header.." "..L["Disabled"], PRT.db.profile.colors.disabled)
+    coloredText = PRT.ColoredString(header.." "..L["Disabled"], PRT.Static.Colors.Disabled)
   else
-    coloredText = PRT.ColoredString(header, PRT.db.profile.colors.success)
+    coloredText = PRT.ColoredString(header, PRT.Static.Colors.Success)
   end
 
   local headerLabel = PRT.Label(coloredText)

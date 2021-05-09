@@ -184,14 +184,7 @@ local defaults =  {
     },
 
     colors = {
-      error = "FFff6363",
-      debug = "FFdcabff",
-      info = "FF6bfdff",
-      warn = "FFffc526",
-      highlight = "FF69CCF0",
-      disabled = "FFed3939",
-      enabled = "FF00c234",
-      success = "FF76ff68"
+
     },
     raidRoster = {},
     addonPrefixes = {
@@ -311,19 +304,19 @@ function PRT:PrintPartyOrRaidVersions()
     local coloredName = PRT.ClassColoredName(playerWithServer)
 
     if version == "" or version == nil then
-      PRT.Info(coloredName, ":", PRT.ColoredString("no response", PRT.db.profile.colors.disabled))
+      PRT.Info(coloredName, ":", PRT.ColoredString("no response", PRT.Static.Colors.Disabled))
     else
       local parsedVersion = string.gsub(version, "[^%d]+", "")
       local parsedVersionN = tonumber(parsedVersion)
 
       if parsedVersionN and myVersionN then
         if parsedVersionN >= myVersionN then
-          PRT.Info(coloredName, ":", PRT.ColoredString(version, PRT.db.profile.colors.enabled))
+          PRT.Info(coloredName, ":", PRT.ColoredString(version, PRT.Static.Colors.Enabled))
         elseif parsedVersionN < myVersionN then
-          PRT.Info(coloredName, ":", PRT.ColoredString(version, PRT.db.profile.colors.disabled))
+          PRT.Info(coloredName, ":", PRT.ColoredString(version, PRT.Static.Colors.Disabled))
         end
       else
-        PRT.Info(coloredName, ":", PRT.ColoredString(version, PRT.db.profile.colors.warn), "?")
+        PRT.Info(coloredName, ":", PRT.ColoredString(version, PRT.Static.Colors.Warn), "?")
       end
     end
   end
@@ -348,7 +341,7 @@ function PRT:VersionCheck(_)
     AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.versionRequest, PRT.Serialize(request), "RAID")
     AceTimer:ScheduleTimer(PRT.PrintPartyOrRaidVersions, 5)
   else
-    PRT.Info("You are currently running version", PRT.ColoredString(self.db.profile.version, self.db.profile.colors.highlight))
+    PRT.Info("You are currently running version", PRT.ColoredString(self.db.profile.version, PRT.Static.Colors.Highlight))
   end
 end
 
