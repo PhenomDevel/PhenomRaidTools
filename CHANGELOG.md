@@ -1,4 +1,13 @@
 ===============================================================================
+# Release 2.8.3-BETA
+## Bugfixes
+None
+
+## Features
+ - Add basic changelog to general option tab
+
+
+===============================================================================
 # Release 2.8.2-BETA
 ## Bugfixes
 None
