@@ -16,23 +16,27 @@ local function IsValidMessage(message)
   return (message.type == "cooldown")
 end
 
-local function SecondsToTimePrefix(seconds, startCondition, triggerAtOccurence)
+local function SecondsToTimePrefix(entry, options)
   local timePrefixString
 
-  timePrefixString = string.format("{time:%s", PRT.SecondsToClock(seconds))
+  timePrefixString = string.format("{time:%s", PRT.SecondsToClock(entry.time))
 
-  if startCondition then
-    local translatedEvent = ExRTCombatEventTranslations[startCondition.event]
+  if entry.startCondition then
+    local translatedEvent = ExRTCombatEventTranslations[entry.startCondition.event]
 
-    if translatedEvent and startCondition.spellID then
-      timePrefixString = timePrefixString..string.format(",%s:%s:%s", translatedEvent, startCondition.spellID, triggerAtOccurence or 0)
+    if translatedEvent and entry.startCondition.spellID then
+      timePrefixString = timePrefixString..string.format(",%s:%s:%s", translatedEvent, entry.startCondition.spellID, entry.triggerAtOccurence or 0)
     else
       PRT.Debug(string.format("Could not translate start condition event %s to ExRT event. ExRT note timers might not work correctly.",
-        PRT.HighlightString(startCondition.event)))
+        PRT.HighlightString(entry.startCondition.event)))
     end
   end
 
-  timePrefixString = timePrefixString.."}>"
+  timePrefixString = timePrefixString.."}"
+
+  if options.withTimingNames then
+    timePrefixString = timePrefixString..string.format(" %s >", PRT.ColoredString(entry.name, PRT.Static.Colors.Tertiary))
+  end
 
   return timePrefixString
 end
@@ -44,6 +48,7 @@ local function CollectMessagesPerTiming(timer)
     for _, timeInSeconds in ipairs(timing.seconds) do
       if not messagesPerTiming[timeInSeconds] then
         messagesPerTiming[timeInSeconds] = {
+          name = timing.name,
           triggerAtOccurence = timer.triggerAtOccurence,
           startCondition = timer.startCondition,
           messages = {}
@@ -82,27 +87,24 @@ local function GenerateTimingContent(messages)
   return contents
 end
 
-local function GenerateTimingString(entry, includeEmptyLines)
-  local timeInSeconds, startCondition, messages = entry.time, entry.startCondition, entry.messages
-  local timingString
-  local contents = GenerateTimingContent(messages)
-
-  timingString = SecondsToTimePrefix(timeInSeconds, startCondition, entry.triggerAtOccurence)
+local function GenerateTimingString(entry, options)
+  local contents = GenerateTimingContent(entry.messages)
+  local timingString = SecondsToTimePrefix(entry, options)
 
   local contentsString = strjoin(" ", unpack(contents))
 
-  if not includeEmptyLines and PRT.TableUtils.Count(contents) == 0 then
+  if not options.withEmptyLines and PRT.TableUtils.Count(contents) == 0 then
     return nil
   end
 
   return timingString.." "..contentsString
 end
 
-local function MessagePerStringToExRTNote(messagesPerTiming, includeEmptyLines)
+local function MessagePerStringToExRTNote(messagesPerTiming, options)
   local timingStrings = {}
 
   for _, entry in ipairs(messagesPerTiming) do
-    local timingString = GenerateTimingString(entry, includeEmptyLines)
+    local timingString = GenerateTimingString(entry, options)
     if timingString then
       tinsert(timingStrings, timingString)
     end
@@ -115,28 +117,48 @@ end
 -------------------------------------------------------------------------------
 -- Public API
 
-function PRT.ExRTExportFromTimer(timer, includeEmptyLines)
+function PRT.ExRTExportFromTimer(options, timer)
   local localTimer = PRT.TableUtils.Clone(timer)
   local collectedMessagePerTiming = CollectMessagesPerTiming(localTimer)
-  local timingStrings = MessagePerStringToExRTNote(collectedMessagePerTiming, includeEmptyLines)
+  local timingStrings = MessagePerStringToExRTNote(collectedMessagePerTiming, options)
 
-  local title = PRT.ColoredString(string.format("== %s ==", timer.name), "FFffc526")
+  local title
+
+  if options.withTimerNames then
+    title = PRT.ColoredString(string.format("== %s ==", timer.name), PRT.Static.Colors.Secondary)
+  end
+
   local content = strjoin("\n", unpack(timingStrings))
   local finalString
 
   if not PRT.TableUtils.IsEmpty(timingStrings) then
-    finalString = string.format("%s\n\n%s", title, content)
+    if title then
+      finalString = string.format("%s\n\n%s", title or "", content)
+    else
+      finalString = content
+    end
   end
 
   return finalString
 end
 
-function PRT.ExRTExportFromTimers(timers, includeEmptyLines)
+function PRT.ExRTExportFromTimers(options, timers, encounterName)
   local strings = {}
+  local finalString
+  local contentString
 
   for _, timer in ipairs(timers) do
-    tinsert(strings, PRT.ExRTExportFromTimer(timer, includeEmptyLines))
+    tinsert(strings, PRT.ExRTExportFromTimer(options, timer))
   end
 
-  return strjoin("\n\n", unpack(strings))
+  contentString = strjoin("\n\n", unpack(strings))
+
+  if encounterName and options.withEncounterName then
+    finalString = string.format("%s\n%s", encounterName, contentString)
+
+  else
+    finalString = contentString
+  end
+
+  return finalString
 end

@@ -27,9 +27,9 @@ local function getStatusText(spellCache)
   local statusText
 
   if spellCache.status == "completed" then
-    statusText = PRT.ColoredString(spellCache.status, "FF76ff68")
+    statusText = PRT.ColoredString(spellCache.status, PRT.Static.Colors.Success)
   elseif spellCache.status == "running" then
-    statusText = PRT.ColoredString(spellCache.status, "FFed3939")
+    statusText = PRT.ColoredString(spellCache.status, PRT.Static.Colors.Inactive)
   else
     statusText = spellCache.status
   end
@@ -85,7 +85,7 @@ function PRT.AddSpellCacheWidget(container)
     L["Here you can search the spell database. The database is build up in the background and may not contain "..
       "all known spells just yet. If you can't find a spell please check back later when status is `completed`."],
     L["The spell database is globally available for all of your characters and will be build up regardless of which character you are playing."],
-    PRT.ColoredString(L["The spell database will rebuild once the patch version changes. This is done so you always have the newest spells in the database."], "FF6bfdff"),
+    PRT.ColoredString(L["The spell database will rebuild once the patch version changes. This is done so you always have the newest spells in the database."], PRT.Static.Colors.Inactive),
   }
 
   local descriptionText = strjoin("\n\n", unpack(descriptionLines))

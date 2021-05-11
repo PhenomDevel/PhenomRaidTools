@@ -251,7 +251,7 @@ function PRT.ClassColoredName(name)
     local coloredName
 
     if color then
-      coloredName = PRT.ColoredString(name, color)
+      coloredName = PRT.ColoredString(name, color, true)
     else
       coloredName = name
     end
@@ -261,8 +261,18 @@ function PRT.ClassColoredName(name)
   end
 end
 
-function PRT.ColoredString(s, color)
-  return "|c"..(color or "FFFFFFFF")..tostring(s).."|r"
+function PRT.ColoredString(s, color, hasAlpha)
+  if color then
+    local finalColor = color
+
+    if not hasAlpha then
+      finalColor = "FF"..finalColor
+    end
+    return "|c"..finalColor..tostring(s).."|r"
+  else
+    return "|c".."FFFFFFFF"..tostring(s).."|r"
+  end
+
 end
 
 function PRT.HighlightString(s)
@@ -341,11 +351,11 @@ function PRT.PlayerNamesByToken(token)
       end
     end
   else
-    tinsert(playerNames, PRT.ColoredString(token, PRT.Static.Colors.Disabled))
+    tinsert(playerNames, PRT.ColoredString(token, PRT.Static.Colors.Inactive))
   end
 
   if PRT.TableUtils.IsEmpty(playerNames) then
-    tinsert(playerNames, PRT.ColoredString(token, PRT.Static.Colors.Disabled))
+    tinsert(playerNames, PRT.ColoredString(token, PRT.Static.Colors.Inactive))
   end
 
   return playerNames

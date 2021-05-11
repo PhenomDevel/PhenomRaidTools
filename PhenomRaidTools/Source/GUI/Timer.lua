@@ -7,12 +7,57 @@ local Timer = {}
 -------------------------------------------------------------------------------
 -- Local Helper
 
+local function AddExRTExportOptionsWidget(container, context)
+  local optionsGroup = PRT.InlineGroup(L["Options"])
+  optionsGroup:SetLayout("Flow")
+
+  -- Include Encounter name
+  local withEncounterName = PRT.CheckBox(L["Encounter name"], L["Shows the encounter name on top of the note."], context.withEncounterName)
+  withEncounterName:SetRelativeWidth(0.5)
+  withEncounterName:SetCallback("OnValueChanged",
+    function(widget)
+      context.withEncounterName = widget:GetValue()
+    end)
+
+  -- Include timer names
+  local withTimerNames = PRT.CheckBox(L["Timer names"], L["Shows the prt timer names on top of each group of note timers."], context.withTimerNames)
+  withTimerNames:SetRelativeWidth(0.5)
+  withTimerNames:SetCallback("OnValueChanged",
+    function(widget)
+      context.withTimerNames = widget:GetValue()
+    end)
+
+  -- Include timing names
+  local withTimingNames = PRT.CheckBox(L["Prefix timing names"], L["Shows the timing names before each line of a given prt timer."], context.withTimingNames)
+  withTimingNames:SetRelativeWidth(0.5)
+  withTimingNames:SetCallback("OnValueChanged",
+    function(widget)
+      context.withTimingNames = widget:GetValue()
+    end)
+
+  -- Include empty lines
+  local withEmptyLines = PRT.CheckBox(L["Include empty lines"], L["Includes lines even if there are no entries within the prt timer."], context.withEmptyLines)
+  withEmptyLines:SetRelativeWidth(0.5)
+  withEmptyLines:SetCallback("OnValueChanged",
+    function(widget)
+      context.withEmptyLines = widget:GetValue()
+    end)
+
+  optionsGroup:AddChild(withEncounterName)
+  optionsGroup:AddChild(withTimerNames)
+  optionsGroup:AddChild(withTimingNames)
+  optionsGroup:AddChild(withEmptyLines)
+
+  container:AddChild(optionsGroup)
+end
+
 local function AddExRTExportSelectorWidget(container, context)
-  local timerGroup = PRT.InlineGroup(L["Timers"])
+  local timerGroup = PRT.InlineGroup(L["Select Timers"])
+  timerGroup:SetLayout("Flow")
 
   for _, timer in ipairs(context.timers) do
     local timerCheckbox = PRT.CheckBox(timer.name)
-    timerCheckbox:SetRelativeWidth(1)
+    timerCheckbox:SetRelativeWidth(0.5)
     timerCheckbox:SetCallback("OnValueChanged",
       function(widget)
         local value = widget:GetValue()
@@ -26,15 +71,7 @@ local function AddExRTExportSelectorWidget(container, context)
     timerGroup:AddChild(timerCheckbox)
   end
 
-  local removeEmptyCheckbox = PRT.CheckBox(L["Include empty lines"])
-  removeEmptyCheckbox:SetCallback("OnValueChanged",
-    function(widget)
-      local value = widget:GetValue()
-      context.includeEmptyLines = value
-    end)
-
   container:AddChild(timerGroup)
-  container:AddChild(removeEmptyCheckbox)
 end
 
 local function AddExRTExportResultWidget(container, encounter, context)
@@ -46,8 +83,7 @@ local function AddExRTExportResultWidget(container, encounter, context)
 
   PRT.TableUtils.SortByKey(timers, "name")
 
-  local exportString = PRT.ColoredString(encounter.name, "FF00c234")
-  exportString = exportString.."\n"..PRT.ExRTExportFromTimers(timers, context.includeEmptyLines)
+  local exportString = PRT.ExRTExportFromTimers(context, timers, PRT.ColoredString(encounter.name, PRT.Static.Colors.Primary))
 
   container:ReleaseChildren()
   container:SetLayout("Fill")
@@ -66,7 +102,10 @@ local function AddExRTExportWidget(container, encounter, timers)
       local exrtExportContext = {
         timers = timers,
         selectedTimers = {},
-        includeEmptyLines = false
+        withEmptyLines = false,
+        withEncounterName = true,
+        withTimerNames = true,
+        withTimingNames = true
       }
 
       local modalContainer = PRT.SimpleGroup()
@@ -81,6 +120,7 @@ local function AddExRTExportWidget(container, encounter, timers)
 
       -- Add widgets to modal container
       modalContainer:AddChild(description)
+      AddExRTExportOptionsWidget(modalContainer, exrtExportContext)
       AddExRTExportSelectorWidget(modalContainer, exrtExportContext)
       modalContainer:AddChild(exportButton)
 

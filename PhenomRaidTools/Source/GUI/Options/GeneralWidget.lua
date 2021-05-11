@@ -23,13 +23,13 @@ local GeneralOptions = {
 
 function GeneralOptions.AddChangelogWidgets(container)
   local changelogLines = {
-    PRT.ColoredString(L["Latest Features"], PRT.Static.Colors.Header),
-    PRT.ColoredString(L["Ability to export timers as ExRT note"], PRT.Static.Colors.SubHeader),
+    PRT.ColoredString(L["Latest Features"], PRT.Static.Colors.Primary),
+    PRT.ColoredString(L["Ability to export timers as ExRT note"], PRT.Static.Colors.Secondary),
     L["- Export any timer as ExRT note"],
     L["- %s This only works for messages with type %s"]:format(PRT.ColoredString("(!)", PRT.Static.Colors.Disabled), PRT.HighlightString(L["cooldown"])),
     L["- To do so you have to navigate to %s within any encounter and click %s"]:format(PRT.HighlightString(L["Timers"]), PRT.HighlightString(L["Generate ExRT Note"])),
     "",
-    PRT.ColoredString(L["Spell database options tab"], PRT.Static.Colors.SubHeader),
+    PRT.ColoredString(L["Spell database options tab"], PRT.Static.Colors.Secondary),
     L["- Within the spell database you can search any spell the game has to over"],
     L["- The spell database will be updated each patch automatically"]
   }

@@ -2,11 +2,7 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local SenderOverlay = {
-  timerColor = "FFffc526",
-  rotationColor = "FF76ff68",
-  disabledColor = "FFed3939",
-  inactiveColor = "FF8f8f8f"
-}
+  }
 
 -- Create local copies of API functions which we use
 local GameFontHighlightSmall = GameFontHighlightSmall
@@ -38,7 +34,7 @@ function SenderOverlay.UpdateFrame(encounter, options)
   if encounter then
     -- Set Header to encounter name
     local timeIntoCombat = PRT.SecondsToClock(GetTime() - encounter.startedAt)
-    overlayText = encounter.name.." ("..PRT.HighlightString(timeIntoCombat)..")|n"
+    overlayText = PRT.ColoredString(encounter.name, PRT.Static.Colors.Primary).." ("..PRT.ColoredString(timeIntoCombat, PRT.Static.Colors.Secondary)..")|n"
 
     -- Timer
     if not PRT.TableUtils.IsEmpty(encounter.Timers) then
@@ -48,32 +44,32 @@ function SenderOverlay.UpdateFrame(encounter, options)
         local timerString = ""
 
         if timer.enabled or (not timer.enabled and not options.hideDisabledTriggers) then
-          timerString = timerString..timer.name
+          timerString = timerString..PRT.ColoredString(timer.name, PRT.Static.Colors.Tertiary)
 
           if timer.started then
             local timeIntoTimer = GetTime() - timer.startedAt
             local timeIntoTimerString = PRT.SecondsToClock(timeIntoTimer)
-            timerString = timerString.." ("..PRT.ColoredString(timeIntoTimerString, SenderOverlay.timerColor)..")"
+            timerString = timerString.." ("..PRT.ColoredString(timeIntoTimerString, PRT.Static.Colors.Secondary)..")"
 
             local nextInSeconds, nextTiming = SenderOverlay.GetNextTiming(timer, timeIntoTimer)
 
             if nextInSeconds then
               local nextDelta = PRT.Round((nextInSeconds + (nextTiming.offset or 0)) - timeIntoTimer)
-              timerString = timerString.." [-"..PRT.ColoredString(PRT.SecondsToClock(nextDelta), SenderOverlay.timerColor).."]|n"
+              timerString = timerString.." [-"..PRT.ColoredString(PRT.SecondsToClock(nextDelta), PRT.Static.Colors.Secondary).."]|n"
             else
               timerString = timerString.."|n"
             end
           elseif timer.enabled ~= true then
-            timerString = PRT.ColoredString(timerString.." - disabled|n", SenderOverlay.disabledColor)
+            timerString = PRT.ColoredString(timerString.." - disabled|n", PRT.Static.Colors.Disabled)
           else
-            timerString = PRT.ColoredString(timerString.." - inactive|n", SenderOverlay.inactiveColor)
+            timerString = PRT.ColoredString(timerString.." - inactive|n", PRT.Static.Colors.Inactive)
           end
         end
 
         timerStringComplete = timerStringComplete..timerString
       end
 
-      overlayText = overlayText..PRT.ColoredString("Timers|n", SenderOverlay.timerColor)
+      overlayText = overlayText..PRT.ColoredString("Timers|n", PRT.Static.Colors.Secondary)
       overlayText = overlayText..timerStringComplete
     end
 
@@ -88,14 +84,14 @@ function SenderOverlay.UpdateFrame(encounter, options)
           rotationString = rotationString..rotation.name
 
           if rotation.enabled ~= true then
-            rotationString = PRT.ColoredString(rotationString.." - disabled|n", SenderOverlay.disabledColor)
+            rotationString = PRT.ColoredString(rotationString.." - disabled|n", PRT.Static.Colors.Disabled)
           else
             local isRotationActive = PRT.IsTriggerActive(rotation)
 
             if not isRotationActive then
               rotationString = PRT.ColoredString(rotationString.." - inactive|n", SenderOverlay.inactiveColor)
             elseif isRotationActive and rotation.counter then
-              rotationString = rotationString.." - "..PRT.ColoredString(rotation.counter, SenderOverlay.rotationColor).."|n"
+              rotationString = rotationString.." - "..PRT.ColoredString(rotation.counter, PRT.Static.Colors.Secondary).."|n"
             else
               rotationString = rotationString.." - 0|n"
             end
@@ -105,7 +101,7 @@ function SenderOverlay.UpdateFrame(encounter, options)
         rotationStringComplete = rotationStringComplete..rotationString
       end
 
-      overlayText = overlayText.."|n"..PRT.ColoredString("Rotations", SenderOverlay.rotationColor).."|n"
+      overlayText = overlayText.."|n"..PRT.ColoredString("Rotations", PRT.Static.Colors.Secondary).."|n"
       overlayText = overlayText..rotationStringComplete
     end
   end

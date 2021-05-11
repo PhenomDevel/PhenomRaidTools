@@ -67,7 +67,7 @@ function ReceiverOverlay.ShowPlaceholder(frame, options, _)
 
   local color = PRT.RGBAToHex(options.fontColor.r, options.fontColor.g, options.fontColor.b, options.fontColor.a)
 
-  frame.text:SetText(PRT.ColoredString(text, color))
+  frame.text:SetText(PRT.ColoredString(text, color, true))
   PRT.Overlay.UpdateSize(frame)
 end
 
@@ -104,9 +104,9 @@ function ReceiverOverlay.UpdateFrameText()
             local color = (PRT.db.profile.overlay.receivers[frameIndex].fontColor.hex or "FFFFFFFF")
 
             if text == "" then
-              text = PRT.ColoredString(string.format(message.message, timeLeft), color)
+              text = PRT.ColoredString(string.format(message.message, timeLeft), color, true)
             else
-              text = text.."|n"..PRT.ColoredString(string.format(message.message, timeLeft), color)
+              text = text.."|n"..PRT.ColoredString(string.format(message.message, timeLeft), color, true)
             end
           end
         end
