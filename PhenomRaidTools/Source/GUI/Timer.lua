@@ -12,7 +12,7 @@ local function AddExRTExportOptionsWidget(container, context)
   optionsGroup:SetLayout("Flow")
 
   -- Include Encounter name
-  local withEncounterName = PRT.CheckBox(L["Encounter name"], L["Shows the encounter name on top of the note."], context.withEncounterName)
+  local withEncounterName = PRT.CheckBox(L["Include title"], L["Shows the encounter name on top of the note."], context.withEncounterName)
   withEncounterName:SetRelativeWidth(0.5)
   withEncounterName:SetCallback("OnValueChanged",
     function(widget)
@@ -20,7 +20,7 @@ local function AddExRTExportOptionsWidget(container, context)
     end)
 
   -- Include timer names
-  local withTimerNames = PRT.CheckBox(L["Timer names"], L["Shows the prt timer names on top of each group of note timers."], context.withTimerNames)
+  local withTimerNames = PRT.CheckBox(L["Include section names"], L["Shows the prt timer names on top of each group of note timers."], context.withTimerNames)
   withTimerNames:SetRelativeWidth(0.5)
   withTimerNames:SetCallback("OnValueChanged",
     function(widget)
@@ -28,7 +28,7 @@ local function AddExRTExportOptionsWidget(container, context)
     end)
 
   -- Include timing names
-  local withTimingNames = PRT.CheckBox(L["Prefix timing names"], L["Shows the timing names before each line of a given prt timer."], context.withTimingNames)
+  local withTimingNames = PRT.CheckBox(L["Include line prefix"], L["Shows the timing names before each line of a given prt timer."], context.withTimingNames)
   withTimingNames:SetRelativeWidth(0.5)
   withTimingNames:SetCallback("OnValueChanged",
     function(widget)
