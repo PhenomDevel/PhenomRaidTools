@@ -469,6 +469,8 @@ function PRT.CreateMainWindow(profile)
 
   mainWindow:SetWidth(profile.mainWindow.width or 970)
   mainWindow:SetHeight(profile.mainWindow.height or 600)
+  mainWindow.frame:SetClampedToScreen(true)
+
   if profile.mainWindow.left or profile.mainWindow.top then
     mainWindow.frame:SetPoint("TOPLEFT",UIParent,"TOPLEFT", profile.mainWindow.left or 0, -(profile.mainWindow.top or 0))
   end
