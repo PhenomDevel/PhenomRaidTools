@@ -1,3 +1,10 @@
+# Release 2.8.5-BETA
+## Bugfixes
+None
+## Features
+ - Updated locals
+
+
 # Release 2.8.4-BETA
 ## Bugfixes
 None
