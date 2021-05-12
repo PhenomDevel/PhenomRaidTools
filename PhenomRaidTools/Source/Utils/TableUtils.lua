@@ -110,3 +110,17 @@ function TableUtils.SortByKey(t, k)
       end
     end)
 end
+
+function TableUtils.Distinct(t)
+  local existingTarget = {}
+  local distinctTargets = {}
+
+  for _, entry in ipairs(t) do
+    if (not existingTarget[entry]) then
+      table.insert(distinctTargets, entry)
+      existingTarget[entry] = true
+    end
+  end
+
+  return distinctTargets
+end

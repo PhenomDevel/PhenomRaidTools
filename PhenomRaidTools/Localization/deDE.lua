@@ -217,6 +217,7 @@ L["Overlays"] = true
 L["Overview"] = "Übersicht"
 L["Paste"] = "Einfügen"
 L["Percentage"] = "Prozent"
+L["Personalize note"] = "Notiz personalisieren"
 L["Placeholder"] = "Platzhalter"
 L["Player"] = "Spieler"
 L["Player entered combat"] = "Spieler beginnt Kampf"
@@ -311,6 +312,7 @@ L["The spell database is globally available for all of your characters and will 
 L["The spell database will rebuild once the patch version changes. This is done so you always have the newest spells in the database."] = "Die Zauber Datenbank wird zurückgesetzt, wenn ein neuer Patch veröffentlicht wird, um sicherzustellen, dass immer alle Zauber in der Datenbank zur Verfügung stehen."
 L["There are currently no templates."] = "Aktuell gibt es keine Vorlagen."
 L["This feature will export your selected timers to a ExRT note. This will only work for message of type %s."] = "Diese Funktion exportiert die ausgewählten Timer als ExRT Notiz. Das funktioniert nur für Nachrichten mit dem Typ %s."
+L["This will hide all entries which are not interesting for the given player."] = "Alle Einträge, welche nicht für einen Spieler relevant sind werden in dessen Notiz nicht mehr dargestellt."
 L["Timer"] = true
 L["Timers"] = "Timer"
 L["Timings"] = "Zeit Einträge"

@@ -16,6 +16,33 @@ local function IsValidMessage(message)
   return (message.type == "cooldown")
 end
 
+local function GetLineTargets(entry)
+  local targets = {}
+
+  for _, message in ipairs(entry.messages) do
+    local target = PRT.ReplacePlayerNameTokens(message.targets[1])
+    tinsert(targets, target)
+  end
+
+  return PRT.TableUtils.Distinct(targets)
+end
+
+local function WrapPersonalization(contentString, targetString, options)
+  local personalizedString = ""
+
+  if options.withPersonalization then
+    personalizedString = string.format("{p:%s}", targetString)
+  end
+
+  personalizedString = personalizedString..contentString
+
+  if options.withPersonalization then
+    personalizedString = personalizedString.."{/p}"
+  end
+
+  return personalizedString
+end
+
 local function SecondsToTimePrefix(entry, options)
   local timePrefixString
 
@@ -38,7 +65,23 @@ local function SecondsToTimePrefix(entry, options)
     timePrefixString = timePrefixString..string.format(" %s >", PRT.ColoredString(entry.name, PRT.Static.Colors.Tertiary))
   end
 
-  return timePrefixString
+  local targetsString = strjoin(",", unpack(GetLineTargets(entry)))
+  return WrapPersonalization(timePrefixString, targetsString, options)
+end
+
+local function GenerateTimingContent(messages, options)
+  local contents = {}
+
+  for _, message in ipairs(messages) do
+    local targetString = PRT.ReplacePlayerNameTokens(message.targets[1])
+    local content = string.format("{spell:%s} %s", message.spellID, PRT.ClassColoredName(targetString))
+
+    local finalString = WrapPersonalization(content, targetString, options)
+
+    tinsert(contents, finalString)
+  end
+
+  return contents
 end
 
 local function CollectMessagesPerTiming(timer)
@@ -75,20 +118,8 @@ local function CollectMessagesPerTiming(timer)
   return sortedEntries
 end
 
-local function GenerateTimingContent(messages)
-  local contents = {}
-
-  for _, message in ipairs(messages) do
-    local targetString = PRT.ReplacePlayerNameTokens(message.targets[1])
-    local content = string.format("{spell:%s} %s", message.spellID, PRT.ClassColoredName(targetString))
-    tinsert(contents, content)
-  end
-
-  return contents
-end
-
 local function GenerateTimingString(entry, options)
-  local contents = GenerateTimingContent(entry.messages)
+  local contents = GenerateTimingContent(entry.messages, options)
   local timingString = SecondsToTimePrefix(entry, options)
 
   local contentsString = strjoin(" ", unpack(contents))

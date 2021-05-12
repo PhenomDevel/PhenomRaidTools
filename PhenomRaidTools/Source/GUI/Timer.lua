@@ -43,10 +43,28 @@ local function AddExRTExportOptionsWidget(container, context)
       context.withEmptyLines = widget:GetValue()
     end)
 
+  -- Personalize Note
+  local withPersonalization = PRT.CheckBox(L["Personalize note"], L["This will hide all entries which are not interesting for the given player."], context.withPersonalization)
+  withPersonalization:SetRelativeWidth(0.5)
+  withPersonalization:SetCallback("OnValueChanged",
+    function(widget)
+      context.withPersonalization = widget:GetValue()
+    end)
+
+  -- Directly Update ExRT Note
+  local forceExRTUpdate = PRT.CheckBox(L["Force ExRT note update"], L["This will try and force ExRT to directly update the note."], context.forceExRTUpdate)
+  forceExRTUpdate:SetRelativeWidth(0.5)
+  forceExRTUpdate:SetCallback("OnValueChanged",
+    function(widget)
+      context.forceExRTUpdate = widget:GetValue()
+    end)
+
   optionsGroup:AddChild(withEncounterName)
   optionsGroup:AddChild(withTimerNames)
   optionsGroup:AddChild(withTimingNames)
   optionsGroup:AddChild(withEmptyLines)
+  optionsGroup:AddChild(withPersonalization)
+  optionsGroup:AddChild(forceExRTUpdate)
 
   container:AddChild(optionsGroup)
 end
@@ -55,8 +73,10 @@ local function AddExRTExportSelectorWidget(container, context)
   local timerGroup = PRT.InlineGroup(L["Select Timers"])
   timerGroup:SetLayout("Flow")
 
+  local checkboxes = {}
+
   for _, timer in ipairs(context.timers) do
-    local timerCheckbox = PRT.CheckBox(timer.name)
+    local timerCheckbox = PRT.CheckBox(timer.name, nil, true)
     timerCheckbox:SetRelativeWidth(0.5)
     timerCheckbox:SetCallback("OnValueChanged",
       function(widget)
@@ -68,9 +88,22 @@ local function AddExRTExportSelectorWidget(container, context)
         end
       end)
 
+    -- Initially all timers are selected
+    tinsert(context.selectedTimers, timer)
+    tinsert(checkboxes, timerCheckbox)
     timerGroup:AddChild(timerCheckbox)
   end
 
+  local unselectAllButton = PRT.Button(L["Unselect all"])
+  unselectAllButton:SetCallback("OnClick",
+    function()
+      for _, cb in ipairs(checkboxes) do
+        cb:SetValue(false)
+        wipe(context.selectedTimers)
+      end
+    end)
+
+  timerGroup:AddChild(unselectAllButton)
   container:AddChild(timerGroup)
 end
 
@@ -92,6 +125,19 @@ local function AddExRTExportResultWidget(container, encounter, context)
   exportTextBox:SetFocus()
   exportTextBox:DisableButton(true)
   exportTextBox:HighlightText()
+
+  if context.forceExRTUpdate and IsAddOnLoaded("ExRT") then
+    _G.VExRT.Note.Text1 = string.gsub(exportString, "|", "||")
+
+    -- We use this function to FORCE exrt to update the note.
+    PRT.Info("Forcing ExRT Note to update.")
+    DEFAULT_CHAT_FRAME.editBox:SetText("/exrt note timer")
+    ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+
+    DEFAULT_CHAT_FRAME.editBox:SetText("/exrt note timer")
+    ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+  end
+
   container:AddChild(exportTextBox)
 end
 
@@ -105,7 +151,8 @@ local function AddExRTExportWidget(container, encounter, timers)
         withEmptyLines = false,
         withEncounterName = true,
         withTimerNames = true,
-        withTimingNames = true
+        withTimingNames = true,
+        forceExRTUpdate = false
       }
 
       local modalContainer = PRT.SimpleGroup()

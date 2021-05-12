@@ -196,6 +196,7 @@ L["Overlays"] = true
 L["Overview"] = true
 L["Paste"] = true
 L["Percentage"] = true
+L["Personalize note"] = true
 L["Placeholder"] = true
 L["Player"] = true
 L["Player entered combat"] = true
@@ -282,6 +283,7 @@ L["The spell database is globally available for all of your characters and will 
 L["The spell database will rebuild once the patch version changes. This is done so you always have the newest spells in the database."] = true
 L["There are currently no templates."] = true
 L["This feature will export your selected timers to a ExRT note. This will only work for message of type %s."] = true
+L["This will hide all entries which are not interesting for the given player."] = true
 L["Timer"] = true
 L["Timers"] = true
 L["Timings"] = true
