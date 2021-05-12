@@ -46,11 +46,11 @@ function Core.CloseAllOpenFrames()
   wipe(Core.openFrames)
 end
 
-function Core.DisabledText(text, enabled)
+function Core.InactiveText(text, enabled)
   if enabled then
     return text
   else
-    return PRT.ColoredString(text, PRT.Static.Colors.Disabled)
+    return PRT.ColoredString(text, PRT.Static.Colors.Inactive)
   end
 end
 
@@ -82,7 +82,7 @@ end
 function Core.GeneratePercentageTree(percentage)
   local t = {
     value = percentage.name,
-    text = Core.DisabledText(Core.WithDifficultiesText(percentage.name, percentage), percentage.enabled)
+    text = Core.InactiveText(Core.WithDifficultiesText(percentage.name, percentage), percentage.enabled)
   }
 
   return t
@@ -129,7 +129,7 @@ end
 function Core.GenerateRotationTree(rotation)
   local t = {
     value = rotation.name,
-    text = Core.DisabledText(Core.WithDifficultiesText(rotation.name, rotation), rotation.enabled)
+    text = Core.InactiveText(Core.WithDifficultiesText(rotation.name, rotation), rotation.enabled)
   }
 
   if rotation.triggerCondition then
@@ -166,7 +166,7 @@ end
 function Core.GenerateTimerTree(timer)
   local t = {
     value = timer.name,
-    text = Core.DisabledText(Core.WithDifficultiesText(timer.name, timer), timer.enabled)
+    text = Core.InactiveText(Core.WithDifficultiesText(timer.name, timer), timer.enabled)
   }
 
   if timer.startCondition then
@@ -219,7 +219,7 @@ function Core.GenerateEncounterTree(encounter)
 
   local t = {
     value = encounter.id,
-    text = Core.DisabledText(encounter.name.." (v"..encounter.selectedVersion..")", encounter.enabled),
+    text = Core.InactiveText(encounter.name.." (v"..encounter.selectedVersion..")", encounter.enabled),
   }
 
   if selectedEncounter then
