@@ -1,3 +1,12 @@
+# Release 2.8.6-BETA
+## Bugfixes
+None
+## Features
+ - Be able to export the ExRT note personalized
+   - So each player only gets shown entries which are for him/her
+ - Be able to directly push export into ExRT without having to open it
+
+
 # Release 2.8.5-BETA
 ## Bugfixes
 None
