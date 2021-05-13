@@ -3,6 +3,8 @@ local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local Timer = {}
 
+local IsAddOnLoaded = IsAddOnLoaded
+
 
 -------------------------------------------------------------------------------
 -- Local Helper
@@ -53,6 +55,7 @@ local function AddExRTExportOptionsWidget(container, context)
 
   -- Directly Update ExRT Note
   local forceExRTUpdate = PRT.CheckBox(L["Force ExRT note update"], L["This will try and force ExRT to directly update the note."], context.forceExRTUpdate)
+  forceExRTUpdate:SetDisabled(not IsAddOnLoaded("ExRT"))
   forceExRTUpdate:SetRelativeWidth(0.5)
   forceExRTUpdate:SetCallback("OnValueChanged",
     function(widget)
