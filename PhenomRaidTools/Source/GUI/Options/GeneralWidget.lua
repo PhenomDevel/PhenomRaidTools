@@ -245,7 +245,6 @@ end
 function PRT.AddGeneralWidgets(container, options)
   local enabledCheckbox = PRT.CheckBox(L["Enabled"], nil, options.enabled)
   local versionCheckButton = PRT.Button(L["Version Check"])
-  local profilesOptionsButton = PRT.Button(L["Profiles"])
 
   enabledCheckbox:SetRelativeWidth(1)
   enabledCheckbox:SetCallback("OnValueChanged",
@@ -277,14 +276,5 @@ function PRT.AddGeneralWidgets(container, options)
       PRT:VersionCheck()
     end)
 
-  profilesOptionsButton:SetCallback("OnClick",
-    function()
-      PRT.mainWindow:Hide()
-      InterfaceOptionsFrame_OpenToCategory("PhenomRaidTools")
-      InterfaceOptionsFrame_OpenToCategory("PhenomRaidTools")
-    end
-  )
-
   container:AddChild(versionCheckButton)
-  container:AddChild(profilesOptionsButton)
 end

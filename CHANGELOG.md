@@ -1,3 +1,10 @@
+# Release 2.10.0-BETA
+## Bugfixes
+None
+## Features
+ - Move profiles page into the addon itself as own options tab
+
+
 # Release 2.9.0-BETA
 ## Bugfixes
 None

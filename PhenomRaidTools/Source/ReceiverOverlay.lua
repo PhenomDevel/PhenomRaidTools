@@ -191,6 +191,7 @@ function ReceiverOverlay.ReInitialize(receiverOptions)
   ReceiverOverlay.overlayFrames = nil
   ReceiverOverlay.Initialize(receiverOptions)
   ReceiverOverlay.ShowAll()
+  ReceiverOverlay.ShowPlaceholders(receiverOptions)
 end
 
 -------------------------------------------------------------------------------

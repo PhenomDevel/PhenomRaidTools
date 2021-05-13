@@ -267,11 +267,8 @@ end
 function PRT:RefreshConfig()
   PRT.Info("Active Profile was changed to", PRT.HighlightString(PRT.db:GetCurrentProfile()))
 
-  PRT.ReceiverOverlay.overlayFrames = nil
-  PRT.SenderOverlay.overlayFrame = nil
-
-  PRT.ReceiverOverlay.Initialize(PRT.db.profile.overlay.receivers)
-  PRT.SenderOverlay.Initialize(PRT.db.profile.overlay.sender)
+  PRT.ReceiverOverlay.ReInitialize(PRT.db.profile.overlay.receivers)
+  PRT.SenderOverlay.ReInitialize(PRT.db.profile.overlay.sender)
 
   local encounterIdx, _ = PRT.TableUtils.GetBy(self.db.profile.encounters, "id", 9999)
   if not encounterIdx and PRT.TableUtils.IsEmpty(self.db.profile.encounters) then
@@ -279,7 +276,7 @@ function PRT:RefreshConfig()
   end
 
   -- Check if profile db needs migration
-  AceTimer:ScheduleTimer(PRT.MigrateProfileDB, 1, self.db.profile)
+  AceTimer:ScheduleTimer(PRT.MigrateProfileDB, 0.5, self.db.profile)
 end
 
 function PRT:OnEnable()
@@ -375,9 +372,6 @@ function PRT:ExecuteChatCommand(input)
     PRT.PrintHelp()
   elseif input == "version" or input == "versions" then
     PRT:VersionCheck()
-  elseif input == "profile" or input == "profiles" then
-    InterfaceOptionsFrame_OpenToCategory("PhenomRaidTools")
-    InterfaceOptionsFrame_OpenToCategory("PhenomRaidTools")
   elseif input == "minimap" then
     PRT:ToggleMinimapIcon()
   else

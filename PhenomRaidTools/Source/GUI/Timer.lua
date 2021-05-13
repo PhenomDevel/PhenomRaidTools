@@ -130,7 +130,7 @@ local function AddExRTExportResultWidget(container, encounter, context)
     _G.VExRT.Note.Text1 = string.gsub(exportString, "|", "||")
 
     -- We use this function to FORCE exrt to update the note.
-    PRT.Info("Forcing ExRT Note to update.")
+    PRT.Debug("Forcing ExRT Note to update.")
     DEFAULT_CHAT_FRAME.editBox:SetText("/exrt note timer")
     ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 

@@ -62,7 +62,7 @@ local function SecondsToTimePrefix(entry, options)
   timePrefixString = timePrefixString.."}"
 
   if options.withTimingNames then
-    timePrefixString = timePrefixString..string.format(" %s >", PRT.ColoredString(entry.name, PRT.Static.Colors.Tertiary))
+    timePrefixString = timePrefixString..string.format(" %s -> ", PRT.ColoredString(entry.name, PRT.Static.Colors.Tertiary))
   end
 
   return timePrefixString

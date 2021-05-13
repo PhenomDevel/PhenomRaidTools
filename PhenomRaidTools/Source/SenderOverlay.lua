@@ -153,6 +153,14 @@ function SenderOverlay.Initialize(options)
   end
 end
 
+function SenderOverlay.ReInitialize(senderOptions)
+  SenderOverlay.Hide()
+  SenderOverlay.overlayFrame = nil
+  SenderOverlay.Initialize(senderOptions)
+  SenderOverlay.Show()
+  SenderOverlay.ShowPlaceholder(SenderOverlay.overlayFrame, senderOptions)
+end
+
 
 -------------------------------------------------------------------------------
 -- Public API
