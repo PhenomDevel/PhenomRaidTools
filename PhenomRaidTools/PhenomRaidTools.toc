@@ -54,6 +54,7 @@ Source/GUI/Percentage.lua
 Source/GUI/Encounter.lua
 Source/GUI/Template.lua
 Source/GUI/Core.lua
+Source/GUI/Options/Profiles.lua
 Source/GUI/Options/SpellCacheWidget.lua
 Source/GUI/Options/DefaultsWidget.lua
 Source/GUI/Options/DifficultiesWidget.lua

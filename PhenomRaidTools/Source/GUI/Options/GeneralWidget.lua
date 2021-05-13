@@ -31,7 +31,11 @@ function GeneralOptions.AddChangelogWidgets(container)
     "",
     PRT.ColoredString(L["Spell database options tab"], PRT.Static.Colors.Secondary),
     L["- Within the spell database you can search any spell the game has to over"],
-    L["- The spell database will be updated each patch automatically"]
+    L["- The spell database will be updated each patch automatically"],
+    "",
+    PRT.ColoredString(L["Profiles options tab"], PRT.Static.Colors.Secondary),
+    L["- You can now enable and select specialization specific profiles"],
+    L["- The profiles will change automatically once you change your specialization"]
   }
 
   local changelogGroup = PRT.InlineGroup(L["Changelog"])

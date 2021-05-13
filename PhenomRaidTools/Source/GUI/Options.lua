@@ -14,6 +14,10 @@ function PRT.AddOptionWidgets(container, profile)
       text = L["General"]
     },
     {
+      value = "profiles",
+      text = L["Profiles"]
+    },
+    {
       value = "raidRoster",
       text = L["Raidroster"] ,
       disabled = not PRT.IsSender()
@@ -58,6 +62,8 @@ function PRT.AddOptionWidgets(container, profile)
 
       if key ==  "general" then
         PRT.AddGeneralWidgets(container, PRT.db.profile)
+      elseif key == "profiles" then
+        PRT.AddProfilesWidget(container, PRT.db.char.profileSettings)
       elseif key == "difficulties" then
         PRT.AddDifficultyWidgets(container, PRT.db.profile.enabledDifficulties)
       elseif key == "defaults" then

@@ -59,6 +59,14 @@ local function NewDefaultReceiverOverlay(id, name, fontSize, r, g, b)
 end
 
 local defaults =  {
+  char = {
+    profileSettings = {
+      specSpecificProfiles = {
+        enabled = false,
+        profileBySpec = {}
+      }
+    }
+  },
   global = {
     spellCache = {
       enabled = false,

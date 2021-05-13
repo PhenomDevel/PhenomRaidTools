@@ -10,6 +10,7 @@ local EventHandler = {
     "ENCOUNTER_START",
     "ENCOUNTER_END",
     "PLAYER_ENTERING_WORLD",
+    "PLAYER_SPECIALIZATION_CHANGED"
   },
 
   trackedInCombatEvents = {
@@ -35,6 +36,8 @@ local EventHandler = {
 -- Create local copies of API functions which we use
 local GetTime, CombatLogGetCurrentEventInfo, UnitGUID, GetInstanceInfo =
   GetTime, CombatLogGetCurrentEventInfo, UnitGUID, GetInstanceInfo
+
+local GetSpecialization, GetSpecializationInfo = GetSpecialization, GetSpecializationInfo
 
 
 -------------------------------------------------------------------------------
@@ -514,4 +517,18 @@ function PRT:PLAYER_ENTERING_WORLD(_)
     end,
     5
   )
+end
+
+function PRT:PLAYER_SPECIALIZATION_CHANGED()
+  if PRT.db.char.profileSettings.specSpecificProfiles.enabled then
+    local specIndex = GetSpecialization()
+    local profile = PRT.db.char.profileSettings.specSpecificProfiles.profileBySpec[specIndex]
+
+    if profile then
+      PRT.db:SetProfile(profile)
+    else
+      local specName = select(2, GetSpecializationInfo(specIndex))
+      PRT.Info("Spec specific profiles are enabled, but you haven't selected any profile for spec `%s` yet.", specName)
+    end
+  end
 end
