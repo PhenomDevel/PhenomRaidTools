@@ -204,5 +204,8 @@ function PRT.ExRTExportFromTimers(options, timers, encounterName)
     finalString = contentString
   end
 
+  -- Cleanup
+  finalString = string.gsub(finalString, "\n\n\n", "\n\n")
+
   return finalString
 end
