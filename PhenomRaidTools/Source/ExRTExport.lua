@@ -65,8 +65,7 @@ local function SecondsToTimePrefix(entry, options)
     timePrefixString = timePrefixString..string.format(" %s >", PRT.ColoredString(entry.name, PRT.Static.Colors.Tertiary))
   end
 
-  local targetsString = strjoin(",", unpack(GetLineTargets(entry)))
-  return WrapPersonalization(timePrefixString, targetsString, options)
+  return timePrefixString
 end
 
 local function GenerateTimingContent(messages, options)
@@ -90,17 +89,21 @@ local function CollectMessagesPerTiming(timer)
   for _, timing in ipairs(timer.timings) do
     for _, timeInSeconds in ipairs(timing.seconds) do
       if not messagesPerTiming[timeInSeconds] then
-        messagesPerTiming[timeInSeconds] = {
+        local newEntry = {
           name = timing.name,
           triggerAtOccurence = timer.triggerAtOccurence,
           startCondition = timer.startCondition,
           messages = {}
         }
-      end
 
-      for _, message in ipairs(timing.messages) do
-        if IsValidMessage(message) then
-          tinsert(messagesPerTiming[timeInSeconds].messages, message)
+        for _, message in ipairs(timing.messages) do
+          if IsValidMessage(message) then
+            tinsert(newEntry.messages, message)
+          end
+        end
+
+        if PRT.TableUtils.Count(newEntry.messages) > 0 then
+          messagesPerTiming[timeInSeconds] = newEntry
         end
       end
     end
@@ -128,7 +131,9 @@ local function GenerateTimingString(entry, options)
     return nil
   end
 
-  return timingString.." "..contentsString
+  local finalString = "\n"..timingString.." "..contentsString
+  local targetsString = strjoin(",", unpack(GetLineTargets(entry)))
+  return WrapPersonalization(finalString, targetsString, options)
 end
 
 local function MessagePerStringToExRTNote(messagesPerTiming, options)
@@ -153,18 +158,24 @@ function PRT.ExRTExportFromTimer(options, timer)
   local collectedMessagePerTiming = CollectMessagesPerTiming(localTimer)
   local timingStrings = MessagePerStringToExRTNote(collectedMessagePerTiming, options)
 
+  PRT.TableUtils.Remove(timingStrings, PRT.StringUtils.IsEmpty)
+
   local title
 
   if options.withTimerNames then
     title = PRT.ColoredString(string.format("== %s ==", timer.name), PRT.Static.Colors.Secondary)
   end
 
-  local content = strjoin("\n", unpack(timingStrings))
-  local finalString
+  local content = strjoin("", unpack(timingStrings))
+  local finalString = ""
 
   if not PRT.TableUtils.IsEmpty(timingStrings) then
     if title then
-      finalString = string.format("%s\n\n%s", title or "", content)
+      if options.withPersonalization then
+        finalString = string.format("%s\n\n%s", title or "", content)
+      else
+        finalString = string.format("%s\n%s", title or "", content)
+      end
     else
       finalString = content
     end
@@ -182,10 +193,12 @@ function PRT.ExRTExportFromTimers(options, timers, encounterName)
     tinsert(strings, PRT.ExRTExportFromTimer(options, timer))
   end
 
+  PRT.TableUtils.Remove(strings, PRT.StringUtils.IsEmpty)
+
   contentString = strjoin("\n\n", unpack(strings))
 
   if encounterName and options.withEncounterName then
-    finalString = string.format("%s\n%s", encounterName, contentString)
+    finalString = string.format("%s\n\n%s", encounterName, contentString)
 
   else
     finalString = contentString
