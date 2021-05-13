@@ -14,17 +14,8 @@ function PRT.AddOptionWidgets(container, profile)
       text = L["General"]
     },
     {
-      value = "profiles",
-      text = L["Profiles"]
-    },
-    {
       value = "raidRoster",
       text = L["Raidroster"] ,
-      disabled = not PRT.IsSender()
-    },
-    {
-      value = "customPlaceholders",
-      text = L["Custom Placeholder"] ,
       disabled = not PRT.IsSender()
     },
     {
@@ -39,10 +30,6 @@ function PRT.AddOptionWidgets(container, profile)
       value = "defaults",
       text = L["Trigger Defaults"] ,
       disabled = not PRT.IsSender()
-    },
-    {
-      value = "spellDatabase",
-      text = L["Spell Database"],
     },
     {
       value = "information",
@@ -62,8 +49,6 @@ function PRT.AddOptionWidgets(container, profile)
 
       if key ==  "general" then
         PRT.AddGeneralWidgets(container, PRT.db.profile)
-      elseif key == "profiles" then
-        PRT.AddProfilesWidget(container, PRT.db.char.profileSettings)
       elseif key == "difficulties" then
         PRT.AddDifficultyWidgets(container, PRT.db.profile.enabledDifficulties)
       elseif key == "defaults" then
@@ -72,12 +57,8 @@ function PRT.AddOptionWidgets(container, profile)
         PRT.AddRaidRosterWidget(container, PRT.db.profile.raidRoster)
       elseif key == "overlay" then
         PRT.AddOverlayWidget(container, PRT.db.profile.overlay)
-      elseif key =="customPlaceholders" then
-        PRT.AddCustomPlaceholdersWidget(container, PRT.db.profile.customPlaceholders)
       elseif key == "information" then
         PRT.AddInformationWidgets(container)
-      elseif key == "spellDatabase" then
-        PRT.AddSpellCacheWidget(container)
       end
 
       if PRT.mainWindowContent.scrollFrame then

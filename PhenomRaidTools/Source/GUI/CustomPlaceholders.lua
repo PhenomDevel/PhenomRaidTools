@@ -115,6 +115,9 @@ end
 
 function PRT.AddCustomPlaceholdersWidget(container, customPlaceholders)
   PRT.AddCustomPlaceholderDescription(container)
+  local actionsGroup = PRT.SimpleGroup()
+  actionsGroup:SetLayout("Flow")
+
   local importButton = PRT.Button(L["Import"])
   importButton:SetCallback("OnClick",
     function()
@@ -141,8 +144,34 @@ function PRT.AddCustomPlaceholdersWidget(container, customPlaceholders)
         end)
     end)
 
-  container:AddChild(importButton)
-  container:AddChild(exportButton)
-  container:AddChild(removeAllButton)
+  actionsGroup:AddChild(importButton)
+  actionsGroup:AddChild(exportButton)
+  actionsGroup:AddChild(removeAllButton)
+  container:AddChild(actionsGroup)
   PRT.AddCustomPlaceholdersTabGroup(container, customPlaceholders)
+end
+
+function PRT.AddCustomPlaceholderOptions(container, profile, encounterID)
+  local _, encounter = PRT.GetSelectedVersionEncounterByID(profile.encounters, tonumber(encounterID))
+  local CustomPlaceholders = encounter.CustomPlaceholders
+
+  if not CustomPlaceholders then
+    encounter.CustomPlaceholders = {}
+    CustomPlaceholders = {}
+  end
+
+  local removeAllButton = PRT.Button(L["Remove all"])
+  removeAllButton:SetCallback("OnClick",
+    function()
+      PRT.ConfirmationDialog(L["Are you sure you want to remove all custom placeholders?"],
+        function()
+          wipe(CustomPlaceholders)
+          container:ReleaseChildren()
+          PRT.AddCustomPlaceholderOptions(container, profile, encounterID)
+        end)
+    end)
+
+  PRT.AddCustomPlaceholderDescription(container)
+  container:AddChild(removeAllButton)
+  PRT.AddCustomPlaceholdersTabGroup(container, CustomPlaceholders)
 end

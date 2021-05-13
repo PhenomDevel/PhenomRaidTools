@@ -75,6 +75,7 @@ end
 
 function PRT.AddSpellCacheWidget(container)
   local spellCache = PRT.db.global.spellCache
+  local spellCacheGroup = PRT.SimpleGroup()
 
   local descriptionLines = {
     L["Here you can search the spell database. The database is build up in the background and may not contain "..
@@ -86,27 +87,27 @@ function PRT.AddSpellCacheWidget(container)
   local enabledCheckBox = PRT.CheckBox(L["Enabled"], nil, spellCache.enabled)
   local descriptionText = strjoin("\n\n", unpack(descriptionLines))
   local descriptionLabel = PRT.Label(descriptionText)
-  local statusGroup, _, statusValueLabel = addLabelWithValue(container, L["Status"], getStatusText(spellCache))
-  local lastCheckedGroup, _, lastCheckedValueLabel = addLabelWithValue(container, L["Last checked id"], spellCache.lastCheckedId)
-  local spellCountGroup, _, spellCountValueLabel = addLabelWithValue(container, L["Spell count"], PRT.TableUtils.Count(spellCache.spells))
+  local statusGroup, _, statusValueLabel = addLabelWithValue(spellCacheGroup, L["Status"], getStatusText(spellCache))
+  local lastCheckedGroup, _, lastCheckedValueLabel = addLabelWithValue(spellCacheGroup, L["Last checked id"], spellCache.lastCheckedId)
+  local spellCountGroup, _, spellCountValueLabel = addLabelWithValue(spellCacheGroup, L["Spell count"], PRT.TableUtils.Count(spellCache.spells))
 
-  local startedAtGroup = addLabelWithValue(container, L["Started at"], spellCache.startedAt)
-  local completedAtGroup = addLabelWithValue(container, L["Completed at"], spellCache.completedAt)
+  local startedAtGroup = addLabelWithValue(spellCacheGroup, L["Started at"], spellCache.startedAt)
+  local completedAtGroup = addLabelWithValue(spellCacheGroup, L["Completed at"], spellCache.completedAt)
 
   local invalidateCacheButton = PRT.Button(L["Rebuild spell database"])
 
   descriptionLabel:SetRelativeWidth(1)
 
-  container:AddChild(descriptionLabel)
-  container:AddChild(PRT.Heading(nil))
-  container:AddChild(enabledCheckBox)
-  container:AddChild(statusGroup)
-  container:AddChild(lastCheckedGroup)
-  container:AddChild(spellCountGroup)
-  container:AddChild(startedAtGroup)
-  container:AddChild(completedAtGroup)
-  container:AddChild(invalidateCacheButton)
-  AddSpellCacheSearch(container, spellCache)
+  spellCacheGroup:AddChild(descriptionLabel)
+  spellCacheGroup:AddChild(PRT.Heading(nil))
+  spellCacheGroup:AddChild(enabledCheckBox)
+  spellCacheGroup:AddChild(statusGroup)
+  spellCacheGroup:AddChild(lastCheckedGroup)
+  spellCacheGroup:AddChild(spellCountGroup)
+  spellCacheGroup:AddChild(startedAtGroup)
+  spellCacheGroup:AddChild(completedAtGroup)
+  spellCacheGroup:AddChild(invalidateCacheButton)
+  AddSpellCacheSearch(spellCacheGroup, spellCache)
 
   enabledCheckBox:SetCallback("OnValueChanged",
     function(widget)
@@ -144,17 +145,19 @@ function PRT.AddSpellCacheWidget(container)
           PRT.SpellCache.Invalidate(spellCache)
           PRT.SpellCache.Build(spellCache)
 
-          container:ReleaseChildren()
-          PRT.AddSpellCacheWidget(container)
+          spellCacheGroup:ReleaseChildren()
+          PRT.AddSpellCacheWidget(spellCacheGroup)
         end)
     end)
 
   if not spellCache.completed then
-    container:SetCallback("OnRelease",
+    spellCacheGroup:SetCallback("OnRelease",
       function()
         AceTimer:CancelTimer(updateTimer)
       end)
 
-    container.backgroundTimer = updateTimer
+    spellCacheGroup.backgroundTimer = updateTimer
   end
+
+  container:AddChild(spellCacheGroup)
 end

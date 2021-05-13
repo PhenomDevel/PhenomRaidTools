@@ -264,24 +264,29 @@ function Core.GenerateOptionsTree()
 end
 
 function Core.GenerateTemplatesTree()
-  if PRT.IsSender() then
-    return {
-      value = "templates",
-      text = L["Templates"]
-    }
-  else
-
-    return nil
-  end
+  return {
+    value = "templates",
+    text = L["Templates"]
+  }
 end
 
 function Core.GenerateTreeByProfile()
   local t = {
     Core.GenerateOptionsTree(),
-    Core.GenerateTemplatesTree()
+    {
+      value = "profiles",
+      text = L["Profiles"]
+    }
   }
 
   if PRT.IsSender() then
+    tinsert(t, { value = "customPlaceholder", text = L["Custom Placeholder"] })
+  end
+
+  tinsert(t, { value = "spellDatabase", text = L["Spell Database"] })
+
+  if PRT.IsSender() then
+    tinsert(t, Core.GenerateTemplatesTree())
     tinsert(t, Core.GenerateEncountersTree(PRT.db.profile.encounters))
   end
 
@@ -304,6 +309,18 @@ function Core.OnGroupSelected(container, key)
   -- options selected
   if mainKey == "options" then
     PRT.AddOptionWidgets(container, PRT.db.profile)
+
+    -- profiles selected
+  elseif mainKey == "profiles" then
+    PRT.AddProfilesWidget(container, PRT.db.char.profileSettings)
+
+    -- custom placeholder selected
+  elseif mainKey == "customPlaceholder" then
+    PRT.AddCustomPlaceholdersWidget(container, PRT.db.profile.customPlaceholders)
+
+    -- spell database selected
+  elseif mainKey == "spellDatabase" then
+    PRT.AddSpellCacheWidget(container)
 
     -- templates selected
   elseif mainKey == "templates" then

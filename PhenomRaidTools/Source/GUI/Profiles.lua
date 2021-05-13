@@ -16,10 +16,9 @@ function Profiles.RedoLayout(container, options)
   PRT.AddProfilesWidget(container, options)
 end
 
-function Profiles.UpdateCoreFrame(container)
+function Profiles.UpdateCoreFrame()
   PRT.Core.UpdateTree()
   PRT.Core.ReselectCurrentValue()
-  container:SelectTab("profiles")
 end
 
 
@@ -66,7 +65,7 @@ function Profiles.AddChangeCurrentProfile(container)
       local profile = widget:GetValue()
       PRT.db:SetProfile(profile)
       PRT.Info("Selected Profile ", PRT.HighlightString(profile))
-      Profiles.UpdateCoreFrame(container)
+      Profiles.UpdateCoreFrame()
     end)
 
   selectProfileGroup:AddChild(descriptionLabel)
@@ -85,7 +84,7 @@ function Profiles.AddNewProfileWidget(container)
     function(widget)
       local profileName = widget:GetText()
       PRT.db:SetProfile(profileName)
-      Profiles.UpdateCoreFrame(container)
+      Profiles.UpdateCoreFrame()
     end)
 
   newProfileGroup:AddChild(descriptionLabel)
@@ -118,7 +117,7 @@ function Profiles.DeleteProfileWidget(container)
         function()
           PRT.db:DeleteProfile(profile)
           PRT.Info("Deleted Profile ", PRT.HighlightString(profile))
-          Profiles.UpdateCoreFrame(container)
+          Profiles.UpdateCoreFrame()
         end)
     end)
 
@@ -154,7 +153,7 @@ function Profiles.AddSpecSpecificGroupWidget(options, container)
   enabledCheckBox:SetCallback("OnValueChanged",
     function(widget)
       options.specSpecificProfiles.enabled = widget:GetValue()
-      Profiles.UpdateCoreFrame(container)
+      Profiles.UpdateCoreFrame()
     end)
 
   specSpecificGroup:AddChild(descriptionLabel)
