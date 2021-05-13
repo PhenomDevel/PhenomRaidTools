@@ -1,3 +1,10 @@
+# Release 2.13.0-BETA
+## Bugfixes
+None
+## Features
+ - Cleanup note from unnecessary characters
+
+
 # Release 2.12.0-BETA
 ## Bugfixes
 None
