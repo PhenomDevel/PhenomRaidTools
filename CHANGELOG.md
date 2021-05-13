@@ -1,3 +1,12 @@
+# Release 2.9.0-BETA
+## Bugfixes
+None
+## Features
+ - Specialization specific profiles
+   - You now can enable and select spec specific profiles which will
+     change automatically once you change your specialization
+
+
 # Release 2.8.6-BETA
 ## Bugfixes
 None
