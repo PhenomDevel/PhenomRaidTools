@@ -61,6 +61,7 @@ end
 local defaults =  {
   global = {
     spellCache = {
+      enabled = false,
       completed = false,
       lastCheckedId = 0,
       spells = {},

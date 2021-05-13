@@ -38,12 +38,7 @@ local function getStatusText(spellCache)
     statusText
 end
 
-function PRT.AddSpellCacheStatus(container, spellCache)
-  local statusGroup = addLabelWithValue(container, L["Status"], getStatusText(spellCache))
-  container:AddChild(statusGroup)
-end
-
-function PRT.AddSpellCacheSearch(container, spellCache)
+local function AddSpellCacheSearch(container, spellCache)
   local searchEditBox = PRT.EditBox(L["Search"])
   local spellsContainer = PRT.SimpleGroup()
 
@@ -88,6 +83,7 @@ function PRT.AddSpellCacheWidget(container)
     PRT.ColoredString(L["The spell database will rebuild once the patch version changes. This is done so you always have the newest spells in the database."], PRT.Static.Colors.Inactive),
   }
 
+  local enabledCheckBox = PRT.CheckBox(L["Enabled"], nil, spellCache.enabled)
   local descriptionText = strjoin("\n\n", unpack(descriptionLines))
   local descriptionLabel = PRT.Label(descriptionText)
   local statusGroup, _, statusValueLabel = addLabelWithValue(container, L["Status"], getStatusText(spellCache))
@@ -103,13 +99,25 @@ function PRT.AddSpellCacheWidget(container)
 
   container:AddChild(descriptionLabel)
   container:AddChild(PRT.Heading(nil))
+  container:AddChild(enabledCheckBox)
   container:AddChild(statusGroup)
   container:AddChild(lastCheckedGroup)
   container:AddChild(spellCountGroup)
   container:AddChild(startedAtGroup)
   container:AddChild(completedAtGroup)
   container:AddChild(invalidateCacheButton)
-  PRT.AddSpellCacheSearch(container, spellCache)
+  AddSpellCacheSearch(container, spellCache)
+
+  enabledCheckBox:SetCallback("OnValueChanged",
+    function(widget)
+      local value = widget:GetValue()
+      spellCache.enabled = value
+      if value then
+        PRT.SpellCache.Build(spellCache)
+      else
+        PRT.SpellCache.PauseBuild(spellCache)
+      end
+    end)
 
   local updateTimer
   if not spellCache.completed then
