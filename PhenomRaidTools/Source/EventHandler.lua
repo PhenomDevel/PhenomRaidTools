@@ -478,8 +478,24 @@ function PRT:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
   end
 end
 
+local function SetProfileBySpec()
+  if PRT.db.char.profileSettings.specSpecificProfiles.enabled then
+    local specIndex = GetSpecialization()
+    local profile = PRT.db.char.profileSettings.specSpecificProfiles.profileBySpec[specIndex]
+    local specName = select(2, GetSpecializationInfo(specIndex))
+
+    if profile then
+      PRT.db:SetProfile(profile)
+      PRT.Info(string.format("Specialization (%s) specific profile %s was loaded.", PRT.HighlightString(specName), PRT.HighlightString(profile)))
+    else
+      PRT.Info(string.format("Spec specific profiles are enabled, but you haven't selected any profile for spec %s yet.", PRT.HighlightString(specName)))
+    end
+  end
+end
+
 function PRT:PLAYER_ENTERING_WORLD(_)
-  PRT.Debug("Currently active profile", PRT.HighlightString(PRT.db:GetCurrentProfile()))
+  SetProfileBySpec()
+  PRT.Info("Currently loaded profile", PRT.HighlightString(PRT.db:GetCurrentProfile()))
   PRT.Debug("Zone entered.")
   PRT.Debug("Will check zone/difficulty in 5 seconds to determine if addon should be loaded.")
 
@@ -520,15 +536,5 @@ function PRT:PLAYER_ENTERING_WORLD(_)
 end
 
 function PRT:PLAYER_SPECIALIZATION_CHANGED()
-  if PRT.db.char.profileSettings.specSpecificProfiles.enabled then
-    local specIndex = GetSpecialization()
-    local profile = PRT.db.char.profileSettings.specSpecificProfiles.profileBySpec[specIndex]
-
-    if profile then
-      PRT.db:SetProfile(profile)
-    else
-      local specName = select(2, GetSpecializationInfo(specIndex))
-      PRT.Info("Spec specific profiles are enabled, but you haven't selected any profile for spec `%s` yet.", specName)
-    end
-  end
+  SetProfileBySpec()
 end
