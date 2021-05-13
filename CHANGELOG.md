@@ -1,3 +1,10 @@
+# Release 2.12.0-BETA
+## Bugfixes
+None
+## Features
+ - Disable force exrt note update checkbox when exrt is not loaded
+
+
 # Release 2.11.0-BETA
 ## Bugfixes
 None
