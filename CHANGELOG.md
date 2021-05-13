@@ -1,3 +1,10 @@
+# Release 2.11.0-BETA
+## Bugfixes
+None
+## Features
+ - Move none option view to tree view as own top level entries
+
+
 # Release 2.10.0-BETA
 ## Bugfixes
 None
