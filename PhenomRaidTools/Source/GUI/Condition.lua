@@ -90,8 +90,13 @@ local encounterPhaseMapping = {
   [2422] = {
 
   },
+  -- Painsmith
+  [2430] = {
 
+  },
+  [2429] = {
 
+  }
 }
 
 
