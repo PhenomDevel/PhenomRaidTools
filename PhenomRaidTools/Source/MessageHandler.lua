@@ -199,7 +199,8 @@ function PRT:OnVersionRequest(message)
       local response = {
         type = "response",
         name = PRT.UnitFullName("player"),
-        version = PRT.db.profile.version
+        version = PRT.db.profile.version,
+        enabled = PRT.db.profile.enabled
       }
 
       AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.versionResponse, PRT.Serialize(response), "RAID")
@@ -210,8 +211,8 @@ end
 function PRT:OnVersionResponse(message)
   if PRT.IsEnabled() then
     local _, messageTable = PRT.Deserialize(message)
-    PRT.Debug("Version response from:", PRT.ClassColoredName(messageTable.name), PRT.HighlightString(messageTable.version))
-    PRT.db.profile.versionCheck[messageTable.name] = messageTable.version
+    PRT.Debug(string.format("Version response from %s with version %s (Addon Status: %s)",PRT.ClassColoredName(messageTable.name), PRT.HighlightString(messageTable.version), PRT.HighlightString(messageTable.enabled)))
+    tinsert(PRT.db.profile.versionCheck, messageTable)
   end
 end
 

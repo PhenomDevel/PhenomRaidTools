@@ -305,8 +305,10 @@ function PRT:PrintPartyOrRaidVersions()
   local myVersion = string.gsub(PRT.db.profile.version, "[^%d]+", "")
   local myVersionN = tonumber(myVersion)
 
-  for player, version in pairs(PRT.db.profile.versionCheck) do
-    local playerWithServer = GetUnitName(player, true)
+  for _, response in pairs(PRT.db.profile.versionCheck) do
+    local playerName, version, enabled = response.name, response.version, response.enabled
+
+    local playerWithServer = GetUnitName(playerName, true)
     local coloredName = PRT.ClassColoredName(playerWithServer)
 
     if version == "" or version == nil then
@@ -315,14 +317,22 @@ function PRT:PrintPartyOrRaidVersions()
       local parsedVersion = string.gsub(version, "[^%d]+", "")
       local parsedVersionN = tonumber(parsedVersion)
 
+      local statusString
+
+      if enabled then
+        statusString = PRT.ColoredString("Enabled", PRT.Static.Colors.Success)
+      else
+        statusString = PRT.ColoredString("Enabled", PRT.Static.Colors.Inactive)
+      end
+
       if parsedVersionN and myVersionN then
         if parsedVersionN >= myVersionN then
-          PRT.Info(coloredName, ":", PRT.ColoredString(version, PRT.Static.Colors.Enabled))
+          PRT.Info(string.format("%s -> %s:%s", coloredName, PRT.ColoredString(version, PRT.Static.Colors.Success), statusString))
         elseif parsedVersionN < myVersionN then
-          PRT.Info(coloredName, ":", PRT.ColoredString(version, PRT.Static.Colors.Disabled))
+          PRT.Info(string.format("%s -> %s:%s", coloredName, PRT.ColoredString(version, PRT.Static.Colors.Inactive), statusString))
         end
       else
-        PRT.Info(coloredName, ":", PRT.ColoredString(version, PRT.Static.Colors.Warn), "?")
+        PRT.Info(string.format("%s -> ???", coloredName))
       end
     end
   end
