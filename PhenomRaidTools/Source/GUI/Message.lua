@@ -282,6 +282,8 @@ end
 
 local function AddRaidTargetActionWidgets(container, action)
   local possibleTargets = Message.ColoredRaidPlayerNames()
+  tinsert(possibleTargets, "$target")
+  sort(possibleTargets)
   local targetDropdown = PRT.Dropdown(L["Target"], L["Player who should be marked"], possibleTargets, action.targets[1], true)
   local raidTargetDropdown = PRT.Dropdown(L["Raidtarget"], nil, PRT.Static.Tables.RaidTargets, action.raidtarget, true)
 

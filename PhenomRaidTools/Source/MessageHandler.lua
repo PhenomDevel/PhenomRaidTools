@@ -71,6 +71,11 @@ end
 local function ExecuteRaidTarget(message)
   if message.targets and message.targets[1] then
     local target = message.targets[1]
+
+    if target == "$target" then
+      target = message.eventTarget
+    end
+
     local raidTargetName = "N/A"
 
     if message.raidtarget then
