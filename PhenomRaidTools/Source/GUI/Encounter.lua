@@ -384,13 +384,13 @@ function PRT.AddEncounterOptions(container, profile, encounterID)
   encounterSelectDropdown:SetCallback("OnValueChanged",
     function(widget, _, id)
       local _, entry = PRT.TableUtils.GetBy(Encounter.currentEncounters, "id", id)
-      -- TODO: Refactor and put together with above id function
-      local _, existingEncounter = PRT.GetSelectedVersionEncounterByID(profile.encounters, id)
+      local _, existingEncounter = PRT.GetEncounterById(profile.encounters, id)
 
       if not existingEncounter then
         if id ~= "" and id ~= nil then
           encounter.id = id
           encounter.name = entry.name
+          selectedVersionEncounter.name = entry.name
           PRT.Core.UpdateTree()
           PRT.Core.ReselectExchangeLast(id)
         else
@@ -405,7 +405,7 @@ function PRT.AddEncounterOptions(container, profile, encounterID)
           encounterIDEditBox:SetText(encounter.id)
           encounterNameEditBox:SetText(encounter.name)
         end
-        PRT.Error("The encounter id you entered was already taken by ", existingEncounter.name)
+        PRT.Error("The encounter id you entered was already taken by ", encounter.name)
       end
 
       widget:SetValue(nil)
