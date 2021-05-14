@@ -92,10 +92,13 @@ local encounterPhaseMapping = {
   },
   -- Painsmith
   [2430] = {
-
+    { id = "intermissionStart", name = L["Intermission Start"], event = "SPELL_AURA_APPLIED", spellID = 355525 },
+    { id = "intermissionStop", name = L["Intermission Stop"], event = "SPELL_AURA_REMOVED", spellID = 355525 }
   },
-  [2429] = {
 
+  -- The Nine
+  [2429] = {
+    { id = "phase2start", name = L["Phase 2 Start"], event = "SPELL_CAST_START", spellID = 350467},
   }
 }
 
