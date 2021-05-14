@@ -19,6 +19,8 @@ end
 function Profiles.UpdateCoreFrame()
   PRT.Core.UpdateTree()
   PRT.Core.ReselectCurrentValue()
+  PRT.SenderOverlay.ShowPlaceholder(PRT.SenderOverlay.overlayFrame, PRT.db.profile.overlay.sender)
+  PRT.ReceiverOverlay.ShowPlaceholders(PRT.db.profile.overlay.receivers)
 end
 
 

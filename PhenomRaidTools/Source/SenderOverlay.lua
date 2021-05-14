@@ -158,7 +158,6 @@ function SenderOverlay.ReInitialize(senderOptions)
   SenderOverlay.overlayFrame = nil
   SenderOverlay.Initialize(senderOptions)
   SenderOverlay.Show()
-  SenderOverlay.ShowPlaceholder(SenderOverlay.overlayFrame, senderOptions)
 end
 
 
