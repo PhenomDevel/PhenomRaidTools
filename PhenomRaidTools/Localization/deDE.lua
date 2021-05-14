@@ -116,6 +116,7 @@ Unterstützt verschiedene Formate
 - 69
 - 1:09
 - 00:09]=]
+L["completed"] = "abgeschlossen"
 L["Completed at"] = "Abgeschlossen am"
 L["Condition"] = "Bedingung"
 L["Confirmation"] = "Bestätigung"
@@ -266,6 +267,7 @@ wenn keine Einträge mehr gefunden werden.]=]
 L["Rotation"] = true
 L["Rotation Entry"] = "Rotationseintrag"
 L["Rotations"] = "Rotationen"
+L["running"] = "läuft"
 L["Save as template"] = "Als Vorlage speichern"
 L["Search"] = "Suchen"
 L["Select a profile you want to delete. You can't delete the currently active profile."] = "Wähle ein Profil aus, das Du löschen willst. Das aktuell aktive Profil kann nicht gelöscht werden."

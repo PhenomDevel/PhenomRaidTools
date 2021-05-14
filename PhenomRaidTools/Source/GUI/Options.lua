@@ -43,10 +43,6 @@ function PRT.AddOptionWidgets(container, profile)
     function(container, _, key)
       container:ReleaseChildren()
 
-      if container.backgroundTimer then
-        AceTimer:CancelTimer(container.backgroundTimer)
-      end
-
       if key ==  "general" then
         PRT.AddGeneralWidgets(container, PRT.db.profile)
       elseif key == "difficulties" then

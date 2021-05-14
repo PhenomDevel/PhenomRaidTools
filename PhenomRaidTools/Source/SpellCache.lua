@@ -23,7 +23,6 @@ function SpellCache.Invalidate(spellCache)
   spellCache.completed = false
   spellCache.lastCheckedId = 0
   spellCache.spells = {}
-  spellCache.status = "running"
   spellCache.startedAt = PRT.Now()
   spellCache.completedAt = nil
   PRT.Debug("Spell database will be updated in the background.")
@@ -78,7 +77,6 @@ function SpellCache.Build(spellCache)
 
           spellCache.completedAt = PRT.Now()
           spellCache.completed = true
-          spellCache.status = "completed"
         end)
 
       local timerId = AceTimer:ScheduleRepeatingTimer(
@@ -95,8 +93,17 @@ function SpellCache.Build(spellCache)
 end
 
 function SpellCache.PauseBuild(spellCache)
-  if spellCache.timerId then
+  if spellCache.timerId and not spellCache.completed then
     AceTimer:CancelTimer(spellCache.timerId)
+    spellCache.timerId = nil
+    PRT.Debug("Building of spell database paused.")
+  end
+end
+
+function SpellCache.Resume(spellCache)
+  if not spellCache.timerId and not spellCache.completed then
+    SpellCache.Build(spellCache)
+    PRT.Debug("Building of spell database resumed.")
   end
 end
 

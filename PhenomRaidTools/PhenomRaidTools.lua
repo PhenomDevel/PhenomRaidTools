@@ -72,8 +72,7 @@ local defaults =  {
       enabled = false,
       completed = false,
       lastCheckedId = 0,
-      spells = {},
-      status = "running"
+      spells = {}
     }
   },
   profile = {

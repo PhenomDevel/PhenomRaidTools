@@ -218,6 +218,8 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
       PRT:COMBAT_LOG_EVENT_UNFILTERED("PLAYER_REGEN_DISABLED")
       PRT:COMBAT_LOG_EVENT_UNFILTERED("ENCOUNTER_START")
     end
+
+    PRT.SpellCache.PauseBuild(PRT.db.global.spellCache)
   else
     PRT.Debug(PRT.HighlightString("PhenomRaidTools"), "is disabled. We won't start encounter.")
   end
@@ -252,6 +254,8 @@ function EventHandler.StopEncounter(event)
   end
 
   AceTimer:CancelAllTimers()
+
+  PRT.SpellCache.Resume(PRT.db.global.spellCache)
 end
 
 

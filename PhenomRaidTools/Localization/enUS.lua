@@ -96,6 +96,7 @@ L["CN - The Council of Blood"] = true
 L["Coming soon"] = true
 L["Comma separated list of player names."] = true
 L["Comma separated list of timings\\supports different formats\\n- 69\\n- 1:09\\n- 00:09"] = true
+L["completed"] = true
 L["Completed at"] = true
 L["Condition"] = true
 L["Confirmation"] = true
@@ -243,6 +244,7 @@ no more entries are found.]=] ] = true
 L["Rotation"] = true
 L["Rotation Entry"] = true
 L["Rotations"] = true
+L["running"] = true
 L["Save as template"] = true
 L["Search"] = true
 L["Select a profile you want to delete. You can't delete the currently active profile."] = true

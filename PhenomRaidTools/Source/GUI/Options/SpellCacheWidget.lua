@@ -26,12 +26,10 @@ end
 local function getStatusText(spellCache)
   local statusText
 
-  if spellCache.status == "completed" then
-    statusText = PRT.ColoredString(spellCache.status, PRT.Static.Colors.Success)
-  elseif spellCache.status == "running" then
-    statusText = PRT.ColoredString(spellCache.status, PRT.Static.Colors.Inactive)
+  if spellCache.completed then
+    statusText = PRT.ColoredString(L["completed"], PRT.Static.Colors.Success)
   else
-    statusText = spellCache.status
+    statusText = PRT.ColoredString(L["running"], PRT.Static.Colors.Inactive)
   end
 
   return
@@ -155,8 +153,6 @@ function PRT.AddSpellCacheWidget(container)
       function()
         AceTimer:CancelTimer(updateTimer)
       end)
-
-    spellCacheGroup.backgroundTimer = updateTimer
   end
 
   container:AddChild(spellCacheGroup)
