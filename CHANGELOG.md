@@ -1,3 +1,11 @@
+# Release 2.13.1-BETA
+## Bugfixes
+ - Make sure $target also works for raidtarget action
+ - Make sure placeholders are not shown on every pull
+## Features
+ None
+
+
 # Release 2.13.0-BETA
 ## Bugfixes
 None
