@@ -13,8 +13,15 @@ local function AddExRTExportOptionsWidget(container, context)
   local optionsGroup = PRT.InlineGroup(L["Options"])
   optionsGroup:SetLayout("Flow")
 
-  -- Include Encounter name
   local withEncounterName = PRT.CheckBox(L["Include title"], L["Shows the encounter name on top of the note."], context.withEncounterName)
+  local withTimerNames = PRT.CheckBox(L["Include section names"], L["Shows the prt timer names on top of each group of note timers."], context.withTimerNames)
+  local withTimingNames = PRT.CheckBox(L["Include line prefix"], L["Shows the timing names before each line of a given prt timer."], context.withTimingNames)
+  local withEmptyLines = PRT.CheckBox(L["Include empty lines"], L["Includes lines even if there are no entries within the prt timer."], context.withEmptyLines)
+  local withPersonalization = PRT.CheckBox(L["Personalize note"], L["This will hide all entries which are not interesting for the given player."], context.withPersonalization)
+  local forceExRTUpdate = PRT.CheckBox(L["Force ExRT note update"], L["This will try and force ExRT to directly update the note."], context.forceExRTUpdate)
+  local updatePRTTag = PRT.CheckBox(L["Replace PRT tag content"], L["This will update the existing ExRT note and just replace the content between %s and %s tag with the generated content."]:format(PRT.HighlightString("{prtstart}"), PRT.HighlightString("{prtend}")), context.updatePRTTag)
+
+  -- Include Encounter name
   withEncounterName:SetRelativeWidth(0.5)
   withEncounterName:SetCallback("OnValueChanged",
     function(widget)
@@ -22,7 +29,6 @@ local function AddExRTExportOptionsWidget(container, context)
     end)
 
   -- Include timer names
-  local withTimerNames = PRT.CheckBox(L["Include section names"], L["Shows the prt timer names on top of each group of note timers."], context.withTimerNames)
   withTimerNames:SetRelativeWidth(0.5)
   withTimerNames:SetCallback("OnValueChanged",
     function(widget)
@@ -30,7 +36,6 @@ local function AddExRTExportOptionsWidget(container, context)
     end)
 
   -- Include timing names
-  local withTimingNames = PRT.CheckBox(L["Include line prefix"], L["Shows the timing names before each line of a given prt timer."], context.withTimingNames)
   withTimingNames:SetRelativeWidth(0.5)
   withTimingNames:SetCallback("OnValueChanged",
     function(widget)
@@ -38,7 +43,6 @@ local function AddExRTExportOptionsWidget(container, context)
     end)
 
   -- Include empty lines
-  local withEmptyLines = PRT.CheckBox(L["Include empty lines"], L["Includes lines even if there are no entries within the prt timer."], context.withEmptyLines)
   withEmptyLines:SetRelativeWidth(0.5)
   withEmptyLines:SetCallback("OnValueChanged",
     function(widget)
@@ -46,7 +50,6 @@ local function AddExRTExportOptionsWidget(container, context)
     end)
 
   -- Personalize Note
-  local withPersonalization = PRT.CheckBox(L["Personalize note"], L["This will hide all entries which are not interesting for the given player."], context.withPersonalization)
   withPersonalization:SetRelativeWidth(0.5)
   withPersonalization:SetCallback("OnValueChanged",
     function(widget)
@@ -54,12 +57,21 @@ local function AddExRTExportOptionsWidget(container, context)
     end)
 
   -- Directly Update ExRT Note
-  local forceExRTUpdate = PRT.CheckBox(L["Force ExRT note update"], L["This will try and force ExRT to directly update the note."], context.forceExRTUpdate)
   forceExRTUpdate:SetDisabled(not IsAddOnLoaded("ExRT"))
   forceExRTUpdate:SetRelativeWidth(0.5)
   forceExRTUpdate:SetCallback("OnValueChanged",
     function(widget)
-      context.forceExRTUpdate = widget:GetValue()
+      local value = widget:GetValue()
+      context.forceExRTUpdate = value
+      updatePRTTag:SetDisabled(not value)
+    end)
+
+  -- Update ExRT and replace tag content
+  updatePRTTag:SetDisabled(not context.forceExRTUpdate)
+  updatePRTTag:SetRelativeWidth(0.5)
+  updatePRTTag:SetCallback("OnValueChanged",
+    function(widget)
+      context.updatePRTTag = widget:GetValue()
     end)
 
   optionsGroup:AddChild(withEncounterName)
@@ -68,6 +80,7 @@ local function AddExRTExportOptionsWidget(container, context)
   optionsGroup:AddChild(withEmptyLines)
   optionsGroup:AddChild(withPersonalization)
   optionsGroup:AddChild(forceExRTUpdate)
+  optionsGroup:AddChild(updatePRTTag)
 
   container:AddChild(optionsGroup)
 end
@@ -92,7 +105,7 @@ local function AddExRTExportSelectorWidget(container, context)
       end)
 
     -- Initially all timers are selected
-    tinsert(context.selectedTimers, timer)
+    context.selectedTimers[timer.name] = timer
     tinsert(checkboxes, timerCheckbox)
     timerGroup:AddChild(timerCheckbox)
   end
@@ -110,6 +123,41 @@ local function AddExRTExportSelectorWidget(container, context)
   container:AddChild(timerGroup)
 end
 
+local function UpdateExRTNote()
+  -- We use this function to FORCE exrt to update the note.
+  PRT.Debug("Forcing ExRT Note to update.")
+  DEFAULT_CHAT_FRAME.editBox:SetText("/exrt note timer")
+  ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+
+  DEFAULT_CHAT_FRAME.editBox:SetText("/exrt note timer")
+  ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+end
+
+local function injectPRTExRTNoteExportIntoNote(export)
+  local currentNote = _G.VExRT.Note.Text1
+  if currentNote then
+    local tagLength = string.len("{prtend}")
+    local prtStart = string.find(currentNote, "{prtstart}")
+    local prtEnd = string.find(currentNote, "{prtend}")
+    local newNote
+
+    if prtStart and prtEnd then
+      local noteStart = string.sub(currentNote, 0, prtStart - 1)
+      local noteEnd = string.sub(currentNote, (prtEnd + tagLength))
+
+      newNote = string.format("%s{prtstart}%s{prtend}%s", noteStart, export, noteEnd)
+      _G.VExRT.Note.Text1 = newNote
+      UpdateExRTNote()
+    else
+      PRT.Error(string.format("Couldn't find either %s or %s. Aborting ExRT force update. Please make sure you have put both tag into your current note.",
+        PRT.HighlightString("{prtstart}"), PRT.HighlightString("{prtend}")))
+    end
+  else
+    PRT.Error(string.format("Couldn't find either %s or %s. Aborting ExRT force update. Please make sure you have put both tag into your current note.",
+      PRT.HighlightString("{prtstart}"), PRT.HighlightString("{prtend}")))
+  end
+end
+
 local function AddExRTExportResultWidget(container, encounter, context)
   local timers = {}
 
@@ -120,25 +168,22 @@ local function AddExRTExportResultWidget(container, encounter, context)
   PRT.TableUtils.SortByKey(timers, "name")
 
   local exportString = PRT.ExRTExportFromTimers(context, timers, PRT.ColoredString(encounter.name, PRT.Static.Colors.Primary))
-
+  exportString = string.gsub(exportString, "|", "||")
   container:ReleaseChildren()
   container:SetLayout("Fill")
 
-  local exportTextBox = PRT.MultiLineEditBox(L["ExRT Note"], string.gsub(exportString, "|", "||"))
+  local exportTextBox = PRT.MultiLineEditBox(L["ExRT Note"], exportString)
   exportTextBox:SetFocus()
   exportTextBox:DisableButton(true)
   exportTextBox:HighlightText()
 
   if context.forceExRTUpdate and IsAddOnLoaded("ExRT") then
-    _G.VExRT.Note.Text1 = string.gsub(exportString, "|", "||")
-
-    -- We use this function to FORCE exrt to update the note.
-    PRT.Debug("Forcing ExRT Note to update.")
-    DEFAULT_CHAT_FRAME.editBox:SetText("/exrt note timer")
-    ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
-
-    DEFAULT_CHAT_FRAME.editBox:SetText("/exrt note timer")
-    ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+    if context.updatePRTTag then
+      injectPRTExRTNoteExportIntoNote(exportString)
+    else
+      _G.VExRT.Note.Text1 = exportString
+      UpdateExRTNote()
+    end
   end
 
   container:AddChild(exportTextBox)
@@ -155,17 +200,26 @@ local function AddExRTExportWidget(container, encounter, timers)
         withEncounterName = true,
         withTimerNames = true,
         withTimingNames = true,
-        forceExRTUpdate = false
+        forceExRTUpdate = false,
+        updatePRTTag = true
       }
 
       local modalContainer = PRT.SimpleGroup()
-      local description = PRT.Label(L["This feature will export your selected timers to a ExRT note. This will only work for message of type %s."]:format(PRT.HighlightString("cooldown")))
+      local description = PRT.Label(L["This feature will export your selected timers to a ExRT note. This will only work for message of type %s.\n\nIf you want"..
+        " to keep your current note you can use %s and %s. The prt generated note will be put inbetween those tags."]:format(PRT.HighlightString("cooldown"), PRT.HighlightString("{prtstart}"), PRT.HighlightString("{prtend}")))
       local exportButton = PRT.Button(L["Export"])
 
       description:SetRelativeWidth(1)
       exportButton:SetCallback("OnClick",
         function()
-          AddExRTExportResultWidget(modalContainer, encounter, exrtExportContext)
+          if exrtExportContext.forceExRTUpdate and not exrtExportContext.updatePRTTag then
+            PRT.ConfirmationDialog(L["You want to force update ExRT note without replacing PRT tag content. This will overwrite the whole note. Are you sure about that?"],
+              function()
+                AddExRTExportResultWidget(modalContainer, encounter, exrtExportContext)
+              end)
+          else
+            AddExRTExportResultWidget(modalContainer, encounter, exrtExportContext)
+          end
         end)
 
       -- Add widgets to modal container
