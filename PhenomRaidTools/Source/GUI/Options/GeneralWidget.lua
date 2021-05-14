@@ -40,7 +40,7 @@ function GeneralOptions.AddChangelogWidgets(container)
 
   local changelogGroup = PRT.InlineGroup(L["Changelog"])
   local changelogString = strjoin("\n", unpack(changelogLines))
-  local changeLogLabel = PRT.Label(changelogString)
+  local changeLogLabel = PRT.Label(changelogString, 16)
 
   changeLogLabel:SetRelativeWidth(1)
 
@@ -170,6 +170,13 @@ function GeneralOptions.AddRunMode(container, options)
 
   runModeGroup:AddChild(senderCheckBox)
   runModeGroup:AddChild(receiverCheckBox)
+
+  if not PRT.IsSender() and PRT.IsReceiver() then
+    local helpLabel = PRT.Label(L["You are currently in receiver only mode. Therefore some features are disabled because they only relate to the sender mode."])
+    helpLabel:SetRelativeWidth(1)
+    runModeGroup:AddChild(helpLabel)
+  end
+
   container:AddChild(runModeGroup)
 end
 
@@ -254,16 +261,12 @@ function PRT.AddGeneralWidgets(container, options)
 
   container:AddChild(enabledCheckbox)
   GeneralOptions.AddRunMode(container, options)
-  GeneralOptions.AddChangelogWidgets(container)
-
-  if not PRT.IsSender() and PRT.IsReceiver() then
-    local helpLabel = PRT.Label(L["You are currently in receiver only mode. Therefore some features are disabled because they only relate to the sender mode."])
-    container:AddChild(helpLabel)
-  end
 
   if PRT.IsReceiver() then
     GeneralOptions.AddMessageFilter(container, options.messageFilter)
   end
+
+  GeneralOptions.AddChangelogWidgets(container)
 
   if PRT.IsSender() then
     GeneralOptions.AddTestMode(container, options)

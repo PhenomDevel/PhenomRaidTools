@@ -143,6 +143,7 @@ L[ [=[Filter out all messages
 below selected guild rank.]=] ] = true
 L["Font"] = true
 L["Font Color"] = true
+L["Force ExRT note update"] = true
 L["General"] = true
 L["Generate ExRT Note"] = true
 L["Group"] = true
@@ -230,6 +231,7 @@ L["Receivers"] = true
 L["Remove"] = true
 L["Remove all"] = true
 L["Remove empty names"] = true
+L["Replace PRT tag content"] = true
 L["Reset counter on stop"] = true
 L["Reset Profile"] = true
 L["Resets the counter of start conditions\\nwhen the timer is stopped."] = true
@@ -298,7 +300,10 @@ L["The spell database is globally available for all of your characters and will 
 L["The spell database will rebuild once the patch version changes. This is done so you always have the newest spells in the database."] = true
 L["There are currently no templates."] = true
 L["This feature will export your selected timers to a ExRT note. This will only work for message of type %s."] = true
+L["This feature will export your selected timers to a ExRT note. This will only work for message of type %s.\\n\\nIf you want to keep your current note you can use %s and %s. The prt generated note will be put inbetween those tags."] = true
 L["This will hide all entries which are not interesting for the given player."] = true
+L["This will try and force ExRT to directly update the note."] = true
+L["This will update the existing ExRT note and just replace the content between %s and %s tag with the generated content."] = true
 L["Timer"] = true
 L["Timers"] = true
 L["Timings"] = true
@@ -313,6 +318,7 @@ L["Types\\n%s - Only the first player found within the group will be messaged\\n
 L["Unit"] = true
 L["Unit died"] = true
 L["Unit killed"] = true
+L["Unselect all"] = true
 L["Update"] = true
 L["Version Check"] = true
 L["Version name"] = true
@@ -327,4 +333,5 @@ L["You can import or define your raid roster and use the placeholder within your
 L["You currently filter messages by %s, but haven't configured any name yet. Therefore all messages from all players will be displayed."] = true
 L["You currently filter messages by %s. Therefore only message from players with the configured guild rank or higher will be displayed."] = true
 L["You currently filter messages by %s. Therefore only messages from those players will be displayed."] = true
+L["You want to force update ExRT note without replacing PRT tag content. This will overwrite the whole note. Are you sure about that?"] = true
 L["yourself"] = true
