@@ -102,7 +102,7 @@ function PRT.ConfirmationDialog(text, successFn, bodyWidgets, ...)
     local confirmationFrame = PRT.Window(L["Confirmation"])
     confirmationFrame:SetLayout("Flow")
     confirmationFrame:EnableResize(false)
-    confirmationFrame.frame:SetFrameStrata("DIALOG")
+    confirmationFrame.frame:SetFrameStrata("TOOLTIP")
     confirmationFrame:SetCallback("OnClose",
       function()
         confirmationFrame:Hide()
@@ -112,9 +112,14 @@ function PRT.ConfirmationDialog(text, successFn, bodyWidgets, ...)
     local textLabel = PRT.Label(text)
     textLabel:SetRelativeWidth(1)
 
-    confirmationFrame:SetWidth(max(430, textLabel.label:GetStringWidth() + 50))
+    confirmationFrame:SetWidth(450)
+
+    local confirmationActionsGroup = PRT.SimpleGroup()
+    confirmationActionsGroup:SetLayout("Flow")
+    confirmationActionsGroup:SetRelativeWidth(1)
 
     local okButton = PRT.Button(L["OK"])
+    okButton:SetRelativeWidth(0.5)
     okButton:SetCallback("OnClick",
       function(_)
         if successFn then
@@ -125,6 +130,7 @@ function PRT.ConfirmationDialog(text, successFn, bodyWidgets, ...)
       end)
 
     local cancelButton = PRT.Button(L["Cancel"])
+    cancelButton:SetRelativeWidth(0.5)
     cancelButton:SetCallback("OnClick",
       function(_)
         confirmationFrame:Hide()
@@ -139,14 +145,15 @@ function PRT.ConfirmationDialog(text, successFn, bodyWidgets, ...)
       for _, widget in ipairs(bodyWidgets) do
         widget:SetRelativeWidth(1)
         confirmationFrame:AddChild(widget)
-        widgetHeight = widgetHeight + widget.frame:GetHeight()
+        widgetHeight = widgetHeight + widget.frame:GetHeight() + 15
       end
     end
 
-    confirmationFrame:SetHeight(max(100, textLabel.label:GetStringHeight() + textLabel.frame:GetHeight() + widgetHeight + okButton.frame:GetHeight() + 37))
+    confirmationFrame:SetHeight(max(100, textLabel.label:GetStringHeight() + textLabel.frame:GetHeight() + widgetHeight + okButton.frame:GetHeight() + 15))
 
-    confirmationFrame:AddChild(okButton)
-    confirmationFrame:AddChild(cancelButton)
+    confirmationActionsGroup:AddChild(okButton)
+    confirmationActionsGroup:AddChild(cancelButton)
+    confirmationFrame:AddChild(confirmationActionsGroup)
     confirmationFrame:Show()
     PRT.Core.RegisterFrame(text, confirmationFrame)
   end
