@@ -1,3 +1,10 @@
+# Release 2.14.1-BETA
+## Bugfixes
+ - Make sure building of spell database resumes after combat
+## Features
+None
+
+
 # Release 2.14.0-BETA
 ## Bugfixes
 None
