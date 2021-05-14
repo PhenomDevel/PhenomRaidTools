@@ -1,3 +1,13 @@
+# Release 2.14.0-BETA
+## Bugfixes
+None
+## Features
+ - Update rendering of confirmation dialog
+ - Better version check output (includes enabled status)
+ - Add more 9.1 condition presets
+ - Add option to replace prt tag within a exrt note instead of overwriting it completely
+
+
 # Release 2.13.1-BETA
 ## Bugfixes
  - Make sure $target also works for raidtarget action
