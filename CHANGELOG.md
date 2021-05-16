@@ -1,3 +1,24 @@
+# Release 2.15.0
+## Bugfixes
+None
+## Features
+ - Add `Spell Database` in top level of the main tree
+ - Add ExRT export for encounter times
+   - Export timers with cooldown type messages
+   - Export note personalized
+   - Directly update ExRT note
+   - Be able to export note into placeholder of an existing note
+ - Restructure tree view and option tabs
+ - Add `Profiles` in top level of the main tree
+ - Add Specialization specific profiles
+ - Clamp main window to screen
+ - New color scheme for ui components
+ - Add changelog to landing view
+ - Update rendering of modal views
+ - Better version check output (includes enabled status)
+ - Add 9.1 condition presets
+
+
 # Release 2.14.1-BETA
 ## Bugfixes
  - Make sure building of spell database resumes after combat

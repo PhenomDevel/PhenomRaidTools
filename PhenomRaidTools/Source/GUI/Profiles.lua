@@ -181,16 +181,22 @@ function PRT.AddProfilesWidget(container, options)
   Profiles.AddResetCurrentProfileWidget(container)
 
   -- Change Profile
-  Profiles.AddChangeCurrentProfile(container)
+  local changeGroup = PRT.InlineGroup(L["Change"])
+  Profiles.AddChangeCurrentProfile(changeGroup)
+  container:AddChild(changeGroup)
 
   -- New Profile
-  Profiles.AddNewProfileWidget(container)
+  local newGroup = PRT.InlineGroup(L["New"])
+  Profiles.AddNewProfileWidget(newGroup)
+  container:AddChild(newGroup)
 
   -- Copy from Profile
   -- Profiles.CopyFromProfileWidget(container)
 
   -- Delete Profile
-  Profiles.DeleteProfileWidget(container)
+  local deleteGroup = PRT.InlineGroup(L["Delete"])
+  Profiles.DeleteProfileWidget(deleteGroup)
+  container:AddChild(deleteGroup)
 
   -- Spec Specific Profiles
   Profiles.AddSpecSpecificGroupWidget(options, container)
