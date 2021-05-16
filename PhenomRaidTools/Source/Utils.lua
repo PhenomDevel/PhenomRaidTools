@@ -293,9 +293,7 @@ function PRT.TextureStringBySpellID(spellID, size)
 end
 
 function PRT.TextureString(id, size)
-  if id then
-    return "|T"..id..":"..(size or 16)..":"..(size or 16)..":0:0:64:64:6:58:6:58|t"
-  end
+  return "|T"..(id or "Interface\\Icons\\INV_MISC_QUESTIONMARK")..":"..(size or 16)..":"..(size or 16)..":0:0:64:64:6:58:6:58|t"
 end
 
 function PRT.ExchangeRaidTargets(s)
