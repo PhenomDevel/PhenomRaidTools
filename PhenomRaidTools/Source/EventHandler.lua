@@ -499,7 +499,7 @@ end
 
 function PRT:PLAYER_ENTERING_WORLD(_)
   SetProfileBySpec()
-  PRT.Info("Currently loaded profile", PRT.HighlightString(PRT.db:GetCurrentProfile()))
+  PRT.Debug("Currently loaded profile", PRT.HighlightString(PRT.db:GetCurrentProfile()))
   PRT.Debug("Zone entered.")
   PRT.Debug("Will check zone/difficulty in 5 seconds to determine if addon should be loaded.")
 
