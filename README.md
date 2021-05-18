@@ -31,6 +31,14 @@ With health percentages you can query specific units for their health value and 
 ### Power Percentage
 Same as health percentage but with power values.
 
+## Spell Database
+The spell database is an easy way to search for a specific spell in game by its name without having to browse the web. You have to explicitly activate the spell database since it will build up in the background and might take a while.
+It is processed in a very CPU saving way and will stop once you start combat. So you shouldn't be able to notice any performance issues with the spell database activated.
+
+## ExRT Note Export
+You can export `Timers` into a ExRT note. This will generate a nicely formatted note based on your `Timers`.
+Please note that this will only work for messages with type `cooldown` since the note is presented in a certain way and can be used for e.g. heal cooldown assignments.
+
 ## Setup
 
 ### Easymode
