@@ -1,3 +1,10 @@
+# Release 2.15.2
+## Bugfixes
+ - Make some log statements debug instead of info statements
+## Features
+None
+
+
 # Release 2.15.1
 ## Bugfixes
  - Make sure encounter overview is rendered when any trigger has unknown spell id
