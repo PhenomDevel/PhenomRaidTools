@@ -112,7 +112,7 @@ function PRT.AddSpellCacheWidget(container)
       local value = widget:GetValue()
       spellCache.enabled = value
       if value then
-        PRT.SpellCache.Build(spellCache)
+        PRT.SpellCache.Resume(spellCache)
       else
         PRT.SpellCache.PauseBuild(spellCache)
       end
