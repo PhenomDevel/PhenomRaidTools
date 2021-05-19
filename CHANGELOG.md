@@ -2,7 +2,7 @@
 ## Bugfixes
 None
 ## Features
- - Better check if a message should be displayed
+ - [#31] Show messages when the player is dead but still in encounter
 
 
 # Release 2.15.2
