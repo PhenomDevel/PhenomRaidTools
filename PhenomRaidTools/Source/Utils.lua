@@ -470,7 +470,9 @@ function PRT.IsReceiver()
 end
 
 function PRT.IsInFight()
-  return PRT.currentEncounter.inFight
+  if PRT.currentEncounter then
+    return PRT.currentEncounter.inFight
+  end
 end
 
 function PRT.IsTestMode()
