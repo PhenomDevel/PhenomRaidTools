@@ -1,3 +1,10 @@
+# Release 2.15.4
+## Bugfixes
+ - Make sure PRT does not crash when current encounter is not set
+## Features
+None
+
+
 # Release 2.15.3
 ## Bugfixes
 None
