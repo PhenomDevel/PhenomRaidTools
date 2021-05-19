@@ -1,3 +1,10 @@
+# Release 2.15.3
+## Bugfixes
+None
+## Features
+ - Better check if a message should be displayed
+
+
 # Release 2.15.2
 ## Bugfixes
  - Make some log statements debug instead of info statements
