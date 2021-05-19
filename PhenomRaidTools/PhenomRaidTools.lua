@@ -389,7 +389,7 @@ function PRT:ExecuteChatCommand(input)
 end
 
 function PRT:InvokeMessage(msg)
-  if PRT.db.profile.senderMode and PRT.db.profile.enabled and (PRT.db.profile.testMode or true) then
+  if PRT.db.profile.senderMode and PRT.db.profile.enabled and (PRT.IsTestMode() or true) then
     if PRT.currentEncounter then
       if PRT.currentEncounter.inFight then
         PRT.Debug("Sending new message invoked by chat command")

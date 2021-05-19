@@ -41,7 +41,7 @@ function TriggerHandler.UnitExistsInTrackedUnits(conditionUnitID, eventUnitGUID)
 end
 
 function TriggerHandler.ValidTestModeEvent(event, combatEvent, conditionEvent)
-  if PRT.db.profile.testMode then
+  if PRT.IsTestMode() then
     if conditionEvent == "ENCOUNTER_START" then
       local simulatedConditionEvent = "PLAYER_REGEN_DISABLED"
 
@@ -252,7 +252,7 @@ end
 
 function PRT.IsTriggerActive(trigger)
   local isEnabled = trigger.enabled == true or trigger.enabled == nil
-  local isEnabledForDifficulty = TriggerHandler.CheckCurrentDifficulty(trigger) or PRT.db.profile.testMode
+  local isEnabledForDifficulty = TriggerHandler.CheckCurrentDifficulty(trigger) or PRT.IsTestMode()
   local isActive = trigger.active
 
   return
@@ -419,7 +419,7 @@ function PRT.CheckRotationTriggerCondition(rotations, event, combatEvent, eventS
 end
 
 local function ValidUnit(unitID)
-  return UnitExists(unitID) and not UnitIsDead(unitID)
+  return UnitExists(unitID) and (not UnitIsDead(unitID))
 end
 -- Health Percentages
 function PRT.GetEffectiveUnits(unit)
@@ -478,7 +478,7 @@ function PRT.CheckUnitHealthPercentages(percentages)
 
             for _, effectiveUnit in pairs(effectiveUnits) do
               if effectiveUnit and effectiveUnit.name == UnitName(effectiveUnit.unitID) then
-                if UnitExists(effectiveUnit.unitID) and (not UnitIsDead(effectiveUnit.unitID)) then
+                if ValidUnit(effectiveUnit.unitID) then
                   local unitCurrentHP = UnitHealth(effectiveUnit.unitID)
                   local unitMaxHP = UnitHealthMax(effectiveUnit.unitID)
                   local unitHPPercent = PRT.Round(unitCurrentHP / unitMaxHP * 100, 0)
@@ -513,7 +513,7 @@ function PRT.CheckUnitPowerPercentages(percentages)
 
             for _, effectiveUnit in pairs(effectiveUnits) do
               if effectiveUnit and effectiveUnit.name == UnitName(effectiveUnit.unitID) then
-                if UnitExists(effectiveUnit.unitID) and (not UnitIsDead(effectiveUnit.unitID)) then
+                if ValidUnit(effectiveUnit.unitID) then
                   local unitCurrentPower = UnitPower(effectiveUnit.unitID)
                   local unitMaxPower = UnitPowerMax(effectiveUnit.unitID)
                   local unitPowerPercent = PRT.Round(unitCurrentPower / unitMaxPower * 100, 0)

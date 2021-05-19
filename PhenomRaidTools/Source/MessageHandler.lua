@@ -3,8 +3,8 @@ local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local AceComm = LibStub("AceComm-3.0")
 
-local UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat, UnitIsGroupAssistant, SendChatMessage, UnitIsGroupLeader, GetRealmName, GetRaidTargetIndex, SetRaidTarget =
-  UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat, UnitIsGroupAssistant, SendChatMessage, UnitIsGroupLeader, GetRealmName, GetRaidTargetIndex, SetRaidTarget
+local UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat, UnitIsGroupAssistant, SendChatMessage, UnitIsGroupLeader, GetRealmName, GetRaidTargetIndex, SetRaidTarget, IsEncounterInProgress =
+  UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat, UnitIsGroupAssistant, SendChatMessage, UnitIsGroupLeader, GetRealmName, GetRaidTargetIndex, SetRaidTarget, IsEncounterInProgress
 
 local MessageHandler = {
   validTargets = {
@@ -61,7 +61,7 @@ local function ExecuteRaidWarning(message)
 
   PRT.Debug("Sending raid warning", PRT.HighlightString(msg))
 
-  if PRT.db.profile.testMode then
+  if PRT.IsTestMode() then
     SendChatMessage(msg, "WHISPER", nil, PRT.db.profile.myName)
   elseif UnitInRaid("player") and (UnitIsGroupAssistant("player") or UnitIsGroupLeader("player")) then
     SendChatMessage(msg, "RAID_WARNING")
@@ -82,12 +82,12 @@ local function ExecuteRaidTarget(message)
       raidTargetName = PRT.Static.Tables.RaidTargets[message.raidtarget].name
     end
 
-    if PRT.db.profile.testMode then
+    if PRT.IsTestMode() then
       target = "player"
       PRT.Debug("Overwriting target raidtarget action to", PRT.HighlightString("player"), "due to test mode")
     end
 
-    if PRT.db.profile.testMode or (UnitInRaid(target) and UnitExists(target)) then
+    if PRT.IsTestMode() or (UnitInRaid(target) and UnitExists(target)) then
       if not (GetRaidTargetIndex(target) == message.raidtarget) then
         PRT.Debug("Setting raid target", raidTargetName, "for unit", PRT.HighlightString(target))
         SetRaidTarget(target, message.raidtarget)
@@ -172,10 +172,10 @@ end
 
 function PRT:OnAddonMessage(message)
   if PRT.IsEnabled() then
-    if UnitAffectingCombat("player") then
-      local _, messageTable = PRT.Deserialize(message)
-
+    if PRT.IsInFight() or IsEncounterInProgress() or PRT.IsTestMode() then
       if PRT.IsReceiver() then
+        local _, messageTable = PRT.Deserialize(message)
+
         if MessageHandler.IsValidSender(messageTable) then
           if MessageHandler.IsMessageForMe(messageTable) then
             PRT.Debug("Received message from", PRT.ClassColoredName(messageTable.sender))

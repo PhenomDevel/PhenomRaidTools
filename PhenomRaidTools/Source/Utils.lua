@@ -473,6 +473,10 @@ function PRT.IsInFight()
   return PRT.currentEncounter.inFight
 end
 
+function PRT.IsTestMode()
+  return PRT.db.profile.testMode
+end
+
 function PRT.HasEncounter()
   return not PRT.TableUtils.IsEmpty(PRT.currentEncounter.encounter)
 end

@@ -171,6 +171,8 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
 
     wipe(PRT.db.profile.debugLog)
 
+    PRT.currentEncounter = NewEncounter()
+
     if PRT.IsSender() then
       PRT.Debug("Starting new encounter", PRT.HighlightString(encounterName),"(", PRT.HighlightString(encounterID), ")" , "|r")
       local _, encounter = PRT.GetEncounterById(PRT.db.profile.encounters, encounterID)
@@ -178,7 +180,6 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
 
       if encounter then
         if encounter.enabled then
-          PRT.currentEncounter = NewEncounter()
           PRT.Debug(L["Running PhenomRaidTools version %s"]:format(PRT.HighlightString(PRT.db.profile.version)))
 
           PRT.EnsureEncounterTrigger(encounterVersion)
@@ -214,7 +215,7 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
     PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
 
     -- Simulate encounter start events when in test mode
-    if PRT.db.profile.testMode then
+    if PRT.IsTestMode() then
       PRT:COMBAT_LOG_EVENT_UNFILTERED("PLAYER_REGEN_DISABLED")
       PRT:COMBAT_LOG_EVENT_UNFILTERED("ENCOUNTER_START")
     end
@@ -286,7 +287,7 @@ end
 
 function PRT:ENCOUNTER_START(event, encounterID, encounterName)
   -- We only start a real encounter if PRT is enabled (correct dungeon/raid difficulty) and we're not in test mode
-  if PRT.enabled and not self.db.profile.testMode then
+  if PRT.enabled and not PRT.IsTestMode() then
     EventHandler.StartEncounter(event, encounterID, encounterName)
   end
 end
@@ -296,7 +297,7 @@ function PRT:PLAYER_REGEN_DISABLED(event)
   PRT.SenderOverlay.Initialize(PRT.db.profile.overlay.sender)
   PRT.ReceiverOverlay.Initialize(PRT.db.profile.overlay.receiver)
 
-  if self.db.profile.testMode then
+  if PRT.IsTestMode() then
     PRT.Debug("You are currently in test mode.")
 
     local _, encounter = PRT.TableUtils.GetBy(self.db.profile.encounters, "id", self.db.profile.testEncounterID)
@@ -321,7 +322,7 @@ function PRT:ENCOUNTER_END(event)
 end
 
 function PRT:PLAYER_REGEN_ENABLED(event)
-  if not PRT.PlayerInParty() or self.db.profile.testMode then
+  if not PRT.PlayerInParty() or PRT.IsTestMode() then
     EventHandler.StopEncounter(event)
   end
 end
