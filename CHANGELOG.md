@@ -1,3 +1,11 @@
+# Release 2.16.0
+## Bugfixes
+None
+## Features
+ - Enhance custom placeholder performance
+
+
+
 # Release 2.15.4
 ## Bugfixes
  - Make sure PRT does not crash when current encounter is not set
