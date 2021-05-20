@@ -352,7 +352,7 @@ do
           end
         end
         if not found and lastInPartyButDead then
-          tinsert(t, strtrim(name, " "))
+          tinsert(t, strtrim(lastInPartyButDead, " "))
         end
       end
     end
