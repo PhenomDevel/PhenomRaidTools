@@ -52,7 +52,8 @@ globals = {
   "max",
   "format",
   "UnitFullName",
-
+  "UnitIsConnected",
+  "UnitIsDeadOrGhost",
   -- Locals
   "L",
 }
