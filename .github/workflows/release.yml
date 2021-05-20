@@ -2,8 +2,11 @@ name: Release
 
 on:
   push:
+    branches:
+      - master
     tags:
-      - '**'
+      - "*"
+      - "!**-alpha**"
 
 jobs:
   release:
@@ -14,6 +17,12 @@ jobs:
       WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
 
     steps:
+      - name: Install and run Luacheck
+        uses: nebularg/actions-luacheck@v1
+        with:
+          args: "--no-color -q"
+          annotate: warning
+
       - name: Clone project
         uses: actions/checkout@v1
 
