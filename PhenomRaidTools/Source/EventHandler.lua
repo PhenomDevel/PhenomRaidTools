@@ -181,7 +181,6 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
       if encounter then
         if encounter.enabled then
           PRT.Debug(L["Running PhenomRaidTools version %s"]:format(PRT.HighlightString(PRT.db.profile.version)))
-
           PRT.EnsureEncounterTrigger(encounterVersion)
           PRT.RegisterEvents(EventHandler.trackedInCombatEvents)
           PRT.currentEncounter.encounter = PRT.TableUtils.Clone(encounterVersion)
@@ -190,7 +189,7 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
           CompileInterestingUnits(PRT.currentEncounter)
           CompileInterestingEvents(PRT.currentEncounter)
           LogInterestingUnitsAndEvents(PRT.currentEncounter)
-
+          PRT.SetupCustomPlaceholders()
           AceTimer:ScheduleRepeatingTimer(PRT.ProcessMessageQueue, 0.5)
 
           -- Make sure timings are once queried at the start so timing with < 0.5s will trigger
