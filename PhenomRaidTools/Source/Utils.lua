@@ -18,7 +18,7 @@ local classColors = {
 }
 
 -- Create local copies of API functions which we use
-local UnitClass, GetSpellInfo, UnitExists, UnitIsDead, UnitName = UnitClass, GetSpellInfo, UnitExists, UnitIsDead, UnitName
+local UnitClass, GetSpellInfo, UnitExists, UnitIsDead, UnitName, UnitIsConnected, UnitIsDeadOrGhost = UnitClass, GetSpellInfo, UnitExists, UnitIsDead, UnitName, UnitIsConnected, UnitIsDeadOrGhost
 local GetRaidRosterInfo, GetUnitName, GetNumGroupMembers, UnitInParty, UnitInRaid = GetRaidRosterInfo, GetUnitName, GetNumGroupMembers, UnitInParty, UnitInRaid
 
 
