@@ -1,4 +1,4 @@
-[![Release](https://github.com/PhenomDevel/PhenomRaidTools/actions/workflows/blank.yml/badge.svg)](https://github.com/PhenomDevel/PhenomRaidTools/actions/workflows/blank.yml)
+[![Release](https://github.com/PhenomDevel/PhenomRaidTools/actions/workflows/release.yml/badge.svg)](https://github.com/PhenomDevel/PhenomRaidTools/actions/workflows/release.yml)
 
 [![PhenomRaidTools on Discord](https://img.shields.io/badge/discord-PhenomRaidTools-738bd7.svg)](https://discord.gg/GAYDjBF)
 # PhenomRaidTools
