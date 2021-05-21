@@ -20,6 +20,8 @@ jobs:
       - name: Install and run Luacheck
         uses: nebularg/actions-luacheck@v1
         with:
+          files: 'PhenomRaidTools/Source'
+          config: '.luacheckrc'
           args: "--no-color -q"
           annotate: warning
 
