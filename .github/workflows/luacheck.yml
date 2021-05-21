@@ -1,4 +1,4 @@
-name: Development Check
+name: Luacheck
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - Development
 
 jobs:
-  development-check:
+  Luacheck:
     runs-on: ubuntu-latest
 
     steps:
