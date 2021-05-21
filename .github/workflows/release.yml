@@ -17,6 +17,9 @@ jobs:
       WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
 
     steps:
+      - name: Clone project
+        uses: actions/checkout@v1
+
       - name: Install and run Luacheck
         uses: nebularg/actions-luacheck@v1
         with:
@@ -24,9 +27,6 @@ jobs:
           config: '.luacheckrc'
           args: "--no-color -q"
           annotate: warning
-
-      - name: Clone project
-        uses: actions/checkout@v1
 
       - name: Package and release
         uses: BigWigsMods/packager@v1
