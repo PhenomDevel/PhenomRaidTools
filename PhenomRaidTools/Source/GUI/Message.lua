@@ -473,7 +473,8 @@ local function AddAdvancedActionWidgets(container, message)
 
   local messagePreviewLabel = PRT.Label(L["Preview: "]..PRT.PrepareMessageForDisplay(message.message))
   messagePreviewLabel:SetRelativeWidth(1)
-  local messageEditBox = PRT.EditBox(L["Message"], L["Supports following special symbols\n- $target (event target)\n- Custom placeholders (e.g. $tank1)\n- Spell icons (e.g. {spell:17}\n- Raidmarks (e.g. {rt1})"], message.message, true)
+  local messageEditBox = PRT.EditBox(L["Message"], L["Supports following special symbols\n- $target (event target)\n- Custom placeholders (e.g. $tank1)\n- Spell icons (e.g. {spell:17}\n- Raidmarks (e.g. {rt1})"],
+    message.message, true)
   messageEditBox:SetRelativeWidth(1)
   messageEditBox:SetCallback("OnEnterPressed",
     function(widget)

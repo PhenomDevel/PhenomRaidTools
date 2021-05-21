@@ -1,13 +1,11 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
-local AceTimer = LibStub("AceTimer-3.0")
-
 
 -------------------------------------------------------------------------------
 -- Public API
 
-function PRT.AddOptionWidgets(container, profile)
+function PRT.AddOptionWidgets(container)
   local optionsTabs = {
     {
       value = "general",

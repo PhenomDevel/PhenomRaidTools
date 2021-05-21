@@ -1,10 +1,11 @@
 local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
-local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local AceComm = LibStub("AceComm-3.0")
 
-local UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat, UnitIsGroupAssistant, SendChatMessage, UnitIsGroupLeader, GetRealmName, GetRaidTargetIndex, SetRaidTarget, IsEncounterInProgress =
-  UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat, UnitIsGroupAssistant, SendChatMessage, UnitIsGroupLeader, GetRealmName, GetRaidTargetIndex, SetRaidTarget, IsEncounterInProgress
+local UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat = UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat
+local UnitIsGroupAssistant, SendChatMessage, UnitIsGroupLeader = UnitIsGroupAssistant, SendChatMessage, UnitIsGroupLeader
+local GetRealmName, GetRaidTargetIndex, SetRaidTarget = GetRealmName, GetRaidTargetIndex, SetRaidTarget
+local IsEncounterInProgress =IsEncounterInProgress
 
 local MessageHandler = {
   validTargets = {

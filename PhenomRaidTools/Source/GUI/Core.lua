@@ -308,7 +308,7 @@ function Core.OnGroupSelected(container, key)
 
   -- options selected
   if mainKey == "options" then
-    PRT.AddOptionWidgets(container, PRT.db.profile)
+    PRT.AddOptionWidgets(container)
 
     -- profiles selected
   elseif mainKey == "profiles" then

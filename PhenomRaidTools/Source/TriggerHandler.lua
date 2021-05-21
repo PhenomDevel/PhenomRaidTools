@@ -217,7 +217,7 @@ function TriggerHandler.SendMessagesAfterDelay(messages)
   end
 end
 
-function TriggerHandler.SendMessagesAfterDelayWithEventInfo(messages, _event, _combatEvent, _eventSpellID, targetName, sourceName)
+function TriggerHandler.SendMessagesAfterDelayWithEventInfo(messages, targetName, sourceName)
   if messages then
     for _, message in ipairs(messages) do
       AceTimer:ScheduleTimer(
@@ -402,7 +402,7 @@ function PRT.CheckRotationTriggerCondition(rotations, event, combatEvent, eventS
               TriggerHandler.UpdateRotationCounter(rotation)
 
               local messages = TriggerHandler.GetRotationMessages(rotation)
-              TriggerHandler.SendMessagesAfterDelayWithEventInfo(messages, event, combatEvent, eventSpellID, targetName, sourceName)
+              TriggerHandler.SendMessagesAfterDelayWithEventInfo(messages, targetName, sourceName)
 
               rotation.lastActivation = GetTime()
 

@@ -10,15 +10,11 @@ local spellIconSize = 48
 -------------------------------------------------------------------------------
 -- Spell Cache Panel
 
-local function addLabelWithValue(container, label, value)
+local function addLabelWithValue(label, value)
   local group = PRT.SimpleGroup()
   group:SetLayout("Flow")
-
-  local label = PRT.Label(label..":")
-  local value = PRT.Label(value)
-
-  group:AddChild(label)
-  group:AddChild(value)
+  group:AddChild(PRT.Label(label..":"))
+  group:AddChild(PRT.Label(value))
 
   return group, label, value
 end
@@ -85,12 +81,12 @@ function PRT.AddSpellCacheWidget(container)
   local enabledCheckBox = PRT.CheckBox(L["Enabled"], nil, spellCache.enabled)
   local descriptionText = strjoin("\n\n", unpack(descriptionLines))
   local descriptionLabel = PRT.Label(descriptionText)
-  local statusGroup, _, statusValueLabel = addLabelWithValue(spellCacheGroup, L["Status"], getStatusText(spellCache))
-  local lastCheckedGroup, _, lastCheckedValueLabel = addLabelWithValue(spellCacheGroup, L["Last checked id"], spellCache.lastCheckedId)
-  local spellCountGroup, _, spellCountValueLabel = addLabelWithValue(spellCacheGroup, L["Spell count"], PRT.TableUtils.Count(spellCache.spells))
+  local statusGroup, _, statusValueLabel = addLabelWithValue(L["Status"], getStatusText(spellCache))
+  local lastCheckedGroup, _, lastCheckedValueLabel = addLabelWithValue(L["Last checked id"], spellCache.lastCheckedId)
+  local spellCountGroup, _, spellCountValueLabel = addLabelWithValue(L["Spell count"], PRT.TableUtils.Count(spellCache.spells))
 
-  local startedAtGroup = addLabelWithValue(spellCacheGroup, L["Started at"], spellCache.startedAt)
-  local completedAtGroup = addLabelWithValue(spellCacheGroup, L["Completed at"], spellCache.completedAt)
+  local startedAtGroup = addLabelWithValue(L["Started at"], spellCache.startedAt)
+  local completedAtGroup = addLabelWithValue(L["Completed at"], spellCache.completedAt)
 
   local invalidateCacheButton = PRT.Button(L["Rebuild spell database"])
 

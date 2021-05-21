@@ -7,7 +7,7 @@ local Rotation = {}
 -------------------------------------------------------------------------------
 -- Local Helper
 
-function Rotation.RotationEntryWidget(entry, container, _, entries)
+function Rotation.RotationEntryWidget(entry, container, _)
   local messagesTabs = PRT.TableToTabs(entry.messages, true)
   local messagesTabGroup = PRT.TabGroup(L["Messages"], messagesTabs)
   messagesTabGroup:SetLayout("List")

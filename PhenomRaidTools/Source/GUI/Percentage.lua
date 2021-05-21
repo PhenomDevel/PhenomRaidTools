@@ -30,7 +30,7 @@ local Percentage = {
 -------------------------------------------------------------------------------
 -- Local Helper
 
-function Percentage.PercentageEntryWidget(entry, container, _, entries)
+function Percentage.PercentageEntryWidget(entry, container, _)
   local percentageEntryOptionsGroup = PRT.InlineGroup(L["Options"])
 
   local operatorDropdown = PRT.Dropdown(L["Operator"], nil, Percentage.operatorValues, entry.operator)

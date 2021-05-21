@@ -54,14 +54,31 @@ globals = {
   "UnitFullName",
   "UnitIsConnected",
   "UnitIsDeadOrGhost",
+  "GetNumSpecializations",
+  "GetSpecializationInfo",
+  "IsAddOnLoaded",
+  "DEFAULT_CHAT_FRAME",
+  "ChatEdit_SendText",
+  "SetRaidTarget",
+  "GetSpecialization",
+  "UnitAffectingCombat",
+  "IsEncounterInProgress",
+  "GetRealmName",
+  "GetRaidTargetIndex",
+  "UnitIsGroupAssistant",
+  "SendChatMessage",
+  "UnitIsGroupLeader",
+  "GetBuildInfo",
+
+
   -- Locals
   "L",
 }
-max_line_length=160
-max_code_line_length=160
-max_string_line_length=160
-max_comment_line_length=160
-max_cyclomatic_complexity=160
+max_line_length=200
+max_code_line_length=200
+max_string_line_length=200
+max_comment_line_length=200
+max_cyclomatic_complexity=200
 
 ignore={
  ".*self",

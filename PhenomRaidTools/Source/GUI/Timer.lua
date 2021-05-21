@@ -265,7 +265,7 @@ function Timer.ComposeTimingString(timings)
   return strjoin(", ", unpack(timingsStrings))
 end
 
-function Timer.TimingWidget(timing, container, _, timings)
+function Timer.TimingWidget(timing, container, _)
   local timingOptionsGroup = PRT.InlineGroup(L["Options"])
   timingOptionsGroup:SetLayout("Flow")
 
