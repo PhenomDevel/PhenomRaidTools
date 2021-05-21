@@ -332,6 +332,9 @@ function Core.OnGroupSelected(container, key)
 
     -- single encounter selected
   elseif encounterID and not triggerType and not triggerName then
+    -- Update encounter specific placeholders for message previews
+    PRT.SetupEncounterSpecificCustomPlaceholders()
+
     PRT.AddEncounterOptions(container, PRT.db.profile, encounterID)
 
     -- TODO Provide encounter directly

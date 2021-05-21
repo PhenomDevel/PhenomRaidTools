@@ -35,6 +35,9 @@ local function addCustomPlaceholderWidget(customPlaceholder, container, _)
       customPlaceholder.name = cleanedText
       widget:SetText(cleanedText)
       widget:ClearFocus()
+
+      -- Update global placeholders
+      PRT.SetupGlobalCustomPlaceholders()
     end)
 
   local clearEmptyNamesButton = PRT.Button(L["Remove empty names"])
@@ -61,6 +64,9 @@ local function addCustomPlaceholderWidget(customPlaceholder, container, _)
         local text = widget:GetText()
         customPlaceholder.names[idx] = text
         widget:ClearFocus()
+
+        -- Update global placeholders
+        PRT.SetupGlobalCustomPlaceholders()
       end)
     namesGroup:AddChild(nameEditBox)
   end

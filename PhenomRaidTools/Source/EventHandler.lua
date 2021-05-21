@@ -189,7 +189,9 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
           CompileInterestingUnits(PRT.currentEncounter)
           CompileInterestingEvents(PRT.currentEncounter)
           LogInterestingUnitsAndEvents(PRT.currentEncounter)
-          PRT.SetupCustomPlaceholders()
+
+          PRT.SetupEncounterSpecificCustomPlaceholders()
+
           AceTimer:ScheduleRepeatingTimer(PRT.ProcessMessageQueue, 0.5)
 
           -- Make sure timings are once queried at the start so timing with < 0.5s will trigger

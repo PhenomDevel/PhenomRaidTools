@@ -18,7 +18,7 @@ local classColors = {
 }
 
 -- Create local copies of API functions which we use
-local UnitClass, GetSpellInfo, UnitExists, UnitIsDead, UnitName, UnitIsConnected, UnitIsDeadOrGhost = UnitClass, GetSpellInfo, UnitExists, UnitIsDead, UnitName, UnitIsConnected, UnitIsDeadOrGhost
+local UnitClass, GetSpellInfo, UnitExists, UnitName, UnitIsConnected, UnitIsDeadOrGhost = UnitClass, GetSpellInfo, UnitExists, UnitName, UnitIsConnected, UnitIsDeadOrGhost
 local GetRaidRosterInfo, GetUnitName, GetNumGroupMembers, UnitInParty, UnitInRaid = GetRaidRosterInfo, GetUnitName, GetNumGroupMembers, UnitInParty, UnitInRaid
 
 
@@ -307,57 +307,66 @@ function PRT.ExchangeSpellIcons(s)
       return "|T"..(texture or "Interface\\Icons\\INV_MISC_QUESTIONMARK")..":16:16:0:0:64:64:6:58:6:58|t"
     end)
 end
-do
-  local placeholders = {global = {}, encounterSpecific = {}}
-  function PRT.SetupCustomPlaceholders()
-    placeholders = {global = {}, encounterSpecific = {}}
-    for id, customPlaceholder in ipairs(PRT.db.profile.customPlaceholders) do
-      -- use tables because you can have placeholders with same name (intended?)
-      if not placeholders.global[customPlaceholder.name] then
-        placeholders.global[customPlaceholder.name] = {id}
-      else
-        tinsert(placeholders.global[customPlaceholder.name], id)
-      end
-    end
-    for id, customPlaceholder in ipairs(PRT.currentEncounter.encounter.CustomPlaceholders) do
-      -- use tables because you can have placeholders with same name (intended?)
-      if not placeholders.encounterSpecific[customPlaceholder.name] then
-        placeholders.encounterSpecific[customPlaceholder.name] = {id}
-      else
-        tinsert(placeholders.encounterSpecific[customPlaceholder.name], id)
-      end
+
+local placeholders = {
+  global = {},
+  encounterSpecific = {}
+}
+
+function PRT.SetupGlobalCustomPlaceholders()
+  wipe(placeholders.global)
+  for idx, customPlaceholder in ipairs(PRT.db.profile.customPlaceholders) do
+    -- use tables because you can have placeholders with same name (intended?)
+    if not placeholders.global[customPlaceholder.name] then
+      placeholders.global[customPlaceholder.name] = {idx}
+    else
+      tinsert(placeholders.global[customPlaceholder.name], idx)
     end
   end
-  function PRT.AddCustomPlaceholdersToPlayerNames(token, t, global)
-    if not ((global and placeholders.global[token]) or (not global and placeholders.encounterSpecific[token])) then return end
-    for _,id in pairs(global and placeholders.global[token] or placeholders.encounterSpecific[token]) do
-      local temp = global and PRT.db.profile.customPlaceholders[id] or PRT.currentEncounter.encounter.CustomPlaceholders[id]
-      if not temp then return end -- should be useless nil check
-      if temp.type == "group" then
-        for i = #temp.names, 1, -1 do
-          tinsert(t, strtrim(temp.names[i], " "))
-        end
-      else
-        local found = false
-        local lastInPartyButDead
-        for _, name in ipairs(temp.names) do
-          if (PRT.UnitInParty(name) or UnitExists(name)) and UnitIsConnected(name) then
-            if not UnitIsDeadOrGhost(name) then
-              tinsert(t, strtrim(name, " "))
-              found = true
-              break
-            else -- so you can call for backup if needed
-              lastInPartyButDead = name
-            end
+end
+
+function PRT.SetupEncounterSpecificCustomPlaceholders()
+  wipe(placeholders.encounterSpecific)
+  for idx, customPlaceholder in ipairs(PRT.currentEncounter.encounter.CustomPlaceholders) do
+    -- use tables because you can have placeholders with same name (intended?)
+    if not placeholders.encounterSpecific[customPlaceholder.name] then
+      placeholders.encounterSpecific[customPlaceholder.name] = {idx}
+    else
+      tinsert(placeholders.encounterSpecific[customPlaceholder.name], idx)
+    end
+  end
+end
+
+function PRT.AddCustomPlaceholdersToPlayerNames(token, t, global)
+  if not ((global and placeholders.global[token]) or (not global and placeholders.encounterSpecific[token])) then return end
+  for _,id in pairs(global and placeholders.global[token] or placeholders.encounterSpecific[token]) do
+    local temp = global and PRT.db.profile.customPlaceholders[id] or PRT.currentEncounter.encounter.CustomPlaceholders[id]
+    if not temp then return end -- should be useless nil check
+    if temp.type == "group" then
+      for i = #temp.names, 1, -1 do
+        tinsert(t, strtrim(temp.names[i], " "))
+      end
+    else
+      local found = false
+      local lastInPartyButDead
+      for _, name in ipairs(temp.names) do
+        if (PRT.UnitInParty(name) or UnitExists(name)) and UnitIsConnected(name) then
+          if not UnitIsDeadOrGhost(name) then
+            tinsert(t, strtrim(name, " "))
+            found = true
+            break
+          else -- so you can call for backup if needed
+            lastInPartyButDead = name
           end
         end
-        if not found and lastInPartyButDead then
-          tinsert(t, strtrim(lastInPartyButDead, " "))
-        end
+      end
+      if not found and lastInPartyButDead then
+        tinsert(t, strtrim(lastInPartyButDead, " "))
       end
     end
   end
 end
+
 function PRT.PlayerNamesByToken(token)
   token = strtrim(token, " ")
   local playerNames = {}

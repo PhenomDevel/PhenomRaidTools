@@ -260,7 +260,11 @@ function PRT:OnInitialize()
   -- Check if profile db needs migration
   AceTimer:ScheduleTimer(PRT.MigrateProfileDB, 1, self.db.profile)
 
+  -- Start spell cache building if needed
   PRT.SpellCache.Build(self.db.global.spellCache)
+
+  -- Initially load global placeholders
+  PRT.SetupGlobalCustomPlaceholders()
 end
 
 function PRT:RefreshConfig()
