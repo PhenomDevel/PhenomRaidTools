@@ -6,7 +6,7 @@ on:
       - Development
 
 jobs:
-  release:
+  development-check:
     runs-on: ubuntu-latest
 
     steps:
