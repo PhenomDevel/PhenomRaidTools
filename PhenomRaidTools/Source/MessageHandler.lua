@@ -1,5 +1,5 @@
-local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
-
+local _, PRT = ...
+local addon = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local AceComm = LibStub("AceComm-3.0")
 
 local UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat = UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat
@@ -63,7 +63,7 @@ local function ExecuteRaidWarning(message)
   PRT.Debug("Sending raid warning", PRT.HighlightString(msg))
 
   if PRT.IsTestMode() then
-    SendChatMessage(msg, "WHISPER", nil, PRT.db.profile.myName)
+    SendChatMessage(msg, "WHISPER", nil, PRT.GetProfileDB().myName)
   elseif UnitInRaid("player") and (UnitIsGroupAssistant("player") or UnitIsGroupLeader("player")) then
     SendChatMessage(msg, "RAID_WARNING")
   end
@@ -112,16 +112,16 @@ local function ExecuteMessage(message)
 
     PRT.Debug("Try sending new message to", PRT.ClassColoredName(targetMessage.target))
     if UnitExists(targetMessage.target) or tContains(MessageHandler.validTargets, targetMessage.target) then
-      targetMessage.sender = PRT.db.profile.myName
+      targetMessage.sender = PRT.GetProfileDB().myName
 
       local serializedMessage = PRT.Serialize(targetMessage)
 
       -- If in test mode send the message through the whipser channel in case we are not in a group
       if not PRT.PlayerInParty() then
-        AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.addonMessage, serializedMessage, "WHISPER", PRT.db.profile.myName)
+        AceComm:SendCommMessage(PRT.GetProfileDB().addonPrefixes.addonMessage, serializedMessage, "WHISPER", PRT.GetProfileDB().myName)
       end
 
-      AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.addonMessage, serializedMessage, "RAID")
+      AceComm:SendCommMessage(PRT.GetProfileDB().addonPrefixes.addonMessage, serializedMessage, "RAID")
       PRT.Debug("Send message to", PRT.ClassColoredName(targetMessage.target), "with content", PRT.HighlightString(targetMessage.message))
     else
       -- Don't spam chat if a configured user is not in the raid. We expect those to happen sometimes
@@ -144,19 +144,19 @@ end
 
 function MessageHandler.IsValidSender(message)
   -- Filter received messages by configured message filter
-  if PRT.db.profile.messageFilter.filterBy == "names" then
-    return (tContains(PRT.db.profile.messageFilter.requiredNames, message.sender) or
-      tContains(PRT.db.profile.messageFilter.requiredNames, "$me") or
-      PRT.db.profile.messageFilter.requiredNames == nil or
-      PRT.db.profile.messageFilter.requiredNames == {} or
-      PRT.TableUtils.IsEmpty(PRT.db.profile.messageFilter.requiredNames) or
-      (PRT.db.profile.messageFilter.alwaysIncludeMyself and
+  if PRT.GetProfileDB().messageFilter.filterBy == "names" then
+    return (tContains(PRT.GetProfileDB().messageFilter.requiredNames, message.sender) or
+      tContains(PRT.GetProfileDB().messageFilter.requiredNames, "$me") or
+      PRT.GetProfileDB().messageFilter.requiredNames == nil or
+      PRT.GetProfileDB().messageFilter.requiredNames == {} or
+      PRT.TableUtils.IsEmpty(PRT.GetProfileDB().messageFilter.requiredNames) or
+      (PRT.GetProfileDB().messageFilter.alwaysIncludeMyself and
       message.sender == select(1, UnitName("player"))))
 
-  elseif PRT.db.profile.messageFilter.filterBy == "guildRank" then
+  elseif PRT.GetProfileDB().messageFilter.filterBy == "guildRank" then
     local senderGuildRankIndex = select(3, GetGuildInfo(message.sender))
 
-    return (senderGuildRankIndex <= PRT.db.profile.messageFilter.requiredGuildRank)
+    return (senderGuildRankIndex <= PRT.GetProfileDB().messageFilter.requiredGuildRank)
   end
 
   return false
@@ -171,7 +171,7 @@ function MessageHandler.IsMessageForMe(message)
   end
 end
 
-function PRT:OnAddonMessage(message)
+function addon:OnAddonMessage(message)
   if PRT.IsEnabled() then
     if PRT.IsInFight() or IsEncounterInProgress() or PRT.IsTestMode() then
       if PRT.IsReceiver() then
@@ -190,7 +190,7 @@ function PRT:OnAddonMessage(message)
   end
 end
 
-function PRT:OnVersionRequest(message)
+function addon:OnVersionRequest(message)
   if PRT.IsEnabled() then
     local _, messageTable = PRT.Deserialize(message)
 
@@ -200,30 +200,30 @@ function PRT:OnVersionRequest(message)
       local response = {
         type = "response",
         name = PRT.UnitFullName("player"),
-        version = PRT.db.profile.version,
-        enabled = PRT.db.profile.enabled
+        version = PRT.GetProfileDB().version,
+        enabled = PRT.GetProfileDB().enabled
       }
 
-      AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.versionResponse, PRT.Serialize(response), "RAID")
+      AceComm:SendCommMessage(PRT.GetProfileDB().addonPrefixes.versionResponse, PRT.Serialize(response), "RAID")
     end
   end
 end
 
-function PRT:OnVersionResponse(message)
+function addon:OnVersionResponse(message)
   if PRT.IsEnabled() then
     local _, messageTable = PRT.Deserialize(message)
     PRT.Debug(string.format("Version response from %s with version %s (Addon Status: %s)",PRT.ClassColoredName(messageTable.name), PRT.HighlightString(messageTable.version), PRT.HighlightString(messageTable.enabled)))
-    tinsert(PRT.db.profile.versionCheck, messageTable)
+    tinsert(PRT.GetProfileDB().versionCheck, messageTable)
   end
 end
 
-function PRT:OnSyncRequest(_)
+function addon:OnSyncRequest(_)
 -- daten auspacken
 -- abfrage, ob benutzer syncen will
 -- encounter, placeholder, overlays, raid roster
 end
 
-function PRT:OnSyncResponse(_)
+function addon:OnSyncResponse(_)
 -- Rückmeldung an den Benutzer
 end
 

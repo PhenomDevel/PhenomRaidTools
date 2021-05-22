@@ -1,5 +1,6 @@
-local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
+local addon = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 local GeneralOptions = {
   messageFilterTypes = {
@@ -188,7 +189,7 @@ function GeneralOptions.AddDebugMode(container, options)
   debugModeCheckbox:SetCallback("OnValueChanged",
     function(widget)
       options.debugMode = widget:GetValue()
-      wipe(PRT.db.profile.debugLog)
+      wipe(PRT.GetProfileDB().debugLog)
       container:ReleaseChildren()
       PRT.AddGeneralWidgets(container, options)
     end)
@@ -201,7 +202,7 @@ function GeneralOptions.AddDebugMode(container, options)
     debugLogMultilineEditBox:DisableButton(true)
     debugLogMultilineEditBox:SetHeight(200)
     local debugLogText = ""
-    for _, entry in ipairs(PRT.db.profile.debugLog) do
+    for _, entry in ipairs(PRT.GetProfileDB().debugLog) do
       for _, entryLine in ipairs(entry) do
         debugLogText = debugLogText..tostring(entryLine).." "
       end
@@ -246,7 +247,7 @@ function PRT.AddGeneralWidgets(container, options)
 
   versionCheckButton:SetCallback("OnClick",
     function()
-      PRT:VersionCheck()
+      addon:VersionCheck()
     end)
 
   container:AddChild(versionCheckButton)

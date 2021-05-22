@@ -1,4 +1,4 @@
-local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local classColors = {
@@ -308,60 +308,62 @@ function PRT.ExchangeSpellIcons(s)
     end)
 end
 
-local placeholders = {
-  global = {},
-  encounterSpecific = {}
-}
+do
+  local placeholders = {
+    global = {},
+    encounterSpecific = {}
+  }
 
-function PRT.SetupGlobalCustomPlaceholders()
-  wipe(placeholders.global)
-  for idx, customPlaceholder in ipairs(PRT.db.profile.customPlaceholders) do
-    -- use tables because you can have placeholders with same name (intended?)
-    if not placeholders.global[customPlaceholder.name] then
-      placeholders.global[customPlaceholder.name] = {idx}
-    else
-      tinsert(placeholders.global[customPlaceholder.name], idx)
-    end
-  end
-end
-
-function PRT.SetupEncounterSpecificCustomPlaceholders()
-  wipe(placeholders.encounterSpecific)
-  for idx, customPlaceholder in ipairs(PRT.currentEncounter.encounter.CustomPlaceholders) do
-    -- use tables because you can have placeholders with same name (intended?)
-    if not placeholders.encounterSpecific[customPlaceholder.name] then
-      placeholders.encounterSpecific[customPlaceholder.name] = {idx}
-    else
-      tinsert(placeholders.encounterSpecific[customPlaceholder.name], idx)
-    end
-  end
-end
-
-function PRT.AddCustomPlaceholdersToPlayerNames(token, t, global)
-  if not ((global and placeholders.global[token]) or (not global and placeholders.encounterSpecific[token])) then return end
-  for _,id in pairs(global and placeholders.global[token] or placeholders.encounterSpecific[token]) do
-    local temp = global and PRT.db.profile.customPlaceholders[id] or PRT.currentEncounter.encounter.CustomPlaceholders[id]
-    if not temp then return end -- should be useless nil check
-    if temp.type == "group" then
-      for i = #temp.names, 1, -1 do
-        tinsert(t, strtrim(temp.names[i], " "))
+  function PRT.SetupGlobalCustomPlaceholders()
+    wipe(placeholders.global)
+    for idx, customPlaceholder in ipairs(PRT.GetProfileDB().customPlaceholders) do
+      -- use tables because you can have placeholders with same name (intended?)
+      if not placeholders.global[customPlaceholder.name] then
+        placeholders.global[customPlaceholder.name] = {idx}
+      else
+        tinsert(placeholders.global[customPlaceholder.name], idx)
       end
-    else
-      local found = false
-      local lastInPartyButDead
-      for _, name in ipairs(temp.names) do
-        if (PRT.UnitInParty(name) or UnitExists(name)) and UnitIsConnected(name) then
-          if not UnitIsDeadOrGhost(name) then
-            tinsert(t, strtrim(name, " "))
-            found = true
-            break
-          else -- so you can call for backup if needed
-            lastInPartyButDead = name
+    end
+  end
+
+  function PRT.SetupEncounterSpecificCustomPlaceholders()
+    wipe(placeholders.encounterSpecific)
+    for idx, customPlaceholder in ipairs(PRT.currentEncounter.encounter.CustomPlaceholders) do
+      -- use tables because you can have placeholders with same name (intended?)
+      if not placeholders.encounterSpecific[customPlaceholder.name] then
+        placeholders.encounterSpecific[customPlaceholder.name] = {idx}
+      else
+        tinsert(placeholders.encounterSpecific[customPlaceholder.name], idx)
+      end
+    end
+  end
+
+  function PRT.AddCustomPlaceholdersToPlayerNames(token, t, global)
+    if not ((global and placeholders.global[token]) or (not global and placeholders.encounterSpecific[token])) then return end
+    for _,id in pairs(global and placeholders.global[token] or placeholders.encounterSpecific[token]) do
+      local temp = global and PRT.GetProfileDB().customPlaceholders[id] or PRT.currentEncounter.encounter.CustomPlaceholders[id]
+      if not temp then return end -- should be useless nil check
+      if temp.type == "group" then
+        for i = #temp.names, 1, -1 do
+          tinsert(t, strtrim(temp.names[i], " "))
+        end
+      else
+        local found = false
+        local lastInPartyButDead
+        for _, name in ipairs(temp.names) do
+          if (PRT.UnitInParty(name) or UnitExists(name)) and UnitIsConnected(name) then
+            if not UnitIsDeadOrGhost(name) then
+              tinsert(t, strtrim(name, " "))
+              found = true
+              break
+            else -- so you can call for backup if needed
+              lastInPartyButDead = name
+            end
           end
         end
-      end
-      if not found and lastInPartyButDead then
-        tinsert(t, strtrim(lastInPartyButDead, " "))
+        if not found and lastInPartyButDead then
+          tinsert(t, strtrim(lastInPartyButDead, " "))
+        end
       end
     end
   end
@@ -373,8 +375,8 @@ function PRT.PlayerNamesByToken(token)
 
   if token == "me" then
     tinsert(playerNames, strtrim(UnitName("player"), " "))
-  elseif PRT.db.profile.raidRoster[token] then
-    local name = PRT.db.profile.raidRoster[token]
+  elseif PRT.GetProfileDB().raidRoster[token] then
+    local name = PRT.GetProfileDB().raidRoster[token]
     tinsert(playerNames, strtrim(name, " "))
   elseif string.find(token, "group") then
     local groupNumber = tonumber(string.match(token, "%d+"))
@@ -385,7 +387,7 @@ function PRT.PlayerNamesByToken(token)
         tinsert(playerNames, strtrim(name, " "))
       end
     end
-  elseif PRT.db.profile.customPlaceholders then
+  elseif PRT.GetProfileDB().customPlaceholders then
     PRT.AddCustomPlaceholdersToPlayerNames(token, playerNames, true)
     if PRT.currentEncounter and PRT.currentEncounter.encounter then
       if PRT.currentEncounter.encounter.CustomPlaceholders then
@@ -495,15 +497,15 @@ function PRT.UnitIDByGroupType(idx)
 end
 
 function PRT.IsEnabled()
-  return PRT.db.profile.enabled
+  return PRT.GetProfileDB().enabled
 end
 
 function PRT.IsSender()
-  return PRT.db.profile.senderMode
+  return PRT.GetProfileDB().senderMode
 end
 
 function PRT.IsReceiver()
-  return PRT.db.profile.receiverMode
+  return PRT.GetProfileDB().receiverMode
 end
 
 function PRT.IsInFight()
@@ -513,7 +515,7 @@ function PRT.IsInFight()
 end
 
 function PRT.IsTestMode()
-  return PRT.db.profile.testMode
+  return PRT.GetProfileDB().testMode
 end
 
 function PRT.HasEncounter()
@@ -521,7 +523,7 @@ function PRT.HasEncounter()
 end
 
 function PRT.IsDevelopmentVersion()
-  local versionString = PRT.db.profile.version
+  local versionString = PRT.GetProfileDB().version
   local numericVersionString = string.gsub(versionString, "[.]", "")
 
   return not tonumber(numericVersionString)

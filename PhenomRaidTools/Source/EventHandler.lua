@@ -1,6 +1,6 @@
-local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
-
+local addon = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local AceTimer = LibStub("AceTimer-3.0")
 
 local EventHandler = {
@@ -44,7 +44,7 @@ local GetSpecialization, GetSpecializationInfo = GetSpecialization, GetSpecializ
 -- Local Helper
 
 function EventHandler.StartReceiveMessages()
-  if PRT.db.profile.enabled then
+  if PRT.GetProfileDB().enabled then
     if PRT.IsReceiver() then
       PRT.ReceiverOverlay.ShowAll()
       AceTimer:ScheduleRepeatingTimer(PRT.ReceiverOverlay.UpdateFrameText, 0.01)
@@ -169,18 +169,18 @@ end
 function EventHandler.StartEncounter(event, encounterID, encounterName)
   if PRT.IsEnabled() then
 
-    wipe(PRT.db.profile.debugLog)
+    wipe(PRT.GetProfileDB().debugLog)
 
     PRT.currentEncounter = NewEncounter()
 
     if PRT.IsSender() then
       PRT.Debug("Starting new encounter", PRT.HighlightString(encounterName),"(", PRT.HighlightString(encounterID), ")" , "|r")
-      local _, encounter = PRT.GetEncounterById(PRT.db.profile.encounters, encounterID)
-      local _, encounterVersion = PRT.GetSelectedVersionEncounterByID(PRT.db.profile.encounters, encounterID)
+      local _, encounter = PRT.GetEncounterById(PRT.GetProfileDB().encounters, encounterID)
+      local _, encounterVersion = PRT.GetSelectedVersionEncounterByID(PRT.GetProfileDB().encounters, encounterID)
 
       if encounter then
         if encounter.enabled then
-          PRT.Debug(L["Running PhenomRaidTools version %s"]:format(PRT.HighlightString(PRT.db.profile.version)))
+          PRT.Debug(L["Running PhenomRaidTools version %s"]:format(PRT.HighlightString(PRT.GetProfileDB().version)))
           PRT.EnsureEncounterTrigger(encounterVersion)
           PRT.RegisterEvents(EventHandler.trackedInCombatEvents)
           PRT.currentEncounter.encounter = PRT.TableUtils.Clone(encounterVersion)
@@ -199,11 +199,11 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
           AceTimer:ScheduleRepeatingTimer(PRT.CheckTimerTimings, 0.5, PRT.currentEncounter.encounter.Timers)
 
           if PRT.IsReceiver() then
-            PRT.ReceiverOverlay.ReInitialize(PRT.db.profile.overlay.receivers)
+            PRT.ReceiverOverlay.ReInitialize(PRT.GetProfileDB().overlay.receivers)
           end
 
-          if PRT.db.profile.overlay.sender.enabled then
-            AceTimer:ScheduleRepeatingTimer(PRT.SenderOverlay.UpdateFrame, 1, PRT.currentEncounter.encounter, PRT.db.profile.overlay.sender)
+          if PRT.GetProfileDB().overlay.sender.enabled then
+            AceTimer:ScheduleRepeatingTimer(PRT.SenderOverlay.UpdateFrame, 1, PRT.currentEncounter.encounter, PRT.GetProfileDB().overlay.sender)
             PRT.SenderOverlay.Show()
             PRT.SenderOverlay.Lock()
           end
@@ -213,15 +213,15 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
       end
     end
 
-    PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
+    addon:COMBAT_LOG_EVENT_UNFILTERED(event)
 
     -- Simulate encounter start events when in test mode
     if PRT.IsTestMode() then
-      PRT:COMBAT_LOG_EVENT_UNFILTERED("PLAYER_REGEN_DISABLED")
-      PRT:COMBAT_LOG_EVENT_UNFILTERED("ENCOUNTER_START")
+      addon:COMBAT_LOG_EVENT_UNFILTERED("PLAYER_REGEN_DISABLED")
+      addon:COMBAT_LOG_EVENT_UNFILTERED("ENCOUNTER_START")
     end
 
-    PRT.SpellCache.PauseBuild(PRT.db.global.spellCache)
+    PRT.SpellCache.PauseBuild(PRT.GetGlobalDB().spellCache)
   else
     PRT.Debug(PRT.HighlightString("PhenomRaidTools"), "is disabled. We won't start encounter.")
   end
@@ -232,7 +232,7 @@ function EventHandler.StopEncounter(event)
     PRT.Debug("Combat stopped.")
 
     -- Send the last event before unregistering the event
-    PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
+    addon:COMBAT_LOG_EVENT_UNFILTERED(event)
     PRT.UnregisterEvents(EventHandler.trackedInCombatEvents)
 
     LogEncounterStatistics(PRT.currentEncounter)
@@ -240,11 +240,11 @@ function EventHandler.StopEncounter(event)
   end
 
   -- Hide overlay if necessary
-  if PRT.db.profile.overlay.sender.hideAfterCombat then
+  if PRT.GetProfileDB().overlay.sender.hideAfterCombat then
     PRT.SenderOverlay.Hide()
   end
 
-  if PRT.db.profile.overlay.sender.enabled then
+  if PRT.GetProfileDB().overlay.sender.enabled then
     PRT.SenderOverlay.Unlock()
   end
 
@@ -257,7 +257,7 @@ function EventHandler.StopEncounter(event)
 
   AceTimer:CancelAllTimers()
 
-  PRT.SpellCache.Resume(PRT.db.global.spellCache)
+  PRT.SpellCache.Resume(PRT.GetGlobalDB().spellCache)
 end
 
 
@@ -267,14 +267,14 @@ end
 function PRT.RegisterEvents(events)
   for _, event in ipairs(events) do
     PRT.Debug("Registering event", PRT.HighlightString(event))
-    PRT:RegisterEvent(event)
+    addon:RegisterEvent(event)
   end
 end
 
 function PRT.UnregisterEvents(events)
   for _, event in ipairs(events) do
     PRT.Debug("Unregistering event", PRT.HighlightString(event))
-    PRT:UnregisterEvent(event)
+    addon:UnregisterEvent(event)
   end
 end
 
@@ -286,22 +286,22 @@ function PRT.UnrgisterWorldEvents()
   PRT.UnregisterEvents(EventHandler.worldEvents)
 end
 
-function PRT:ENCOUNTER_START(event, encounterID, encounterName)
+function addon:ENCOUNTER_START(event, encounterID, encounterName)
   -- We only start a real encounter if PRT is enabled (correct dungeon/raid difficulty) and we're not in test mode
   if PRT.enabled and not PRT.IsTestMode() then
     EventHandler.StartEncounter(event, encounterID, encounterName)
   end
 end
 
-function PRT:PLAYER_REGEN_DISABLED(event)
+function addon:PLAYER_REGEN_DISABLED(event)
   -- Initialize overlays
-  PRT.SenderOverlay.Initialize(PRT.db.profile.overlay.sender)
-  PRT.ReceiverOverlay.Initialize(PRT.db.profile.overlay.receiver)
+  PRT.SenderOverlay.Initialize(PRT.GetProfileDB().overlay.sender)
+  PRT.ReceiverOverlay.Initialize(PRT.GetProfileDB().overlay.receiver)
 
   if PRT.IsTestMode() then
     PRT.Debug("You are currently in test mode.")
 
-    local _, encounter = PRT.TableUtils.GetBy(self.db.profile.encounters, "id", self.db.profile.testEncounterID)
+    local _, encounter = PRT.TableUtils.GetBy(PRT.GetProfileDB().encounters, "id", PRT.GetProfileDB().testEncounterID)
 
     if encounter then
       if encounter.enabled then
@@ -318,17 +318,17 @@ function PRT:PLAYER_REGEN_DISABLED(event)
   EventHandler.StartReceiveMessages()
 end
 
-function PRT:ENCOUNTER_END(event)
+function addon:ENCOUNTER_END(event)
   EventHandler.StopEncounter(event)
 end
 
-function PRT:PLAYER_REGEN_ENABLED(event)
+function addon:PLAYER_REGEN_ENABLED(event)
   if not PRT.PlayerInParty() or PRT.IsTestMode() then
     EventHandler.StopEncounter(event)
   end
 end
 
-function PRT:COMBAT_LOG_EVENT_UNFILTERED(event)
+function addon:COMBAT_LOG_EVENT_UNFILTERED(event)
   if PRT.currentEncounter and PRT.IsSender() then
     local _, combatEvent, _, sourceGUID, sourceName, _, _, targetGUID, targetName, _, _, eventSpellID, _, _ = CombatLogGetCurrentEventInfo()
 
@@ -385,7 +385,7 @@ local function IsTrackedUnit(currentEncounter, guid)
   return currentEncounter.trackedUnits and currentEncounter.trackedUnits[guid]
 end
 
-function PRT:UNIT_POWER_FREQUENT(event, unitID)
+function addon:UNIT_POWER_FREQUENT(event, unitID)
   if PRT.currentEncounter and PRT.IsSender() then
     if PRT.currentEncounter.inFight then
       if PRT.currentEncounter.encounter then
@@ -403,7 +403,7 @@ function PRT:UNIT_POWER_FREQUENT(event, unitID)
   end
 end
 
-function PRT:UNIT_HEALTH(event, unitID)
+function addon:UNIT_HEALTH(event, unitID)
   if PRT.currentEncounter and PRT.IsSender() then
     if PRT.currentEncounter.inFight then
       if PRT.currentEncounter.encounter then
@@ -468,11 +468,11 @@ function PRT.AddUnitToTrackedUnits(unitID)
   end
 end
 
-function PRT:UNIT_COMBAT(_, unitID)
+function addon:UNIT_COMBAT(_, unitID)
   PRT.AddUnitToTrackedUnits(unitID)
 end
 
-function PRT:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
+function addon:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
   for i = 1, 5 do
     local unitID = "boss"..i
 
@@ -485,13 +485,13 @@ function PRT:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
 end
 
 local function SetProfileBySpec()
-  if PRT.db.char.profileSettings.specSpecificProfiles.enabled then
+  if PRT.GetCharDB().profileSettings.specSpecificProfiles.enabled then
     local specIndex = GetSpecialization()
-    local profile = PRT.db.char.profileSettings.specSpecificProfiles.profileBySpec[specIndex]
+    local profile = PRT.GetCharDB().profileSettings.specSpecificProfiles.profileBySpec[specIndex]
     local specName = select(2, GetSpecializationInfo(specIndex))
 
     if profile then
-      PRT.db:SetProfile(profile)
+      PRT.SetProfile(profile)
       PRT.Info(string.format("Specialization (%s) specific profile %s was loaded.", PRT.HighlightString(specName), PRT.HighlightString(profile)))
     else
       PRT.Info(string.format("Spec specific profiles are enabled, but you haven't selected any profile for spec %s yet.", PRT.HighlightString(specName)))
@@ -499,9 +499,9 @@ local function SetProfileBySpec()
   end
 end
 
-function PRT:PLAYER_ENTERING_WORLD(_)
+function addon:PLAYER_ENTERING_WORLD(_)
   SetProfileBySpec()
-  PRT.Debug("Currently loaded profile", PRT.HighlightString(PRT.db:GetCurrentProfile()))
+  PRT.Debug("Currently loaded profile", PRT.HighlightString(PRT.GetCurrentProfile()))
   PRT.Debug("Zone entered.")
   PRT.Debug("Will check zone/difficulty in 5 seconds to determine if addon should be loaded.")
 
@@ -515,7 +515,7 @@ function PRT:PLAYER_ENTERING_WORLD(_)
         PRT.Debug("Player entered dungeon - checking difficulty")
         PRT.Debug("Current difficulty is", PRT.HighlightString(difficultyID or ""), "-", PRT.HighlightString(difficultyNameEN or ""))
 
-        if self.db.profile.enabledDifficulties["dungeon"][difficultyNameEN] then
+        if PRT.GetProfileDB().enabledDifficulties["dungeon"][difficultyNameEN] then
           PRT.Debug("Enabling PhenomRaidTools for", PRT.HighlightString(name), "on difficulty", PRT.HighlightString(difficultyNameEN))
           PRT.enabled = true
         else
@@ -526,7 +526,7 @@ function PRT:PLAYER_ENTERING_WORLD(_)
         PRT.Debug("Player entered raid - checking difficulty")
         PRT.Debug("Current difficulty is", PRT.HighlightString(difficultyID), "-", PRT.HighlightString(difficultyNameEN))
 
-        if self.db.profile.enabledDifficulties["raid"][difficultyNameEN] then
+        if PRT.GetProfileDB().enabledDifficulties["raid"][difficultyNameEN] then
           PRT.Debug("Enabling PhenomRaidTools for", PRT.HighlightString(name), "on", PRT.HighlightString(difficultyNameEN), "difficulty")
           PRT.enabled = true
         else
@@ -541,6 +541,6 @@ function PRT:PLAYER_ENTERING_WORLD(_)
   )
 end
 
-function PRT:PLAYER_SPECIALIZATION_CHANGED()
+function addon:PLAYER_SPECIALIZATION_CHANGED()
   SetProfileBySpec()
 end

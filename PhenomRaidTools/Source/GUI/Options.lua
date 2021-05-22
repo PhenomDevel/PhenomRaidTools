@@ -1,4 +1,4 @@
-local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 
@@ -42,15 +42,15 @@ function PRT.AddOptionWidgets(container)
       container:ReleaseChildren()
 
       if key ==  "general" then
-        PRT.AddGeneralWidgets(container, PRT.db.profile)
+        PRT.AddGeneralWidgets(container, PRT.GetProfileDB())
       elseif key == "difficulties" then
-        PRT.AddDifficultyWidgets(container, PRT.db.profile.enabledDifficulties)
+        PRT.AddDifficultyWidgets(container, PRT.GetProfileDB().enabledDifficulties)
       elseif key == "defaults" then
-        PRT.AddDefaultsGroups(container, PRT.db.profile.triggerDefaults)
+        PRT.AddDefaultsGroups(container, PRT.GetProfileDB().triggerDefaults)
       elseif key == "raidRoster" then
-        PRT.AddRaidRosterWidget(container, PRT.db.profile.raidRoster)
+        PRT.AddRaidRosterWidget(container, PRT.GetProfileDB().raidRoster)
       elseif key == "overlay" then
-        PRT.AddOverlayWidget(container, PRT.db.profile.overlay)
+        PRT.AddOverlayWidget(container, PRT.GetProfileDB().overlay)
       elseif key == "information" then
         PRT.AddInformationWidgets(container)
       end

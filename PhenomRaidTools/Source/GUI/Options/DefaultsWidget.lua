@@ -1,4 +1,4 @@
-local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local specialWidgetNames = {
@@ -78,7 +78,7 @@ end
 
 local function AddMessageDefaultWidgets(container, t)
   local targetOverlayDropdownItems = {}
-  for _, overlay in ipairs(PRT.db.profile.overlay.receivers) do
+  for _, overlay in ipairs(PRT.GetProfileDB().overlay.receivers) do
     local targetOverlayItem = {
       id = overlay.id,
       name = overlay.id..": "..overlay.label
@@ -115,7 +115,7 @@ local function AddMessageDefaultWidgets(container, t)
     [5] = {
       id = "loadTemplate",
       name = L["Load Template"],
-      disabled = PRT.TableUtils.IsEmpty(PRT.db.profile.templateStore.messages)
+      disabled = PRT.TableUtils.IsEmpty(PRT.GetProfileDB().templateStore.messages)
     }
   }
 

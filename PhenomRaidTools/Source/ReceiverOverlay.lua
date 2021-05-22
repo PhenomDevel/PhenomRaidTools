@@ -1,4 +1,4 @@
-local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local _, PRT = ...
 
 local AceTimer = LibStub("AceTimer-3.0")
 
@@ -18,7 +18,7 @@ function ReceiverOverlay.ClearMessageStack()
 end
 
 function ReceiverOverlay.AddMessage(messageTable)
-  local receiverOverlayOptions = PRT.db.profile.overlay.receivers[(messageTable.targetOverlay or 1)]
+  local receiverOverlayOptions = PRT.GetProfileDB().overlay.receivers[(messageTable.targetOverlay or 1)]
 
   messageTable.expirationTime = GetTime() + (messageTable.duration or 5)
   if receiverOverlayOptions.enableSound then
@@ -79,7 +79,7 @@ end
 
 function ReceiverOverlay.UpdateFrameText()
   for frameIndex, frame in ipairs(ReceiverOverlay.overlayFrames) do
-    local receiverOverlayOptions = PRT.db.profile.overlay.receivers[frameIndex]
+    local receiverOverlayOptions = PRT.GetProfileDB().overlay.receivers[frameIndex]
     local text = ""
 
     local startIndex = 1
@@ -100,7 +100,7 @@ function ReceiverOverlay.UpdateFrameText()
           if message.expirationTime > GetTime() then
             local timeLeftRaw = message.expirationTime - GetTime()
             local timeLeft = PRT.Round(timeLeftRaw, 2)
-            local color = (PRT.db.profile.overlay.receivers[frameIndex].fontColor.hex or "FFFFFFFF")
+            local color = (PRT.GetProfileDB().overlay.receivers[frameIndex].fontColor.hex or "FFFFFFFF")
 
             if text == "" then
               text = PRT.ColoredString(string.format(message.message, timeLeft), color, true)

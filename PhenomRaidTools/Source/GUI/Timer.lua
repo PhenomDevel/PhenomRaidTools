@@ -1,4 +1,4 @@
-local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local Timer = {}
@@ -384,18 +384,18 @@ function PRT.AddTimerOptionsWidgets(container, profile, encounterID)
   local timerOptionsGroup = PRT.InlineGroup(L["Options"])
   timerOptionsGroup:SetLayout("Flow")
 
-  local hasClipboardTimer = (not PRT.TableUtils.IsEmpty(PRT.db.profile.clipboard.timer))
+  local hasClipboardTimer = (not PRT.TableUtils.IsEmpty(PRT.GetProfileDB().clipboard.timer))
   local pasteButtonText = PRT.StringUtils.WrapColorByBoolean(L["Paste"], hasClipboardTimer, "FF696969")
   local pasteButton = PRT.Button(pasteButtonText)
   pasteButton:SetDisabled(not hasClipboardTimer)
   pasteButton:SetCallback("OnClick",
     function()
-      tinsert(timers, PRT.db.profile.clipboard.timer)
+      tinsert(timers, PRT.GetProfileDB().clipboard.timer)
       PRT.Core.UpdateTree()
       PRT.mainWindowContent:DoLayout()
-      PRT.mainWindowContent:SelectByPath("encounters", encounterID, "timers", PRT.db.profile.clipboard.timer.name)
-      PRT.Debug("Pasted timer", PRT.HighlightString(PRT.db.profile.clipboard.timer.name), "to", PRT.HighlightString(selectedEncounter.name))
-      PRT.db.profile.clipboard.timer = nil
+      PRT.mainWindowContent:SelectByPath("encounters", encounterID, "timers", PRT.GetProfileDB().clipboard.timer.name)
+      PRT.Debug("Pasted timer", PRT.HighlightString(PRT.GetProfileDB().clipboard.timer.name), "to", PRT.HighlightString(selectedEncounter.name))
+      PRT.GetProfileDB().clipboard.timer = nil
     end)
 
   local addButton = PRT.Button(L["New"])

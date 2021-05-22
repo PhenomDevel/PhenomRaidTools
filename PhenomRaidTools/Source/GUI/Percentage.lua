@@ -1,4 +1,4 @@
-local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local Percentage = {
@@ -136,18 +136,18 @@ function PRT.AddPowerPercentageOptions(container, profile, encounterID)
   local percentageOptionsGroup = PRT.InlineGroup(L["Options"])
   percentageOptionsGroup:SetLayout("Flow")
 
-  local hasClipboardPercentage = (not PRT.TableUtils.IsEmpty(PRT.db.profile.clipboard.percentage))
+  local hasClipboardPercentage = (not PRT.TableUtils.IsEmpty(PRT.GetProfileDB().clipboard.percentage))
   local pasteButtonText = PRT.StringUtils.WrapColorByBoolean(L["Paste"], hasClipboardPercentage, "FF696969")
   local pasteButton = PRT.Button(pasteButtonText)
   pasteButton:SetDisabled(not hasClipboardPercentage)
   pasteButton:SetCallback("OnClick",
     function()
-      tinsert(percentages, PRT.db.profile.clipboard.percentage)
+      tinsert(percentages, PRT.GetProfileDB().clipboard.percentage)
       PRT.Core.UpdateTree()
       PRT.mainWindowContent:DoLayout()
-      PRT.mainWindowContent:SelectByPath("encounters", encounterID, "percentages", PRT.db.profile.clipboard.percentage.name)
-      PRT.Debug("Pasted percentage", PRT.HighlightString(PRT.db.profile.clipboard.percentage.name), "to", PRT.HighlightString(encounter.name))
-      PRT.db.profile.clipboard.percentage = nil
+      PRT.mainWindowContent:SelectByPath("encounters", encounterID, "percentages", PRT.GetProfileDB().clipboard.percentage.name)
+      PRT.Debug("Pasted percentage", PRT.HighlightString(PRT.GetProfileDB().clipboard.percentage.name), "to", PRT.HighlightString(encounter.name))
+      PRT.GetProfileDB().clipboard.percentage = nil
     end)
 
   local addButton = PRT.Button(L["New"])
@@ -183,18 +183,18 @@ function PRT.AddHealthPercentageOptions(container, profile, encounterID)
   local percentageOptionsGroup = PRT.InlineGroup(L["Options"])
   percentageOptionsGroup:SetLayout("Flow")
 
-  local hasClipboardPercentage = (not PRT.TableUtils.IsEmpty(PRT.db.profile.clipboard.percentage))
+  local hasClipboardPercentage = (not PRT.TableUtils.IsEmpty(PRT.GetProfileDB().clipboard.percentage))
   local pasteButtonText = PRT.StringUtils.WrapColorByBoolean(L["Paste"], hasClipboardPercentage, "FF696969")
   local pasteButton = PRT.Button(pasteButtonText)
   pasteButton:SetDisabled(not hasClipboardPercentage)
   pasteButton:SetCallback("OnClick",
     function()
-      tinsert(percentages, PRT.db.profile.clipboard.percentage)
+      tinsert(percentages, PRT.GetProfileDB().clipboard.percentage)
       PRT.Core.UpdateTree()
       PRT.mainWindowContent:DoLayout()
-      PRT.mainWindowContent:SelectByPath("encounters", encounterID, "percentages", PRT.db.profile.clipboard.percentage.name)
-      PRT.Debug("Pasted percentage", PRT.HighlightString(PRT.db.profile.clipboard.percentage.name), "to", PRT.HighlightString(encounter.name))
-      PRT.db.profile.clipboard.percentage = nil
+      PRT.mainWindowContent:SelectByPath("encounters", encounterID, "percentages", PRT.GetProfileDB().clipboard.percentage.name)
+      PRT.Debug("Pasted percentage", PRT.HighlightString(PRT.GetProfileDB().clipboard.percentage.name), "to", PRT.HighlightString(encounter.name))
+      PRT.GetProfileDB().clipboard.percentage = nil
     end)
 
   local addButton = PRT.Button(L["New"])

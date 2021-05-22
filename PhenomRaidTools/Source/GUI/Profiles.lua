@@ -1,4 +1,4 @@
-local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local GetNumSpecializations, GetSpecializationInfo = GetNumSpecializations, GetSpecializationInfo
@@ -17,14 +17,14 @@ end
 function Profiles.UpdateCoreFrame()
   PRT.Core.UpdateTree()
   PRT.Core.ReselectCurrentValue()
-  PRT.SenderOverlay.ShowPlaceholder(PRT.SenderOverlay.overlayFrame, PRT.db.profile.overlay.sender)
-  PRT.ReceiverOverlay.ShowPlaceholders(PRT.db.profile.overlay.receivers)
+  PRT.SenderOverlay.ShowPlaceholder(PRT.SenderOverlay.overlayFrame, PRT.GetProfileDB().overlay.sender)
+  PRT.ReceiverOverlay.ShowPlaceholders(PRT.GetProfileDB().overlay.receivers)
 end
 
 
 -- show current profile
 function Profiles.AddCurrentProfileWidget(container)
-  local currentProfileString = string.format("%s: %s", L["Current Profile"], PRT.ColoredString(PRT.db:GetCurrentProfile(), PRT.Static.Colors.Highlight))
+  local currentProfileString = string.format("%s: %s", L["Current Profile"], PRT.ColoredString(PRT.GetCurrentProfile(), PRT.Static.Colors.Highlight))
 
   local currentProfileLabel = PRT.Label(currentProfileString)
   currentProfileLabel:SetRelativeWidth(1)
@@ -36,10 +36,10 @@ function Profiles.AddResetCurrentProfileWidget(container)
   local resetProfileButton = PRT.Button(L["Reset Profile"])
   resetProfileButton:SetCallback("OnClick",
     function()
-      local profile = PRT.db:GetCurrentProfile()
+      local profile = PRT.GetCurrentProfile()
       PRT.ConfirmationDialog(L["Are you sure you want to reset profile %s?"]:format(PRT.HighlightString(profile)),
         function()
-          PRT.db:ResetProfile(profile)
+          PRT.ResetProfile(profile)
           PRT.Info("Resetted Profile ", PRT.HighlightString(profile))
           Profiles.UpdateCoreFrame(container)
         end)
@@ -50,8 +50,8 @@ end
 
 function Profiles.AddChangeCurrentProfile(container)
   local selectProfileGroup = PRT.SimpleGroup()
-  local existingProfiles = PRT.db:GetProfiles()
-  local currentProfile = PRT.db:GetCurrentProfile()
+  local existingProfiles = PRT.GetProfiles()
+  local currentProfile = PRT.GetCurrentProfile()
   local descriptionLabel = PRT.Label(L["Select the profile you want to change to."])
 
   local selectableProfiles = PRT.TableUtils.Remove(existingProfiles,
@@ -63,7 +63,7 @@ function Profiles.AddChangeCurrentProfile(container)
   selectableProfilesDropdown:SetCallback("OnValueChanged",
     function(widget)
       local profile = widget:GetValue()
-      PRT.db:SetProfile(profile)
+      PRT.SetProfile(profile)
       PRT.Info("Selected Profile ", PRT.HighlightString(profile))
       Profiles.UpdateCoreFrame()
     end)
@@ -83,7 +83,7 @@ function Profiles.AddNewProfileWidget(container)
   newProfileEditBox:SetCallback("OnEnterPressed",
     function(widget)
       local profileName = widget:GetText()
-      PRT.db:SetProfile(profileName)
+      PRT.SetProfile(profileName)
       Profiles.UpdateCoreFrame()
     end)
 
@@ -98,8 +98,8 @@ end
 
 function Profiles.DeleteProfileWidget(container)
   local deleteProfileGroup = PRT.SimpleGroup()
-  local existingProfiles = PRT.db:GetProfiles()
-  local currentProfile = PRT.db:GetCurrentProfile()
+  local existingProfiles = PRT.GetProfiles()
+  local currentProfile = PRT.GetCurrentProfile()
   local descriptionLabel = PRT.Label(L["Select a profile you want to delete. You can't delete the currently active profile."])
 
   descriptionLabel:SetRelativeWidth(0.5)
@@ -115,7 +115,7 @@ function Profiles.DeleteProfileWidget(container)
       local profile = widget:GetValue()
       PRT.ConfirmationDialog(L["Are you sure you want to delete profile %s?"]:format(PRT.HighlightString(profile)),
         function()
-          PRT.db:DeleteProfile(profile)
+          PRT.DeleteProfile(profile)
           PRT.Info("Deleted Profile ", PRT.HighlightString(profile))
           Profiles.UpdateCoreFrame()
         end)
@@ -127,7 +127,7 @@ function Profiles.DeleteProfileWidget(container)
 end
 
 function Profiles.AddSpecProfileSelect(options, container, specIndex, specName)
-  local availableProfiles = PRT.db:GetProfiles()
+  local availableProfiles = PRT.GetProfiles()
   local selectedProfile = options.specSpecificProfiles.profileBySpec[specIndex]
   local profileDropdown = PRT.Dropdown(specName, nil, availableProfiles, selectedProfile)
   profileDropdown:SetDisabled(not options.specSpecificProfiles.enabled)

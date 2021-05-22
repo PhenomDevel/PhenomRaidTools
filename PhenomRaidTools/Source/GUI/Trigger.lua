@@ -1,4 +1,4 @@
-local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 
@@ -42,7 +42,7 @@ local function AddActionsWidgets(container, triggerName, triggers, copyStorePath
     function()
       local copy = PRT.TableUtils.Clone(trigger)
       copy.name = copy.name.." Copy"..random(0,100000)
-      PRT.db.profile.clipboard[copyStorePath] = copy
+      PRT.GetProfileDB().clipboard[copyStorePath] = copy
       PRT.Debug("Copied trigger", PRT.HighlightString(trigger.name), "to clipboard")
     end)
 

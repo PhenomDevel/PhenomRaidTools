@@ -1,5 +1,5 @@
-local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
-
+local _, PRT = ...
+local addon = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 
 -------------------------------------------------------------------------------
 -- Debug Helper
@@ -35,42 +35,42 @@ function PRT.PrintTable(t, maxRecursionDepth, recursionDepth)
 end
 
 function PRT.Info(...)
-  if PRT.db.profile.enabled then
-    PRT:Print(PRT.ColoredString("[Info]", PRT.Static.Colors.Info), ...)
+  if PRT.GetProfileDB().enabled then
+    addon:Print(PRT.ColoredString("[Info]", PRT.Static.Colors.Info), ...)
 
     if PRT.currentEncounter and PRT.currentEncounter.inFight then
-      tinsert(PRT.db.profile.debugLog, {PRT.ColoredString("[Info]", PRT.Static.Colors.Info), ...})
+      tinsert(PRT.GetProfileDB().debugLog, {PRT.ColoredString("[Info]", PRT.Static.Colors.Info), ...})
     end
   end
 end
 
 function PRT.Warn(...)
-  if PRT.db.profile.enabled then
-    PRT:Print(PRT.ColoredString("[Warn]", PRT.Static.Colors.Warn), ...)
+  if PRT.GetProfileDB().enabled then
+    addon:Print(PRT.ColoredString("[Warn]", PRT.Static.Colors.Warn), ...)
 
     if PRT.currentEncounter and PRT.currentEncounter.inFight then
-      tinsert(PRT.db.profile.debugLog, {PRT.ColoredString("[Warn]", PRT.Static.Colors.Warn), ...})
+      tinsert(PRT.GetProfileDB().debugLog, {PRT.ColoredString("[Warn]", PRT.Static.Colors.Warn), ...})
     end
   end
 end
 
 function PRT.Error(...)
-  if PRT.db.profile.enabled then
-    PRT:Print(PRT.ColoredString("[Error]", PRT.Static.Colors.Error), ...)
+  if PRT.GetProfileDB().enabled then
+    addon:Print(PRT.ColoredString("[Error]", PRT.Static.Colors.Error), ...)
 
     if PRT.currentEncounter and PRT.currentEncounter.inFight then
-      tinsert(PRT.db.profile.debugLog, {PRT.ColoredString("[Error]", PRT.Static.Colors.Error), ...})
+      tinsert(PRT.GetProfileDB().debugLog, {PRT.ColoredString("[Error]", PRT.Static.Colors.Error), ...})
     end
   end
 end
 
 function PRT.Debug(...)
-  if PRT.db.profile.enabled then
-    if PRT.db.profile.debugMode then
-      PRT:Print(PRT.ColoredString("[Debug]", PRT.Static.Colors.Debug), ...)
+  if PRT.GetProfileDB().enabled then
+    if PRT.GetProfileDB().debugMode then
+      addon:Print(PRT.ColoredString("[Debug]", PRT.Static.Colors.Debug), ...)
 
       if PRT.currentEncounter and PRT.currentEncounter.inFight then
-        tinsert(PRT.db.profile.debugLog, {PRT.ColoredString("[Debug]", PRT.Static.Colors.Debug), ...})
+        tinsert(PRT.GetProfileDB().debugLog, {PRT.ColoredString("[Debug]", PRT.Static.Colors.Debug), ...})
       end
     end
   end

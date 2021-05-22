@@ -1,11 +1,11 @@
-local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local _, PRT = ...
 
 -------------------------------------------------------------------------------
 -- Condition
 
 function PRT.EmptyCondition()
   return {
-    event = PRT.db.profile.triggerDefaults.conditionDefaults.defaultEvent,
+    event = PRT.GetProfileDB().triggerDefaults.conditionDefaults.defaultEvent,
     spellID = nil,
     source = nil,
     target = nil,
@@ -18,13 +18,13 @@ end
 
 function PRT.EmptyMessage()
   return {
-    message = PRT.db.profile.triggerDefaults.messageDefaults.defaultMessage or "TODO",
+    message = PRT.GetProfileDB().triggerDefaults.messageDefaults.defaultMessage or "TODO",
     useCustomSound = false,
-    duration = PRT.db.profile.triggerDefaults.messageDefaults.defaultDuration or 5,
-    targets = PRT.TableUtils.Clone(PRT.db.profile.triggerDefaults.messageDefaults.defaultTargets) or {"ALL"},
-    targetOverlay = PRT.db.profile.triggerDefaults.messageDefaults.defaultTargetOverlay or 1,
+    duration = PRT.GetProfileDB().triggerDefaults.messageDefaults.defaultDuration or 5,
+    targets = PRT.TableUtils.Clone(PRT.GetProfileDB().triggerDefaults.messageDefaults.defaultTargets) or {"ALL"},
+    targetOverlay = PRT.GetProfileDB().triggerDefaults.messageDefaults.defaultTargetOverlay or 1,
     delay = 0,
-    type = PRT.db.profile.triggerDefaults.messageDefaults.defaultMessageType or "cooldown",
+    type = PRT.GetProfileDB().triggerDefaults.messageDefaults.defaultMessageType or "cooldown",
     withCountdown = true
   }
 end
@@ -93,9 +93,9 @@ function PRT.EmptyRotation()
       Mythic = true
     },
     description = "",
-    shouldRestart = PRT.db.profile.triggerDefaults.rotationDefaults.defaultShouldRestart,
-    ignoreAfterActivation = PRT.db.profile.triggerDefaults.rotationDefaults.defaultIgnoreAfterActivation,
-    ignoreDuration = PRT.db.profile.triggerDefaults.rotationDefaults.defaultIgnoreDuration
+    shouldRestart = PRT.GetProfileDB().triggerDefaults.rotationDefaults.defaultShouldRestart,
+    ignoreAfterActivation = PRT.GetProfileDB().triggerDefaults.rotationDefaults.defaultIgnoreAfterActivation,
+    ignoreDuration = PRT.GetProfileDB().triggerDefaults.rotationDefaults.defaultIgnoreDuration
   }
 end
 
@@ -117,7 +117,7 @@ function PRT.EmptyPercentage()
   return {
     enabled = true,
     name = "Percentage Name"..random(0,100000),
-    unitID = PRT.db.profile.triggerDefaults.percentageDefaults.defaultUnitID,
+    unitID = PRT.GetProfileDB().triggerDefaults.percentageDefaults.defaultUnitID,
     values = {
       PRT.EmptyPercentageEntry()
     },
@@ -127,8 +127,8 @@ function PRT.EmptyPercentage()
       Mythic = true
     },
     description = "",
-    checkAgain = PRT.db.profile.triggerDefaults.percentageDefaults.defaultCheckAgain,
-    checkAgainAfter = PRT.db.profile.triggerDefaults.percentageDefaults.defaultCheckAgainAfter
+    checkAgain = PRT.GetProfileDB().triggerDefaults.percentageDefaults.defaultCheckAgain,
+    checkAgainAfter = PRT.GetProfileDB().triggerDefaults.percentageDefaults.defaultCheckAgainAfter
   }
 end
 

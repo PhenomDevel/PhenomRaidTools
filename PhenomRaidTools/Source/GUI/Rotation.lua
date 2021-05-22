@@ -1,4 +1,4 @@
-local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local Rotation = {}
@@ -102,18 +102,18 @@ function PRT.AddRotationOptions(container, profile, encounterID)
       PRT.mainWindowContent:SelectByPath("encounters", encounterID, "rotations", newRotation.name)
     end)
 
-  local hasClipboardRotation = (not PRT.TableUtils.IsEmpty(PRT.db.profile.clipboard.rotation))
+  local hasClipboardRotation = (not PRT.TableUtils.IsEmpty(PRT.GetProfileDB().clipboard.rotation))
   local pasteButtonText = PRT.StringUtils.WrapColorByBoolean(L["Paste"], hasClipboardRotation, "FF696969")
   local pasteButton = PRT.Button(pasteButtonText)
   pasteButton:SetDisabled(not hasClipboardRotation)
   pasteButton:SetCallback("OnClick",
     function()
-      tinsert(rotations, PRT.db.profile.clipboard.rotation)
+      tinsert(rotations, PRT.GetProfileDB().clipboard.rotation)
       PRT.Core.UpdateTree()
       PRT.mainWindowContent:DoLayout()
-      PRT.mainWindowContent:SelectByPath("encounters", encounterID, "rotations", PRT.db.profile.clipboard.rotation.name)
-      PRT.Debug("Pasted rotation", PRT.HighlightString(PRT.db.profile.clipboard.rotation.name), "to", PRT.HighlightString(encounter.name))
-      PRT.db.profile.clipboard.rotation = nil
+      PRT.mainWindowContent:SelectByPath("encounters", encounterID, "rotations", PRT.GetProfileDB().clipboard.rotation.name)
+      PRT.Debug("Pasted rotation", PRT.HighlightString(PRT.GetProfileDB().clipboard.rotation.name), "to", PRT.HighlightString(encounter.name))
+      PRT.GetProfileDB().clipboard.rotation = nil
     end)
 
   rotationOptionsGroup:AddChild(addButton)

@@ -1,4 +1,4 @@
-local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local Core = {
@@ -287,7 +287,7 @@ function Core.GenerateTreeByProfile()
 
   if PRT.IsSender() then
     tinsert(t, Core.GenerateTemplatesTree())
-    tinsert(t, Core.GenerateEncountersTree(PRT.db.profile.encounters))
+    tinsert(t, Core.GenerateEncountersTree(PRT.GetProfileDB().encounters))
   end
 
   return t
@@ -299,7 +299,7 @@ function Core.OnGroupSelected(container, key)
   local mainKey, encounterID, triggerType, triggerName = strsplit("\001", key)
 
   if encounterID then
-    local _, selectedEncounter = PRT.GetSelectedVersionEncounterByID(PRT.db.profile.encounters, tonumber(encounterID))
+    local _, selectedEncounter = PRT.GetSelectedVersionEncounterByID(PRT.GetProfileDB().encounters, tonumber(encounterID))
 
     PRT.currentEncounter = {}
     PRT.currentEncounter.encounter = selectedEncounter
@@ -312,11 +312,11 @@ function Core.OnGroupSelected(container, key)
 
     -- profiles selected
   elseif mainKey == "profiles" then
-    PRT.AddProfilesWidget(container, PRT.db.char.profileSettings)
+    PRT.AddProfilesWidget(container, PRT.GetCharDB().profileSettings)
 
     -- custom placeholder selected
   elseif mainKey == "customPlaceholder" then
-    PRT.AddCustomPlaceholdersWidget(container, PRT.db.profile.customPlaceholders)
+    PRT.AddCustomPlaceholdersWidget(container, PRT.GetProfileDB().customPlaceholders)
 
     -- spell database selected
   elseif mainKey == "spellDatabase" then
@@ -324,52 +324,52 @@ function Core.OnGroupSelected(container, key)
 
     -- templates selected
   elseif mainKey == "templates" then
-    PRT.AddTemplateWidgets(container, PRT.db.profile)
+    PRT.AddTemplateWidgets(container, PRT.GetProfileDB())
 
     -- encounters selected
   elseif mainKey == "encounters" and not triggerType and not triggerName and not encounterID then
-    PRT.AddEncountersWidgets(container, PRT.db.profile)
+    PRT.AddEncountersWidgets(container, PRT.GetProfileDB())
 
     -- single encounter selected
   elseif encounterID and not triggerType and not triggerName then
     -- Update encounter specific placeholders for message previews
     PRT.SetupEncounterSpecificCustomPlaceholders()
 
-    PRT.AddEncounterOptions(container, PRT.db.profile, encounterID)
+    PRT.AddEncounterOptions(container, PRT.GetProfileDB(), encounterID)
 
     -- TODO Provide encounter directly
 
     -- encounter trigger type selected
   elseif triggerType and not triggerName then
     if triggerType == "timers" then
-      PRT.AddTimerOptionsWidgets(container, PRT.db.profile, encounterID)
+      PRT.AddTimerOptionsWidgets(container, PRT.GetProfileDB(), encounterID)
     elseif triggerType == "rotations" then
-      PRT.AddRotationOptions(container, PRT.db.profile, encounterID)
+      PRT.AddRotationOptions(container, PRT.GetProfileDB(), encounterID)
     elseif triggerType == "healthPercentages" then
-      PRT.AddHealthPercentageOptions(container, PRT.db.profile, encounterID)
+      PRT.AddHealthPercentageOptions(container, PRT.GetProfileDB(), encounterID)
     elseif triggerType == "powerPercentages" then
-      PRT.AddPowerPercentageOptions(container, PRT.db.profile, encounterID)
+      PRT.AddPowerPercentageOptions(container, PRT.GetProfileDB(), encounterID)
     elseif triggerType == "bossMods" then
-      PRT.AddBossModOptions(container, PRT.db.profile, encounterID)
+      PRT.AddBossModOptions(container, PRT.GetProfileDB(), encounterID)
     elseif triggerType == "customPlaceholders" then
-      PRT.AddCustomPlaceholderOptions(container, PRT.db.profile, encounterID)
+      PRT.AddCustomPlaceholderOptions(container, PRT.GetProfileDB(), encounterID)
     end
 
     -- single timer selected
   elseif triggerType == "timers" and triggerName then
-    PRT.AddTimerWidget(container, PRT.db.profile, tonumber(encounterID), triggerName)
+    PRT.AddTimerWidget(container, PRT.GetProfileDB(), tonumber(encounterID), triggerName)
 
     -- single rotaion selected
   elseif triggerType == "rotations" and triggerName then
-    PRT.AddRotationWidget(container, PRT.db.profile, tonumber(encounterID), triggerName)
+    PRT.AddRotationWidget(container, PRT.GetProfileDB(), tonumber(encounterID), triggerName)
 
     -- single healthPercentages selected
   elseif triggerType == "healthPercentages" and triggerName then
-    PRT.AddHealthPercentageWidget(container, PRT.db.profile, tonumber(encounterID), triggerName)
+    PRT.AddHealthPercentageWidget(container, PRT.GetProfileDB(), tonumber(encounterID), triggerName)
 
     -- single powerPercentages selected
   elseif triggerType == "powerPercentages" and triggerName then
-    PRT.AddPowerPercentageWidget(container, PRT.db.profile, tonumber(encounterID), triggerName)
+    PRT.AddPowerPercentageWidget(container, PRT.GetProfileDB(), tonumber(encounterID), triggerName)
   end
 
   container:DoLayout()
@@ -394,7 +394,7 @@ function Core.ReselectExchangeLast(last)
 end
 
 function Core.UpdateTree()
-  PRT.mainWindowContent:SetTree(Core.GenerateTreeByProfile(PRT.db.profile))
+  PRT.mainWindowContent:SetTree(Core.GenerateTreeByProfile(PRT.GetProfileDB()))
 end
 
 function Core.UpdateScrollFrame()
@@ -434,7 +434,7 @@ function Core.CreateMainWindowContent()
   local treeContentScrollFrame = PRT.ScrollFrame()
 
   -- Generate tree group for the main menue structure
-  local tree = Core.GenerateTreeByProfile(PRT.db.profile)
+  local tree = Core.GenerateTreeByProfile(PRT.GetProfileDB())
   local treeGroup = PRT.TreeGroup(tree)
   local treeGroupStatus = { groups = {} }
   treeGroup:SetTreeWidth(600)
@@ -447,7 +447,7 @@ function Core.CreateMainWindowContent()
   treeGroup:SetCallback("OnGroupSelected",
     function(_, _, key)
       treeGroup.selectedValue = key
-      Core.OnGroupSelected(treeContentScrollFrame, key, PRT.db.profile)
+      Core.OnGroupSelected(treeContentScrollFrame, key, PRT.GetProfileDB())
     end)
 
   -- Expand encounters by default
@@ -468,9 +468,8 @@ end
 -- Public API
 
 function PRT.CreateMainWindow()
-  local mainWindow = PRT.Window("PhenomRaidTools".." - v"..PRT.db.profile.version)
-  local mainWindowContent = Core.CreateMainWindowContent(PRT.db.profile)
-
+  local mainWindow = PRT.Window("PhenomRaidTools".." - v"..PRT.GetProfileDB().version)
+  local mainWindowContent = Core.CreateMainWindowContent(PRT.GetProfileDB())
   mainWindow:SetCallback("OnClose",
     function(widget)
       PRT.Release(widget)
@@ -480,20 +479,20 @@ function PRT.CreateMainWindow()
 
       local frame = mainWindow.frame
       local height, width, left, top = frame:GetHeight(), frame:GetWidth(), frame:GetLeft(), frame:GetTop()
-      PRT.db.profile.mainWindow.height = height
-      PRT.db.profile.mainWindow.width = width
-      PRT.db.profile.mainWindow.left = left
-      PRT.db.profile.mainWindow.top = UIParent:GetHeight() - top
+      PRT.GetProfileDB().mainWindow.height = height
+      PRT.GetProfileDB().mainWindow.width = width
+      PRT.GetProfileDB().mainWindow.left = left
+      PRT.GetProfileDB().mainWindow.top = UIParent:GetHeight() - top
 
-      PRT.db.profile.mainWindowContent.treeGroup.width = mainWindowContent.treeframe:GetWidth()
+      PRT.GetProfileDB().mainWindowContent.treeGroup.width = mainWindowContent.treeframe:GetWidth()
     end)
 
-  mainWindow:SetWidth(PRT.db.profile.mainWindow.width or 970)
-  mainWindow:SetHeight(PRT.db.profile.mainWindow.height or 600)
+  mainWindow:SetWidth(PRT.GetProfileDB().mainWindow.width or 970)
+  mainWindow:SetHeight(PRT.GetProfileDB().mainWindow.height or 600)
   mainWindow.frame:SetClampedToScreen(true)
 
-  if PRT.db.profile.mainWindow.left or PRT.db.profile.mainWindow.top then
-    mainWindow.frame:SetPoint("TOPLEFT",UIParent,"TOPLEFT", PRT.db.profile.mainWindow.left or 0, -(PRT.db.profile.mainWindow.top or 0))
+  if PRT.GetProfileDB().mainWindow.left or PRT.GetProfileDB().mainWindow.top then
+    mainWindow.frame:SetPoint("TOPLEFT",UIParent,"TOPLEFT", PRT.GetProfileDB().mainWindow.left or 0, -(PRT.GetProfileDB().mainWindow.top or 0))
   end
   mainWindow.frame:SetMinResize(1000, 600)
   RegisterESCHandler("mainWindow", mainWindow)
@@ -501,9 +500,9 @@ function PRT.CreateMainWindow()
   -- Initialize sender and receiver frames
   PRT.ReceiverOverlay.ShowAll()
   PRT.SenderOverlay.Show()
-  PRT.SenderOverlay.ShowPlaceholder(PRT.SenderOverlay.overlayFrame, PRT.db.profile.overlay.sender)
+  PRT.SenderOverlay.ShowPlaceholder(PRT.SenderOverlay.overlayFrame, PRT.GetProfileDB().overlay.sender)
 
-  for i, receiverOverlay in ipairs(PRT.db.profile.overlay.receivers) do
+  for i, receiverOverlay in ipairs(PRT.GetProfileDB().overlay.receivers) do
     local frame = PRT.ReceiverOverlay.overlayFrames[i]
     PRT.ReceiverOverlay.ShowPlaceholder(frame, receiverOverlay)
   end
@@ -514,7 +513,7 @@ function PRT.CreateMainWindow()
   PRT.mainWindow = mainWindow
   PRT.mainWindowContent = mainWindowContent
 
-  mainWindowContent.treeframe:SetWidth(PRT.db.profile.mainWindowContent.treeGroup.width or 175)
+  mainWindowContent.treeframe:SetWidth(PRT.GetProfileDB().mainWindowContent.treeGroup.width or 175)
 end
 
 -- Make functions publicly available

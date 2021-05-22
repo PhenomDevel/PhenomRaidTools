@@ -1,4 +1,4 @@
-local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local Message = {
@@ -139,7 +139,7 @@ function Message.GenerateRaidRosterDropdownItems()
   local raidRosterItems = {}
 
   -- Add Raid Roster entries
-  for k, v in pairs(PRT.db.profile.raidRoster) do
+  for k, v in pairs(PRT.GetProfileDB().raidRoster) do
     local name = PRT.ClassColoredName(v)
 
     name = "$"..k.." ("..name..")"
@@ -168,7 +168,7 @@ function Message.GenerateRaidRosterDropdownItems()
   end
 
   -- Add Custom Placeholder
-  for _, customPlaceholder in ipairs(PRT.db.profile.customPlaceholders) do
+  for _, customPlaceholder in ipairs(PRT.GetProfileDB().customPlaceholders) do
     local coloredNames = {}
 
     for _, name in ipairs(customPlaceholder.names) do
@@ -238,14 +238,14 @@ end
 local function AddLoadTemplateActionWidgets(container, action)
   local templates = {}
 
-  for templateName, _ in pairs(PRT.db.profile.templateStore.messages) do
+  for templateName, _ in pairs(PRT.GetProfileDB().templateStore.messages) do
     tinsert(templates, { id = templateName, name = templateName })
   end
 
   local templatesDropdown = PRT.Dropdown(L["Templates"], nil, templates)
   templatesDropdown:SetCallback("OnValueChanged",
     function(widget)
-      local templateMessage = PRT.db.profile.templateStore.messages[widget:GetValue()]
+      local templateMessage = PRT.GetProfileDB().templateStore.messages[widget:GetValue()]
 
       if templateMessage then
         local newAction = PRT.TableUtils.Clone(templateMessage)
@@ -355,7 +355,7 @@ local function AddCooldownActionWidgets(container, action)
     end)
 
   local targetOverlayDropdownItems = {}
-  for _, overlay in ipairs(PRT.db.profile.overlay.receivers) do
+  for _, overlay in ipairs(PRT.GetProfileDB().overlay.receivers) do
     local targetOverlayItem = {
       id = overlay.id,
       name = overlay.id..": "..overlay.label
@@ -501,7 +501,7 @@ local function AddAdvancedActionWidgets(container, message)
     end)
 
   local targetOverlayDropdownItems = {}
-  for _, overlay in ipairs(PRT.db.profile.overlay.receivers) do
+  for _, overlay in ipairs(PRT.GetProfileDB().overlay.receivers) do
     tinsert(targetOverlayDropdownItems, { id = overlay.id, name = overlay.id..": "..overlay.label})
   end
 
@@ -600,7 +600,7 @@ local function AddActionTypeWidgets(container, action)
     [5] = {
       id = "loadTemplate",
       name = L["Load Template"],
-      disabled = PRT.TableUtils.IsEmpty(PRT.db.profile.templateStore.messages)
+      disabled = PRT.TableUtils.IsEmpty(PRT.GetProfileDB().templateStore.messages)
     }
   }
 
@@ -625,7 +625,7 @@ local function AddTemplateWidgets(container, message)
     function(widget)
       local value = widget:GetText()
 
-      if PRT.db.profile.templateStore.messages[value] then
+      if PRT.GetProfileDB().templateStore.messages[value] then
         PRT.Warn("A template with this name already exists. Please choose antother name.")
         widget:SetText("")
       else
@@ -645,7 +645,7 @@ local function AddTemplateWidgets(container, message)
             -- make sure a message always has a type
             message.type = message.type or "advanced"
 
-            PRT.db.profile.templateStore.messages[templateName] = PRT.TableUtils.Clone(message)
+            PRT.GetProfileDB().templateStore.messages[templateName] = PRT.TableUtils.Clone(message)
             saveAsTemplateNameEditbox:SetText("")
           end
         end,

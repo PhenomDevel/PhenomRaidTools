@@ -1,4 +1,4 @@
-local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
+local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 
@@ -68,7 +68,7 @@ local function AddSpellCacheSearch(container, spellCache)
 end
 
 function PRT.AddSpellCacheWidget(container)
-  local spellCache = PRT.db.global.spellCache
+  local spellCache = PRT.GetGlobalDB().spellCache
   local spellCacheGroup = PRT.SimpleGroup()
 
   local descriptionLines = {

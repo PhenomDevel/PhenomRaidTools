@@ -1,4 +1,5 @@
-local PRT = LibStub("AceAddon-3.0"):NewAddon("PhenomRaidTools", "AceConsole-3.0", "AceEvent-3.0");
+local _, PRT = ...
+local addon = LibStub("AceAddon-3.0"):NewAddon("PhenomRaidTools", "AceConsole-3.0", "AceEvent-3.0")
 
 local AceComm = LibStub("AceComm-3.0")
 local AceTimer = LibStub("AceTimer-3.0")
@@ -10,18 +11,18 @@ local PhenomRaidToolsLDB = LibStub("LibDataBroker-1.1"):NewDataObject("PhenomRai
   icon = "Interface\\AddOns\\PhenomRaidTools\\Media\\Icons\\PRT.blp",
   OnClick = function(self, button)
     if button == "LeftButton" then
-      PRT:Open()
+      addon:Open()
     elseif button == "MiddleButton" then
       LibDBIcon:Hide("PhenomRaidTools")
-      PRT.db.profile.minimap.hide = true
+      PRT.GetProfileDB().minimap.hide = true
       PRT.Info("Minimap icon is now hidden. If you want to show it again use /prt minimap")
     end
   end,
 
   OnEnter = function()
     GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
-    GameTooltip:AddDoubleLine("|cFF69CCF0PhenomRaidTools|r", "v"..PRT.db.profile.version)
-    GameTooltip:AddDoubleLine("|cFFdcabffProfile|r ",PRT.db:GetCurrentProfile())
+    GameTooltip:AddDoubleLine("|cFF69CCF0PhenomRaidTools|r", "v"..PRT.GetProfileDB().version)
+    GameTooltip:AddDoubleLine("|cFFdcabffProfile|r ",PRT.GetCurrentProfile())
     GameTooltip:AddDoubleLine("|cFFdcabffLeft-Click|r", "Open Config")
     GameTooltip:AddDoubleLine("|cFFdcabffMiddle-Click|r", "Hide minimap icon")
     GameTooltip:Show()
@@ -58,7 +59,8 @@ local function NewDefaultReceiverOverlay(id, name, fontSize, r, g, b)
   }
 end
 
-local defaults =  {
+do
+  local defaults =  {
   char = {
     profileSettings = {
       specSpecificProfiles = {
@@ -211,6 +213,36 @@ local defaults =  {
   }
 }
 
+  local db
+
+  function PRT.GetGlobalDB()
+    return db.global or {}
+  end
+
+  function PRT.GetProfileDB()
+    return db.profile or {}
+  end
+
+  function PRT.GetCharDB()
+    return db.char or {}
+  end
+
+  function PRT.GetProfiles()
+    return db:GetProfiles()
+  end
+
+  function PRT.SetProfile(profile)
+    return db:SetProfile(profile)
+  end
+
+  function PRT.ResetProfile(profile)
+    return db:ResetProfile(profile)
+  end
+
+  function PRT.GetCurrentProfile()
+    return db:GetCurrentProfile()
+  end
+
 local options = {
   name = "PhenomRaidTools",
   type = "group",
@@ -219,96 +251,96 @@ local options = {
   },
 }
 
-function PRT:OnInitialize()
-  -- Register DB
-  self.db = LibStub("AceDB-3.0"):New("PhenomRaidToolsDB", defaults, true)
-  options = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db)
+function addon:OnInitialize()
+  db = LibStub("AceDB-3.0"):New("PhenomRaidToolsDB", defaults, true)
+  options = LibStub("AceDBOptions-3.0"):GetOptionsTable(db)
 
   -- Register Options
   LibStub("AceConfig-3.0"):RegisterOptionsTable("PhenomRaidTools", options)
   self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("PhenomRaidTools", "PhenomRaidTools")
 
   -- Initialize Minimap Icon
-  LibDBIcon:Register("PhenomRaidTools", PhenomRaidToolsLDB, self.db.profile.minimap)
+  LibDBIcon:Register("PhenomRaidTools", PhenomRaidToolsLDB, PRT.GetProfileDB().minimap)
 
-  local encounterIdx, _ = PRT.TableUtils.GetBy(self.db.profile.encounters, "id", 9999)
+  local encounterIdx, _ = PRT.TableUtils.GetBy(PRT.GetProfileDB().encounters, "id", 9999)
 
-  if not encounterIdx and PRT.TableUtils.IsEmpty(self.db.profile.encounters) then
-    table.insert(self.db.profile.encounters, PRT.ExampleEncounter())
+  if not encounterIdx and PRT.TableUtils.IsEmpty(PRT.GetProfileDB().encounters) then
+    table.insert(PRT.GetProfileDB().encounters, PRT.ExampleEncounter())
   end
 
   -- Reset versions
-  PRT.db.profile.versionCheck = {}
+  PRT.GetProfileDB().versionCheck = {}
 
   -- Reset clipboard
-  PRT.db.profile.clipboard = {}
+  PRT.GetProfileDB().clipboard = {}
 
   -- We hold the main frame within the global addon variable
   -- because we sometimes have to do a re-layout of the complete content
   PRT.mainWindow = nil
   PRT.mainWindowContent = nil
 
-  PRT.SenderOverlay.Initialize(PRT.db.profile.overlay.sender)
-  PRT.ReceiverOverlay.Initialize(PRT.db.profile.overlay.receivers)
+  PRT.SenderOverlay.Initialize(PRT.GetProfileDB().overlay.sender)
+  PRT.ReceiverOverlay.Initialize(PRT.GetProfileDB().overlay.receivers)
   PRT.SenderOverlay.Hide()
   PRT.ReceiverOverlay.HideAll()
 
-  self.db.RegisterCallback(self, "OnProfileChanged", "RefreshConfig")
-  self.db.RegisterCallback(self, "OnProfileCopied", "RefreshConfig")
-  self.db.RegisterCallback(self, "OnProfileReset", "RefreshConfig")
+  db.RegisterCallback(self, "OnProfileChanged", "RefreshConfig")
+  db.RegisterCallback(self, "OnProfileCopied", "RefreshConfig")
+  db.RegisterCallback(self, "OnProfileReset", "RefreshConfig")
 
   -- Check if profile db needs migration
-  AceTimer:ScheduleTimer(PRT.MigrateProfileDB, 1, self.db.profile)
+  AceTimer:ScheduleTimer(PRT.MigrateProfileDB, 1, PRT.GetProfileDB())
 
   -- Start spell cache building if needed
-  PRT.SpellCache.Build(self.db.global.spellCache)
+  PRT.SpellCache.Build(PRT.GetGlobalDB().spellCache)
 
   -- Initially load global placeholders
   PRT.SetupGlobalCustomPlaceholders()
 end
+end
 
-function PRT:RefreshConfig()
-  PRT.Info("Active Profile was changed to", PRT.HighlightString(PRT.db:GetCurrentProfile()))
+function addon:RefreshConfig()
+  PRT.Info("Active Profile was changed to", PRT.HighlightString(PRT.GetCurrentProfile()))
 
-  PRT.ReceiverOverlay.ReInitialize(PRT.db.profile.overlay.receivers)
-  PRT.SenderOverlay.ReInitialize(PRT.db.profile.overlay.sender)
+  PRT.ReceiverOverlay.ReInitialize(PRT.GetProfileDB().overlay.receivers)
+  PRT.SenderOverlay.ReInitialize(PRT.GetProfileDB().overlay.sender)
 
-  local encounterIdx, _ = PRT.TableUtils.GetBy(self.db.profile.encounters, "id", 9999)
-  if not encounterIdx and PRT.TableUtils.IsEmpty(self.db.profile.encounters) then
-    table.insert(self.db.profile.encounters, PRT.ExampleEncounter())
+  local encounterIdx, _ = PRT.TableUtils.GetBy(PRT.GetProfileDB().encounters, "id", 9999)
+  if not encounterIdx and PRT.TableUtils.IsEmpty(PRT.GetProfileDB().encounters) then
+    table.insert(PRT.GetProfileDB().encounters, PRT.ExampleEncounter())
   end
 
   -- Check if profile db needs migration
-  AceTimer:ScheduleTimer(PRT.MigrateProfileDB, 0.5, self.db.profile)
+  AceTimer:ScheduleTimer(PRT.MigrateProfileDB, 0.5, PRT.GetProfileDB())
 end
 
-function PRT:OnEnable()
+function addon:OnEnable()
   PRT.RegisterWorldEvents()
 
-  AceComm:RegisterComm(self.db.profile.addonPrefixes.addonMessage, self.OnAddonMessage)
-  AceComm:RegisterComm(self.db.profile.addonPrefixes.versionRequest, self.OnVersionRequest)
-  AceComm:RegisterComm(self.db.profile.addonPrefixes.versionResponse, self.OnVersionResponse)
+  AceComm:RegisterComm(PRT.GetProfileDB().addonPrefixes.addonMessage, self.OnAddonMessage)
+  AceComm:RegisterComm(PRT.GetProfileDB().addonPrefixes.versionRequest, self.OnVersionRequest)
+  AceComm:RegisterComm(PRT.GetProfileDB().addonPrefixes.versionResponse, self.OnVersionResponse)
 end
 
-function PRT:OnDisable()
+function addon:OnDisable()
   PRT.UnregisterWorldEvents()
 end
 
-function PRT:Open()
+function addon:Open()
   if UnitAffectingCombat("player") then
     PRT.Info("Can't open during combat")
   else
     if (PRT.mainWindow and not PRT.mainWindow:IsShown()) or not PRT.mainWindow then
-      PRT.CreateMainWindow(self.db.profile)
+      PRT.CreateMainWindow(PRT.GetProfileDB())
     end
   end
 end
 
-function PRT:PrintPartyOrRaidVersions()
-  local myVersion = string.gsub(PRT.db.profile.version, "[^%d]+", "")
+function addon:PrintPartyOrRaidVersions()
+  local myVersion = string.gsub(PRT.GetProfileDB().version, "[^%d]+", "")
   local myVersionN = tonumber(myVersion)
 
-  for _, response in pairs(PRT.db.profile.versionCheck) do
+  for _, response in pairs(PRT.GetProfileDB().versionCheck) do
     local playerName, version, enabled = response.name, response.version, response.enabled
 
     local playerWithServer = GetUnitName(playerName, true)
@@ -341,7 +373,7 @@ function PRT:PrintPartyOrRaidVersions()
   end
 end
 
-function PRT:VersionCheck(_)
+function addon:VersionCheck(_)
   local request = {
     type = "request",
     requestor = strjoin("-", UnitFullName("player"))
@@ -351,25 +383,25 @@ function PRT:VersionCheck(_)
     PRT.Info("Initialize version check")
     PRT.Info("Waiting for everyone to respond...")
 
-    self.db.profile.versionCheck = {}
+    PRT.GetProfileDB().versionCheck = {}
 
     for _, name in ipairs(PRT.PartyNames()) do
-      self.db.profile.versionCheck[name] = ""
+      PRT.GetProfileDB().versionCheck[name] = ""
     end
 
-    AceComm:SendCommMessage(PRT.db.profile.addonPrefixes.versionRequest, PRT.Serialize(request), "RAID")
+    AceComm:SendCommMessage(PRT.GetProfileDB().addonPrefixes.versionRequest, PRT.Serialize(request), "RAID")
     AceTimer:ScheduleTimer(PRT.PrintPartyOrRaidVersions, 5)
   else
-    PRT.Info("You are currently running version", PRT.ColoredString(self.db.profile.version, PRT.Static.Colors.Highlight))
+    PRT.Info("You are currently running version", PRT.ColoredString(PRT.GetProfileDB().version, PRT.Static.Colors.Highlight))
   end
 end
 
-function PRT:ToggleMinimapIcon()
+function addon:ToggleMinimapIcon()
   LibDBIcon:Show("PhenomRaidTools")
-  PRT.db.profile.minimap.hide = false
+  PRT.GetProfileDB().minimap.hide = false
 end
 
-function PRT:PrintHelp()
+function addon:PrintHelp()
   PRT.Info("You can use following commands:")
   PRT.Info("/prt - Opens the config")
   PRT.Info("/prt versions - Will perform a version check on the current group")
@@ -378,22 +410,22 @@ function PRT:PrintHelp()
   PRT.Info("/prtm $message - Will let you send a message to *ALL* players on the fly")
 end
 
-function PRT:ExecuteChatCommand(input)
+function addon:ExecuteChatCommand(input)
   if input == "" or input == nil then
-    PRT:Open()
+    addon:Open()
   elseif input == "help" then
     PRT.PrintHelp()
   elseif input == "version" or input == "versions" then
-    PRT:VersionCheck()
+    addon:VersionCheck()
   elseif input == "minimap" then
-    PRT:ToggleMinimapIcon()
+    addon:ToggleMinimapIcon()
   else
     PRT.PrintHelp()
   end
 end
 
-function PRT:InvokeMessage(msg)
-  if PRT.db.profile.senderMode and PRT.db.profile.enabled and (PRT.IsTestMode() or true) then
+function addon:InvokeMessage(msg)
+  if PRT.GetProfileDB().senderMode and PRT.GetProfileDB().enabled and (PRT.IsTestMode() or true) then
     if PRT.currentEncounter then
       if PRT.currentEncounter.inFight then
         PRT.Debug("Sending new message invoked by chat command")
@@ -410,9 +442,10 @@ function PRT:InvokeMessage(msg)
   PRT.Info("Message by chat command was not send. Either you are not in combat or not in sender mode.")
 end
 
+
 -------------------------------------------------------------------------------
 -- Chat Commands
 
-PRT:RegisterChatCommand("prt", "ExecuteChatCommand")
-PRT:RegisterChatCommand("prtv", "VersionCheck")
-PRT:RegisterChatCommand("prtm", "InvokeMessage")
+addon:RegisterChatCommand("prt", "ExecuteChatCommand")
+addon:RegisterChatCommand("prtv", "VersionCheck")
+addon:RegisterChatCommand("prtm", "InvokeMessage")
