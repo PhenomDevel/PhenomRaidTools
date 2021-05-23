@@ -233,19 +233,8 @@ do
     return db:GetCurrentProfile()
   end
 
-  local options = {
-    name = "PhenomRaidTools",
-    type = "group",
-    args = {}
-  }
-
   function addon:OnInitialize()
     db = LibStub("AceDB-3.0"):New("PhenomRaidToolsDB", defaults, true)
-    options = LibStub("AceDBOptions-3.0"):GetOptionsTable(db)
-
-    -- Register Options
-    LibStub("AceConfig-3.0"):RegisterOptionsTable("PhenomRaidTools", options)
-    self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("PhenomRaidTools", "PhenomRaidTools")
 
     -- Initialize Minimap Icon
     LibDBIcon:Register("PhenomRaidTools", PhenomRaidToolsLDB, PRT.GetProfileDB().minimap)
