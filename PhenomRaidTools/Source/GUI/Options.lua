@@ -39,7 +39,7 @@ function PRT.AddOptionWidgets(container)
   optionsTabsGroup:SetCallback(
     "OnGroupSelected",
     function(tabGroup, _, key)
-      container:ReleaseChildren()
+      tabGroup:ReleaseChildren()
 
       if key == "general" then
         PRT.AddGeneralWidgets(tabGroup, PRT.GetProfileDB())

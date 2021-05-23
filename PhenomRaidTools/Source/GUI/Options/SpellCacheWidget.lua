@@ -10,11 +10,14 @@ local spellIconSize = 48
 
 local function addLabelWithValue(label, value)
   local group = PRT.SimpleGroup()
-  group:SetLayout("Flow")
-  group:AddChild(PRT.Label(label .. ":"))
-  group:AddChild(PRT.Label(value))
+  local labelWidget = PRT.Label(label .. ":")
+  local valueWidget = PRT.Label(value)
 
-  return group, label, value
+  group:SetLayout("Flow")
+  group:AddChild(labelWidget)
+  group:AddChild(valueWidget)
+
+  return group, labelWidget, valueWidget
 end
 
 local function getStatusText(spellCache)
@@ -127,11 +130,11 @@ function PRT.AddSpellCacheWidget(container)
     updateTimer =
       AceTimer:ScheduleRepeatingTimer(
       function()
-        statusValueLabel:SetText(getStatusText(spellCache))
+        statusValueLabel:SetText(getStatusText(spellCache) or "N/A")
         PRT.UpdateLabelWidth(statusValueLabel)
-        lastCheckedValueLabel:SetText(spellCache.lastCheckedId)
+        lastCheckedValueLabel:SetText(spellCache.lastCheckedId or "N/A")
         PRT.UpdateLabelWidth(lastCheckedValueLabel)
-        spellCountValueLabel:SetText(PRT.TableUtils.Count(spellCache.spells))
+        spellCountValueLabel:SetText(PRT.TableUtils.Count(spellCache.spells) or "N/A")
         PRT.UpdateLabelWidth(spellCountValueLabel)
       end,
       0.3
