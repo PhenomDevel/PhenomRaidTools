@@ -1,6 +1,5 @@
 local _, PRT = ...
 
-
 -------------------------------------------------------------------------------
 -- Private Helper
 
@@ -29,7 +28,6 @@ local migrationFunctions = {
       end
     end
   },
-
   [2] = {
     version = "2.7.4",
     migrationFunction = function(profile)
@@ -57,7 +55,6 @@ local function GetPendingMigrations(profile)
   return pendingMigrations
 end
 
-
 -------------------------------------------------------------------------------
 -- Public API
 
@@ -66,7 +63,6 @@ function PRT.MigrateProfileDB(profile)
   --profile.processedMigrations["2.7.4"] = false
   --   PRT.Debug("Skipping migrations due to development version.")
   --end
-
 
   local pendingMigrations = GetPendingMigrations(profile)
 

@@ -1,7 +1,6 @@
 local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
-
 local changelogLines = {
   PRT.ColoredString(L["Latest Features"], PRT.Static.Colors.Primary),
   PRT.ColoredString(L["Ability to export timers as ExRT note"], PRT.Static.Colors.Secondary),
@@ -17,7 +16,6 @@ local changelogLines = {
   L["- You can now enable and select specialization specific profiles"],
   L["- The profiles will change automatically once you change your specialization"]
 }
-
 
 -------------------------------------------------------------------------------
 -- Public API

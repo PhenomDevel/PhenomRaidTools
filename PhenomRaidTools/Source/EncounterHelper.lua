@@ -8,10 +8,9 @@ function PRT.EmptyCondition()
     event = PRT.GetProfileDB().triggerDefaults.conditionDefaults.defaultEvent,
     spellID = nil,
     source = nil,
-    target = nil,
+    target = nil
   }
 end
-
 
 -------------------------------------------------------------------------------
 -- Message
@@ -28,7 +27,6 @@ function PRT.EmptyMessage()
     withCountdown = true
   }
 end
-
 
 -------------------------------------------------------------------------------
 -- Timer
@@ -53,7 +51,7 @@ function PRT.EmptyTimer()
     counter = 0,
     triggerAtOccurence = 1,
     resetCounterOnStop = false,
-    name = "Timer Name"..random(0,100000),
+    name = "Timer Name" .. random(0, 100000),
     enabledDifficulties = {
       Normal = true,
       Heroic = true,
@@ -65,7 +63,6 @@ function PRT.EmptyTimer()
     }
   }
 end
-
 
 -------------------------------------------------------------------------------
 -- Rotation
@@ -82,7 +79,7 @@ function PRT.EmptyRotation()
   return {
     enabled = true,
     triggerCondition = PRT.EmptyCondition(),
-    name = "Rotation Name"..random(0,100000),
+    name = "Rotation Name" .. random(0, 100000),
     counter = 0,
     entries = {
       PRT.EmptyRotationEntry()
@@ -98,7 +95,6 @@ function PRT.EmptyRotation()
     ignoreDuration = PRT.GetProfileDB().triggerDefaults.rotationDefaults.defaultIgnoreDuration
   }
 end
-
 
 -------------------------------------------------------------------------------
 -- Percentage
@@ -116,7 +112,7 @@ end
 function PRT.EmptyPercentage()
   return {
     enabled = true,
-    name = "Percentage Name"..random(0,100000),
+    name = "Percentage Name" .. random(0, 100000),
     unitID = PRT.GetProfileDB().triggerDefaults.percentageDefaults.defaultUnitID,
     values = {
       PRT.EmptyPercentageEntry()
@@ -132,7 +128,6 @@ function PRT.EmptyPercentage()
   }
 end
 
-
 -------------------------------------------------------------------------------
 -- Encounter
 
@@ -140,36 +135,26 @@ function PRT.EmptyEncounterVersion(encounterId, encounterName)
   return {
     id = encounterId,
     enabled = true,
-    name = encounterName.." Version 1",
+    name = encounterName .. " Version 1",
     createdAt = PRT.Now(),
-    Timers = {
-    },
-
-    Rotations = {
-    },
-
-    HealthPercentages = {
-    },
-
-    PowerPercentages = {
-    },
-
-    CustomPlaceholders = {
-
-    }
+    Timers = {},
+    Rotations = {},
+    HealthPercentages = {},
+    PowerPercentages = {},
+    CustomPlaceholders = {}
   }
 end
 
 function PRT.NewEncounterVersion(encounter)
   local encounterVersion = PRT.EmptyEncounterVersion(encounter.id, "")
-  encounterVersion.name = encounter.name.." Version "..(PRT.TableUtils.Count(encounter.versions) + 1)
+  encounterVersion.name = encounter.name .. " Version " .. (PRT.TableUtils.Count(encounter.versions) + 1)
   encounterVersion.enabled = true
 
   return encounterVersion
 end
 
 function PRT.EmptyEncounter()
-  local name = "Encounter Name"..random(0,100000)
+  local name = "Encounter Name" .. random(0, 100000)
   local id = random(0, 100000)
 
   return {
@@ -200,13 +185,13 @@ function PRT.ExampleEncounter()
               event = "PLAYER_REGEN_DISABLED",
               spellID = nil,
               source = nil,
-              target = nil,
+              target = nil
             },
             stopCondition = {
               event = nil,
               spellID = nil,
               source = nil,
-              target = nil,
+              target = nil
             },
             name = "Phase 1 Timer",
             timings = {
@@ -239,7 +224,6 @@ function PRT.ExampleEncounter()
             }
           }
         },
-
         Rotations = {
           {
             enabled = true,
@@ -249,7 +233,7 @@ function PRT.ExampleEncounter()
               spellIcon = 136048,
               spellName = "Lightning Bolt",
               source = nil,
-              target = nil,
+              target = nil
             },
             name = "Lightning Bolt Cast started",
             entries = {
@@ -275,13 +259,12 @@ function PRT.ExampleEncounter()
             triggerCondition = {
               event = "SPELL_CAST_SUCCESS",
               source = nil,
-              target = nil,
+              target = nil
             },
             name = "Disabled Rotation",
             entries = {
               {
-                messages = {
-                }
+                messages = {}
               }
             },
             shouldRestart = true,
@@ -289,7 +272,6 @@ function PRT.ExampleEncounter()
             ignoreDuration = 0
           }
         },
-
         HealthPercentages = {
           {
             enabled = true,
@@ -315,7 +297,6 @@ function PRT.ExampleEncounter()
             ignoreDuration = nil
           }
         },
-
         PowerPercentages = {
           {
             enabled = true,
@@ -341,10 +322,7 @@ function PRT.ExampleEncounter()
             ignoreDuration = nil
           }
         },
-
-        CustomPlaceholders = {
-
-        }
+        CustomPlaceholders = {}
       }
     }
   }

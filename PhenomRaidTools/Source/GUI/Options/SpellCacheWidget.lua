@@ -1,11 +1,9 @@
 local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
-
 local AceTimer = LibStub("AceTimer-3.0")
 
 local spellIconSize = 48
-
 
 -------------------------------------------------------------------------------
 -- Spell Cache Panel
@@ -13,7 +11,7 @@ local spellIconSize = 48
 local function addLabelWithValue(label, value)
   local group = PRT.SimpleGroup()
   group:SetLayout("Flow")
-  group:AddChild(PRT.Label(label..":"))
+  group:AddChild(PRT.Label(label .. ":"))
   group:AddChild(PRT.Label(value))
 
   return group, label, value
@@ -28,8 +26,7 @@ local function getStatusText(spellCache)
     statusText = PRT.ColoredString(L["running"], PRT.Static.Colors.Inactive)
   end
 
-  return
-    statusText
+  return statusText
 end
 
 local function AddSpellCacheSearch(container, spellCache)
@@ -38,12 +35,15 @@ local function AddSpellCacheSearch(container, spellCache)
 
   searchEditBox:SetRelativeWidth(1)
   spellsContainer:SetLayout("Flow")
-  searchEditBox:SetCallback("OnEnterPressed",
+  searchEditBox:SetCallback(
+    "OnEnterPressed",
     function(widget)
       widget:ClearFocus()
-    end)
+    end
+  )
 
-  searchEditBox:SetCallback("OnTextChanged",
+  searchEditBox:SetCallback(
+    "OnTextChanged",
     function(widget)
       local value = widget:GetText()
       spellsContainer:ReleaseChildren()
@@ -61,7 +61,8 @@ local function AddSpellCacheSearch(container, spellCache)
       end
 
       container:DoLayout()
-    end)
+    end
+  )
 
   container:AddChild(searchEditBox)
   container:AddChild(spellsContainer)
@@ -72,10 +73,15 @@ function PRT.AddSpellCacheWidget(container)
   local spellCacheGroup = PRT.SimpleGroup()
 
   local descriptionLines = {
-    L["Here you can search the spell database. The database is build up in the background and may not contain "..
-      "all known spells just yet. If you can't find a spell please check back later when status is `completed`."],
+    L[
+      "Here you can search the spell database. The database is build up in the background and may not contain " ..
+        "all known spells just yet. If you can't find a spell please check back later when status is `completed`."
+    ],
     L["The spell database is globally available for all of your characters and will be build up regardless of which character you are playing."],
-    PRT.ColoredString(L["The spell database will rebuild once the patch version changes. This is done so you always have the newest spells in the database."], PRT.Static.Colors.Inactive),
+    PRT.ColoredString(
+      L["The spell database will rebuild once the patch version changes. This is done so you always have the newest spells in the database."],
+      PRT.Static.Colors.Inactive
+    )
   }
 
   local enabledCheckBox = PRT.CheckBox(L["Enabled"], nil, spellCache.enabled)
@@ -103,7 +109,8 @@ function PRT.AddSpellCacheWidget(container)
   spellCacheGroup:AddChild(invalidateCacheButton)
   AddSpellCacheSearch(spellCacheGroup, spellCache)
 
-  enabledCheckBox:SetCallback("OnValueChanged",
+  enabledCheckBox:SetCallback(
+    "OnValueChanged",
     function(widget)
       local value = widget:GetValue()
       spellCache.enabled = value
@@ -112,11 +119,13 @@ function PRT.AddSpellCacheWidget(container)
       else
         PRT.SpellCache.PauseBuild(spellCache)
       end
-    end)
+    end
+  )
 
   local updateTimer
   if not spellCache.completed then
-    updateTimer = AceTimer:ScheduleRepeatingTimer(
+    updateTimer =
+      AceTimer:ScheduleRepeatingTimer(
       function()
         statusValueLabel:SetText(getStatusText(spellCache))
         PRT.UpdateLabelWidth(statusValueLabel)
@@ -129,11 +138,13 @@ function PRT.AddSpellCacheWidget(container)
     )
   end
 
-  invalidateCacheButton:SetCallback("OnClick",
+  invalidateCacheButton:SetCallback(
+    "OnClick",
     function()
       local confirmationLabel = L["Rebuilding the spell cache can take a while.|nAre you sure you want to rebuild it?"]
 
-      PRT.ConfirmationDialog(confirmationLabel,
+      PRT.ConfirmationDialog(
+        confirmationLabel,
         function()
           AceTimer:CancelTimer(updateTimer)
           PRT.SpellCache.Invalidate(spellCache)
@@ -141,14 +152,18 @@ function PRT.AddSpellCacheWidget(container)
 
           spellCacheGroup:ReleaseChildren()
           PRT.AddSpellCacheWidget(spellCacheGroup)
-        end)
-    end)
+        end
+      )
+    end
+  )
 
   if not spellCache.completed then
-    spellCacheGroup:SetCallback("OnRelease",
+    spellCacheGroup:SetCallback(
+      "OnRelease",
       function()
         AceTimer:CancelTimer(updateTimer)
-      end)
+      end
+    )
   end
 
   container:AddChild(spellCacheGroup)

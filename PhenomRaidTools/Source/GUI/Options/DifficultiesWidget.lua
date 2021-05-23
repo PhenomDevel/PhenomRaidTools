@@ -9,7 +9,6 @@ local Difficulties = {
   }
 }
 
-
 -------------------------------------------------------------------------------
 -- Public API
 
@@ -23,10 +22,12 @@ function PRT.AddDifficultyWidgets(container, options)
   for _, difficulty in ipairs(Difficulties.difficultyStrings) do
     local widget = PRT.CheckBox(L[difficulty], nil, options["dungeon"][difficulty])
     widget:SetRelativeWidth(0.33)
-    widget:SetCallback("OnValueChanged",
+    widget:SetCallback(
+      "OnValueChanged",
       function()
         options["dungeon"][difficulty] = widget:GetValue()
-      end)
+      end
+    )
     dungeonGroup:AddChild(widget)
   end
 
@@ -36,10 +37,12 @@ function PRT.AddDifficultyWidgets(container, options)
   for _, difficulty in ipairs(Difficulties.difficultyStrings) do
     local widget = PRT.CheckBox(L[difficulty], nil, options["raid"][difficulty])
     widget:SetRelativeWidth(0.33)
-    widget:SetCallback("OnValueChanged",
+    widget:SetCallback(
+      "OnValueChanged",
       function()
         options["raid"][difficulty] = widget:GetValue()
-      end)
+      end
+    )
     raidGroup:AddChild(widget)
   end
 

@@ -15,20 +15,21 @@ local GeneralOptions = {
   }
 }
 
-
 -------------------------------------------------------------------------------
 -- General Options
 
 function GeneralOptions.AddMessageFilterByNamesWidgets(container, options)
   local namesEditBox = PRT.EditBox(L["Names"], L["Comma separated list of player names."], strjoin(", ", unpack(options.requiredNames)), true)
-  namesEditBox:SetCallback("OnEnterPressed",
+  namesEditBox:SetCallback(
+    "OnEnterPressed",
     function(widget)
       local text = widget:GetText()
       options.requiredNames = PRT.StringUtils.SplitToTable(text)
       widget:ClearFocus()
       PRT.Core.UpdateTree()
       PRT.Core.ReselectCurrentValue()
-    end)
+    end
+  )
   container:AddChild(namesEditBox)
 end
 
@@ -37,14 +38,16 @@ function GeneralOptions.AddMessageFilterByGuildRankWidgets(container, options)
   local guildRankDropdownItems = {}
 
   for i, guildRank in ipairs(guildRanks) do
-    tinsert(guildRankDropdownItems, { id = i, name = guildRank})
+    tinsert(guildRankDropdownItems, {id = i, name = guildRank})
   end
 
   local guildRankDropdown = PRT.Dropdown(L["Guild Rank"], L["Filter out all messages\nbelow selected guild rank."], guildRankDropdownItems, options.requiredGuildRank)
-  guildRankDropdown:SetCallback("OnValueChanged",
+  guildRankDropdown:SetCallback(
+    "OnValueChanged",
     function(_, _, key)
       options.requiredGuildRank = key
-    end)
+    end
+  )
 
   container:AddChild(guildRankDropdown)
 end
@@ -54,24 +57,22 @@ function GeneralOptions.MessageFilterExplanationString(options)
 
   if options.filterBy == "names" then
     if PRT.TableUtils.IsEmpty(options.requiredNames) then
-      message = L["You currently filter messages by %s, but haven't configured any name yet. Therefore all messages from all players will be displayed."]:format(
+      message =
+        L["You currently filter messages by %s, but haven't configured any name yet. Therefore all messages from all players will be displayed."]:format(
         PRT.HighlightString(L["player names"])
       )
     else
-      message = L["You currently filter messages by %s. Therefore only messages from those players will be displayed."]:format(
-        PRT.HighlightString(L["player names"])
-      )
+      message = L["You currently filter messages by %s. Therefore only messages from those players will be displayed."]:format(PRT.HighlightString(L["player names"]))
     end
   elseif options.filterBy == "guildRank" then
-    message = L["You currently filter messages by %s. Therefore only message from players with the configured guild rank or higher will be displayed."]:format(
+    message =
+      L["You currently filter messages by %s. Therefore only message from players with the configured guild rank or higher will be displayed."]:format(
       PRT.HighlightString(L["guild rank"])
     )
   end
 
   if options.alwaysIncludeMyself then
-    message = message.." "..L["In addition you always include %s as valid sender."]:format(
-      PRT.HighlightString(L["yourself"])
-    )
+    message = message .. " " .. L["In addition you always include %s as valid sender."]:format(PRT.HighlightString(L["yourself"]))
   end
 
   return message
@@ -86,20 +87,24 @@ function GeneralOptions.AddMessageFilter(container, options)
   messageFilterExplanation:SetRelativeWidth(1)
 
   messageFilterGroup:SetLayout("Flow")
-  filterTypeDropDown:SetCallback("OnValueChanged",
+  filterTypeDropDown:SetCallback(
+    "OnValueChanged",
     function(_, _, key)
       options.filterBy = key
       PRT.Core.UpdateTree()
       PRT.Core.ReselectCurrentValue()
-    end)
+    end
+  )
 
   alwaysIncludeMyselfCheckBox:SetRelativeWidth(1)
-  alwaysIncludeMyselfCheckBox:SetCallback("OnValueChanged",
+  alwaysIncludeMyselfCheckBox:SetCallback(
+    "OnValueChanged",
     function(widget)
       options.alwaysIncludeMyself = widget:GetValue()
       PRT.Core.UpdateTree()
       PRT.Core.ReselectCurrentValue()
-    end)
+    end
+  )
 
   messageFilterGroup:AddChild(filterTypeDropDown)
 
@@ -125,19 +130,23 @@ function GeneralOptions.AddRunMode(container, options)
   senderCheckBox:SetRelativeWidth(0.33)
   receiverCheckBox:SetRelativeWidth(0.33)
 
-  senderCheckBox:SetCallback("OnValueChanged",
+  senderCheckBox:SetCallback(
+    "OnValueChanged",
     function(widget)
       options.senderMode = widget:GetValue()
       PRT.Core.UpdateTree()
       PRT.Core.ReselectCurrentValue()
-    end)
+    end
+  )
 
-  receiverCheckBox:SetCallback("OnValueChanged",
+  receiverCheckBox:SetCallback(
+    "OnValueChanged",
     function(widget)
       options.receiverMode = widget:GetValue()
       PRT.Core.UpdateTree()
       PRT.Core.ReselectCurrentValue()
-    end)
+    end
+  )
 
   runModeGroup:AddChild(senderCheckBox)
   runModeGroup:AddChild(receiverCheckBox)
@@ -159,17 +168,21 @@ function GeneralOptions.AddTestMode(container, options)
   local textEncounterIDDropdown = PRT.Dropdown(L["Select Encounter"], nil, options.encounters, options.testEncounterID, false, true)
   textEncounterIDDropdown:SetDisabled(not options.testMode)
 
-  testModeCheckbox:SetCallback("OnValueChanged",
+  testModeCheckbox:SetCallback(
+    "OnValueChanged",
     function(widget)
       options.testMode = widget:GetValue()
       PRT.Core.UpdateTree()
       PRT.Core.ReselectCurrentValue()
-    end)
+    end
+  )
 
-  textEncounterIDDropdown:SetCallback("OnValueChanged",
+  textEncounterIDDropdown:SetCallback(
+    "OnValueChanged",
     function(widget)
       options.testEncounterID = tonumber(widget:GetValue())
-    end)
+    end
+  )
 
   testModeGroup:AddChild(testModeCheckbox)
   testModeGroup:AddChild(textEncounterIDDropdown)
@@ -186,13 +199,15 @@ end
 function GeneralOptions.AddDebugMode(container, options)
   local debugModeGroup = PRT.InlineGroup(L["Debug Mode"])
   local debugModeCheckbox = PRT.CheckBox(L["Enabled"], L["Activates the debug mode."], options.debugMode, true)
-  debugModeCheckbox:SetCallback("OnValueChanged",
+  debugModeCheckbox:SetCallback(
+    "OnValueChanged",
     function(widget)
       options.debugMode = widget:GetValue()
       wipe(PRT.GetProfileDB().debugLog)
       container:ReleaseChildren()
       PRT.AddGeneralWidgets(container, options)
-    end)
+    end
+  )
   debugModeCheckbox:SetRelativeWidth(1)
   debugModeGroup:AddChild(debugModeCheckbox)
 
@@ -204,9 +219,9 @@ function GeneralOptions.AddDebugMode(container, options)
     local debugLogText = ""
     for _, entry in ipairs(PRT.GetProfileDB().debugLog) do
       for _, entryLine in ipairs(entry) do
-        debugLogText = debugLogText..tostring(entryLine).." "
+        debugLogText = debugLogText .. tostring(entryLine) .. " "
       end
-      debugLogText = debugLogText.."\n"
+      debugLogText = debugLogText .. "\n"
     end
 
     debugLogMultilineEditBox:SetText(debugLogText)
@@ -216,7 +231,6 @@ function GeneralOptions.AddDebugMode(container, options)
   container:AddChild(debugModeGroup)
 end
 
-
 -------------------------------------------------------------------------------
 -- Public API
 
@@ -225,10 +239,12 @@ function PRT.AddGeneralWidgets(container, options)
   local versionCheckButton = PRT.Button(L["Version Check"])
 
   enabledCheckbox:SetRelativeWidth(1)
-  enabledCheckbox:SetCallback("OnValueChanged",
+  enabledCheckbox:SetCallback(
+    "OnValueChanged",
     function(widget)
       options.enabled = widget:GetValue()
-    end)
+    end
+  )
 
   container:AddChild(enabledCheckbox)
   GeneralOptions.AddRunMode(container, options)
@@ -245,10 +261,12 @@ function PRT.AddGeneralWidgets(container, options)
 
   GeneralOptions.AddDebugMode(container, options)
 
-  versionCheckButton:SetCallback("OnClick",
+  versionCheckButton:SetCallback(
+    "OnClick",
     function()
       addon:VersionCheck()
-    end)
+    end
+  )
 
   container:AddChild(versionCheckButton)
 end

@@ -5,30 +5,30 @@ local addon = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 -- Debug Helper
 
 function PRT.PrintTable(t, maxRecursionDepth, recursionDepth)
-  local recursionDepth = recursionDepth or 0
-  local maxRecursionDepth = maxRecursionDepth or 3
+  recursionDepth = recursionDepth or 0
+  maxRecursionDepth = maxRecursionDepth or 3
   recursionDepth = recursionDepth + 1
 
   local prefix = ""
   if recursionDepth > 1 then
     for _ = 1, recursionDepth do
-      prefix = prefix.." "
+      prefix = prefix .. " "
     end
-    prefix = prefix.."- "
+    prefix = prefix .. "- "
   end
 
   if recursionDepth == 1 then
     print("-----------------")
-    print("PrintTable: "..PRT.HighlightString(tostring(t)))
+    print("PrintTable: " .. PRT.HighlightString(tostring(t)))
   end
 
   if t and (recursionDepth <= maxRecursionDepth) then
     for k, v in pairs(t) do
       if type(v) == "table" then
-        print(prefix.."["..k.."]")
+        print(prefix .. "[" .. k .. "]")
         PRT.PrintTable(v, maxRecursionDepth, recursionDepth)
       else
-        print(prefix.."["..k.."]"..": "..PRT.HighlightString(tostring(v)))
+        print(prefix .. "[" .. k .. "]" .. ": " .. PRT.HighlightString(tostring(v)))
       end
     end
   end

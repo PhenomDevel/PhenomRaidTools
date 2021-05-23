@@ -3,7 +3,6 @@ local _, PRT = ...
 local TableUtils = {}
 PRT.TableUtils = TableUtils
 
-
 -------------------------------------------------------------------------------
 -- String Utils
 
@@ -61,7 +60,7 @@ function TableUtils.Clone(orig, copies)
   copies = copies or {}
   local orig_type = type(orig)
   local copy
-  if orig_type == 'table' then
+  if orig_type == "table" then
     if copies[orig] then
       copy = copies[orig]
     else
@@ -95,7 +94,8 @@ function TableUtils.OverwriteValues(t1, t2)
 end
 
 function TableUtils.SortByKey(t, k)
-  table.sort(t,
+  table.sort(
+    t,
     function(t1, t2)
       local a, b = t1[k], t2[k]
       if a and b then
@@ -107,7 +107,8 @@ function TableUtils.SortByKey(t, k)
       else
         return false
       end
-    end)
+    end
+  )
 end
 
 function TableUtils.Distinct(t)
@@ -122,4 +123,16 @@ function TableUtils.Distinct(t)
   end
 
   return distinctTargets
+end
+
+function TableUtils.MergeMany(...)
+  local tNew = {}
+
+  for _, t in ipairs({...}) do
+    for _, v in ipairs(t) do
+      tinsert(tNew, v)
+    end
+  end
+
+  return tNew
 end

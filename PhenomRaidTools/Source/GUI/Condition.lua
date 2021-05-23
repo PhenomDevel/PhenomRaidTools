@@ -4,104 +4,92 @@ local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 local encounterPhaseMapping = {
   -- Shriekwing
   [2398] = {
-    { id = "phase2start", name = L["Phase 2 Start"], event = "SPELL_AURA_APPLIED", spellID = 328921 },
-    { id = "phase1start", name = L["Phase 2 End / Phase 1 Restart"], event = "SPELL_AURA_REMOVED", spellID = 328921 },
+    {id = "phase2start", name = L["Phase 2 Start"], event = "SPELL_AURA_APPLIED", spellID = 328921},
+    {id = "phase1start", name = L["Phase 2 End / Phase 1 Restart"], event = "SPELL_AURA_REMOVED", spellID = 328921}
   },
   -- Altimor the Huntsman
   [2418] = {
-    { id = "phase2start", name = L["Phase 2 Start (Bargast)"], event = "UNIT_DIED", target = L["Margore"]},
-    { id = "phase3start", name = L["Phase 3 Start (Hercutis)"], event = "UNIT_DIED", target = L["Bargast"]},
+    {id = "phase2start", name = L["Phase 2 Start (Bargast)"], event = "UNIT_DIED", target = L["Margore"]},
+    {id = "phase3start", name = L["Phase 3 Start (Hercutis)"], event = "UNIT_DIED", target = L["Bargast"]}
   },
   -- Hungering Destroyer
   [2383] = {
-    { id = "consumeIntermission", name = L["Consume Intermission"], event = "SPELL_CAST_START", spellID = 334522},
+    {id = "consumeIntermission", name = L["Consume Intermission"], event = "SPELL_CAST_START", spellID = 334522}
   },
   -- Artificer Xy'Mox
   [2405] = {
-    { id = "phase2start", name = "Phase 2 Start", event = "SPELL_CAST_SUCCESS", spellID = 329770},
-    { id = "phase3start", name = "Phase 3 Start", event = "SPELL_CAST_SUCCESS", spellID = 328880},
+    {id = "phase2start", name = "Phase 2 Start", event = "SPELL_CAST_SUCCESS", spellID = 329770},
+    {id = "phase3start", name = "Phase 3 Start", event = "SPELL_CAST_SUCCESS", spellID = 328880}
   },
   -- Sun King's Salvation
   [2402] = {
-    { id = "intermissionStart", name = "Intermission Start (Shade of Kael'thas)", event = "SPELL_AURA_APPLIED", spellID = 323402},
-    { id = "intermissionStop", name = "Intermission Stop", event = "SPELL_AURA_REMOVED", spellID = 323402},
+    {id = "intermissionStart", name = "Intermission Start (Shade of Kael'thas)", event = "SPELL_AURA_APPLIED", spellID = 323402},
+    {id = "intermissionStop", name = "Intermission Stop", event = "SPELL_AURA_REMOVED", spellID = 323402}
   },
   -- Lady Inerva Darkvein
   [2406] = {},
   -- The Council of Blood
   [2412] = {
-    { id = "phase2NiklausSecond", name = L["Phase 2 (Castellan Niklaus second)"], event = "SPELL_AURA_APPLIED", spellID = 332535, target = L["Castellan Niklaus"]},
-    { id = "phase2FriedaSecond", name = L["Phase 2 (Baroness Frieda second)"], event = "SPELL_AURA_APPLIED", spellID = 332535, target = L["Baroness Frieda"]},
-    { id = "phase2StavrosSecond", name = L["Phase 2 (Lord Stavros second)"], event = "SPELL_AURA_APPLIED", spellID = 332535, target = L["Lord Stavros"]},
-
-    { id = "phase3NiklausLast", name = L["Phase 3 (Castellan Niklaus last)"], event = "SPELL_AURA_APPLIED", spellID = 346709, target = L["Castellan Niklaus"]},
-    { id = "phase3FriedaLast", name = L["Phase 3 (Baroness Frieda last)"], event = "SPELL_AURA_APPLIED", spellID = 346709, target = L["Baroness Frieda"]},
-    { id = "phase3StavrosLast", name = L["Phase 3 (Lord Stavros last)"], event = "SPELL_AURA_APPLIED", spellID = 346709, target = L["Lord Stavros"]},
+    {id = "phase2NiklausSecond", name = L["Phase 2 (Castellan Niklaus second)"], event = "SPELL_AURA_APPLIED", spellID = 332535, target = L["Castellan Niklaus"]},
+    {id = "phase2FriedaSecond", name = L["Phase 2 (Baroness Frieda second)"], event = "SPELL_AURA_APPLIED", spellID = 332535, target = L["Baroness Frieda"]},
+    {id = "phase2StavrosSecond", name = L["Phase 2 (Lord Stavros second)"], event = "SPELL_AURA_APPLIED", spellID = 332535, target = L["Lord Stavros"]},
+    {id = "phase3NiklausLast", name = L["Phase 3 (Castellan Niklaus last)"], event = "SPELL_AURA_APPLIED", spellID = 346709, target = L["Castellan Niklaus"]},
+    {id = "phase3FriedaLast", name = L["Phase 3 (Baroness Frieda last)"], event = "SPELL_AURA_APPLIED", spellID = 346709, target = L["Baroness Frieda"]},
+    {id = "phase3StavrosLast", name = L["Phase 3 (Lord Stavros last)"], event = "SPELL_AURA_APPLIED", spellID = 346709, target = L["Lord Stavros"]}
   },
   -- Sludgefist
   [2399] = {
-    { id = "intermissionStart", name = L["Intermission Start"], event = "SPELL_AURA_APPLIED", spellID = 331314},
-    { id = "intermissionEnd", name = L["Intermission End"], event = "SPELL_AURA_REMOVED", spellID = 331314},
+    {id = "intermissionStart", name = L["Intermission Start"], event = "SPELL_AURA_APPLIED", spellID = 331314},
+    {id = "intermissionEnd", name = L["Intermission End"], event = "SPELL_AURA_REMOVED", spellID = 331314}
   },
   -- Stone Legion Generals
   [2417] = {
-    { id = "intermission1Start", name = L["Intermission 1 Start"], event = "SPELL_AURA_APPLIED", spellID = 329636},
-    { id = "intermission1End", name = L["Intermission 1 End"], event = "SPELL_AURA_REMOVED", spellID = 329636},
-    { id = "intermission2Start", name = L["Intermission 2 Start"], event = "SPELL_AURA_APPLIED", spellID = 329808},
-    { id = "intermission2End", name = L["Intermission 2 End"], event = "SPELL_AURA_REMOVED", spellID = 329808},
-    { id = "phase2start", name = L["Phase 2 Start"], event = "SPELL_AURA_REMOVED", spellID = 343135},
-    { id = "phase3start", name = L["Phase 3 Start"], event = "SPELL_AURA_REMOVED", spellID = 343126},
+    {id = "intermission1Start", name = L["Intermission 1 Start"], event = "SPELL_AURA_APPLIED", spellID = 329636},
+    {id = "intermission1End", name = L["Intermission 1 End"], event = "SPELL_AURA_REMOVED", spellID = 329636},
+    {id = "intermission2Start", name = L["Intermission 2 Start"], event = "SPELL_AURA_APPLIED", spellID = 329808},
+    {id = "intermission2End", name = L["Intermission 2 End"], event = "SPELL_AURA_REMOVED", spellID = 329808},
+    {id = "phase2start", name = L["Phase 2 Start"], event = "SPELL_AURA_REMOVED", spellID = 343135},
+    {id = "phase3start", name = L["Phase 3 Start"], event = "SPELL_AURA_REMOVED", spellID = 343126}
   },
   -- Sire Denathrius
   [2407] = {
-    { id = "intermission1Start", name = L["Intermission 1 Start"], event = "SPELL_CAST_START", spellID = 328117},
-    { id = "phase2start", name = L["Phase 2 Start"], event = "SPELL_CAST_SUCCESS", spellID = 329697},
-    { id = "phase3start", name = L["Phase 3 Start"], event = "SPELL_CAST_SUCCESS", spellID = 326005},
+    {id = "intermission1Start", name = L["Intermission 1 Start"], event = "SPELL_CAST_START", spellID = 328117},
+    {id = "phase2start", name = L["Phase 2 Start"], event = "SPELL_CAST_SUCCESS", spellID = 329697},
+    {id = "phase3start", name = L["Phase 3 Start"], event = "SPELL_CAST_SUCCESS", spellID = 326005}
   },
-
   -- Sanctum of Domination
 
   -- The Tarragrue
-  [2423] = {
-
-  },
+  [2423] = {},
   -- Eye of the Jailer
   [2433] = {
-    { id = "intermissionStart", name = L["Intermission Start"], event = "SPELL_AURA_APPLIED", spellID = 348805},
-    { id = "phase3start", name = L["Phase 3 Start"], event = "SPELL_CAST_START", spellID = 348974},
+    {id = "intermissionStart", name = L["Intermission Start"], event = "SPELL_AURA_APPLIED", spellID = 348805},
+    {id = "phase3start", name = L["Phase 3 Start"], event = "SPELL_CAST_START", spellID = 348974}
   },
   -- Remnant of Ner'zhul
-  [2432] = {
-
-  },
+  [2432] = {},
   -- Soulrender Dormazin
-  [2434] = {
-
-  },
+  [2434] = {},
   -- Guardian of the First Ones
   [2436] = {
-    { id = "intermissionStart", name = L["Intermission Start"], event = "SPELL_AURA_APPLIED", spellID = 352385 }
+    {id = "intermissionStart", name = L["Intermission Start"], event = "SPELL_AURA_APPLIED", spellID = 352385}
   },
   -- Fatescribe Roh-Kalo
   [2431] = {
-    { id = "intermissionStart", name = L["Intermission Start"], event = "SPELL_AURA_APPLIED", spellID = 351969 }
+    {id = "intermissionStart", name = L["Intermission Start"], event = "SPELL_AURA_APPLIED", spellID = 351969}
   },
   -- Kel'Thuzad
-  [2422] = {
-
-  },
+  [2422] = {},
   -- Painsmith
   [2430] = {
-    { id = "intermissionStart", name = L["Intermission Start"], event = "SPELL_AURA_APPLIED", spellID = 355525 },
-    { id = "intermissionStop", name = L["Intermission Stop"], event = "SPELL_AURA_REMOVED", spellID = 355525 }
+    {id = "intermissionStart", name = L["Intermission Start"], event = "SPELL_AURA_APPLIED", spellID = 355525},
+    {id = "intermissionStop", name = L["Intermission Stop"], event = "SPELL_AURA_REMOVED", spellID = 355525}
   },
-
   -- The Nine
   [2429] = {
-    { id = "phase2start", name = L["Phase 2 Start"], event = "SPELL_CAST_START", spellID = 350467},
+    {id = "phase2start", name = L["Phase 2 Start"], event = "SPELL_CAST_START", spellID = 350467}
   }
 }
-
 
 -------------------------------------------------------------------------------
 -- Private Helper
@@ -118,7 +106,6 @@ local function ClearConditionValues(condition)
   condition.source = nil
   condition.target = nil
 end
-
 
 -------------------------------------------------------------------------------
 -- Public API
@@ -148,7 +135,8 @@ function PRT.ConditionWidget(condition, textID)
     local presetsDropdown = PRT.Dropdown(L["Encounter Presets"], nil, encounterPresets, true)
     presetsDropdown:SetWidth(400)
 
-    presetsDropdown:SetCallback("OnValueChanged",
+    presetsDropdown:SetCallback(
+      "OnValueChanged",
       function(widget, _, key)
         local _, phasePreset = PRT.TableUtils.GetBy(encounterPresets, "id", key)
         local icon = select(3, GetSpellInfo(phasePreset.spellID))
@@ -168,7 +156,8 @@ function PRT.ConditionWidget(condition, textID)
         PRT.Core.UpdateTree()
         widget:SetValue(nil)
         widget:SetText(nil)
-      end)
+      end
+    )
 
     conditionGroup:AddChild(presetsDropdown)
   end
@@ -176,9 +165,10 @@ function PRT.ConditionWidget(condition, textID)
   eventGroup:SetLayout("Flow")
   spellIcon:SetHeight(40)
   spellIcon:SetWidth(40)
-  spellIcon:SetImageSize(30,30)
+  spellIcon:SetImageSize(30, 30)
 
-  eventDropDown:SetCallback("OnValueChanged",
+  eventDropDown:SetCallback(
+    "OnValueChanged",
     function(widget)
       local text = widget:GetValue()
 
@@ -189,9 +179,11 @@ function PRT.ConditionWidget(condition, textID)
       end
 
       widget:ClearFocus()
-    end)
+    end
+  )
 
-  spellIDEditBox:SetCallback("OnEnterPressed",
+  spellIDEditBox:SetCallback(
+    "OnEnterPressed",
     function(widget)
       local text = widget:GetText()
 
@@ -215,12 +207,14 @@ function PRT.ConditionWidget(condition, textID)
 
       PRT.Core.UpdateTree()
       widget:ClearFocus()
-    end)
+    end
+  )
 
   -- Add unit group
   unitGroup:SetLayout("Flow")
 
-  targetEditBox:SetCallback("OnEnterPressed",
+  targetEditBox:SetCallback(
+    "OnEnterPressed",
     function(widget)
       local text = widget:GetText()
       if text == "" then
@@ -229,9 +223,11 @@ function PRT.ConditionWidget(condition, textID)
         condition.target = text
       end
       widget:ClearFocus()
-    end)
+    end
+  )
 
-  sourceEditBox:SetCallback("OnEnterPressed",
+  sourceEditBox:SetCallback(
+    "OnEnterPressed",
     function(widget)
       local text = widget:GetText()
       if text == "" then
@@ -240,7 +236,8 @@ function PRT.ConditionWidget(condition, textID)
         condition.source = text
       end
       widget:ClearFocus()
-    end)
+    end
+  )
 
   eventGroup:AddChild(eventDropDown)
   eventGroup:AddChild(spellIDEditBox)

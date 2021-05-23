@@ -21,7 +21,6 @@ local classColors = {
 local UnitClass, GetSpellInfo, UnitExists, UnitName, UnitIsConnected, UnitIsDeadOrGhost = UnitClass, GetSpellInfo, UnitExists, UnitName, UnitIsConnected, UnitIsDeadOrGhost
 local GetRaidRosterInfo, GetUnitName, GetNumGroupMembers, UnitInParty, UnitInRaid = GetRaidRosterInfo, GetUnitName, GetNumGroupMembers, UnitInParty, UnitInRaid
 
-
 -------------------------------------------------------------------------------
 -- Public API
 
@@ -34,22 +33,26 @@ function PRT.MaybeAddStartCondition(container, trigger)
     startConditionGroup:SetLayout("Flow")
 
     local removeStartConditionButton = PRT.Button(L["Remove"])
-    removeStartConditionButton:SetCallback("OnClick",
+    removeStartConditionButton:SetCallback(
+      "OnClick",
       function()
         trigger.hasStartCondition = false
         trigger.startCondition = nil
         PRT.Core.ReselectCurrentValue()
-      end)
+      end
+    )
     startConditionGroup:AddChild(removeStartConditionButton)
     container:AddChild(startConditionGroup)
   else
     local addStartConditionButton = PRT.Button(L["Add Start Condition"])
-    addStartConditionButton:SetCallback("OnClick",
+    addStartConditionButton:SetCallback(
+      "OnClick",
       function()
         trigger.hasStartCondition = true
         trigger.startCondition = PRT.EmptyCondition()
         PRT.Core.ReselectCurrentValue()
-      end)
+      end
+    )
     container:AddChild(addStartConditionButton)
   end
 end
@@ -60,38 +63,46 @@ function PRT.MaybeAddStopCondition(container, trigger)
     stopConditionGroup:SetLayout("Flow")
 
     local removeStopConditionButton = PRT.Button(L["Remove"])
-    removeStopConditionButton:SetCallback("OnClick",
+    removeStopConditionButton:SetCallback(
+      "OnClick",
       function()
         trigger.hasStopCondition = false
         trigger.stopCondition = nil
         PRT.Core.ReselectCurrentValue()
-      end)
+      end
+    )
     stopConditionGroup:AddChild(removeStopConditionButton)
     container:AddChild(stopConditionGroup)
   else
     local addStopConditionButton = PRT.Button(L["Add Stop Condition"])
-    addStopConditionButton:SetCallback("OnClick",
+    addStopConditionButton:SetCallback(
+      "OnClick",
       function()
         trigger.hasStopCondition = true
         trigger.stopCondition = PRT.EmptyCondition()
         PRT.Core.ReselectCurrentValue()
-      end)
+      end
+    )
     container:AddChild(addStopConditionButton)
   end
 end
 
 function PRT.NewTriggerDeleteButton(container, t, idx, label, entityName)
   local deleteButton = PRT.Button(label)
-  deleteButton:SetCallback("OnClick",
+  deleteButton:SetCallback(
+    "OnClick",
     function()
-      PRT.ConfirmationDialog(L["Are you sure you want to delete %s?"]:format(PRT.HighlightString(entityName)),
+      PRT.ConfirmationDialog(
+        L["Are you sure you want to delete %s?"]:format(PRT.HighlightString(entityName)),
         function()
           tremove(t, idx)
           PRT.Core.UpdateTree()
           PRT.mainWindowContent:DoLayout()
           container:ReleaseChildren()
-        end)
-    end)
+        end
+      )
+    end
+  )
 
   return deleteButton
 end
@@ -103,11 +114,13 @@ function PRT.ConfirmationDialog(text, successFn, bodyWidgets, ...)
     confirmationFrame:SetLayout("Flow")
     confirmationFrame:EnableResize(false)
     confirmationFrame.frame:SetFrameStrata("TOOLTIP")
-    confirmationFrame:SetCallback("OnClose",
+    confirmationFrame:SetCallback(
+      "OnClose",
       function()
         confirmationFrame:Hide()
         PRT.Core.UnregisterFrame(text)
-      end)
+      end
+    )
 
     local textLabel = PRT.Label(text)
     textLabel:SetRelativeWidth(1)
@@ -120,22 +133,26 @@ function PRT.ConfirmationDialog(text, successFn, bodyWidgets, ...)
 
     local okButton = PRT.Button(L["OK"])
     okButton:SetRelativeWidth(0.5)
-    okButton:SetCallback("OnClick",
+    okButton:SetCallback(
+      "OnClick",
       function(_)
         if successFn then
           successFn(unpack(args))
           confirmationFrame:Hide()
           PRT.Core.UnregisterFrame(text)
         end
-      end)
+      end
+    )
 
     local cancelButton = PRT.Button(L["Cancel"])
     cancelButton:SetRelativeWidth(0.5)
-    cancelButton:SetCallback("OnClick",
+    cancelButton:SetCallback(
+      "OnClick",
       function(_)
         confirmationFrame:Hide()
         PRT.Core.UnregisterFrame(text)
-      end)
+      end
+    )
 
     confirmationFrame:AddChild(textLabel)
 
@@ -160,7 +177,7 @@ function PRT.ConfirmationDialog(text, successFn, bodyWidgets, ...)
 end
 
 function PRT.Round(num, decimals)
-  local mult = 10^(decimals or 0)
+  local mult = 10 ^ (decimals or 0)
   return math.floor(num * mult + 0.5) / mult
 end
 
@@ -168,48 +185,20 @@ function PRT.SecondsToClock(input)
   local seconds = tonumber(input)
 
   if seconds <= 0 then
-    return "00:00:00";
+    return "00:00:00"
   else
-    local mins = string.format("%02.f", math.floor(seconds / 60));
-    local secs = string.format("%02.f", math.floor(seconds - mins * 60));
-    return mins..":"..secs
+    local mins = string.format("%02.f", math.floor(seconds / 60))
+    local secs = string.format("%02.f", math.floor(seconds - mins * 60))
+    return mins .. ":" .. secs
   end
 end
-
 
 -------------------------------------------------------------------------------
 -- Table Helper
 
-function table.mergemany(...)
-  local tNew = {}
-
-  for _, t in ipairs({...}) do
-    for _, v in ipairs(t) do
-      tinsert(tNew, v)
-    end
-  end
-
-  return tNew
-end
-
-function table.mergecopy(t1, t2)
-  local t3 = {}
-
-  for _, v in ipairs(t1) do
-    tinsert(t3, v)
-  end
-
-  for _, v in ipairs(t2) do
-    tinsert(t3, v)
-  end
-
-  return t3
-end
-
 function PRT.CompareByName(a, b)
   return a.name < b.name
 end
-
 
 -------------------------------------------------------------------------------
 -- Encounter Helper
@@ -247,7 +236,6 @@ function PRT.GetSelectedVersionEncounterByID(encounters, id)
   end
 end
 
-
 -------------------------------------------------------------------------------
 -- String Helper
 
@@ -273,17 +261,16 @@ function PRT.ColoredString(s, color, hasAlpha)
     local finalColor = color
 
     if not hasAlpha then
-      finalColor = "FF"..finalColor
+      finalColor = "FF" .. finalColor
     end
-    return "|c"..finalColor..tostring(s).."|r"
+    return "|c" .. finalColor .. tostring(s) .. "|r"
   else
-    return "|c".."FFFFFFFF"..tostring(s).."|r"
+    return "|c" .. "FFFFFFFF" .. tostring(s) .. "|r"
   end
-
 end
 
 function PRT.HighlightString(s)
-  return "`"..PRT.ColoredString(s, PRT.Static.Colors.Highlight).."`"
+  return "`" .. PRT.ColoredString(s, PRT.Static.Colors.Highlight) .. "`"
 end
 
 function PRT.TextureStringBySpellID(spellID, size)
@@ -293,7 +280,7 @@ function PRT.TextureStringBySpellID(spellID, size)
 end
 
 function PRT.TextureString(id, size)
-  return "|T"..(id or "Interface\\Icons\\INV_MISC_QUESTIONMARK")..":"..(size or 16)..":"..(size or 16)..":0:0:64:64:6:58:6:58|t"
+  return "|T" .. (id or "Interface\\Icons\\INV_MISC_QUESTIONMARK") .. ":" .. (size or 16) .. ":" .. (size or 16) .. ":0:0:64:64:6:58:6:58|t"
 end
 
 function PRT.ExchangeRaidTargets(s)
@@ -301,11 +288,14 @@ function PRT.ExchangeRaidTargets(s)
 end
 
 function PRT.ExchangeSpellIcons(s)
-  return string.gsub(s, "{spell:([^}]+)}",
+  return string.gsub(
+    s,
+    "{spell:([^}]+)}",
     function(match)
       local _, _, texture = GetSpellInfo(tonumber(match))
-      return "|T"..(texture or "Interface\\Icons\\INV_MISC_QUESTIONMARK")..":16:16:0:0:64:64:6:58:6:58|t"
-    end)
+      return "|T" .. (texture or "Interface\\Icons\\INV_MISC_QUESTIONMARK") .. ":16:16:0:0:64:64:6:58:6:58|t"
+    end
+  )
 end
 
 do
@@ -339,10 +329,14 @@ do
   end
 
   function PRT.AddCustomPlaceholdersToPlayerNames(token, t, global)
-    if not ((global and placeholders.global[token]) or (not global and placeholders.encounterSpecific[token])) then return end
-    for _,id in pairs(global and placeholders.global[token] or placeholders.encounterSpecific[token]) do
+    if not ((global and placeholders.global[token]) or (not global and placeholders.encounterSpecific[token])) then
+      return
+    end
+    for _, id in pairs(global and placeholders.global[token] or placeholders.encounterSpecific[token]) do
       local temp = global and PRT.GetProfileDB().customPlaceholders[id] or PRT.currentEncounter.encounter.CustomPlaceholders[id]
-      if not temp then return end -- should be useless nil check
+      if not temp then
+        return
+      end -- should be useless nil check
       if temp.type == "group" then
         for i = #temp.names, 1, -1 do
           tinsert(t, strtrim(temp.names[i], " "))
@@ -423,10 +417,9 @@ function PRT.PrepareMessageForDisplay(s)
   end
 end
 
-function PRT.RGBAToHex(r,g,b,a)
+function PRT.RGBAToHex(r, g, b, a)
   return format("%02x%02x%02x%02x", (a * 255), (r * 255), (g * 255), (b * 255))
 end
-
 
 -------------------------------------------------------------------------------
 -- Date Helper
@@ -434,7 +427,6 @@ end
 function PRT.Now()
   return date("%d.%m.%y - %H:%M:%S")
 end
-
 
 -------------------------------------------------------------------------------
 -- Unit Helper
@@ -490,9 +482,9 @@ end
 
 function PRT.UnitIDByGroupType(idx)
   if UnitInRaid("player") then
-    return "raid"..idx
+    return "raid" .. idx
   elseif UnitInParty("player") then
-    return "party"..idx
+    return "party" .. idx
   end
 end
 

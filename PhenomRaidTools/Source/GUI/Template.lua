@@ -1,7 +1,6 @@
 local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
-
 -------------------------------------------------------------------------------
 -- Private Helper
 
@@ -10,7 +9,8 @@ local function AddTemplateMessageWidgets(container, messages, messageName)
 
   local actionsGroup = PRT.SimpleGroup()
   local messageTemplateNameEditBox = PRT.EditBox(L["Template Name"], nil, messageName)
-  messageTemplateNameEditBox:SetCallback("OnEnterPressed",
+  messageTemplateNameEditBox:SetCallback(
+    "OnEnterPressed",
     function(widget)
       local newName = widget:GetText()
       if not (messageName == newName) then
@@ -25,7 +25,8 @@ local function AddTemplateMessageWidgets(container, messages, messageName)
           PRT.Error("Name already taken")
         end
       end
-    end)
+    end
+  )
 
   actionsGroup:AddChild(messageTemplateNameEditBox)
 
@@ -45,26 +46,32 @@ local function AddTemplateActions(container, entities, widgetUpdateFn, templateT
   local deleteDropdown = PRT.Dropdown(L["Delete"], nil, messageTemplatesDropdownItems)
   local newButton = PRT.Button(L["New"])
 
-  deleteDropdown:SetCallback("OnValueChanged",
+  deleteDropdown:SetCallback(
+    "OnValueChanged",
     function(widget)
-      PRT.ConfirmationDialog(L["Are you sure you want to delete template %s?"]:format(PRT.HighlightString(widget:GetValue())),
+      PRT.ConfirmationDialog(
+        L["Are you sure you want to delete template %s?"]:format(PRT.HighlightString(widget:GetValue())),
         function()
           entities[widget:GetValue()] = nil
           widgetUpdateFn()
-        end)
-    end)
+        end
+      )
+    end
+  )
 
-  newButton:SetCallback("OnClick",
+  newButton:SetCallback(
+    "OnClick",
     function()
       local newMessage = PRT.EmptyMessage()
-      local newMessageName = "template"..random(100000)
+      local newMessageName = "template" .. random(100000)
 
       entities[newMessageName] = newMessage
       widgetUpdateFn()
       if templateTabGroup then
         templateTabGroup:SelectTab(newMessageName)
       end
-    end)
+    end
+  )
 
   actionsGroup:AddChild(deleteDropdown)
   actionsGroup:AddChild(newButton)
@@ -85,12 +92,14 @@ local function AddMessageTemplateWidgets(container, messages)
     local templateTabs = PRT.TableToTabs(messages)
     local templatesGroup = PRT.TabGroup(nil, templateTabs)
 
-    templatesGroup:SetCallback("OnGroupSelected",
+    templatesGroup:SetCallback(
+      "OnGroupSelected",
       function(widget, _, key)
         widget:ReleaseChildren()
         AddTemplateMessageWidgets(widget, messages, key)
         PRT.Core.UpdateScrollFrame()
-      end)
+      end
+    )
 
     templatesGroup:SelectTab(templateTabs[1].value)
 
@@ -98,7 +107,6 @@ local function AddMessageTemplateWidgets(container, messages)
     container:AddChild(templatesGroup)
   end
 end
-
 
 -------------------------------------------------------------------------------
 -- Public API
@@ -133,13 +141,15 @@ function PRT.AddTemplateWidgets(container, profile)
 
   local templatesTabGroup = PRT.TabGroup(L["Templates"], tabs)
   templatesTabGroup:SetFullHeight(true)
-  templatesTabGroup:SetCallback("OnGroupSelected",
+  templatesTabGroup:SetCallback(
+    "OnGroupSelected",
     function(widget, _, key)
       widget:ReleaseChildren()
       if key == "messages" then
         AddMessageTemplateWidgets(widget, profile.templateStore.messages)
       end
-    end)
+    end
+  )
 
   templatesTabGroup:SelectTab("messages")
   container:AddChild(templatesTabGroup)

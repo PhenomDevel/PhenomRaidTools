@@ -1,6 +1,5 @@
 local _, PRT = ...
 
-
 -------------------------------------------------------------------------------
 -- Local Helper
 
@@ -33,10 +32,10 @@ local function WrapPersonalization(contentString, targetString, options)
     personalizedString = string.format("{p:%s}", targetString)
   end
 
-  personalizedString = personalizedString..contentString
+  personalizedString = personalizedString .. contentString
 
   if options.withPersonalization then
-    personalizedString = personalizedString.."{/p}"
+    personalizedString = personalizedString .. "{/p}"
   end
 
   return personalizedString
@@ -51,17 +50,18 @@ local function SecondsToTimePrefix(entry, options)
     local translatedEvent = ExRTCombatEventTranslations[entry.startCondition.event]
 
     if translatedEvent and entry.startCondition.spellID then
-      timePrefixString = timePrefixString..string.format(",%s:%s:%s", translatedEvent, entry.startCondition.spellID, entry.triggerAtOccurence or 0)
+      timePrefixString = timePrefixString .. string.format(",%s:%s:%s", translatedEvent, entry.startCondition.spellID, entry.triggerAtOccurence or 0)
     else
-      PRT.Debug(string.format("Could not translate start condition event %s to ExRT event. ExRT note timers might not work correctly.",
-        PRT.HighlightString(entry.startCondition.event)))
+      PRT.Debug(
+        string.format("Could not translate start condition event %s to ExRT event. ExRT note timers might not work correctly.", PRT.HighlightString(entry.startCondition.event))
+      )
     end
   end
 
-  timePrefixString = timePrefixString.."}"
+  timePrefixString = timePrefixString .. "}"
 
   if options.withTimingNames then
-    timePrefixString = timePrefixString..string.format(" %s -> ", PRT.ColoredString(entry.name, PRT.Static.Colors.Tertiary))
+    timePrefixString = timePrefixString .. string.format(" %s -> ", PRT.ColoredString(entry.name, PRT.Static.Colors.Tertiary))
   end
 
   return timePrefixString
@@ -130,7 +130,7 @@ local function GenerateTimingString(entry, options)
     return nil
   end
 
-  local finalString = "\n"..timingString.." "..contentsString
+  local finalString = "\n" .. timingString .. " " .. contentsString
   local targetsString = strjoin(",", unpack(GetLineTargets(entry)))
   return WrapPersonalization(finalString, targetsString, options)
 end
@@ -147,7 +147,6 @@ local function MessagePerStringToExRTNote(messagesPerTiming, options)
 
   return timingStrings
 end
-
 
 -------------------------------------------------------------------------------
 -- Public API
@@ -198,7 +197,6 @@ function PRT.ExRTExportFromTimers(options, timers, encounterName)
 
   if encounterName and options.withEncounterName then
     finalString = string.format("%s\n\n%s", encounterName, contentString)
-
   else
     finalString = contentString
   end

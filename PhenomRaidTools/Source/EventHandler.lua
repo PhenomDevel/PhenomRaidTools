@@ -12,7 +12,6 @@ local EventHandler = {
     "PLAYER_ENTERING_WORLD",
     "PLAYER_SPECIALIZATION_CHANGED"
   },
-
   trackedInCombatEvents = {
     "COMBAT_LOG_EVENT_UNFILTERED",
     "UNIT_HEALTH",
@@ -20,13 +19,11 @@ local EventHandler = {
     "UNIT_COMBAT",
     "INSTANCE_ENCOUNTER_ENGAGE_UNIT"
   },
-
   difficultyIDToNameMapping = {
     [1] = "Normal", -- Normal Dungeon
     [2] = "Heroic", -- Heroic Dungeon
     [8] = "Mythic", -- Mythic Keystone Dungeon
     [23] = "Mythic", -- Mythic Dungeon
-
     [14] = "Normal", -- Normal Raid
     [15] = "Heroic", -- Heroic Raid
     [16] = "Mythic" -- Mythic Raid
@@ -34,11 +31,9 @@ local EventHandler = {
 }
 
 -- Create local copies of API functions which we use
-local GetTime, CombatLogGetCurrentEventInfo, UnitGUID, GetInstanceInfo =
-  GetTime, CombatLogGetCurrentEventInfo, UnitGUID, GetInstanceInfo
+local GetTime, CombatLogGetCurrentEventInfo, UnitGUID, GetInstanceInfo = GetTime, CombatLogGetCurrentEventInfo, UnitGUID, GetInstanceInfo
 
 local GetSpecialization, GetSpecializationInfo = GetSpecialization, GetSpecializationInfo
-
 
 -------------------------------------------------------------------------------
 -- Local Helper
@@ -80,7 +75,7 @@ end
 local function CompileInterestingUnitsByTriggers(interestingUnits, triggers)
   for _, trigger in pairs(triggers) do
     if trigger.enabled and trigger.stopCondition then
-      CompileInterestingUnitsByTriggerCondition(interestingUnits, trigger.stopCondition )
+      CompileInterestingUnitsByTriggerCondition(interestingUnits, trigger.stopCondition)
     end
     if trigger.enabled and trigger.startCondition then
       CompileInterestingUnitsByTriggerCondition(interestingUnits, trigger.startCondition)
@@ -168,13 +163,12 @@ end
 
 function EventHandler.StartEncounter(event, encounterID, encounterName)
   if PRT.IsEnabled() then
-
     wipe(PRT.GetProfileDB().debugLog)
 
     PRT.currentEncounter = NewEncounter()
 
     if PRT.IsSender() then
-      PRT.Debug("Starting new encounter", PRT.HighlightString(encounterName),"(", PRT.HighlightString(encounterID), ")" , "|r")
+      PRT.Debug("Starting new encounter", PRT.HighlightString(encounterName), "(", PRT.HighlightString(encounterID), ")", "|r")
       local _, encounter = PRT.GetEncounterById(PRT.GetProfileDB().encounters, encounterID)
       local _, encounterVersion = PRT.GetSelectedVersionEncounterByID(PRT.GetProfileDB().encounters, encounterID)
 
@@ -260,7 +254,6 @@ function EventHandler.StopEncounter(event)
   PRT.SpellCache.Resume(PRT.GetGlobalDB().spellCache)
 end
 
-
 -------------------------------------------------------------------------------
 -- Public API
 
@@ -335,7 +328,6 @@ function addon:COMBAT_LOG_EVENT_UNFILTERED(event)
     if PRT.currentEncounter.inFight then
       if PRT.currentEncounter.encounter then
         if PRT.currentEncounter.interestingEvents[combatEvent] or PRT.currentEncounter.interestingEvents[event] then
-
           PRT.currentEncounter.statistics[combatEvent or event] = (PRT.currentEncounter.statistics[combatEvent or event] or 0) + 1
 
           local timers = PRT.currentEncounter.encounter.Timers
@@ -378,7 +370,8 @@ local function IsInterestingUnit(currentEncounter, unitID)
   local guid = UnitGUID(unitID)
   local npcID = PRT.GUIDToNPCID(guid)
 
-  return currentEncounter.interestingUnits and (currentEncounter.interestingUnits[unitID] or currentEncounter.interestingUnits[unitName] or currentEncounter.interestingUnits[npcID])
+  return currentEncounter.interestingUnits and
+    (currentEncounter.interestingUnits[unitID] or currentEncounter.interestingUnits[unitName] or currentEncounter.interestingUnits[npcID])
 end
 
 local function IsTrackedUnit(currentEncounter, guid)
@@ -444,7 +437,7 @@ local function UpdateTrackedUnit(unitID, name, guid)
 end
 
 local untrackedUnitIDs = {
-  "target",
+  "target"
 }
 
 function PRT.AddUnitToTrackedUnits(unitID)
@@ -460,7 +453,7 @@ function PRT.AddUnitToTrackedUnits(unitID)
             UpdateTrackedUnit(unitID, unitName, guid)
           end
         else
-          PRT.Debug("Adding ", PRT.HighlightString(unitName.." ("..unitID..")"), "to tracked units.")
+          PRT.Debug("Adding ", PRT.HighlightString(unitName .. " (" .. unitID .. ")"), "to tracked units.")
           UpdateTrackedUnit(unitID, unitName, guid)
         end
       end
@@ -474,7 +467,7 @@ end
 
 function addon:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
   for i = 1, 5 do
-    local unitID = "boss"..i
+    local unitID = "boss" .. i
 
     if IsInterestingUnit(PRT.currentEncounter, unitID) then
       if UnitExists(unitID) then

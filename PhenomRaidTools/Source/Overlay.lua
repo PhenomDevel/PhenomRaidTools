@@ -1,14 +1,11 @@
 local _, PRT = ...
-local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 local Media = LibStub("LibSharedMedia-3.0")
 
 local Overlay = {}
 local padding = 15
 
-
 -- Create local copies of API functions which we use
 local UIParent, GameFontHighlightSmall = UIParent, GameFontHighlightSmall
-
 
 -------------------------------------------------------------------------------
 -- Public API
@@ -57,19 +54,13 @@ end
 function Overlay.UpdateBackdrop(frame, options)
   if options then
     if options.locked then
-      frame:SetBackdropColor(0, 0, 0, 0);
+      frame:SetBackdropColor(0, 0, 0, 0)
     else
       if options.backdropColor then
-        frame:SetBackdropColor(
-          (options.backdropColor.r or 0),
-          (options.backdropColor.g or 0),
-          (options.backdropColor.b or 0),
-          (options.backdropColor.a or 0.7)
-        )
+        frame:SetBackdropColor((options.backdropColor.r or 0), (options.backdropColor.g or 0), (options.backdropColor.b or 0), (options.backdropColor.a or 0.7))
       else
-        frame:SetBackdropColor(0, 0, 0, 0.7);
+        frame:SetBackdropColor(0, 0, 0, 0.7)
       end
-
     end
   end
 end
@@ -102,26 +93,32 @@ function Overlay.CreateOverlay(options, withBackdrop)
   overlayFrame:SetClampedToScreen(true)
   overlayFrame:RegisterForDrag("LeftButton")
   overlayFrame:SetScript("OnDragStart", overlayFrame.StartMoving)
-  overlayFrame:SetScript("OnDragStop",
+  overlayFrame:SetScript(
+    "OnDragStop",
     function(frame)
       Overlay.SavePosition(frame, options)
       overlayFrame:StopMovingOrSizing()
-    end)
+    end
+  )
 
   if withBackdrop then
     overlayFrame:SetBackdrop(
       {
         bgFile = "Interface/Tooltips/UI-Tooltip-Background",
         edgeFile = nil,
-        tile = true, tileSize = 16, edgeSize = 16,
+        tile = true,
+        tileSize = 16,
+        edgeSize = 16,
         insets = {
           left = 4,
           right = 4,
           top = 4,
           bottom = 4
-        }});
+        }
+      }
+    )
 
-    overlayFrame:SetBackdropColor(0, 0, 0, 0);
+    overlayFrame:SetBackdropColor(0, 0, 0, 0)
   end
 
   overlayFrame:SetPoint("CENTER", 0, 0)

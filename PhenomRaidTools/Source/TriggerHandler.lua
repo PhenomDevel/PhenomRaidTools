@@ -7,8 +7,15 @@ local TriggerHandler = {}
 
 -- Create local copies of API functions which we use
 local UnitName, UnitGUID, GetTime, UnitExists, UnitIsDead, UnitHealth, UnitHealthMax, UnitPower, UnitPowerMax =
-  UnitName, UnitGUID, GetTime, UnitExists, UnitIsDead, UnitHealth, UnitHealthMax, UnitPower, UnitPowerMax
-
+  UnitName,
+  UnitGUID,
+  GetTime,
+  UnitExists,
+  UnitIsDead,
+  UnitHealth,
+  UnitHealthMax,
+  UnitPower,
+  UnitPowerMax
 
 -------------------------------------------------------------------------------
 -- Local Helper
@@ -55,12 +62,13 @@ function TriggerHandler.ValidTestModeEvent(event, combatEvent, conditionEvent)
 end
 
 function TriggerHandler.CheckCondition(condition, event, combatEvent, spellID, targetGUID, sourceGUID)
-  if condition ~= nil and
-    ((condition.event ~= nil and (condition.event == event or condition.event == combatEvent)) or TriggerHandler.ValidTestModeEvent(event, combatEvent, condition.event)) and
-    (condition.spellID == nil or condition.spellID == spellID) and
-    (condition.source == nil or UnitGUID(condition.source or "") == sourceGUID or TriggerHandler.UnitExistsInTrackedUnits(condition.source or "", sourceGUID)) and
-    (condition.target == nil or UnitGUID(condition.target or "") == targetGUID or TriggerHandler.UnitExistsInTrackedUnits(condition.target or "", targetGUID)) then
-
+  if
+    condition ~= nil and
+      ((condition.event ~= nil and (condition.event == event or condition.event == combatEvent)) or TriggerHandler.ValidTestModeEvent(event, combatEvent, condition.event)) and
+      (condition.spellID == nil or condition.spellID == spellID) and
+      (condition.source == nil or UnitGUID(condition.source or "") == sourceGUID or TriggerHandler.UnitExistsInTrackedUnits(condition.source or "", sourceGUID)) and
+      (condition.target == nil or UnitGUID(condition.target or "") == targetGUID or TriggerHandler.UnitExistsInTrackedUnits(condition.target or "", targetGUID))
+   then
     return true
   end
 
@@ -148,7 +156,7 @@ function TriggerHandler.GetRotationMessages(rotation)
   local rotationCounter = TriggerHandler.GetTriggerCounter(rotation)
   if rotation ~= nil then
     if rotation.entries ~= nil then
-      if rotationCounter <=  table.getn(rotation.entries) then
+      if rotationCounter <= table.getn(rotation.entries) then
         local messagesByCounter = rotation.entries[rotationCounter]
 
         if messagesByCounter.messages ~= nil then
@@ -246,7 +254,6 @@ function TriggerHandler.SendMessagesAfterDelayWithEventInfo(messages, targetName
   end
 end
 
-
 -------------------------------------------------------------------------------
 -- Public API
 
@@ -255,24 +262,8 @@ function PRT.IsTriggerActive(trigger)
   local isEnabledForDifficulty = TriggerHandler.CheckCurrentDifficulty(trigger) or PRT.IsTestMode()
   local isActive = trigger.active
 
-  return
-    (
-    (
-    isEnabled and
-    isEnabledForDifficulty and
-    (
-    isActive or
-    (
-    trigger.active == nil and
-    (
-    not trigger.hasStartCondition
-    )
-    )
-    )
-    )
-    )
+  return (isEnabled and isEnabledForDifficulty and (isActive or (trigger.active == nil and (not trigger.hasStartCondition))))
 end
-
 
 -- Timer
 function PRT.CheckTimerStartConditions(timers, event, combatEvent, spellID, targetGUID, sourceGUID)
@@ -391,7 +382,12 @@ function PRT.CheckRotationTriggerCondition(rotations, event, combatEvent, eventS
 
           if rotation.triggerCondition.event and not rotation.triggerCondition.spellID then
             if string.find(rotation.triggerCondition.event, "SPELL_") then
-              PRT.Error("Rotation", PRT.HighlightString(rotation.name), "has a SPELL_* event configured without a spellID.", "This may lead to a lot of messages and is therefore skipped and disabled.")
+              PRT.Error(
+                "Rotation",
+                PRT.HighlightString(rotation.name),
+                "has a SPELL_* event configured without a spellID.",
+                "This may lead to a lot of messages and is therefore skipped and disabled."
+              )
               rotation.enabled = false
               return
             end
@@ -436,12 +432,14 @@ function PRT.GetEffectiveUnits(unit)
           end
         end
       elseif UnitExists(unit) then
-        tinsert(matchedUnits,
+        tinsert(
+          matchedUnits,
           {
             unitID = unit,
             guid = UnitGUID(unit),
             name = UnitName(unit)
-          })
+          }
+        )
       elseif type(unit) == "string" then
         -- Find by name
         if trackedUnit.name == unit then
@@ -485,8 +483,15 @@ function PRT.CheckUnitHealthPercentages(percentages)
                   local percentageValueMatched = TriggerHandler.FilterPercentagesTable({percentageValue}, unitHPPercent)
 
                   if percentageValueMatched and percentageValue.messages then
-                    PRT.Debug(L["%s (%s) health match (%s%% %s %s%%)"]:format(
-                      effectiveUnit.unitID, effectiveUnit.name, unitHPPercent, percentageValueMatched.operator, percentageValueMatched.value))
+                    PRT.Debug(
+                      L["%s (%s) health match (%s%% %s %s%%)"]:format(
+                        effectiveUnit.unitID,
+                        effectiveUnit.name,
+                        unitHPPercent,
+                        percentageValueMatched.operator,
+                        percentageValueMatched.value
+                      )
+                    )
                     TriggerHandler.ExecutePercentageValue(percentage, percentageValue)
 
                     -- NOTE: Stop after first match
@@ -521,8 +526,13 @@ function PRT.CheckUnitPowerPercentages(percentages)
 
                   if percentageValueMatched and percentageValue.messages then
                     if percentageValueMatched and percentageValue.messages then
-                      PRT.Debug("Unit power percentage matched with unit", PRT.HighlightString(effectiveUnit.unitID),
-                        unitPowerPercent, percentageValueMatched.operator, percentageValueMatched.value)
+                      PRT.Debug(
+                        "Unit power percentage matched with unit",
+                        PRT.HighlightString(effectiveUnit.unitID),
+                        unitPowerPercent,
+                        percentageValueMatched.operator,
+                        percentageValueMatched.value
+                      )
                       TriggerHandler.ExecutePercentageValue(percentage, percentageValue)
 
                       -- NOTE: Stop after first match
@@ -538,7 +548,6 @@ function PRT.CheckUnitPowerPercentages(percentages)
     end
   end
 end
-
 
 -------------------------------------------------------------------------------
 -- Message Queue Processing

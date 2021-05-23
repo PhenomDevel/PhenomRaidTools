@@ -5,7 +5,6 @@ local Timer = {}
 
 local IsAddOnLoaded = IsAddOnLoaded
 
-
 -------------------------------------------------------------------------------
 -- Local Helper
 
@@ -19,60 +18,82 @@ local function AddExRTExportOptionsWidget(container, context)
   local withEmptyLines = PRT.CheckBox(L["Include empty lines"], L["Includes lines even if there are no entries within the prt timer."], context.withEmptyLines)
   local withPersonalization = PRT.CheckBox(L["Personalize note"], L["This will hide all entries which are not interesting for the given player."], context.withPersonalization)
   local forceExRTUpdate = PRT.CheckBox(L["Force ExRT note update"], L["This will try and force ExRT to directly update the note."], context.forceExRTUpdate)
-  local updatePRTTag = PRT.CheckBox(L["Replace PRT tag content"], L["This will update the existing ExRT note and just replace the content between %s and %s tag with the generated content."]:format(PRT.HighlightString("{prtstart}"), PRT.HighlightString("{prtend}")), context.updatePRTTag)
+  local updatePRTTag =
+    PRT.CheckBox(
+    L["Replace PRT tag content"],
+    L["This will update the existing ExRT note and just replace the content between %s and %s tag with the generated content."]:format(
+      PRT.HighlightString("{prtstart}"),
+      PRT.HighlightString("{prtend}")
+    ),
+    context.updatePRTTag
+  )
 
   -- Include Encounter name
   withEncounterName:SetRelativeWidth(0.5)
-  withEncounterName:SetCallback("OnValueChanged",
+  withEncounterName:SetCallback(
+    "OnValueChanged",
     function(widget)
       context.withEncounterName = widget:GetValue()
-    end)
+    end
+  )
 
   -- Include timer names
   withTimerNames:SetRelativeWidth(0.5)
-  withTimerNames:SetCallback("OnValueChanged",
+  withTimerNames:SetCallback(
+    "OnValueChanged",
     function(widget)
       context.withTimerNames = widget:GetValue()
-    end)
+    end
+  )
 
   -- Include timing names
   withTimingNames:SetRelativeWidth(0.5)
-  withTimingNames:SetCallback("OnValueChanged",
+  withTimingNames:SetCallback(
+    "OnValueChanged",
     function(widget)
       context.withTimingNames = widget:GetValue()
-    end)
+    end
+  )
 
   -- Include empty lines
   withEmptyLines:SetRelativeWidth(0.5)
-  withEmptyLines:SetCallback("OnValueChanged",
+  withEmptyLines:SetCallback(
+    "OnValueChanged",
     function(widget)
       context.withEmptyLines = widget:GetValue()
-    end)
+    end
+  )
 
   -- Personalize Note
   withPersonalization:SetRelativeWidth(0.5)
-  withPersonalization:SetCallback("OnValueChanged",
+  withPersonalization:SetCallback(
+    "OnValueChanged",
     function(widget)
       context.withPersonalization = widget:GetValue()
-    end)
+    end
+  )
 
   -- Directly Update ExRT Note
   forceExRTUpdate:SetDisabled(not IsAddOnLoaded("ExRT"))
   forceExRTUpdate:SetRelativeWidth(0.5)
-  forceExRTUpdate:SetCallback("OnValueChanged",
+  forceExRTUpdate:SetCallback(
+    "OnValueChanged",
     function(widget)
       local value = widget:GetValue()
       context.forceExRTUpdate = value
       updatePRTTag:SetDisabled(not value)
-    end)
+    end
+  )
 
   -- Update ExRT and replace tag content
   updatePRTTag:SetDisabled(not context.forceExRTUpdate)
   updatePRTTag:SetRelativeWidth(0.5)
-  updatePRTTag:SetCallback("OnValueChanged",
+  updatePRTTag:SetCallback(
+    "OnValueChanged",
     function(widget)
       context.updatePRTTag = widget:GetValue()
-    end)
+    end
+  )
 
   optionsGroup:AddChild(withEncounterName)
   optionsGroup:AddChild(withTimerNames)
@@ -94,7 +115,8 @@ local function AddExRTExportSelectorWidget(container, context)
   for _, timer in ipairs(context.timers) do
     local timerCheckbox = PRT.CheckBox(timer.name, nil, true)
     timerCheckbox:SetRelativeWidth(0.5)
-    timerCheckbox:SetCallback("OnValueChanged",
+    timerCheckbox:SetCallback(
+      "OnValueChanged",
       function(widget)
         local value = widget:GetValue()
         if value then
@@ -102,7 +124,8 @@ local function AddExRTExportSelectorWidget(container, context)
         elseif context.selectedTimers[timer.name] then
           context.selectedTimers[timer.name] = nil
         end
-      end)
+      end
+    )
 
     -- Initially all timers are selected
     context.selectedTimers[timer.name] = timer
@@ -111,13 +134,15 @@ local function AddExRTExportSelectorWidget(container, context)
   end
 
   local unselectAllButton = PRT.Button(L["Unselect all"])
-  unselectAllButton:SetCallback("OnClick",
+  unselectAllButton:SetCallback(
+    "OnClick",
     function()
       for _, cb in ipairs(checkboxes) do
         cb:SetValue(false)
         wipe(context.selectedTimers)
       end
-    end)
+    end
+  )
 
   timerGroup:AddChild(unselectAllButton)
   container:AddChild(timerGroup)
@@ -149,12 +174,22 @@ local function injectPRTExRTNoteExportIntoNote(export)
       _G.VExRT.Note.Text1 = newNote
       UpdateExRTNote()
     else
-      PRT.Error(string.format("Couldn't find either %s or %s. Aborting ExRT force update. Please make sure you have put both tag into your current note.",
-        PRT.HighlightString("{prtstart}"), PRT.HighlightString("{prtend}")))
+      PRT.Error(
+        string.format(
+          "Couldn't find either %s or %s. Aborting ExRT force update. Please make sure you have put both tag into your current note.",
+          PRT.HighlightString("{prtstart}"),
+          PRT.HighlightString("{prtend}")
+        )
+      )
     end
   else
-    PRT.Error(string.format("Couldn't find either %s or %s. Aborting ExRT force update. Please make sure you have put both tag into your current note.",
-      PRT.HighlightString("{prtstart}"), PRT.HighlightString("{prtend}")))
+    PRT.Error(
+      string.format(
+        "Couldn't find either %s or %s. Aborting ExRT force update. Please make sure you have put both tag into your current note.",
+        PRT.HighlightString("{prtstart}"),
+        PRT.HighlightString("{prtend}")
+      )
+    )
   end
 end
 
@@ -191,7 +226,8 @@ end
 
 local function AddExRTExportWidget(container, encounter, timers)
   local exrtExportButton = PRT.Button(L["Generate ExRT Note"])
-  exrtExportButton:SetCallback("OnClick",
+  exrtExportButton:SetCallback(
+    "OnClick",
     function()
       local exrtExportContext = {
         timers = timers,
@@ -205,22 +241,31 @@ local function AddExRTExportWidget(container, encounter, timers)
       }
 
       local modalContainer = PRT.SimpleGroup()
-      local description = PRT.Label(L["This feature will export your selected timers to a ExRT note. This will only work for message of type %s.\n\nIf you want"..
-        " to keep your current note you can use %s and %s. The prt generated note will be put inbetween those tags."]:format(PRT.HighlightString("cooldown"), PRT.HighlightString("{prtstart}"), PRT.HighlightString("{prtend}")))
+      local description =
+        PRT.Label(
+        L[
+          "This feature will export your selected timers to a ExRT note. This will only work for message of type %s.\n\nIf you want" ..
+            " to keep your current note you can use %s and %s. The prt generated note will be put inbetween those tags."
+        ]:format(PRT.HighlightString("cooldown"), PRT.HighlightString("{prtstart}"), PRT.HighlightString("{prtend}"))
+      )
       local exportButton = PRT.Button(L["Export"])
 
       description:SetRelativeWidth(1)
-      exportButton:SetCallback("OnClick",
+      exportButton:SetCallback(
+        "OnClick",
         function()
           if exrtExportContext.forceExRTUpdate and not exrtExportContext.updatePRTTag then
-            PRT.ConfirmationDialog(L["You want to force update ExRT note without replacing PRT tag content. This will overwrite the whole note. Are you sure about that?"],
+            PRT.ConfirmationDialog(
+              L["You want to force update ExRT note without replacing PRT tag content. This will overwrite the whole note. Are you sure about that?"],
               function()
                 AddExRTExportResultWidget(modalContainer, encounter, exrtExportContext)
-              end)
+              end
+            )
           else
             AddExRTExportResultWidget(modalContainer, encounter, exrtExportContext)
           end
-        end)
+        end
+      )
 
       -- Add widgets to modal container
       modalContainer:AddChild(description)
@@ -230,7 +275,8 @@ local function AddExRTExportWidget(container, encounter, timers)
 
       local modal = PRT.CreateModal(modalContainer, L["ExRT Note Generator"])
       modal:EnableResize(false)
-    end)
+    end
+  )
 
   container:AddChild(exrtExportButton)
 end
@@ -251,12 +297,12 @@ function Timer.ComposeTimingString(timings)
   for _, timing in ipairs(timings) do
     local minutes = math.floor(timing / 60)
     local seconds = timing % 60
-    local timingString = minutes..":"
+    local timingString = minutes .. ":"
 
     if seconds < 10 then
-      timingString = timingString.."0"..seconds
+      timingString = timingString .. "0" .. seconds
     else
-      timingString = timingString..seconds
+      timingString = timingString .. seconds
     end
 
     tinsert(timingsStrings, timingString)
@@ -272,15 +318,24 @@ function Timer.TimingWidget(timing, container, _)
   sort(timing.seconds)
 
   local nameEditBox = PRT.EditBox(L["Name"], nil, (timing.name or ""))
-  nameEditBox:SetCallback("OnEnterPressed",
+  nameEditBox:SetCallback(
+    "OnEnterPressed",
     function(widget)
       local text = widget:GetText()
       timing.name = text
       widget:ClearFocus()
-    end)
+    end
+  )
 
-  local secondsEditBox = PRT.EditBox(L["Timings"], L["Comma separated list of timings\nsupports different formats\n- 69\n- 1:09\n- 00:09"], strjoin(", ", Timer.ComposeTimingString(timing.seconds)), true)
-  secondsEditBox:SetCallback("OnEnterPressed",
+  local secondsEditBox =
+    PRT.EditBox(
+    L["Timings"],
+    L["Comma separated list of timings\nsupports different formats\n- 69\n- 1:09\n- 00:09"],
+    strjoin(", ", Timer.ComposeTimingString(timing.seconds)),
+    true
+  )
+  secondsEditBox:SetCallback(
+    "OnEnterPressed",
     function(widget)
       local text = widget:GetText()
       local times = {strsplit(",", text)}
@@ -299,22 +354,27 @@ function Timer.TimingWidget(timing, container, _)
       widget:SetText(Timer.ComposeTimingString(timing.seconds))
 
       widget:ClearFocus()
-    end)
+    end
+  )
 
   local messagesTabs = PRT.TableToTabs(timing.messages, true)
   local messagesTabGroup = PRT.TabGroup(L["Messages"], messagesTabs)
   messagesTabGroup:SetLayout("List")
-  messagesTabGroup:SetCallback("OnGroupSelected",
+  messagesTabGroup:SetCallback(
+    "OnGroupSelected",
     function(widget, _, key)
       PRT.TabGroupSelected(widget, timing.messages, key, PRT.MessageWidget, PRT.EmptyMessage, true, L["Delete"], true, L["Clone"])
-    end)
+    end
+  )
 
   local offsetSlider = PRT.Slider(L["Offset"], L["Offset will be applied to all timings."], timing.offset, true)
   offsetSlider:SetSliderValues(-60, 60, 1)
-  offsetSlider:SetCallback("OnValueChanged",
+  offsetSlider:SetCallback(
+    "OnValueChanged",
     function(widget)
       timing.offset = tonumber(widget:GetValue())
-    end)
+    end
+  )
 
   PRT.SelectFirstTab(messagesTabGroup, timing.messages)
   timingOptionsGroup:AddChild(nameEditBox)
@@ -336,18 +396,22 @@ function Timer.TimerWidget(timerName, timers, container)
 
   local triggerAtOccurenceSlider = PRT.Slider(L["Occurrence"], L["After how many occurrences of\nstart condition the timer should start."], (timer.triggerAtOccurence or 1))
   triggerAtOccurenceSlider:SetSliderValues(1, 20, 1)
-  triggerAtOccurenceSlider:SetCallback("OnValueChanged",
+  triggerAtOccurenceSlider:SetCallback(
+    "OnValueChanged",
     function(widget)
       local value = widget:GetValue()
       timer.triggerAtOccurence = value
-    end)
+    end
+  )
 
   local resetCounterOnStopCheckbox = PRT.CheckBox(L["Reset counter on stop"], L["Resets the counter of start conditions\nwhen the timer is stopped."], timer.resetCounterOnStop)
-  resetCounterOnStopCheckbox:SetCallback("OnValueChanged",
+  resetCounterOnStopCheckbox:SetCallback(
+    "OnValueChanged",
     function(widget)
       timer.resetCounterOnStop = widget:GetValue()
       PRT.Core.UpdateTree()
-    end)
+    end
+  )
 
   timerOptionsGroup:AddChild(triggerAtOccurenceSlider)
   timerOptionsGroup:AddChild(resetCounterOnStopCheckbox)
@@ -364,14 +428,15 @@ function Timer.TimerWidget(timerName, timers, container)
   -- Timings
   local timingsTabs = PRT.TableToTabs(timer.timings, true)
   local timingsTabGroup = PRT.TabGroup(L["Timings"], timingsTabs)
-  timingsTabGroup:SetCallback("OnGroupSelected",
+  timingsTabGroup:SetCallback(
+    "OnGroupSelected",
     function(widget, _, key)
       PRT.TabGroupSelected(widget, timer.timings, key, Timer.TimingWidget, PRT.EmptyTiming, true, L["Delete"], true, L["Clone"])
-    end)
+    end
+  )
   PRT.SelectFirstTab(timingsTabGroup, timer.timings)
   container:AddChild(timingsTabGroup)
 end
-
 
 -------------------------------------------------------------------------------
 -- Public API
@@ -388,7 +453,8 @@ function PRT.AddTimerOptionsWidgets(container, profile, encounterID)
   local pasteButtonText = PRT.StringUtils.WrapColorByBoolean(L["Paste"], hasClipboardTimer, "FF696969")
   local pasteButton = PRT.Button(pasteButtonText)
   pasteButton:SetDisabled(not hasClipboardTimer)
-  pasteButton:SetCallback("OnClick",
+  pasteButton:SetCallback(
+    "OnClick",
     function()
       tinsert(timers, PRT.GetProfileDB().clipboard.timer)
       PRT.Core.UpdateTree()
@@ -396,17 +462,20 @@ function PRT.AddTimerOptionsWidgets(container, profile, encounterID)
       PRT.mainWindowContent:SelectByPath("encounters", encounterID, "timers", PRT.GetProfileDB().clipboard.timer.name)
       PRT.Debug("Pasted timer", PRT.HighlightString(PRT.GetProfileDB().clipboard.timer.name), "to", PRT.HighlightString(selectedEncounter.name))
       PRT.GetProfileDB().clipboard.timer = nil
-    end)
+    end
+  )
 
   local addButton = PRT.Button(L["New"])
-  addButton:SetCallback("OnClick",
+  addButton:SetCallback(
+    "OnClick",
     function()
       local newTimer = PRT.EmptyTimer()
       tinsert(timers, newTimer)
       PRT.Core.UpdateTree()
       PRT.mainWindowContent:DoLayout()
       PRT.mainWindowContent:SelectByPath("encounters", encounterID, "timers", newTimer.name)
-    end)
+    end
+  )
 
   timerOptionsGroup:AddChild(addButton)
   timerOptionsGroup:AddChild(pasteButton)

@@ -5,33 +5,35 @@ local AceComm = LibStub("AceComm-3.0")
 local AceTimer = LibStub("AceTimer-3.0")
 
 local LibDBIcon = LibStub("LibDBIcon-1.0")
-local PhenomRaidToolsLDB = LibStub("LibDataBroker-1.1"):NewDataObject("PhenomRaidTools", {
-  type = "data source",
-  text = "PhenomRaidTools",
-  icon = "Interface\\AddOns\\PhenomRaidTools\\Media\\Icons\\PRT.blp",
-  OnClick = function(self, button)
-    if button == "LeftButton" then
-      addon:Open()
-    elseif button == "MiddleButton" then
-      LibDBIcon:Hide("PhenomRaidTools")
-      PRT.GetProfileDB().minimap.hide = true
-      PRT.Info("Minimap icon is now hidden. If you want to show it again use /prt minimap")
+local PhenomRaidToolsLDB =
+  LibStub("LibDataBroker-1.1"):NewDataObject(
+  "PhenomRaidTools",
+  {
+    type = "data source",
+    text = "PhenomRaidTools",
+    icon = "Interface\\AddOns\\PhenomRaidTools\\Media\\Icons\\PRT.blp",
+    OnClick = function(self, button)
+      if button == "LeftButton" then
+        addon:Open()
+      elseif button == "MiddleButton" then
+        LibDBIcon:Hide("PhenomRaidTools")
+        PRT.GetProfileDB().minimap.hide = true
+        PRT.Info("Minimap icon is now hidden. If you want to show it again use /prt minimap")
+      end
+    end,
+    OnEnter = function()
+      GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
+      GameTooltip:AddDoubleLine("|cFF69CCF0PhenomRaidTools|r", "v" .. PRT.GetProfileDB().version)
+      GameTooltip:AddDoubleLine("|cFFdcabffProfile|r ", PRT.GetCurrentProfile())
+      GameTooltip:AddDoubleLine("|cFFdcabffLeft-Click|r", "Open Config")
+      GameTooltip:AddDoubleLine("|cFFdcabffMiddle-Click|r", "Hide minimap icon")
+      GameTooltip:Show()
+    end,
+    OnLeave = function()
+      GameTooltip:Hide()
     end
-  end,
-
-  OnEnter = function()
-    GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
-    GameTooltip:AddDoubleLine("|cFF69CCF0PhenomRaidTools|r", "v"..PRT.GetProfileDB().version)
-    GameTooltip:AddDoubleLine("|cFFdcabffProfile|r ",PRT.GetCurrentProfile())
-    GameTooltip:AddDoubleLine("|cFFdcabffLeft-Click|r", "Open Config")
-    GameTooltip:AddDoubleLine("|cFFdcabffMiddle-Click|r", "Hide minimap icon")
-    GameTooltip:Show()
-  end,
-
-  OnLeave = function()
-    GameTooltip:Hide()
-  end})
-
+  }
+)
 
 -------------------------------------------------------------------------------
 -- Ace standard functions
@@ -60,158 +62,146 @@ local function NewDefaultReceiverOverlay(id, name, fontSize, r, g, b)
 end
 
 do
-  local defaults =  {
-  char = {
-    profileSettings = {
-      specSpecificProfiles = {
-        enabled = false,
-        profileBySpec = {}
-      }
-    }
-  },
-  global = {
-    spellCache = {
-      enabled = false,
-      completed = false,
-      lastCheckedId = 0,
-      spells = {}
-    }
-  },
-  profile = {
-    mainWindow = {
-      width = nil,
-      height = nil,
-      top = nil,
-      left = nil
-    },
-    mainWindowContent = {
-      treeGroup = {
-        width = nil
-      }
-    },
-    myName = UnitName("player"),
-    version = "@project-version@",
-    messageFilter = {
-      filterBy = "names",
-      requiredGuildRank = nil,
-      requiredNames = {},
-      alwaysIncludeMyself = true
-    },
-    enabled = true,
-    testMode = false,
-    testEncounterID = 9999,
-    testEncounterName = "Example Encounter",
-    debugMode = false,
-    showOverlay = false,
-    hideOverlayAfterCombat = true,
-
-    runMode = "receiver",
-    senderMode = false,
-    receiverMode = true,
-
-    clipboard = {
-      timer = nil,
-      rotation = nil,
-      percentage = nil,
-      message = nil
-    },
-    customPlaceholders = {},
-    overlay = {
-      receivers = {
-        [1] = NewDefaultReceiverOverlay(1, "Default", 16, 1, 1, 1),
-        [2] = NewDefaultReceiverOverlay(2, "Important", 84, 1, 0, 0),
-        [3] = NewDefaultReceiverOverlay(3, "Personals/Unimportant", 64, 0, 1, 0),
-        [4] = NewDefaultReceiverOverlay(4, "Healing/Special", 36, 0, 0, 1)
-      },
-
-      sender = {
-        anchor = "TOPLEFT",
-        top = 50,
-        left = 615,
-        fontSize = 14,
-        backdropColor = {
-          r = 0,
-          g = 0,
-          b = 0,
-          a = 0.7
-        },
-        fontColor = {
-          hex = "FFFFFF",
-          r = 0,
-          g = 0,
-          b = 0,
-          a = 1
-        },
-        enabled = true,
-        hideAfterCombat = false,
-        hideDisabledTriggers = false,
-      }
-    },
-
-    minimap = {
-      hide = false
-    },
-
-    enabledDifficulties = {
-      dungeon = {
-        Normal = true,
-        Heroic = true,
-        Mythic = true
-      },
-      raid = {
-        Normal = true,
-        Heroic = true,
-        Mythic = true
-      }
-    },
-
-    triggerDefaults = {
-      rotationDefaults = {
-        defaultShouldRestart = true,
-        defaultIgnoreAfterActivation = false,
-        defaultIgnoreDuration = 10
-      },
-      percentageDefaults = {
-        defaultUnitID = "boss1",
-        defaultCheckAgain = false,
-        defaultCheckAgainAfter = 5,
-      },
-      conditionDefaults = {
-        defaultEvent = "SPELL_CAST_START"
-      },
-      messageDefaults = {
-        defaultMessage = "TODO",
-        defaultDuration = 5,
-        defaultTargets = {
-          "$me"
+  local defaults = {
+    char = {
+      profileSettings = {
+        specSpecificProfiles = {
+          enabled = false,
+          profileBySpec = {}
         }
       }
     },
-
-    encounters = {},
-    currentEncounter = {
-      inFight = false
+    global = {
+      spellCache = {
+        enabled = false,
+        completed = false,
+        lastCheckedId = 0,
+        spells = {}
+      }
     },
-
-    colors = {
-
-    },
-    raidRoster = {},
-    addonPrefixes = {
-      addonMessage = "PRT_ADDON_MSG",
-      versionRequest = "PRT_VERSION_REQ",
-      versionResponse = "PRT_VERSION_RESP"
-    },
-    versionCheck = {},
-    templateStore = {
-      messages = {}
-    },
-    debugLog = {},
-    processedMigrations = {
-
+    profile = {
+      mainWindow = {
+        width = nil,
+        height = nil,
+        top = nil,
+        left = nil
+      },
+      mainWindowContent = {
+        treeGroup = {
+          width = nil
+        }
+      },
+      myName = UnitName("player"),
+      version = "@project-version@",
+      messageFilter = {
+        filterBy = "names",
+        requiredGuildRank = nil,
+        requiredNames = {},
+        alwaysIncludeMyself = true
+      },
+      enabled = true,
+      testMode = false,
+      testEncounterID = 9999,
+      testEncounterName = "Example Encounter",
+      debugMode = false,
+      showOverlay = false,
+      hideOverlayAfterCombat = true,
+      runMode = "receiver",
+      senderMode = false,
+      receiverMode = true,
+      clipboard = {
+        timer = nil,
+        rotation = nil,
+        percentage = nil,
+        message = nil
+      },
+      customPlaceholders = {},
+      overlay = {
+        receivers = {
+          [1] = NewDefaultReceiverOverlay(1, "Default", 16, 1, 1, 1),
+          [2] = NewDefaultReceiverOverlay(2, "Important", 84, 1, 0, 0),
+          [3] = NewDefaultReceiverOverlay(3, "Personals/Unimportant", 64, 0, 1, 0),
+          [4] = NewDefaultReceiverOverlay(4, "Healing/Special", 36, 0, 0, 1)
+        },
+        sender = {
+          anchor = "TOPLEFT",
+          top = 50,
+          left = 615,
+          fontSize = 14,
+          backdropColor = {
+            r = 0,
+            g = 0,
+            b = 0,
+            a = 0.7
+          },
+          fontColor = {
+            hex = "FFFFFF",
+            r = 0,
+            g = 0,
+            b = 0,
+            a = 1
+          },
+          enabled = true,
+          hideAfterCombat = false,
+          hideDisabledTriggers = false
+        }
+      },
+      minimap = {
+        hide = false
+      },
+      enabledDifficulties = {
+        dungeon = {
+          Normal = true,
+          Heroic = true,
+          Mythic = true
+        },
+        raid = {
+          Normal = true,
+          Heroic = true,
+          Mythic = true
+        }
+      },
+      triggerDefaults = {
+        rotationDefaults = {
+          defaultShouldRestart = true,
+          defaultIgnoreAfterActivation = false,
+          defaultIgnoreDuration = 10
+        },
+        percentageDefaults = {
+          defaultUnitID = "boss1",
+          defaultCheckAgain = false,
+          defaultCheckAgainAfter = 5
+        },
+        conditionDefaults = {
+          defaultEvent = "SPELL_CAST_START"
+        },
+        messageDefaults = {
+          defaultMessage = "TODO",
+          defaultDuration = 5,
+          defaultTargets = {
+            "$me"
+          }
+        }
+      },
+      encounters = {},
+      currentEncounter = {
+        inFight = false
+      },
+      colors = {},
+      raidRoster = {},
+      addonPrefixes = {
+        addonMessage = "PRT_ADDON_MSG",
+        versionRequest = "PRT_VERSION_REQ",
+        versionResponse = "PRT_VERSION_RESP"
+      },
+      versionCheck = {},
+      templateStore = {
+        messages = {}
+      },
+      debugLog = {},
+      processedMigrations = {}
     }
   }
-}
 
   local db
 
@@ -243,60 +233,58 @@ do
     return db:GetCurrentProfile()
   end
 
-local options = {
-  name = "PhenomRaidTools",
-  type = "group",
-  args = {
+  local options = {
+    name = "PhenomRaidTools",
+    type = "group",
+    args = {}
+  }
 
-  },
-}
+  function addon:OnInitialize()
+    db = LibStub("AceDB-3.0"):New("PhenomRaidToolsDB", defaults, true)
+    options = LibStub("AceDBOptions-3.0"):GetOptionsTable(db)
 
-function addon:OnInitialize()
-  db = LibStub("AceDB-3.0"):New("PhenomRaidToolsDB", defaults, true)
-  options = LibStub("AceDBOptions-3.0"):GetOptionsTable(db)
+    -- Register Options
+    LibStub("AceConfig-3.0"):RegisterOptionsTable("PhenomRaidTools", options)
+    self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("PhenomRaidTools", "PhenomRaidTools")
 
-  -- Register Options
-  LibStub("AceConfig-3.0"):RegisterOptionsTable("PhenomRaidTools", options)
-  self.optionsFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("PhenomRaidTools", "PhenomRaidTools")
+    -- Initialize Minimap Icon
+    LibDBIcon:Register("PhenomRaidTools", PhenomRaidToolsLDB, PRT.GetProfileDB().minimap)
 
-  -- Initialize Minimap Icon
-  LibDBIcon:Register("PhenomRaidTools", PhenomRaidToolsLDB, PRT.GetProfileDB().minimap)
+    local encounterIdx, _ = PRT.TableUtils.GetBy(PRT.GetProfileDB().encounters, "id", 9999)
 
-  local encounterIdx, _ = PRT.TableUtils.GetBy(PRT.GetProfileDB().encounters, "id", 9999)
+    if not encounterIdx and PRT.TableUtils.IsEmpty(PRT.GetProfileDB().encounters) then
+      table.insert(PRT.GetProfileDB().encounters, PRT.ExampleEncounter())
+    end
 
-  if not encounterIdx and PRT.TableUtils.IsEmpty(PRT.GetProfileDB().encounters) then
-    table.insert(PRT.GetProfileDB().encounters, PRT.ExampleEncounter())
+    -- Reset versions
+    PRT.GetProfileDB().versionCheck = {}
+
+    -- Reset clipboard
+    PRT.GetProfileDB().clipboard = {}
+
+    -- We hold the main frame within the global addon variable
+    -- because we sometimes have to do a re-layout of the complete content
+    PRT.mainWindow = nil
+    PRT.mainWindowContent = nil
+
+    PRT.SenderOverlay.Initialize(PRT.GetProfileDB().overlay.sender)
+    PRT.ReceiverOverlay.Initialize(PRT.GetProfileDB().overlay.receivers)
+    PRT.SenderOverlay.Hide()
+    PRT.ReceiverOverlay.HideAll()
+
+    db.RegisterCallback(self, "OnProfileChanged", "RefreshConfig")
+    db.RegisterCallback(self, "OnProfileCopied", "RefreshConfig")
+    db.RegisterCallback(self, "OnProfileReset", "RefreshConfig")
+
+    -- Check if profile db needs migration
+    AceTimer:ScheduleTimer(PRT.MigrateProfileDB, 1, PRT.GetProfileDB())
+
+    -- Start spell cache building if needed
+    PRT.SpellCache.Build(PRT.GetGlobalDB().spellCache)
+
+    -- Initially load global placeholders
+    PRT.SetupGlobalCustomPlaceholders()
   end
-
-  -- Reset versions
-  PRT.GetProfileDB().versionCheck = {}
-
-  -- Reset clipboard
-  PRT.GetProfileDB().clipboard = {}
-
-  -- We hold the main frame within the global addon variable
-  -- because we sometimes have to do a re-layout of the complete content
-  PRT.mainWindow = nil
-  PRT.mainWindowContent = nil
-
-  PRT.SenderOverlay.Initialize(PRT.GetProfileDB().overlay.sender)
-  PRT.ReceiverOverlay.Initialize(PRT.GetProfileDB().overlay.receivers)
-  PRT.SenderOverlay.Hide()
-  PRT.ReceiverOverlay.HideAll()
-
-  db.RegisterCallback(self, "OnProfileChanged", "RefreshConfig")
-  db.RegisterCallback(self, "OnProfileCopied", "RefreshConfig")
-  db.RegisterCallback(self, "OnProfileReset", "RefreshConfig")
-
-  -- Check if profile db needs migration
-  AceTimer:ScheduleTimer(PRT.MigrateProfileDB, 1, PRT.GetProfileDB())
-
-  -- Start spell cache building if needed
-  PRT.SpellCache.Build(PRT.GetGlobalDB().spellCache)
-
-  -- Initially load global placeholders
-  PRT.SetupGlobalCustomPlaceholders()
-end
 end
 
 function addon:RefreshConfig()
@@ -432,7 +420,7 @@ function addon:InvokeMessage(msg)
         local message = {
           targets = {"ALL"},
           message = msg,
-          withSound = true,
+          withSound = true
         }
         PRT.ExecuteMessage(message)
         return
@@ -441,7 +429,6 @@ function addon:InvokeMessage(msg)
   end
   PRT.Info("Message by chat command was not send. Either you are not in combat or not in sender mode.")
 end
-
 
 -------------------------------------------------------------------------------
 -- Chat Commands

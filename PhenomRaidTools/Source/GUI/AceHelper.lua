@@ -17,13 +17,13 @@ local UIParent = UIParent
 local GameTooltip = GameTooltip
 local GameFontHighlightSmall = GameFontHighlightSmall
 
-
 -------------------------------------------------------------------------------
 -- Local Helper
 
 function AceHelper.AddTooltip(widget, tooltip)
   if widget then
-    widget:SetCallback("OnEnter",
+    widget:SetCallback(
+      "OnEnter",
       function()
         GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
 
@@ -44,12 +44,15 @@ function AceHelper.AddTooltip(widget, tooltip)
         end
 
         GameTooltip:Show()
-      end)
+      end
+    )
 
-    widget:SetCallback("OnLeave",
+    widget:SetCallback(
+      "OnLeave",
       function()
         GameTooltip:FadeOut()
-      end)
+      end
+    )
   end
 end
 
@@ -78,23 +81,26 @@ function AceHelper.RemoveTab(widget, t, item)
   PRT.Core.UpdateScrollFrame()
 end
 
-
 -------------------------------------------------------------------------------
 -- Public API
 
 function PRT.AddSpellTooltip(widget, spellID)
   if spellID then
-    widget:SetCallback("OnEnter",
+    widget:SetCallback(
+      "OnEnter",
       function()
         GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
-        GameTooltip:SetHyperlink("spell:"..spellID)
+        GameTooltip:SetHyperlink("spell:" .. spellID)
         GameTooltip:Show()
-      end)
+      end
+    )
 
-    widget:SetCallback("OnLeave",
+    widget:SetCallback(
+      "OnLeave",
       function()
         GameTooltip:Hide()
-      end)
+      end
+    )
   end
   return widget
 end
@@ -134,7 +140,8 @@ function PRT.TabGroupDeleteButton(container, tabGroup, t, key, label)
   local item = t[key]
   local deleteButton = AceGUI:Create("Button")
   deleteButton:SetText(label)
-  deleteButton:SetCallback("OnClick",
+  deleteButton:SetCallback(
+    "OnClick",
     function()
       local confirmationLabel
       if item.name then
@@ -142,11 +149,14 @@ function PRT.TabGroupDeleteButton(container, tabGroup, t, key, label)
       else
         confirmationLabel = "Are you sure you want to delete this item?"
       end
-      PRT.ConfirmationDialog(L[confirmationLabel]:format(PRT.HighlightString(item.name)),
+      PRT.ConfirmationDialog(
+        L[confirmationLabel]:format(PRT.HighlightString(item.name)),
         function()
           AceHelper.RemoveTab(tabGroup, t, key)
-        end)
-    end)
+        end
+      )
+    end
+  )
   AceHelper.AddTooltip(deleteButton, label)
   container:AddChild(deleteButton)
 end
@@ -155,7 +165,8 @@ function PRT.TabGroupCloneButton(container, tabGroup, t, key, label)
   local item = t[key]
   local cloneButton = AceGUI:Create("Button")
   cloneButton:SetText(label)
-  cloneButton:SetCallback("OnClick",
+  cloneButton:SetCallback(
+    "OnClick",
     function()
       local confirmationLabel
       if item.name then
@@ -163,12 +174,15 @@ function PRT.TabGroupCloneButton(container, tabGroup, t, key, label)
       else
         confirmationLabel = "Are you sure you want to clone this item?"
       end
-      PRT.ConfirmationDialog(L[confirmationLabel]:format(PRT.HighlightString(item.name)),
+      PRT.ConfirmationDialog(
+        L[confirmationLabel]:format(PRT.HighlightString(item.name)),
         function()
           local clonedItem = PRT.TableUtils.Clone(item)
           AceHelper.AddNewTab(tabGroup, t, clonedItem)
-        end)
-    end)
+        end
+      )
+    end
+  )
   AceHelper.AddTooltip(cloneButton, label)
   container:AddChild(cloneButton)
 end
@@ -216,7 +230,6 @@ function PRT.Release(widget)
   widget:ReleaseChildren()
   widget:Release()
 end
-
 
 -------------------------------------------------------------------------------
 -- Container
@@ -299,7 +312,6 @@ function PRT.Window(label)
 
   return container
 end
-
 
 -------------------------------------------------------------------------------
 -- Widgets

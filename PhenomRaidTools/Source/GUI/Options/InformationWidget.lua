@@ -14,7 +14,6 @@ local specialThanksEntries = {
   "Frolst (Frolst#6424)"
 }
 
-
 -------------------------------------------------------------------------------
 -- Private Helper
 
@@ -24,10 +23,12 @@ local function addLinkWidgets(container, links)
     linkEditBox:SetRelativeWidth(1)
     linkEditBox:SetText(link)
 
-    linkEditBox:SetCallback("OnTextChanged",
+    linkEditBox:SetCallback(
+      "OnTextChanged",
       function(widget)
         widget:SetText(link)
-      end)
+      end
+    )
 
     container:AddChild(linkEditBox)
   end

@@ -3,7 +3,6 @@ local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local GetNumSpecializations, GetSpecializationInfo = GetNumSpecializations, GetSpecializationInfo
 
-
 local Profiles = {}
 
 -------------------------------------------------------------------------------
@@ -21,7 +20,6 @@ function Profiles.UpdateCoreFrame()
   PRT.ReceiverOverlay.ShowPlaceholders(PRT.GetProfileDB().overlay.receivers)
 end
 
-
 -- show current profile
 function Profiles.AddCurrentProfileWidget(container)
   local currentProfileString = string.format("%s: %s", L["Current Profile"], PRT.ColoredString(PRT.GetCurrentProfile(), PRT.Static.Colors.Highlight))
@@ -34,16 +32,20 @@ end
 
 function Profiles.AddResetCurrentProfileWidget(container)
   local resetProfileButton = PRT.Button(L["Reset Profile"])
-  resetProfileButton:SetCallback("OnClick",
+  resetProfileButton:SetCallback(
+    "OnClick",
     function()
       local profile = PRT.GetCurrentProfile()
-      PRT.ConfirmationDialog(L["Are you sure you want to reset profile %s?"]:format(PRT.HighlightString(profile)),
+      PRT.ConfirmationDialog(
+        L["Are you sure you want to reset profile %s?"]:format(PRT.HighlightString(profile)),
         function()
           PRT.ResetProfile(profile)
           PRT.Info("Resetted Profile ", PRT.HighlightString(profile))
           Profiles.UpdateCoreFrame(container)
-        end)
-    end)
+        end
+      )
+    end
+  )
 
   container:AddChild(resetProfileButton)
 end
@@ -54,19 +56,24 @@ function Profiles.AddChangeCurrentProfile(container)
   local currentProfile = PRT.GetCurrentProfile()
   local descriptionLabel = PRT.Label(L["Select the profile you want to change to."])
 
-  local selectableProfiles = PRT.TableUtils.Remove(existingProfiles,
+  local selectableProfiles =
+    PRT.TableUtils.Remove(
+    existingProfiles,
     function(value)
       return value == currentProfile
-    end)
+    end
+  )
 
   local selectableProfilesDropdown = PRT.Dropdown(L["Select Profile"], nil, selectableProfiles)
-  selectableProfilesDropdown:SetCallback("OnValueChanged",
+  selectableProfilesDropdown:SetCallback(
+    "OnValueChanged",
     function(widget)
       local profile = widget:GetValue()
       PRT.SetProfile(profile)
       PRT.Info("Selected Profile ", PRT.HighlightString(profile))
       Profiles.UpdateCoreFrame()
-    end)
+    end
+  )
 
   selectProfileGroup:AddChild(descriptionLabel)
   selectProfileGroup:AddChild(selectableProfilesDropdown)
@@ -76,24 +83,23 @@ end
 function Profiles.AddNewProfileWidget(container)
   local newProfileGroup = PRT.SimpleGroup()
   local newProfileEditBox = PRT.EditBox(L["New Profile"])
-  local descriptionLabel = PRT.Label(L["Type any name for the new profile you want to create. If the name is already taken profile will instead switch to the already existing one."])
+  local descriptionLabel =
+    PRT.Label(L["Type any name for the new profile you want to create. If the name is already taken profile will instead switch to the already existing one."])
 
   descriptionLabel:SetRelativeWidth(0.5)
 
-  newProfileEditBox:SetCallback("OnEnterPressed",
+  newProfileEditBox:SetCallback(
+    "OnEnterPressed",
     function(widget)
       local profileName = widget:GetText()
       PRT.SetProfile(profileName)
       Profiles.UpdateCoreFrame()
-    end)
+    end
+  )
 
   newProfileGroup:AddChild(descriptionLabel)
   newProfileGroup:AddChild(newProfileEditBox)
   container:AddChild(newProfileGroup)
-end
-
-function Profiles.CopyFromProfileWidget(container)
--- Copy
 end
 
 function Profiles.DeleteProfileWidget(container)
@@ -104,22 +110,29 @@ function Profiles.DeleteProfileWidget(container)
 
   descriptionLabel:SetRelativeWidth(0.5)
 
-  local deletableProfiles = PRT.TableUtils.Remove(existingProfiles,
+  local deletableProfiles =
+    PRT.TableUtils.Remove(
+    existingProfiles,
     function(value)
       return value == currentProfile
-    end)
+    end
+  )
 
   local deletableProfilesDropdown = PRT.Dropdown(L["Delete Profile"], nil, deletableProfiles)
-  deletableProfilesDropdown:SetCallback("OnValueChanged",
+  deletableProfilesDropdown:SetCallback(
+    "OnValueChanged",
     function(widget)
       local profile = widget:GetValue()
-      PRT.ConfirmationDialog(L["Are you sure you want to delete profile %s?"]:format(PRT.HighlightString(profile)),
+      PRT.ConfirmationDialog(
+        L["Are you sure you want to delete profile %s?"]:format(PRT.HighlightString(profile)),
         function()
           PRT.DeleteProfile(profile)
           PRT.Info("Deleted Profile ", PRT.HighlightString(profile))
           Profiles.UpdateCoreFrame()
-        end)
-    end)
+        end
+      )
+    end
+  )
 
   deleteProfileGroup:AddChild(descriptionLabel)
   deleteProfileGroup:AddChild(deletableProfilesDropdown)
@@ -132,11 +145,13 @@ function Profiles.AddSpecProfileSelect(options, container, specIndex, specName)
   local profileDropdown = PRT.Dropdown(specName, nil, availableProfiles, selectedProfile)
   profileDropdown:SetDisabled(not options.specSpecificProfiles.enabled)
   profileDropdown:SetRelativeWidth(0.5)
-  profileDropdown:SetCallback("OnValueChanged",
+  profileDropdown:SetCallback(
+    "OnValueChanged",
     function(widget)
       local value = widget:GetValue()
       options.specSpecificProfiles.profileBySpec[specIndex] = value
-    end)
+    end
+  )
 
   container:AddChild(profileDropdown)
 end
@@ -150,11 +165,13 @@ function Profiles.AddSpecSpecificGroupWidget(options, container)
   enabledCheckBox:SetRelativeWidth(1)
   descriptionLabel:SetRelativeWidth(0.5)
 
-  enabledCheckBox:SetCallback("OnValueChanged",
+  enabledCheckBox:SetCallback(
+    "OnValueChanged",
     function(widget)
       options.specSpecificProfiles.enabled = widget:GetValue()
       Profiles.UpdateCoreFrame()
-    end)
+    end
+  )
 
   specSpecificGroup:AddChild(descriptionLabel)
   specSpecificGroup:AddChild(enabledCheckBox)
@@ -166,7 +183,6 @@ function Profiles.AddSpecSpecificGroupWidget(options, container)
 
   container:AddChild(specSpecificGroup)
 end
-
 
 -------------------------------------------------------------------------------
 -- Public API

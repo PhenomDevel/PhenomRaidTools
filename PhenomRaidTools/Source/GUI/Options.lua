@@ -1,7 +1,6 @@
 local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
-
 -------------------------------------------------------------------------------
 -- Public API
 
@@ -13,7 +12,7 @@ function PRT.AddOptionWidgets(container)
     },
     {
       value = "raidRoster",
-      text = L["Raidroster"] ,
+      text = L["Raidroster"],
       disabled = not PRT.IsSender()
     },
     {
@@ -26,7 +25,7 @@ function PRT.AddOptionWidgets(container)
     },
     {
       value = "defaults",
-      text = L["Trigger Defaults"] ,
+      text = L["Trigger Defaults"],
       disabled = not PRT.IsSender()
     },
     {
@@ -37,28 +36,30 @@ function PRT.AddOptionWidgets(container)
 
   local optionsTabsGroup = PRT.TabGroup(nil, optionsTabs)
   optionsTabsGroup:SetLayout("Flow")
-  optionsTabsGroup:SetCallback("OnGroupSelected",
-    function(container, _, key)
+  optionsTabsGroup:SetCallback(
+    "OnGroupSelected",
+    function(tabGroup, _, key)
       container:ReleaseChildren()
 
-      if key ==  "general" then
-        PRT.AddGeneralWidgets(container, PRT.GetProfileDB())
+      if key == "general" then
+        PRT.AddGeneralWidgets(tabGroup, PRT.GetProfileDB())
       elseif key == "difficulties" then
-        PRT.AddDifficultyWidgets(container, PRT.GetProfileDB().enabledDifficulties)
+        PRT.AddDifficultyWidgets(tabGroup, PRT.GetProfileDB().enabledDifficulties)
       elseif key == "defaults" then
-        PRT.AddDefaultsGroups(container, PRT.GetProfileDB().triggerDefaults)
+        PRT.AddDefaultsGroups(tabGroup, PRT.GetProfileDB().triggerDefaults)
       elseif key == "raidRoster" then
-        PRT.AddRaidRosterWidget(container, PRT.GetProfileDB().raidRoster)
+        PRT.AddRaidRosterWidget(tabGroup, PRT.GetProfileDB().raidRoster)
       elseif key == "overlay" then
-        PRT.AddOverlayWidget(container, PRT.GetProfileDB().overlay)
+        PRT.AddOverlayWidget(tabGroup, PRT.GetProfileDB().overlay)
       elseif key == "information" then
-        PRT.AddInformationWidgets(container)
+        PRT.AddInformationWidgets(tabGroup)
       end
 
       if PRT.mainWindowContent.scrollFrame then
         PRT.Core.UpdateScrollFrame()
       end
-    end)
+    end
+  )
 
   container:AddChild(optionsTabsGroup)
   optionsTabsGroup:SelectTab("general")

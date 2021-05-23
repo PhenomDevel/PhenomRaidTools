@@ -1,12 +1,6 @@
 local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
-local specialWidgetNames = {
-  "defaultTargetOverlay",
-  "defaultMessageType",
-  "defaultEvent"
-}
-
 local defaultTranslations = {
   ["rotationDefaults"] = L["Rotation"],
   ["defaultIgnoreAfterActivation"] = L["Ignore after activation"],
@@ -22,9 +16,8 @@ local defaultTranslations = {
   ["percentageDefaults"] = L["Percentage"],
   ["defaultUnitID"] = L["Unit"],
   ["defaultCheckAgain"] = L["Check again"],
-  ["defaultCheckAgainAfter"] = L["Check after"],
+  ["defaultCheckAgainAfter"] = L["Check after"]
 }
-
 
 -------------------------------------------------------------------------------
 -- Private Helper
@@ -33,39 +26,45 @@ local function addDefaultsWidgets(container, t)
   if t then
     for k, v in pairs(t) do
       local widget = nil
-      if tContains(specialWidgetNames, k) then
-      -- do nothing
-      elseif type(v) == "boolean" then
+      if type(v) == "boolean" then
         widget = PRT.CheckBox(defaultTranslations[k], nil, v)
-        widget:SetCallback("OnValueChanged",
+        widget:SetCallback(
+          "OnValueChanged",
           function()
             t[k] = widget:GetValue()
-          end)
+          end
+        )
       elseif type(v) == "string" then
         widget = PRT.EditBox(defaultTranslations[k], nil, v)
-        widget:SetCallback("OnEnterPressed",
+        widget:SetCallback(
+          "OnEnterPressed",
           function()
             t[k] = widget:GetText()
             widget:ClearFocus()
-          end)
+          end
+        )
       elseif type(v) == "number" then
         widget = PRT.Slider(defaultTranslations[k], nil, v)
-        widget:SetCallback("OnValueChanged",
+        widget:SetCallback(
+          "OnValueChanged",
           function()
             t[k] = widget:GetValue()
-          end)
+          end
+        )
       elseif type(v) == "table" then
         widget = PRT.EditBox(defaultTranslations[k], nil, strjoin(", ", unpack(v)), true)
         widget:SetWidth(300)
-        widget:SetCallback("OnEnterPressed",
+        widget:SetCallback(
+          "OnEnterPressed",
           function()
             if widget:GetText() == "" then
               t[k] = {}
             else
-              t[k] = { strsplit(",", widget:GetText()) }
+              t[k] = {strsplit(",", widget:GetText())}
             end
             widget:ClearFocus()
-          end)
+          end
+        )
       end
 
       if widget then
@@ -81,7 +80,7 @@ local function AddMessageDefaultWidgets(container, t)
   for _, overlay in ipairs(PRT.GetProfileDB().overlay.receivers) do
     local targetOverlayItem = {
       id = overlay.id,
-      name = overlay.id..": "..overlay.label
+      name = overlay.id .. ": " .. overlay.label
     }
 
     tinsert(targetOverlayDropdownItems, targetOverlayItem)
@@ -89,10 +88,12 @@ local function AddMessageDefaultWidgets(container, t)
 
   local targetOverlayDropdown = PRT.Dropdown(L["Target Overlay"], L["Overlay on which the message should show up"], targetOverlayDropdownItems, (t.defaultTargetOverlay or 1))
   targetOverlayDropdown:SetRelativeWidth(0.33)
-  targetOverlayDropdown:SetCallback("OnValueChanged",
+  targetOverlayDropdown:SetCallback(
+    "OnValueChanged",
     function(widget)
       t.defaultTargetOverlay = widget:GetValue()
-    end)
+    end
+  )
 
   local actionTypeDropdownItems = {
     [1] = {
@@ -121,10 +122,12 @@ local function AddMessageDefaultWidgets(container, t)
 
   local actionTypeDropdown = PRT.Dropdown(L["Type"], nil, actionTypeDropdownItems, t.defaultMessageType or "cooldown", nil, true)
   actionTypeDropdown:SetRelativeWidth(0.33)
-  actionTypeDropdown:SetCallback("OnValueChanged",
+  actionTypeDropdown:SetCallback(
+    "OnValueChanged",
     function(widget)
       t.defaultMessageType = widget:GetValue()
-    end)
+    end
+  )
 
   container:AddChild(actionTypeDropdown)
   container:AddChild(targetOverlayDropdown)
@@ -133,22 +136,23 @@ end
 local function AddConditionDefaults(container, t)
   local eventDropDown = PRT.Dropdown(L["Event"], nil, PRT.Static.Tables.SupportedEvents, t.defaultEvent, true)
   eventDropDown:SetRelativeWidth(1)
-  eventDropDown:SetCallback("OnValueChanged",
+  eventDropDown:SetCallback(
+    "OnValueChanged",
     function(widget)
       local text = widget:GetValue()
 
       if text == "" then
-        t.defaultEvent= nil
+        t.defaultEvent = nil
       else
         t.defaultEvent = text
       end
 
       widget:ClearFocus()
-    end)
+    end
+  )
 
   container:AddChild(eventDropDown)
 end
-
 
 -------------------------------------------------------------------------------
 -- Public API

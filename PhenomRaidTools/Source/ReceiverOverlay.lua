@@ -9,7 +9,6 @@ local ReceiverOverlay = {
 -- Create local copies of API functions which we use
 local GameFontHighlightSmall = GameFontHighlightSmall
 
-
 -------------------------------------------------------------------------------
 -- Local Helper
 
@@ -39,14 +38,15 @@ function ReceiverOverlay.AddMessage(messageTable)
     end
   end
   messageTable.message = PRT.PrepareMessageForDisplay(messageTable.message)
-  local index = #ReceiverOverlay.messageStack+1
+  local index = #ReceiverOverlay.messageStack + 1
   ReceiverOverlay.messageStack[index] = messageTable
   AceTimer:ScheduleTimer(
     function()
       ReceiverOverlay.messageStack[index] = ""
       ReceiverOverlay.UpdateFrameText()
     end,
-    (messageTable.duration or 5))
+    (messageTable.duration or 5)
+  )
 
   ReceiverOverlay.UpdateFrameText()
 end
@@ -55,13 +55,13 @@ function ReceiverOverlay.ShowPlaceholder(frame, options, _)
   local text = ""
 
   if options then
-    text = options.name..": "..(options.label or "LABEL")
+    text = options.name .. ": " .. (options.label or "LABEL")
   else
     text = (text or "Placeholder")
   end
 
   if not options.locked then
-    text = text.."\nDrag to move"
+    text = text .. "\nDrag to move"
   end
 
   local color = PRT.RGBAToHex(options.fontColor.r, options.fontColor.g, options.fontColor.b, options.fontColor.a)
@@ -105,7 +105,7 @@ function ReceiverOverlay.UpdateFrameText()
             if text == "" then
               text = PRT.ColoredString(string.format(message.message, timeLeft), color, true)
             else
-              text = text.."|n"..PRT.ColoredString(string.format(message.message, timeLeft), color, true)
+              text = text .. "|n" .. PRT.ColoredString(string.format(message.message, timeLeft), color, true)
             end
           end
         end

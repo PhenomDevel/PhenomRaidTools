@@ -3,7 +3,6 @@ local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local Rotation = {}
 
-
 -------------------------------------------------------------------------------
 -- Local Helper
 
@@ -11,10 +10,12 @@ function Rotation.RotationEntryWidget(entry, container, _)
   local messagesTabs = PRT.TableToTabs(entry.messages, true)
   local messagesTabGroup = PRT.TabGroup(L["Messages"], messagesTabs)
   messagesTabGroup:SetLayout("List")
-  messagesTabGroup:SetCallback("OnGroupSelected",
+  messagesTabGroup:SetCallback(
+    "OnGroupSelected",
     function(widget, _, key)
       PRT.TabGroupSelected(widget, entry.messages, key, PRT.MessageWidget, PRT.EmptyMessage, true, L["Delete"], true, L["Clone"])
-    end)
+    end
+  )
 
   PRT.SelectFirstTab(messagesTabGroup, entry.messages)
 
@@ -31,27 +32,33 @@ function Rotation.RotationWidget(rotationName, rotations, container)
   local rotationOptionsGroup = PRT.InlineGroup(L["Options"])
   rotationOptionsGroup:SetLayout("Flow")
 
-  local shouldRestartCheckBox =  PRT.CheckBox(L["Restart"], L["Restarts the rotation when\nno more entries are found."], rotation.shouldRestart)
+  local shouldRestartCheckBox = PRT.CheckBox(L["Restart"], L["Restarts the rotation when\nno more entries are found."], rotation.shouldRestart)
   local ignoreAfterActivationCheckBox = PRT.CheckBox(L["Ignore after activation"], L["Ignore all events for X seconds."], rotation.ignoreAfterActivation)
   local ignoreDurationSlider = PRT.Slider(L["Ignore for"], nil, rotation.ignoreDuration)
 
-  shouldRestartCheckBox:SetCallback("OnValueChanged",
+  shouldRestartCheckBox:SetCallback(
+    "OnValueChanged",
     function(widget)
       rotation.shouldRestart = widget:GetValue()
-    end)
+    end
+  )
 
-  ignoreAfterActivationCheckBox:SetCallback("OnValueChanged",
+  ignoreAfterActivationCheckBox:SetCallback(
+    "OnValueChanged",
     function(widget)
       local value = widget:GetValue()
       rotation.ignoreAfterActivation = value
       ignoreDurationSlider:SetDisabled(not value)
-    end)
+    end
+  )
 
   ignoreDurationSlider:SetDisabled(not rotation.ignoreAfterActivation)
-  ignoreDurationSlider:SetCallback("OnValueChanged",
+  ignoreDurationSlider:SetCallback(
+    "OnValueChanged",
     function(widget)
       rotation.ignoreDuration = widget:GetValue()
-    end)
+    end
+  )
 
   rotationOptionsGroup:AddChild(shouldRestartCheckBox)
   rotationOptionsGroup:AddChild(ignoreAfterActivationCheckBox)
@@ -72,15 +79,16 @@ function Rotation.RotationWidget(rotationName, rotations, container)
   -- Rotationentries
   local tabs = PRT.TableToTabs(rotation.entries, true)
   local entriesTabGroupWidget = PRT.TabGroup(L["Rotation Entry"], tabs)
-  entriesTabGroupWidget:SetCallback("OnGroupSelected",
+  entriesTabGroupWidget:SetCallback(
+    "OnGroupSelected",
     function(widget, _, key)
       PRT.TabGroupSelected(widget, rotation.entries, key, Rotation.RotationEntryWidget, PRT.EmptyRotationEntry, true, L["Delete"], true, L["Clone"])
-    end)
+    end
+  )
 
   PRT.SelectFirstTab(entriesTabGroupWidget, rotation.entries)
   container:AddChild(entriesTabGroupWidget)
 end
-
 
 -------------------------------------------------------------------------------
 -- Public API
@@ -93,20 +101,23 @@ function PRT.AddRotationOptions(container, profile, encounterID)
   rotationOptionsGroup:SetLayout("Flow")
 
   local addButton = PRT.Button(L["New"])
-  addButton:SetCallback("OnClick",
+  addButton:SetCallback(
+    "OnClick",
     function()
       local newRotation = PRT.EmptyRotation()
       tinsert(rotations, newRotation)
       PRT.Core.UpdateTree()
       PRT.mainWindowContent:DoLayout()
       PRT.mainWindowContent:SelectByPath("encounters", encounterID, "rotations", newRotation.name)
-    end)
+    end
+  )
 
   local hasClipboardRotation = (not PRT.TableUtils.IsEmpty(PRT.GetProfileDB().clipboard.rotation))
   local pasteButtonText = PRT.StringUtils.WrapColorByBoolean(L["Paste"], hasClipboardRotation, "FF696969")
   local pasteButton = PRT.Button(pasteButtonText)
   pasteButton:SetDisabled(not hasClipboardRotation)
-  pasteButton:SetCallback("OnClick",
+  pasteButton:SetCallback(
+    "OnClick",
     function()
       tinsert(rotations, PRT.GetProfileDB().clipboard.rotation)
       PRT.Core.UpdateTree()
@@ -114,7 +125,8 @@ function PRT.AddRotationOptions(container, profile, encounterID)
       PRT.mainWindowContent:SelectByPath("encounters", encounterID, "rotations", PRT.GetProfileDB().clipboard.rotation.name)
       PRT.Debug("Pasted rotation", PRT.HighlightString(PRT.GetProfileDB().clipboard.rotation.name), "to", PRT.HighlightString(encounter.name))
       PRT.GetProfileDB().clipboard.rotation = nil
-    end)
+    end
+  )
 
   rotationOptionsGroup:AddChild(addButton)
   rotationOptionsGroup:AddChild(pasteButton)

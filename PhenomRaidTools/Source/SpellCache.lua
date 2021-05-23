@@ -8,7 +8,6 @@ PRT.SpellCache = SpellCache
 
 local GetBuildInfo = GetBuildInfo
 
-
 -------------------------------------------------------------------------------
 -- Public API
 -- Original Idea from WeakAuras2
@@ -32,8 +31,7 @@ function SpellCache.CheckWowVersion(spellCache)
   local currentWowVersion = GetBuildInfo()
 
   if spellCache.wowVersion ~= currentWowVersion then
-    PRT.Debug("WoW version has changed. Previous:",
-      PRT.HighlightString(spellCache.wowVersion), "Current:", PRT.HighlightString(currentWowVersion))
+    PRT.Debug("WoW version has changed. Previous:", PRT.HighlightString(spellCache.wowVersion), "Current:", PRT.HighlightString(currentWowVersion))
     SpellCache.Invalidate(spellCache)
   end
 end
@@ -43,7 +41,8 @@ function SpellCache.Build(spellCache)
     SpellCache.CheckWowVersion(spellCache)
 
     if not spellCache.completed then
-      local backgroundRoutine = coroutine.create(
+      local backgroundRoutine =
+        coroutine.create(
         function()
           local id = spellCache.lastCheckedId or 0
           local failedAttempt = 0
@@ -55,8 +54,8 @@ function SpellCache.Build(spellCache)
             if not PRT.StringUtils.IsEmpty(name) then
               -- PRT.Debug("SpellCache: Found spell", PRT.HighlightString(name), "(", PRT.HighlightString(id), ")")
 
-              if(icon == 136243) then -- 136243 is the a gear icon, we can ignore those spells
-                failedAttempt = 0;
+              if (icon == 136243) then -- 136243 is the a gear icon, we can ignore those spells
+                failedAttempt = 0
               else
                 spellCache.spells[id] = {
                   id = id,
@@ -77,12 +76,14 @@ function SpellCache.Build(spellCache)
 
           spellCache.completedAt = PRT.Now()
           spellCache.completed = true
-        end)
+        end
+      )
 
-      local timerId = AceTimer:ScheduleRepeatingTimer(
+      local timerId =
+        AceTimer:ScheduleRepeatingTimer(
         -- We retrieve one spell every 16ms (roughly 60 calculations per second)
         function()
-          coroutine.resume( backgroundRoutine )
+          coroutine.resume(backgroundRoutine)
         end,
         0.016
       )

@@ -2,10 +2,10 @@ local _, PRT = ...
 local addon = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local AceComm = LibStub("AceComm-3.0")
 
-local UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat = UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned, UnitAffectingCombat
+local UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned = UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned
 local UnitIsGroupAssistant, SendChatMessage, UnitIsGroupLeader = UnitIsGroupAssistant, SendChatMessage, UnitIsGroupLeader
 local GetRealmName, GetRaidTargetIndex, SetRaidTarget = GetRealmName, GetRaidTargetIndex, SetRaidTarget
-local IsEncounterInProgress =IsEncounterInProgress
+local IsEncounterInProgress = IsEncounterInProgress
 
 local MessageHandler = {
   validTargets = {
@@ -20,10 +20,9 @@ local MessageHandler = {
     "ALL",
     UnitName("player"),
     GetUnitName("player", true),
-    UnitName("player").."-"..GetRealmName()
+    UnitName("player") .. "-" .. GetRealmName()
   }
 }
-
 
 -------------------------------------------------------------------------------
 -- Local Helper
@@ -34,15 +33,15 @@ function MessageHandler.ExpandMessageTargets(message)
   for _, v in ipairs(message.targets) do
     if v == "$target" then
       -- Set event target as message target
-      tinsert(splittetTargets, { message.eventTarget })
+      tinsert(splittetTargets, {message.eventTarget})
     else
       local names = PRT.ReplacePlayerNameTokens(v)
       -- Try to replace placeholder tokens otherwise
-      tinsert(splittetTargets, { strsplit(",", names) })
+      tinsert(splittetTargets, {strsplit(",", names)})
     end
   end
 
-  local targets = table.mergemany(unpack(splittetTargets))
+  local targets = PRT.TableUtils.MergeMany(unpack(splittetTargets))
   local existingTarget = {}
   local distinctTargets = {}
 
@@ -145,14 +144,11 @@ end
 function MessageHandler.IsValidSender(message)
   -- Filter received messages by configured message filter
   if PRT.GetProfileDB().messageFilter.filterBy == "names" then
-    return (tContains(PRT.GetProfileDB().messageFilter.requiredNames, message.sender) or
-      tContains(PRT.GetProfileDB().messageFilter.requiredNames, "$me") or
+    return (tContains(PRT.GetProfileDB().messageFilter.requiredNames, message.sender) or tContains(PRT.GetProfileDB().messageFilter.requiredNames, "$me") or
       PRT.GetProfileDB().messageFilter.requiredNames == nil or
       PRT.GetProfileDB().messageFilter.requiredNames == {} or
       PRT.TableUtils.IsEmpty(PRT.GetProfileDB().messageFilter.requiredNames) or
-      (PRT.GetProfileDB().messageFilter.alwaysIncludeMyself and
-      message.sender == select(1, UnitName("player"))))
-
+      (PRT.GetProfileDB().messageFilter.alwaysIncludeMyself and message.sender == select(1, UnitName("player"))))
   elseif PRT.GetProfileDB().messageFilter.filterBy == "guildRank" then
     local senderGuildRankIndex = select(3, GetGuildInfo(message.sender))
 
@@ -212,19 +208,26 @@ end
 function addon:OnVersionResponse(message)
   if PRT.IsEnabled() then
     local _, messageTable = PRT.Deserialize(message)
-    PRT.Debug(string.format("Version response from %s with version %s (Addon Status: %s)",PRT.ClassColoredName(messageTable.name), PRT.HighlightString(messageTable.version), PRT.HighlightString(messageTable.enabled)))
+    PRT.Debug(
+      string.format(
+        "Version response from %s with version %s (Addon Status: %s)",
+        PRT.ClassColoredName(messageTable.name),
+        PRT.HighlightString(messageTable.version),
+        PRT.HighlightString(messageTable.enabled)
+      )
+    )
     tinsert(PRT.GetProfileDB().versionCheck, messageTable)
   end
 end
 
 function addon:OnSyncRequest(_)
--- daten auspacken
--- abfrage, ob benutzer syncen will
--- encounter, placeholder, overlays, raid roster
+  -- daten auspacken
+  -- abfrage, ob benutzer syncen will
+  -- encounter, placeholder, overlays, raid roster
 end
 
 function addon:OnSyncResponse(_)
--- Rückmeldung an den Benutzer
+  -- Rückmeldung an den Benutzer
 end
 
 -------------------------------------------------------------------------------

@@ -7,7 +7,6 @@ local RaidRoster = {
   ddCount = 21
 }
 
-
 -------------------------------------------------------------------------------
 -- Private Helper
 
@@ -19,18 +18,18 @@ function RaidRoster.ImportRaidRosterByGroup(options, container)
   local ddsCounter = 0
 
   for _, name in ipairs(names) do
-    local playerRole = UnitGroupRolesAssigned(name);
+    local playerRole = UnitGroupRolesAssigned(name)
     local raidRosterID
 
     if playerRole == "TANK" then
       tanksCounter = tanksCounter + 1
-      raidRosterID = "tank"..tanksCounter
+      raidRosterID = "tank" .. tanksCounter
     elseif playerRole == "HEALER" then
       healerCounter = healerCounter + 1
-      raidRosterID = "heal"..healerCounter
+      raidRosterID = "heal" .. healerCounter
     elseif playerRole == "DAMAGER" then
       ddsCounter = ddsCounter + 1
-      raidRosterID = "dd"..ddsCounter
+      raidRosterID = "dd" .. ddsCounter
     end
 
     if raidRosterID then
@@ -49,24 +48,25 @@ function RaidRoster.ClearRaidRoster(options, container)
   PRT.AddRaidRosterWidget(container, options)
 end
 
-
 -------------------------------------------------------------------------------
 -- Public API
 
 function PRT.AddRaidRosterWidget(container, options)
   local importByGroupButton = PRT.Button(L["Import raid"])
-  importByGroupButton:SetCallback("OnClick",
+  importByGroupButton:SetCallback(
+    "OnClick",
     function(_)
-      PRT.ConfirmationDialog(L["Are you sure you want to import your current group?"],
-        RaidRoster.ImportRaidRosterByGroup, nil, options, container)
-    end)
+      PRT.ConfirmationDialog(L["Are you sure you want to import your current group?"], RaidRoster.ImportRaidRosterByGroup, nil, options, container)
+    end
+  )
 
   local clearRaidRosterButton = PRT.Button(L["Clear"])
-  clearRaidRosterButton:SetCallback("OnClick",
+  clearRaidRosterButton:SetCallback(
+    "OnClick",
     function(_)
-      PRT.ConfirmationDialog(L["Are you sure you want to clear the current raid roster?"],
-        RaidRoster.ClearRaidRoster, nil, options, container)
-    end)
+      PRT.ConfirmationDialog(L["Are you sure you want to clear the current raid roster?"], RaidRoster.ClearRaidRoster, nil, options, container)
+    end
+  )
 
   local explanationLabel = PRT.Label(L["You can import or define your raid roster and use the placeholder within your triggers."])
   explanationLabel:SetRelativeWidth(1)
@@ -75,11 +75,12 @@ function PRT.AddRaidRosterWidget(container, options)
   tankGroup:SetLayout("Flow")
 
   for i = 1, RaidRoster.tankCount do
-    local id = "tank"..i
+    local id = "tank" .. i
     local value = options[id]
     local tankEditBox = PRT.EditBox(L[id], nil, value)
     tankEditBox:SetRelativeWidth(0.33)
-    tankEditBox:SetCallback("OnEnterPressed",
+    tankEditBox:SetCallback(
+      "OnEnterPressed",
       function(widget)
         local text = widget:GetText()
         if text ~= "" then
@@ -88,7 +89,8 @@ function PRT.AddRaidRosterWidget(container, options)
           options[id] = nil
         end
         widget:ClearFocus()
-      end)
+      end
+    )
     tankGroup:AddChild(tankEditBox)
   end
 
@@ -96,19 +98,22 @@ function PRT.AddRaidRosterWidget(container, options)
   healGroup:SetLayout("Flow")
 
   for i = 1, RaidRoster.healerCount do
-    local id = "heal"..i
+    local id = "heal" .. i
     local value = options[id]
     local healEditBox = PRT.EditBox(L[id], nil, value)
     healEditBox:SetRelativeWidth(0.33)
-    healEditBox:SetCallback("OnEnterPressed", function(widget)
-      local text = widget:GetText()
-      if text ~= "" then
-        options[id] = text
-      else
-        options[id] = nil
+    healEditBox:SetCallback(
+      "OnEnterPressed",
+      function(widget)
+        local text = widget:GetText()
+        if text ~= "" then
+          options[id] = text
+        else
+          options[id] = nil
+        end
+        widget:ClearFocus()
       end
-      widget:ClearFocus()
-    end)
+    )
 
     healGroup:AddChild(healEditBox)
   end
@@ -117,19 +122,22 @@ function PRT.AddRaidRosterWidget(container, options)
   ddGroup:SetLayout("Flow")
 
   for i = 1, RaidRoster.ddCount do
-    local id = "dd"..i
+    local id = "dd" .. i
     local value = options[id]
     local ddEditBox = PRT.EditBox(L[id], nil, value)
     ddEditBox:SetRelativeWidth(0.33)
-    ddEditBox:SetCallback("OnEnterPressed", function(widget)
-      local text = widget:GetText()
-      if text ~= "" then
-        options[id] = text
-      else
-        options[id] = nil
+    ddEditBox:SetCallback(
+      "OnEnterPressed",
+      function(widget)
+        local text = widget:GetText()
+        if text ~= "" then
+          options[id] = text
+        else
+          options[id] = nil
+        end
+        widget:ClearFocus()
       end
-      widget:ClearFocus()
-    end)
+    )
     ddGroup:AddChild(ddEditBox)
   end
 

@@ -26,80 +26,55 @@ local CooldownSoundFileMapping = {
   [51052] = "PRT: Anti Magic Zone",
   [97462] = "PRT: Rallying Cry",
   [109964] = "PRT: Spirit Shell",
-  [316958] = "PRT: Ashen Hallow",
+  [316958] = "PRT: Ashen Hallow"
 }
 
 local Cooldowns = {
   externals = {
     33206, -- Pain Suppression
     47788, -- Guardian Spirit
-
     102342, -- Iron Bark
-
     6940, -- Blessing of Sacrifice
     1022, -- Blessing of Protection
     204018, -- Blessing of Spellwarding
-
-    116849, -- Life Cocoon
+    116849 -- Life Cocoon
   },
   raidHeal = {
     64843, -- Divine Hymn
     265202, -- Holy Word: Salvation
-
     740, -- Tranquility
-
     108280, -- Healing Tide Totem
-
     115310, -- Revival
-
     31884, -- Wings
-
     33891, -- Tree
-
     197721, -- Flourish
-
     62618, -- Power Word: Barrier
-
     98008, -- Spirit Link Totem
-
     31821, -- Aura Mastery
-
     320420, -- Darkness
-
     51052, -- AMC
-
     109964, -- Spirit Shell
-
     316958, -- Ashen Hallow
-
-    97462, -- Rallying Cry
-
+    97462 -- Rallying Cry
   },
-
   utility = {
     192077, -- Windrush Totem
-
     106898, -- Stampeding Roar
-
     16191, -- Mana Tide
-
     64901, -- Symbol of Hope
     108281, -- Ancestral Guidance
-    15286, -- Embrace
-
+    15286 -- Embrace
   },
-
   immunities = {
     642, -- Divine Shield
     45438, -- Iceblock
     186265, -- Turtle
     196555, -- Netherwalk
-    31224, -- Cloak of Shadows
+    31224 -- Cloak of Shadows
   }
 }
 
 local cooldownIconSize = 20
-
 
 -------------------------------------------------------------------------------
 -- Local Helper
@@ -129,7 +104,7 @@ function Message.ColoredRaidPlayerNames()
   local playerNames = {}
 
   for _, name in ipairs(PRT.PartyNames(false)) do
-    tinsert(playerNames, { id = name, name = PRT.ClassColoredName(name)})
+    tinsert(playerNames, {id = name, name = PRT.ClassColoredName(name)})
   end
 
   return playerNames
@@ -142,9 +117,9 @@ function Message.GenerateRaidRosterDropdownItems()
   for k, v in pairs(PRT.GetProfileDB().raidRoster) do
     local name = PRT.ClassColoredName(v)
 
-    name = "$"..k.." ("..name..")"
+    name = "$" .. k .. " (" .. name .. ")"
 
-    tinsert(raidRosterItems, { id = "$"..k , name = name})
+    tinsert(raidRosterItems, {id = "$" .. k, name = name})
   end
 
   -- Add Custom Encounter Placeholder
@@ -160,8 +135,8 @@ function Message.GenerateRaidRosterDropdownItems()
           end
 
           local name = strjoin(", ", unpack(coloredNames))
-          name = "$"..customEncounterPlaceholder.name.." ("..name..")"
-          tinsert(raidRosterItems, { id = "$"..customEncounterPlaceholder.name , name = name})
+          name = "$" .. customEncounterPlaceholder.name .. " (" .. name .. ")"
+          tinsert(raidRosterItems, {id = "$" .. customEncounterPlaceholder.name, name = name})
         end
       end
     end
@@ -176,31 +151,31 @@ function Message.GenerateRaidRosterDropdownItems()
     end
 
     local name = strjoin(", ", unpack(coloredNames))
-    name = "$"..customPlaceholder.name.." ("..name..")"
-    tinsert(raidRosterItems, { id = "$"..customPlaceholder.name , name = name})
+    name = "$" .. customPlaceholder.name .. " (" .. name .. ")"
+    tinsert(raidRosterItems, {id = "$" .. customPlaceholder.name, name = name})
   end
 
   -- Add groups
   local groupItems = {}
   for i = 1, 8, 1 do
-    local identifier = "$group"..i
+    local identifier = "$group" .. i
     if not tContains(groupItems, identifier) then
       tinsert(groupItems, identifier)
     end
   end
 
   for _, v in ipairs(groupItems) do
-    tinsert(raidRosterItems, { id = v, name = v})
+    tinsert(raidRosterItems, {id = v, name = v})
   end
 
   -- Add default targets (HEALER, TANK etc.)
   for _, name in ipairs(Message.defaultTargets) do
-    tinsert(raidRosterItems, { id = name, name = name})
+    tinsert(raidRosterItems, {id = name, name = name})
   end
 
-  tinsert(raidRosterItems, { id = "$target", name = "$target"})
+  tinsert(raidRosterItems, {id = "$target", name = "$target"})
 
-  raidRosterItems = table.mergecopy(raidRosterItems, Message.ColoredRaidPlayerNames())
+  raidRosterItems = PRT.TableUtils.MergeMany(raidRosterItems, Message.ColoredRaidPlayerNames())
   PRT.TableUtils.SortByKey(raidRosterItems, "name")
   return raidRosterItems
 end
@@ -217,7 +192,7 @@ function Message.CompilePossibleCooldownItems()
   local cooldownItems = {
     {
       id = "custom",
-      name = "|cFFf5b247"..L["* Custom *"].."|r"
+      name = "|cFFf5b247" .. L["* Custom *"] .. "|r"
     }
   }
   for _, cooldownGroup in pairs(Cooldowns) do
@@ -239,11 +214,12 @@ local function AddLoadTemplateActionWidgets(container, action)
   local templates = {}
 
   for templateName, _ in pairs(PRT.GetProfileDB().templateStore.messages) do
-    tinsert(templates, { id = templateName, name = templateName })
+    tinsert(templates, {id = templateName, name = templateName})
   end
 
   local templatesDropdown = PRT.Dropdown(L["Templates"], nil, templates)
-  templatesDropdown:SetCallback("OnValueChanged",
+  templatesDropdown:SetCallback(
+    "OnValueChanged",
     function(widget)
       local templateMessage = PRT.GetProfileDB().templateStore.messages[widget:GetValue()]
 
@@ -254,24 +230,27 @@ local function AddLoadTemplateActionWidgets(container, action)
         PRT.MessageWidget(action, container)
         PRT.Core.UpdateScrollFrame()
       end
-    end)
+    end
+  )
 
   container:AddChild(templatesDropdown)
 end
 
 local function AddRaidWarningActionWidgets(container, action)
-  local messagePreviewLabel = PRT.Label(L["Preview: "]..PRT.PrepareMessageForDisplay(action.message))
+  local messagePreviewLabel = PRT.Label(L["Preview: "] .. PRT.PrepareMessageForDisplay(action.message))
   messagePreviewLabel:SetRelativeWidth(1)
 
   local messageEditBox = PRT.EditBox(L["Message"], nil, action.message, true)
   messageEditBox:SetRelativeWidth(1)
-  messageEditBox:SetCallback("OnEnterPressed",
+  messageEditBox:SetCallback(
+    "OnEnterPressed",
     function(widget)
       local text = widget:GetText()
       action.message = text
       widget:ClearFocus()
-      messagePreviewLabel:SetText(L["Preview "]..PRT.PrepareMessageForDisplay(action.message))
-    end)
+      messagePreviewLabel:SetText(L["Preview "] .. PRT.PrepareMessageForDisplay(action.message))
+    end
+  )
 
   local note = PRT.Label(L["Note: Not every element can be displayed in a raid warning e.g. icons."])
 
@@ -287,20 +266,24 @@ local function AddRaidTargetActionWidgets(container, action)
   local targetDropdown = PRT.Dropdown(L["Target"], L["Player who should be marked"], possibleTargets, action.targets[1], true)
   local raidTargetDropdown = PRT.Dropdown(L["Raidtarget"], nil, PRT.Static.Tables.RaidTargets, action.raidtarget, true)
 
-  targetDropdown:SetCallback("OnValueChanged",
+  targetDropdown:SetCallback(
+    "OnValueChanged",
     function(widget)
       wipe(action.targets)
       tinsert(action.targets, widget:GetValue())
-    end)
+    end
+  )
 
-  raidTargetDropdown:SetCallback("OnValueChanged",
+  raidTargetDropdown:SetCallback(
+    "OnValueChanged",
     function(widget)
       local value = widget:GetValue()
       if value == 999 then
         value = 0
       end
       action.raidtarget = value
-    end)
+    end
+  )
 
   container:AddChild(targetDropdown)
   container:AddChild(raidTargetDropdown)
@@ -319,15 +302,18 @@ local function AddCooldownActionWidgets(container, action)
   end
 
   local cooldownSpellDropdown = PRT.Dropdown(L["Spell"], nil, possibleCooldowns, cooldownSpellDropdownValue, false, true)
-  local actionPreview = PRT.Label(L["Preview: "]..PRT.PrepareMessageForDisplay(CooldownActionPreviewString(action)))
+  local actionPreview = PRT.Label(L["Preview: "] .. PRT.PrepareMessageForDisplay(CooldownActionPreviewString(action)))
   actionPreview:SetRelativeWidth(1)
-  targetDropdown:SetCallback("OnValueChanged",
+  targetDropdown:SetCallback(
+    "OnValueChanged",
     function(widget)
       wipe(action.targets)
       tinsert(action.targets, widget:GetValue())
-    end)
+    end
+  )
 
-  cooldownSpellDropdown:SetCallback("OnValueChanged",
+  cooldownSpellDropdown:SetCallback(
+    "OnValueChanged",
     function(widget)
       local value = widget:GetValue()
       action.spellID = value
@@ -351,31 +337,36 @@ local function AddCooldownActionWidgets(container, action)
       container:ReleaseChildren()
       AddCooldownActionWidgets(container, action)
       PRT.Core.UpdateScrollFrame()
-      actionPreview:SetText(L["Preview: "]..PRT.PrepareMessageForDisplay(CooldownActionPreviewString(action)))
-    end)
+      actionPreview:SetText(L["Preview: "] .. PRT.PrepareMessageForDisplay(CooldownActionPreviewString(action)))
+    end
+  )
 
   local targetOverlayDropdownItems = {}
   for _, overlay in ipairs(PRT.GetProfileDB().overlay.receivers) do
     local targetOverlayItem = {
       id = overlay.id,
-      name = overlay.id..": "..overlay.label
+      name = overlay.id .. ": " .. overlay.label
     }
 
     tinsert(targetOverlayDropdownItems, targetOverlayItem)
   end
 
   local targetOverlayDropdown = PRT.Dropdown(L["Target Overlay"], L["Overlay on which the message should show up"], targetOverlayDropdownItems, (action.targetOverlay or 1))
-  targetOverlayDropdown:SetCallback("OnValueChanged",
+  targetOverlayDropdown:SetCallback(
+    "OnValueChanged",
     function(widget)
       action.targetOverlay = widget:GetValue()
-    end)
+    end
+  )
 
   local withCountdownCheckbox = PRT.CheckBox(L["Countdown"], L["Will show a countdown of 5 seconds"], action.withCountdown)
-  withCountdownCheckbox:SetCallback("OnValueChanged",
+  withCountdownCheckbox:SetCallback(
+    "OnValueChanged",
     function(widget)
       action.withCountdown = widget:GetValue()
-      actionPreview:SetText(L["Preview: "]..PRT.PrepareMessageForDisplay(CooldownActionPreviewString(action)))
-    end)
+      actionPreview:SetText(L["Preview: "] .. PRT.PrepareMessageForDisplay(CooldownActionPreviewString(action)))
+    end
+  )
 
   container:AddChild(targetDropdown)
   container:AddChild(targetOverlayDropdown)
@@ -383,7 +374,8 @@ local function AddCooldownActionWidgets(container, action)
 
   if action.hasCustomSpellID then
     local customSpellIDEditBox = PRT.EditBox(L["Spell"], L["Can be either of\n- valid unique spell ID\n- spell name known to the player character"], action.spellID)
-    customSpellIDEditBox:SetCallback("OnEnterPressed",
+    customSpellIDEditBox:SetCallback(
+      "OnEnterPressed",
       function(widget)
         local text = widget:GetText()
         local spellId = select(7, GetSpellInfo(text))
@@ -400,11 +392,12 @@ local function AddCooldownActionWidgets(container, action)
           local previewString = CooldownActionPreviewString(action)
 
           action.message = previewString
-          actionPreview:SetText(L["Preview: "]..PRT.PrepareMessageForDisplay(CooldownActionPreviewString(action)))
+          actionPreview:SetText(L["Preview: "] .. PRT.PrepareMessageForDisplay(CooldownActionPreviewString(action)))
         end
 
         widget:ClearFocus()
-      end)
+      end
+    )
 
     container:AddChild(customSpellIDEditBox)
   end
@@ -421,10 +414,11 @@ local function AddAdvancedActionWidgets(container, message)
 
   local targetGroup = PRT.SimpleGroup()
   targetGroup:SetLayout("Flow")
-  local targetsEditBox = PRT.EditBox(L["Targets"], L["Can be either of\n- Player name\n- Custom Placeholder (e.g. $tank1)\n- $target (event target)\n- TANK, HEALER, DAMAGER"], targetsString, true)
+  local targetsEditBox =
+    PRT.EditBox(L["Targets"], L["Can be either of\n- Player name\n- Custom Placeholder (e.g. $tank1)\n- $target (event target)\n- TANK, HEALER, DAMAGER"], targetsString, true)
   targetsEditBox:SetRelativeWidth(0.6)
 
-  local targetsPreviewLabel = PRT.Label(L["Preview: "]..PRT.PrepareMessageForDisplay(targetsPreviewString))
+  local targetsPreviewLabel = PRT.Label(L["Preview: "] .. PRT.PrepareMessageForDisplay(targetsPreviewString))
   targetsPreviewLabel:SetRelativeWidth(1)
 
   local raidRosterDropdown = PRT.Dropdown(L["Add Target"], L["Selected player/placeholder will be\nadded to the list of targets."], raidRosterItems)
@@ -432,7 +426,8 @@ local function AddAdvancedActionWidgets(container, message)
 
   local soundSelect = PRT.SoundSelect(L["Sound"], (message.soundFileName or L["PRT: Default"]))
   soundSelect:SetRelativeWidth(0.5)
-  soundSelect:SetCallback("OnValueChanged",
+  soundSelect:SetCallback(
+    "OnValueChanged",
     function(widget, _, value)
       local path = AceGUIWidgetLSMlists.sound[value]
       message.soundFile = path
@@ -442,74 +437,93 @@ local function AddAdvancedActionWidgets(container, message)
       if path then
         PlaySoundFile(path, "Master")
       end
-    end)
+    end
+  )
 
   local useCustomSoundCheckbox = PRT.CheckBox(L["Custom Sound"], nil, message.useCustomSound)
   useCustomSoundCheckbox:SetRelativeWidth(0.5)
-  useCustomSoundCheckbox:SetCallback("OnValueChanged",
+  useCustomSoundCheckbox:SetCallback(
+    "OnValueChanged",
     function(widget)
       local value = widget:GetValue()
       message.useCustomSound = value
       PRT.ReSelectTab(container)
-    end)
+    end
+  )
 
-  targetsEditBox:SetCallback("OnEnterPressed",
+  targetsEditBox:SetCallback(
+    "OnEnterPressed",
     function(widget)
       local text = widget:GetText()
       local targets = PRT.StringUtils.SplitToTable(text)
       message.targets = targets
 
-      targetsPreviewLabel:SetText(L["Preview: "]..PRT.PrepareMessageForDisplay(Message.TargetsPreviewString(message.targets)))
+      targetsPreviewLabel:SetText(L["Preview: "] .. PRT.PrepareMessageForDisplay(Message.TargetsPreviewString(message.targets)))
       widget:ClearFocus()
-    end)
+    end
+  )
 
-  raidRosterDropdown:SetCallback("OnValueChanged",
+  raidRosterDropdown:SetCallback(
+    "OnValueChanged",
     function(widget)
       tinsert(message.targets, widget:GetValue())
       targetsEditBox:SetText(strjoin(", ", unpack(message.targets)))
-      targetsPreviewLabel:SetText(L["Preview: "]..PRT.PrepareMessageForDisplay(Message.TargetsPreviewString(message.targets)))
+      targetsPreviewLabel:SetText(L["Preview: "] .. PRT.PrepareMessageForDisplay(Message.TargetsPreviewString(message.targets)))
       widget:SetValue(nil)
-    end)
+    end
+  )
 
-  local messagePreviewLabel = PRT.Label(L["Preview: "]..PRT.PrepareMessageForDisplay(message.message))
+  local messagePreviewLabel = PRT.Label(L["Preview: "] .. PRT.PrepareMessageForDisplay(message.message))
   messagePreviewLabel:SetRelativeWidth(1)
-  local messageEditBox = PRT.EditBox(L["Message"], L["Supports following special symbols\n- $target (event target)\n- Custom placeholders (e.g. $tank1)\n- Spell icons (e.g. {spell:17}\n- Raidmarks (e.g. {rt1})"],
-    message.message, true)
+  local messageEditBox =
+    PRT.EditBox(
+    L["Message"],
+    L["Supports following special symbols\n- $target (event target)\n- Custom placeholders (e.g. $tank1)\n- Spell icons (e.g. {spell:17}\n- Raidmarks (e.g. {rt1})"],
+    message.message,
+    true
+  )
   messageEditBox:SetRelativeWidth(1)
-  messageEditBox:SetCallback("OnEnterPressed",
+  messageEditBox:SetCallback(
+    "OnEnterPressed",
     function(widget)
       local text = widget:GetText()
       message.message = text
       widget:ClearFocus()
-      messagePreviewLabel:SetText(L["Preview: "]..PRT.PrepareMessageForDisplay(message.message))
-    end)
-
+      messagePreviewLabel:SetText(L["Preview: "] .. PRT.PrepareMessageForDisplay(message.message))
+    end
+  )
 
   local delaySlider = PRT.Slider(L["Delay"], L["After how many seconds the\nmessage should be displayed."], message.delay, true)
   delaySlider:SetRelativeWidth(0.3)
-  delaySlider:SetCallback("OnValueChanged",
+  delaySlider:SetCallback(
+    "OnValueChanged",
     function(widget)
       message.delay = tonumber(widget:GetValue())
-    end)
+    end
+  )
 
   local durationSlider = PRT.Slider(L["Duration"], L["How long the message should be displayed."], message.duration, true)
   durationSlider:SetRelativeWidth(0.3)
   durationSlider:SetSliderValues(0, 60, 0.5)
-  durationSlider:SetCallback("OnValueChanged",
+  durationSlider:SetCallback(
+    "OnValueChanged",
     function(widget)
       message.duration = tonumber(widget:GetValue())
-    end)
+    end
+  )
 
   local targetOverlayDropdownItems = {}
   for _, overlay in ipairs(PRT.GetProfileDB().overlay.receivers) do
-    tinsert(targetOverlayDropdownItems, { id = overlay.id, name = overlay.id..": "..overlay.label})
+    tinsert(targetOverlayDropdownItems, {id = overlay.id, name = overlay.id .. ": " .. overlay.label})
   end
 
   local targetOverlayDropdown = PRT.Dropdown(L["Target Overlay"], L["Overlay on which the message should show up"], targetOverlayDropdownItems, (message.targetOverlay or 1))
-  targetOverlayDropdown:SetCallback("OnValueChanged",
+  targetOverlayDropdown:SetCallback(
+    "OnValueChanged",
     function(widget)
       message.targetOverlay = widget:GetValue()
-    end)
+    end
+  )
 
   targetGroup:AddChild(targetsEditBox)
   targetGroup:AddChild(raidRosterDropdown)
@@ -534,12 +548,14 @@ local function AddAdvancedActionWidgets(container, message)
       spellIcon:SetWidth(cooldownIconSize + 4)
       spellIcon:SetImageSize(cooldownIconSize, cooldownIconSize)
 
-      spellIcon:SetCallback("OnClick",
+      spellIcon:SetCallback(
+        "OnClick",
         function()
-          message.message = message.message.."{spell:"..spellID.."}"
+          message.message = message.message .. "{spell:" .. spellID .. "}"
           messageEditBox:SetText(message.message)
-          messagePreviewLabel:SetText(L["Preview: "]..PRT.PrepareMessageForDisplay(message.message))
-        end)
+          messagePreviewLabel:SetText(L["Preview: "] .. PRT.PrepareMessageForDisplay(message.message))
+        end
+      )
       cooldownGroupContainer:AddChild(spellIcon)
     end
 
@@ -569,12 +585,6 @@ local function SetActionTypeDefaults(action)
   if action.type == "cooldown" then
     action.message = nil
     action.spellID = nil
-  elseif action.type == "advanced" then
-  -- Nothing for now
-  elseif action.type == "raidwarning" then
-  -- Nothing for now
-  elseif action.type == "raidtarget" then
-  -- Nothing for now
   end
 end
 
@@ -590,8 +600,8 @@ local function AddActionTypeWidgets(container, action)
     },
     [3] = {
       id = "raidtarget",
-      name = L["Raidtarget"],
-    -- disabled = true
+      name = L["Raidtarget"]
+      -- disabled = true
     },
     [4] = {
       id = "advanced",
@@ -605,7 +615,8 @@ local function AddActionTypeWidgets(container, action)
   }
 
   local actionTypeDropdown = PRT.Dropdown(L["Type"], nil, actionTypeDropdownItems, action.type or "advanced", false, true)
-  actionTypeDropdown:SetCallback("OnValueChanged",
+  actionTypeDropdown:SetCallback(
+    "OnValueChanged",
     function(widget)
       local value = widget:GetValue()
       action.type = value
@@ -613,7 +624,8 @@ local function AddActionTypeWidgets(container, action)
       container:ReleaseChildren()
       PRT.MessageWidget(action, container)
       PRT.ReSelectTab(container)
-    end)
+    end
+  )
 
   container:AddChild(actionTypeDropdown)
 end
@@ -621,7 +633,8 @@ end
 local function AddTemplateWidgets(container, message)
   local saveAsTemplateButton = PRT.Button(L["Save as template"])
   local saveAsTemplateNameEditbox = PRT.EditBox(L["Template Name"])
-  saveAsTemplateNameEditbox:SetCallback("OnEnterPressed",
+  saveAsTemplateNameEditbox:SetCallback(
+    "OnEnterPressed",
     function(widget)
       local value = widget:GetText()
 
@@ -631,11 +644,14 @@ local function AddTemplateWidgets(container, message)
       else
         widget:ClearFocus()
       end
-    end)
+    end
+  )
 
-  saveAsTemplateButton:SetCallback("OnClick",
+  saveAsTemplateButton:SetCallback(
+    "OnClick",
     function()
-      PRT.ConfirmationDialog(L["Are you sure you want to save this message as template?"],
+      PRT.ConfirmationDialog(
+        L["Are you sure you want to save this message as template?"],
         function()
           local templateName = saveAsTemplateNameEditbox:GetText()
 
@@ -651,12 +667,13 @@ local function AddTemplateWidgets(container, message)
         end,
         {
           saveAsTemplateNameEditbox
-        })
-    end)
+        }
+      )
+    end
+  )
 
   container:AddChild(saveAsTemplateButton)
 end
-
 
 -------------------------------------------------------------------------------
 -- Public API

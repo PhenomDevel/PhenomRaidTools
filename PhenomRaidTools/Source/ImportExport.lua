@@ -47,7 +47,8 @@ function PRT.CreateImportFrame(successFunction)
 
     importFrame:AddChild(importDataBox)
 
-    importFrame:SetCallback("OnClose",
+    importFrame:SetCallback(
+      "OnClose",
       function()
         local text = importDataBox:GetText()
         local worked, t = PRT.Deserialize(text)
@@ -61,7 +62,8 @@ function PRT.CreateImportFrame(successFunction)
         end
 
         PRT.Core.UnregisterFrame("importFrame")
-      end)
+      end
+    )
 
     importFrame:Show()
     PRT.Core.RegisterFrame("importFrame", importFrame)
@@ -72,10 +74,12 @@ function PRT.CreateExportFrame(data)
   if not PRT.Core.FrameExists("exportFrame") then
     local exportFrame = PRT.Frame(L["Export"])
     exportFrame:SetLayout("Fill")
-    exportFrame:SetCallback("OnClose",
+    exportFrame:SetCallback(
+      "OnClose",
       function()
         PRT.Core.UnregisterFrame("exportFrame")
-      end)
+      end
+    )
 
     local exportData = data
     if type(data) == "table" then

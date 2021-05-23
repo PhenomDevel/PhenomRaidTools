@@ -3,7 +3,6 @@ local _, PRT = ...
 local StringUtils = {}
 PRT.StringUtils = StringUtils
 
-
 -------------------------------------------------------------------------------
 -- String Utils
 
@@ -26,13 +25,13 @@ end
 function StringUtils.WrapColorByBoolean(s, boolean, inactiveColor, activeColor)
   if boolean then
     if activeColor then
-      return "|c"..activeColor..s.."|r"
+      return "|c" .. activeColor .. s .. "|r"
     else
       return s
     end
   else
     if inactiveColor then
-      return "|c"..inactiveColor..s.."|r"
+      return "|c" .. inactiveColor .. s .. "|r"
     else
       return s
     end

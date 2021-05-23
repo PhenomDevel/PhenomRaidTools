@@ -82,5 +82,5 @@ max_cyclomatic_complexity=200
 
 ignore={
  ".*self",
- ".*mergemany"
+ "date"
 }
