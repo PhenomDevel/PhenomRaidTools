@@ -41,6 +41,7 @@ Source/SenderOverlay.lua
 Source/ReceiverOverlay.lua
 Source/VersionMigration.lua
 Source/ExRTExport.lua
+Source/API.lua
 
 # GUI Source
 Source/GUI/AceHelper.lua

@@ -39,6 +39,9 @@ It is processed in a very CPU saving way and will stop once you st
 You can export `Timers` into a ExRT note. This will generate a nicely formatted note based on your `Timers`.
 Please note that this will only work for messages with type `cooldown` since the note is presented in a certain way and can be used for e.g. heal cooldown assignments.
 
+## API
+The api documentation can be found here https://github.com/PhenomDevel/PhenomRaidTools/tree/master/doc/index.html
+
 ## Setup
 
 ### Easymode
