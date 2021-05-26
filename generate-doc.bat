@@ -1,1 +1,1 @@
-ldoc PhenomRaidTools/Source
+ldoc PhenomRaidTools/Source -d docs/API

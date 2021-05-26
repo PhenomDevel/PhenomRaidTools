@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><strong>api</strong></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>api</code></h1>
+<p>API
+ Contains all functions which are exposed to the open world</p>
+<p></p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#API:SendMessage">API:SendMessage (type, targets)</a></td>
+	<td class="summary">Send a message to the given players.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API:AddGlobalPlaceholder">API:AddGlobalPlaceholder (placeholderType, name, playerNames)</a></td>
+	<td class="summary">Add a new global placeholder</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#API:AddEncounterPlaceholder">API:AddEncounterPlaceholder (encounterID, placeholderType, name, playerNames)</a></td>
+	<td class="summary">Add a new encounter placeholder</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "API:SendMessage"></a>
+    <strong>API:SendMessage (type, targets)</strong>
+    </dt>
+    <dd>
+    Send a message to the given players.
+ The message will be sent to all players in `targets` and it will perform the corresponding action based on `type`.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">type</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         type of the message you want to send
+        </li>
+        <li><span class="parameter">targets</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         table of targets which should receive the message
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        true
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">_G[<span class="string">"GPRTAPI"</span>]:SendMessage(<span class="string">"advanced"</span>, {<span class="string">"Phenom"</span>})</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API:AddGlobalPlaceholder"></a>
+    <strong>API:AddGlobalPlaceholder (placeholderType, name, playerNames)</strong>
+    </dt>
+    <dd>
+    Add a new global placeholder
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">placeholderType</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         the type of the placeholder. Can either be `group` or `player`
+        </li>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         the name of the placeholder. Can only be a name which is not already present
+        </li>
+        <li><span class="parameter">playerNames</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         table of the player names which should be used for the placeholder
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        true
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">_G[<span class="string">"GPRTAPI"</span>]:AddGlobalPlaceholder(<span class="string">"player"</span>, <span class="string">"test"</span>, {<span class="string">"Phenom"</span>})</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "API:AddEncounterPlaceholder"></a>
+    <strong>API:AddEncounterPlaceholder (encounterID, placeholderType, name, playerNames)</strong>
+    </dt>
+    <dd>
+    Add a new encounter placeholder
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">encounterID</span>
+            <span class="types"><span class="type">number</span></span>
+         the encounter id for which the placeholder should be added
+        </li>
+        <li><span class="parameter">placeholderType</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         the type of the placeholder. Can either be `group` or `player`
+        </li>
+        <li><span class="parameter">name</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         the name of the placeholder. Can only be a name which is not already present
+        </li>
+        <li><span class="parameter">playerNames</span>
+            <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+         table of the player names which should be used for the placeholder
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        true
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">_G[<span class="string">"GPRTAPI"</span>]:AddEncounterPlaceholder(<span class="number">1234</span>, <span class="string">"player"</span>, <span class="string">"test"</span>, {<span class="string">"Phenom"</span>})</pre>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2021-05-26 14:27:01 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
