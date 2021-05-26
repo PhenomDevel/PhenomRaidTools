@@ -405,7 +405,9 @@ function PRT.ReplaceToken(token)
 end
 
 function PRT.ReplacePlayerNameTokens(s)
-  return string.gsub(s, "[$]+([^$, ]*)", PRT.ReplaceToken)
+  if s then
+    return string.gsub(s, "[$]+([^$, ]*)", PRT.ReplaceToken)
+  end
 end
 
 function PRT.PrepareMessageForDisplay(s)

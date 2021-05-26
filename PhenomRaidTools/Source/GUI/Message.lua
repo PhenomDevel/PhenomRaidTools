@@ -198,12 +198,15 @@ function Message.CompilePossibleCooldownItems()
   for _, cooldownGroup in pairs(Cooldowns) do
     for _, spellID in ipairs(cooldownGroup) do
       local name = GetSpellInfo(spellID)
-      local cooldownItem = {
-        id = spellID,
-        name = strjoin(" ", PRT.TextureStringBySpellID(spellID), name)
-      }
 
-      tinsert(cooldownItems, cooldownItem)
+      if name then
+        local cooldownItem = {
+          id = spellID,
+          name = strjoin(" ", PRT.TextureStringBySpellID(spellID), name)
+        }
+
+        tinsert(cooldownItems, cooldownItem)
+      end
     end
   end
 
@@ -543,20 +546,23 @@ local function AddAdvancedActionWidgets(container, message)
     cooldownGroupContainer:SetLayout("Flow")
 
     for _, spellID in ipairs(cooldownGroup) do
-      local spellIcon = PRT.Icon(spellID)
-      spellIcon:SetHeight(cooldownIconSize + 4)
-      spellIcon:SetWidth(cooldownIconSize + 4)
-      spellIcon:SetImageSize(cooldownIconSize, cooldownIconSize)
+      local spellExists = GetSpellInfo(spellID)
+      if spellExists then
+        local spellIcon = PRT.Icon(spellID)
+        spellIcon:SetHeight(cooldownIconSize + 4)
+        spellIcon:SetWidth(cooldownIconSize + 4)
+        spellIcon:SetImageSize(cooldownIconSize, cooldownIconSize)
 
-      spellIcon:SetCallback(
-        "OnClick",
-        function()
-          message.message = message.message .. "{spell:" .. spellID .. "}"
-          messageEditBox:SetText(message.message)
-          messagePreviewLabel:SetText(L["Preview: "] .. PRT.PrepareMessageForDisplay(message.message))
-        end
-      )
-      cooldownGroupContainer:AddChild(spellIcon)
+        spellIcon:SetCallback(
+          "OnClick",
+          function()
+            message.message = message.message .. "{spell:" .. spellID .. "}"
+            messageEditBox:SetText(message.message)
+            messagePreviewLabel:SetText(L["Preview: "] .. PRT.PrepareMessageForDisplay(message.message))
+          end
+        )
+        cooldownGroupContainer:AddChild(spellIcon)
+      end
     end
 
     container:AddChild(cooldownGroupContainer)
