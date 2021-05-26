@@ -18,10 +18,10 @@ do
 
   --- Send a message to the given players.
   -- The message will be sent to all players in `targets` and it will perform the corresponding action based on `type`.
-  -- @param type type of the message you want to send
-  -- @param targets table of targets which should receive the message
+  -- @param[type=string] type type of the message you want to send
+  -- @param[type=table] targets table of targets which should receive the message
   -- @usage _G["GPRTAPI"]:SendMessage("advanced", {"Phenom"})
-  -- @return true when message could be sent
+  -- @return true
   function API:SendMessage(messageType, targets)
     assert(tContains(validMessageTypes, messageType), "`type` needs to be either `raidtarget`, `raidwarning`, `cooldown`, or `advanced`.")
     assert(type(targets) == "table", "`targets` needs to be a table of player names.")
@@ -48,11 +48,11 @@ do
   end
 
   --- Add a new global placeholder
-  -- @param placeholderType the type of the placeholder. Can either be `group` or `player`
-  -- @param name the name of the placeholder. Can only be a name which is not already present
-  -- @param playerNames table of the player names which should be used for the placeholder
+  -- @param[type=string] placeholderType the type of the placeholder. Can either be `group` or `player`
+  -- @param[type=string] name the name of the placeholder. Can only be a name which is not already present
+  -- @param[type=table] playerNames table of the player names which should be used for the placeholder
   -- @usage _G["GPRTAPI"]:AddGlobalPlaceholder("player", "test", {"Phenom"})
-  -- @return true when placeholder could be created
+  -- @return true
   function API:AddGlobalPlaceholder(placeholderType, name, playerNames)
     -- are the placeholder params valid?
     assertPlaceholderParams(placeholderType, name, playerNames)
@@ -75,17 +75,17 @@ do
   end
 
   --- Add a new encounter placeholder
-  -- @param encounterID the encounter id for which the placeholder should be added
-  -- @param placeholderType the type of the placeholder. Can either be `group` or `player`
-  -- @param name the name of the placeholder. Can only be a name which is not already present
-  -- @param playerNames table of the player names which should be used for the placeholder
+  -- @param[type=number] encounterID the encounter id for which the placeholder should be added
+  -- @param[type=string] placeholderType the type of the placeholder. Can either be `group` or `player`
+  -- @param[type=string] name the name of the placeholder. Can only be a name which is not already present
+  -- @param[type=table] playerNames table of the player names which should be used for the placeholder
   -- @usage _G["GPRTAPI"]:AddEncounterPlaceholder(1234, "player", "test", {"Phenom"})
-  -- @return true when placeholder could be created
+  -- @return true
   function API:AddEncounterPlaceholder(encounterID, placeholderType, name, playerNames)
     -- does the encounter exist?
     local _, encounter = PRT.GetEncounterById(PRT.GetProfileDB().encounters, encounterID)
-    local encounterVersion = encounter.versions[encounter.selectedVersion]
     assert(encounter, "It was no encounter found for the given `encounterID`.")
+    local encounterVersion = encounter.versions[encounter.selectedVersion]
 
     -- are the placeholder params valid?
     assertPlaceholderParams(placeholderType, name, playerNames)
@@ -100,7 +100,7 @@ do
     local newPlaceholder = {
       name = name,
       type = placeholderType,
-      names = playerNames
+      names = playerNames or {}
     }
 
     tinsert(placeholders, newPlaceholder)
