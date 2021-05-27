@@ -221,6 +221,10 @@ do
     return db:GetProfiles()
   end
 
+  function PRT.DeleteProfile(profile)
+    return db:DeleteProfile(profile)
+  end
+
   function PRT.SetProfile(profile)
     return db:SetProfile(profile)
   end
