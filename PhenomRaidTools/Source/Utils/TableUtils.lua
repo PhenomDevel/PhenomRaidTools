@@ -136,3 +136,9 @@ function TableUtils.MergeMany(...)
 
   return tNew
 end
+
+function TableUtils.SwapKey(t, old, new)
+  local value = t[old]
+  t[old] = nil
+  t[new] = value
+end

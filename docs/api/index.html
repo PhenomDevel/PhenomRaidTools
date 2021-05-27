@@ -55,12 +55,14 @@
 	<td class="summary">Send a message to the given players.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API:AddGlobalPlaceholder">API:AddGlobalPlaceholder (placeholderType, name, playerNames)</a></td>
-	<td class="summary">Add a new global placeholder</td>
+	<td class="name" nowrap><a href="#API:UpsertGlobalPlaceholder">API:UpsertGlobalPlaceholder (placeholderType, name, characterNames, overwriteCharacterNames)</a></td>
+	<td class="summary">Add a new global placeholder
+ If a placeholder with this name already exists the charracter names will be merged when you set `overwriteCharacterNames` to true.</td>
 	</tr>
 	<tr>
-	<td class="name" nowrap><a href="#API:AddEncounterPlaceholder">API:AddEncounterPlaceholder (encounterID, placeholderType, name, playerNames)</a></td>
-	<td class="summary">Add a new encounter placeholder</td>
+	<td class="name" nowrap><a href="#API:UpsertEncounterPlaceholder">API:UpsertEncounterPlaceholder (encounterID, placeholderType, name, characterNames, overwriteCharacterNames)</a></td>
+	<td class="summary">Add a new encounter placeholder
+ If a placeholder with this name already exists the charracter names will be merged when you set `overwriteCharacterNames` to true.</td>
 	</tr>
 </table>
 
@@ -102,16 +104,18 @@
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example">_G[<span class="string">"GPRTAPI"</span>]:SendMessage(<span class="string">"advanced"</span>, {<span class="string">"Phenom"</span>})</pre>
+        <li><pre class="example"><span class="keyword">local</span> PRT = _G[<span class="string">"PRT"</span>]</pre></li>
+        <li><pre class="example">PRT:SendMessage(<span class="string">"advanced"</span>, {<span class="string">"Phenom"</span>})</pre></li>
     </ul>
 
 </dd>
     <dt>
-    <a name = "API:AddGlobalPlaceholder"></a>
-    <strong>API:AddGlobalPlaceholder (placeholderType, name, playerNames)</strong>
+    <a name = "API:UpsertGlobalPlaceholder"></a>
+    <strong>API:UpsertGlobalPlaceholder (placeholderType, name, characterNames, overwriteCharacterNames)</strong>
     </dt>
     <dd>
     Add a new global placeholder
+ If a placeholder with this name already exists the charracter names will be merged when you set `overwriteCharacterNames` to true.
 
 
     <h3>Parameters:</h3>
@@ -124,9 +128,13 @@
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
          the name of the placeholder. Can only be a name which is not already present
         </li>
-        <li><span class="parameter">playerNames</span>
+        <li><span class="parameter">characterNames</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
          table of the player names which should be used for the placeholder
+        </li>
+        <li><span class="parameter">overwriteCharacterNames</span>
+            <span class="types"><span class="type">boolean</span></span>
+         defines if the character names should be overwritten when a placeholder with this name already exists.
         </li>
     </ul>
 
@@ -140,16 +148,18 @@
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example">_G[<span class="string">"GPRTAPI"</span>]:AddGlobalPlaceholder(<span class="string">"player"</span>, <span class="string">"test"</span>, {<span class="string">"Phenom"</span>})</pre>
+        <li><pre class="example"><span class="keyword">local</span> PRT = _G[<span class="string">"PRT"</span>]</pre></li>
+        <li><pre class="example">PRT:UpsertGlobalPlaceholder(<span class="string">"player"</span>, <span class="string">"test"</span>, {<span class="string">"Phenom"</span>})</pre></li>
     </ul>
 
 </dd>
     <dt>
-    <a name = "API:AddEncounterPlaceholder"></a>
-    <strong>API:AddEncounterPlaceholder (encounterID, placeholderType, name, playerNames)</strong>
+    <a name = "API:UpsertEncounterPlaceholder"></a>
+    <strong>API:UpsertEncounterPlaceholder (encounterID, placeholderType, name, characterNames, overwriteCharacterNames)</strong>
     </dt>
     <dd>
     Add a new encounter placeholder
+ If a placeholder with this name already exists the charracter names will be merged when you set `overwriteCharacterNames` to true.
 
 
     <h3>Parameters:</h3>
@@ -166,9 +176,13 @@
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
          the name of the placeholder. Can only be a name which is not already present
         </li>
-        <li><span class="parameter">playerNames</span>
+        <li><span class="parameter">characterNames</span>
             <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
          table of the player names which should be used for the placeholder
+        </li>
+        <li><span class="parameter">overwriteCharacterNames</span>
+            <span class="types"><span class="type">boolean</span></span>
+         defines if the character names should be overwritten when a placeholder with this name already exists.
         </li>
     </ul>
 
@@ -182,7 +196,8 @@
 
     <h3>Usage:</h3>
     <ul>
-        <pre class="example">_G[<span class="string">"GPRTAPI"</span>]:AddEncounterPlaceholder(<span class="number">1234</span>, <span class="string">"player"</span>, <span class="string">"test"</span>, {<span class="string">"Phenom"</span>})</pre>
+        <li><pre class="example"><span class="keyword">local</span> PRT = _G[<span class="string">"PRT"</span>]</pre></li>
+        <li><pre class="example">PRT:UpsertEncounterPlaceholder(<span class="number">1234</span>, <span class="string">"player"</span>, <span class="string">"test"</span>, {<span class="string">"Phenom"</span>})</pre></li>
     </ul>
 
 </dd>
@@ -193,7 +208,7 @@
 </div> <!-- id="main" -->
 <div id="about">
 <i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
-<i style="float:right;">Last updated 2021-05-26 14:27:01 </i>
+<i style="float:right;">Last updated 2021-05-27 23:28:21 </i>
 </div> <!-- id="about" -->
 </div> <!-- id="container" -->
 </body>

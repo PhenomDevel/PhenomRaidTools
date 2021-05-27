@@ -8,13 +8,13 @@ local function newCustomPlaceholder()
   return {
     type = "player",
     name = "Placeholder" .. random(0, 100000),
-    names = {
+    characterNames = {
       "Change me"
     }
   }
 end
 
-local function addCustomPlaceholderWidget(customPlaceholder, container, _)
+local function addCustomPlaceholderWidget(customPlaceholder, container, _, placeholders)
   local placeholderTypesDropdownItems = {
     {id = "group", name = L["Group"]},
     {id = "player", name = L["Player"]}
@@ -35,12 +35,24 @@ local function addCustomPlaceholderWidget(customPlaceholder, container, _)
     function(widget)
       local text = widget:GetText()
       local cleanedText = string.gsub(text, " ", "")
-      customPlaceholder.name = cleanedText
-      widget:SetText(cleanedText)
-      widget:ClearFocus()
+
+      if placeholders[cleanedText] and not (customPlaceholder.name == cleanedText) then
+        PRT.Error("A placeholder with this name already exists.")
+      else
+        local placeholder = PRT.TableUtils.Clone(customPlaceholder)
+        placeholder.name = cleanedText
+
+        PRT.TableUtils.SwapKey(placeholders, customPlaceholder.name, cleanedText)
+        customPlaceholder.name = cleanedText
+
+        widget:SetText(cleanedText)
+        widget:ClearFocus()
+      end
 
       -- Update global placeholders
       PRT.SetupGlobalCustomPlaceholders()
+      container:SetTabs(PRT.TableToTabs(placeholders, true))
+      container:SelectTab(cleanedText)
     end
   )
 
@@ -48,7 +60,7 @@ local function addCustomPlaceholderWidget(customPlaceholder, container, _)
   clearEmptyNamesButton:SetCallback(
     "OnClick",
     function()
-      PRT.TableUtils.Remove(customPlaceholder.names, PRT.StringUtils.IsEmpty)
+      PRT.TableUtils.Remove(customPlaceholder.characterNames, PRT.StringUtils.IsEmpty)
       PRT.ReSelectTab(container)
     end
   )
@@ -57,21 +69,21 @@ local function addCustomPlaceholderWidget(customPlaceholder, container, _)
   addNameButton:SetCallback(
     "OnClick",
     function()
-      tinsert(customPlaceholder.names, "")
+      tinsert(customPlaceholder.characterNames, "")
       PRT.ReSelectTab(container)
     end
   )
 
   local namesGroup = PRT.InlineGroup(L["Names"])
   namesGroup:SetLayout("Flow")
-  for idx, name in ipairs(customPlaceholder.names) do
+  for idx, name in ipairs(customPlaceholder.characterNames) do
     local nameEditBox = PRT.EditBox(L["Name" .. idx], nil, name)
     nameEditBox:SetRelativeWidth(0.333)
     nameEditBox:SetCallback(
       "OnEnterPressed",
       function(widget)
         local text = widget:GetText()
-        customPlaceholder.names[idx] = text
+        customPlaceholder.characterNames[idx] = text
         widget:ClearFocus()
 
         -- Update global placeholders

@@ -60,10 +60,21 @@ function AceHelper.AddNewTab(widget, t, item)
   if not t then
     t = {}
   end
-  tinsert(t, item)
+
+  if item.name then
+    t[item.name] = item
+  else
+    tinsert(t, item)
+  end
+
   widget:SetTabs(PRT.TableToTabs(t, true))
   widget:DoLayout()
-  widget:SelectTab(getn(t))
+
+  if item.name then
+    widget:SelectTab(item.name)
+  else
+    widget:SelectTab(getn(t))
+  end
 
   PRT.Core.UpdateScrollFrame()
 end

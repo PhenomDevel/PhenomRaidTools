@@ -127,10 +127,10 @@ function Message.GenerateRaidRosterDropdownItems()
   if PRT.currentEncounter then
     if PRT.currentEncounter.encounter then
       if PRT.currentEncounter.encounter.CustomPlaceholders then
-        for _, customEncounterPlaceholder in ipairs(PRT.currentEncounter.encounter.CustomPlaceholders) do
+        for _, customEncounterPlaceholder in pairs(PRT.currentEncounter.encounter.CustomPlaceholders) do
           local coloredNames = {}
 
-          for _, name in ipairs(customEncounterPlaceholder.names) do
+          for _, name in ipairs(customEncounterPlaceholder.characterNames) do
             tinsert(coloredNames, PRT.ClassColoredName(name))
           end
 
@@ -143,10 +143,10 @@ function Message.GenerateRaidRosterDropdownItems()
   end
 
   -- Add Custom Placeholder
-  for _, customPlaceholder in ipairs(PRT.GetProfileDB().customPlaceholders) do
+  for _, customPlaceholder in pairs(PRT.GetProfileDB().customPlaceholders) do
     local coloredNames = {}
 
-    for _, name in ipairs(customPlaceholder.names) do
+    for _, name in ipairs(customPlaceholder.characterNames) do
       tinsert(coloredNames, PRT.ClassColoredName(name))
     end
 

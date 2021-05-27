@@ -306,24 +306,22 @@ do
 
   function PRT.SetupGlobalCustomPlaceholders()
     wipe(placeholders.global)
-    for idx, customPlaceholder in ipairs(PRT.GetProfileDB().customPlaceholders) do
+
+    for placeholderName, _ in pairs(PRT.GetProfileDB().customPlaceholders) do
       -- use tables because you can have placeholders with same name (intended?)
-      if not placeholders.global[customPlaceholder.name] then
-        placeholders.global[customPlaceholder.name] = {idx}
-      else
-        tinsert(placeholders.global[customPlaceholder.name], idx)
+      if not placeholders.global[placeholderName] then
+        placeholders.global[placeholderName] = true
       end
     end
   end
 
   function PRT.SetupEncounterSpecificCustomPlaceholders()
     wipe(placeholders.encounterSpecific)
-    for idx, customPlaceholder in ipairs(PRT.currentEncounter.encounter.CustomPlaceholders) do
+
+    for placeholderName, _ in pairs(PRT.currentEncounter.encounter.CustomPlaceholders) do
       -- use tables because you can have placeholders with same name (intended?)
-      if not placeholders.encounterSpecific[customPlaceholder.name] then
-        placeholders.encounterSpecific[customPlaceholder.name] = {idx}
-      else
-        tinsert(placeholders.encounterSpecific[customPlaceholder.name], idx)
+      if not placeholders.encounterSpecific[placeholderName] then
+        placeholders.encounterSpecific[placeholderName] = true
       end
     end
   end
@@ -332,19 +330,18 @@ do
     if not ((global and placeholders.global[token]) or (not global and placeholders.encounterSpecific[token])) then
       return
     end
-    for _, id in pairs(global and placeholders.global[token] or placeholders.encounterSpecific[token]) do
-      local temp = global and PRT.GetProfileDB().customPlaceholders[id] or PRT.currentEncounter.encounter.CustomPlaceholders[id]
-      if not temp then
-        return
-      end -- should be useless nil check
+
+    if (global and placeholders.global[token]) or placeholders.encounterSpecific[token] then
+      local temp = global and PRT.GetProfileDB().customPlaceholders[token] or PRT.currentEncounter.encounter.CustomPlaceholders[token]
+
       if temp.type == "group" then
-        for i = #temp.names, 1, -1 do
-          tinsert(t, strtrim(temp.names[i], " "))
+        for i = #temp.characterNames, 1, -1 do
+          tinsert(t, strtrim(temp.characterNames[i], " "))
         end
       else
         local found = false
         local lastInPartyButDead
-        for _, name in ipairs(temp.names) do
+        for _, name in ipairs(temp.characterNames) do
           if (PRT.UnitInParty(name) or UnitExists(name)) and UnitIsConnected(name) then
             if not UnitIsDeadOrGhost(name) then
               tinsert(t, strtrim(name, " "))

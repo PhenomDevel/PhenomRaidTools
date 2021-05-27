@@ -20,7 +20,8 @@ do
   -- The message will be sent to all players in `targets` and it will perform the corresponding action based on `type`.
   -- @param[type=string] type type of the message you want to send
   -- @param[type=table] targets table of targets which should receive the message
-  -- @usage _G["GPRTAPI"]:SendMessage("advanced", {"Phenom"})
+  -- @usage local PRT = _G["PRT"]
+  -- @usage PRT:SendMessage("advanced", {"Phenom"})
   -- @return true
   function API:SendMessage(messageType, targets)
     assert(tContains(validMessageTypes, messageType), "`type` needs to be either `raidtarget`, `raidwarning`, `cooldown`, or `advanced`.")
@@ -36,7 +37,7 @@ do
     "group"
   }
 
-  local function assertPlaceholderParams(placeholderType, name, playerNames)
+  local function assertPlaceholderParams(placeholderType, name, characterNames)
     -- is the type contained in our valid types?
     assert(tContains(validPlaceholderTypes, placeholderType), "`type` needs to be either `group`, or `player`.")
 
@@ -44,69 +45,81 @@ do
     assert(not PRT.StringUtils.IsEmpty(name), "`name` has to be a non empty string.")
 
     -- are the playerNames a table?
-    assert(type(playerNames) == "table", "`playerNames` needs to be a table of player names.")
+    assert(type(characterNames) == "table", "`characterNames` needs to be a table of player names.")
   end
 
   --- Add a new global placeholder
+  -- If a placeholder with this name already exists the charracter names will be merged when you set `overwriteCharacterNames` to true.
   -- @param[type=string] placeholderType the type of the placeholder. Can either be `group` or `player`
   -- @param[type=string] name the name of the placeholder. Can only be a name which is not already present
-  -- @param[type=table] playerNames table of the player names which should be used for the placeholder
-  -- @usage _G["GPRTAPI"]:AddGlobalPlaceholder("player", "test", {"Phenom"})
+  -- @param[type=table] characterNames table of the player names which should be used for the placeholder
+  -- @param[type=boolean] overwriteCharacterNames defines if the character names should be overwritten when a placeholder with this name already exists.
+  -- @usage local PRT = _G["PRT"]
+  -- @usage PRT:UpsertGlobalPlaceholder("player", "test", {"Phenom"}, true)
   -- @return true
-  function API:AddGlobalPlaceholder(placeholderType, name, playerNames)
+  function API:UpsertGlobalPlaceholder(placeholderType, name, characterNames, overwriteCharacterNames)
     -- are the placeholder params valid?
-    assertPlaceholderParams(placeholderType, name, playerNames)
+    assertPlaceholderParams(placeholderType, name, characterNames)
 
     local placeholders = PRT.GetProfileDB().customPlaceholders
 
-    -- does the placeholder with the name not already exist?
-    local alreadyExists = PRT.TableUtils.GetBy(placeholders, "name", name)
-    assert(not alreadyExists, string.format("Placeholder with name %s already exists.", PRT.HighlightString(name)))
+    local existingPlaceholder = placeholders[name]
 
-    local newPlaceholder = {
-      name = name,
-      type = placeholderType,
-      names = playerNames
-    }
-
-    tinsert(placeholders, newPlaceholder)
+    if existingPlaceholder then
+      if overwriteCharacterNames then
+        existingPlaceholder.characterNames = characterNames
+      else
+        existingPlaceholder.characterNames = PRT.TableUtils.MergeMany(existingPlaceholder.characterNames, characterNames)
+      end
+    else
+      placeholders[name] = {
+        name = name,
+        type = placeholderType,
+        characterNames = characterNames
+      }
+    end
 
     return true
   end
 
   --- Add a new encounter placeholder
+  -- If a placeholder with this name already exists the charracter names will be merged when you set `overwriteCharacterNames` to true.
   -- @param[type=number] encounterID the encounter id for which the placeholder should be added
   -- @param[type=string] placeholderType the type of the placeholder. Can either be `group` or `player`
   -- @param[type=string] name the name of the placeholder. Can only be a name which is not already present
-  -- @param[type=table] playerNames table of the player names which should be used for the placeholder
-  -- @usage _G["GPRTAPI"]:AddEncounterPlaceholder(1234, "player", "test", {"Phenom"})
+  -- @param[type=table] characterNames table of the player names which should be used for the placeholder
+  -- @param[type=boolean] overwriteCharacterNames defines if the character names should be overwritten when a placeholder with this name already exists.
+  -- @usage local PRT = _G["PRT"]
+  -- @usage PRT:UpsertEncounterPlaceholder(1234, "player", "test", {"Phenom"}, true)
   -- @return true
-  function API:AddEncounterPlaceholder(encounterID, placeholderType, name, playerNames)
+  function API:UpsertEncounterPlaceholder(encounterID, placeholderType, name, characterNames, overwriteCharacterNames)
     -- does the encounter exist?
     local _, encounter = PRT.GetEncounterById(PRT.GetProfileDB().encounters, encounterID)
     assert(encounter, "It was no encounter found for the given `encounterID`.")
     local encounterVersion = encounter.versions[encounter.selectedVersion]
 
     -- are the placeholder params valid?
-    assertPlaceholderParams(placeholderType, name, playerNames)
+    assertPlaceholderParams(placeholderType, name, characterNames)
 
     local placeholders = encounterVersion.CustomPlaceholders
+    local existingPlaceholder = placeholders[name]
 
-    -- does the placeholder with the name not already exist?
-    local alreadyExists = PRT.TableUtils.GetBy(placeholders, "name", name)
-    assert(not alreadyExists, string.format("Placeholder with name %s already exists.", PRT.HighlightString(name)))
-
-    -- Add the new placeholder
-    local newPlaceholder = {
-      name = name,
-      type = placeholderType,
-      names = playerNames or {}
-    }
-
-    tinsert(placeholders, newPlaceholder)
+    if existingPlaceholder then
+      if overwriteCharacterNames then
+        existingPlaceholder.characterNames = characterNames
+      else
+        existingPlaceholder.characterNames = PRT.TableUtils.MergeMany(existingPlaceholder.characterNames, characterNames)
+      end
+    else
+      placeholders[name] = {
+        name = name,
+        type = placeholderType,
+        characterNames = characterNames
+      }
+    end
 
     return true
   end
 end
 
-_G["GPRTAPI"] = API
+_G["PRT"] = API
