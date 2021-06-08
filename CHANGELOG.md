@@ -1,3 +1,10 @@
+# Release 2.16.1
+## Bugfixes
+ - Make sure encounter can be viewed even if there is no more version
+## Features
+None
+
+
 # Release 2.16.0
 ## Bugfixes
 None
