@@ -8,6 +8,8 @@ local API = {}
 -------------------------------------------------------------------------------
 -- Public API
 
+-------------------------------------------------------------------------------
+-- Messages
 do
   local validMessageTypes = {
     "raidtarget",
@@ -31,6 +33,8 @@ do
   end
 end
 
+-------------------------------------------------------------------------------
+-- Placeholders
 do
   local validPlaceholderTypes = {
     "player",
@@ -49,7 +53,7 @@ do
   end
 
   --- Add a new global placeholder
-  -- If a placeholder with this name already exists the charracter names will be merged when you set `overwriteCharacterNames` to true.
+  -- If a placeholder with this name already exists the character names will be merged when you set `overwriteCharacterNames` to true.
   -- @param[type=string] placeholderType the type of the placeholder. Can either be `group` or `player`
   -- @param[type=string] name the name of the placeholder. Can only be a name which is not already present
   -- @param[type=table] characterNames table of the player names which should be used for the placeholder
@@ -120,6 +124,12 @@ do
 
     return true
   end
+end
+
+-------------------------------------------------------------------------------
+-- Conditions
+
+function API:TriggerCondition()
 end
 
 _G["PRT"] = API
