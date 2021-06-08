@@ -297,9 +297,11 @@ function Core.OnGroupSelected(container, key)
   if encounterID then
     local _, selectedEncounter = PRT.GetSelectedVersionEncounterByID(PRT.GetProfileDB().encounters, tonumber(encounterID))
 
-    PRT.currentEncounter = {}
-    PRT.currentEncounter.encounter = selectedEncounter
-    PRT.currentEncounter.encounter.id = encounterID
+    if selectedEncounter then
+      PRT.currentEncounter = {}
+      PRT.currentEncounter.encounter = selectedEncounter
+      PRT.currentEncounter.encounter.id = encounterID
+    end
   end
 
   -- options selected
