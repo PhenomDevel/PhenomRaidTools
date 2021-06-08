@@ -2,15 +2,12 @@ local PRT = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local Core = {
-  openFrames = {
-
-  }
+  openFrames = {}
 }
 
 -- Create local copies of API functions which we use
 local UIParent = UIParent
 local UISpecialFrames = UISpecialFrames
-
 
 -------------------------------------------------------------------------------
 -- Local Helper
@@ -73,7 +70,7 @@ function Core.WithDifficultiesText(text, trigger)
       tinsert(difficultiesShorthands, "M")
     end
 
-    updatedText = updatedText.." ("..strjoin(", ", unpack(difficultiesShorthands))..")"
+    updatedText = updatedText .. " (" .. strjoin(", ", unpack(difficultiesShorthands)) .. ")"
 
     return updatedText
   end
@@ -90,8 +87,7 @@ end
 
 function Core.GeneratePercentagesTree(percentages)
   local children = {}
-  local t = {
-    }
+  local t = {}
 
   if percentages then
     if getn(percentages) > 0 then
@@ -219,11 +215,11 @@ function Core.GenerateEncounterTree(encounter)
 
   local t = {
     value = encounter.id,
-    text = Core.InactiveText(encounter.name.." (v"..encounter.selectedVersion..")", encounter.enabled),
+    text = Core.InactiveText(encounter.name .. " (v" .. encounter.selectedVersion .. ")", encounter.enabled)
   }
 
   if selectedEncounter then
-    t.children =  {
+    t.children = {
       Core.GenerateTimersTree(selectedEncounter.Timers),
       Core.GenerateRotationsTree(selectedEncounter.Rotations),
       Core.GenerateHealthPercentagesTree(selectedEncounter.HealthPercentages),
@@ -239,7 +235,7 @@ function Core.GenerateEncountersTree(encounters)
   local children = {}
 
   local t = {
-    value  = "encounters",
+    value = "encounters",
     text = L["Encounter"],
     children = children
   }
@@ -280,10 +276,10 @@ function Core.GenerateTreeByProfile()
   }
 
   if PRT.IsSender() then
-    tinsert(t, { value = "customPlaceholder", text = L["Custom Placeholder"] })
+    tinsert(t, {value = "customPlaceholder", text = L["Custom Placeholder"]})
   end
 
-  tinsert(t, { value = "spellDatabase", text = L["Spell Database"] })
+  tinsert(t, {value = "spellDatabase", text = L["Spell Database"]})
 
   if PRT.IsSender() then
     tinsert(t, Core.GenerateTemplatesTree())
@@ -301,43 +297,38 @@ function Core.OnGroupSelected(container, key)
   if encounterID then
     local _, selectedEncounter = PRT.GetSelectedVersionEncounterByID(PRT.db.profile.encounters, tonumber(encounterID))
 
-    PRT.currentEncounter = {}
-    PRT.currentEncounter.encounter = selectedEncounter
-    PRT.currentEncounter.encounter.id = encounterID
+    if selectedEncounter then
+      PRT.currentEncounter = {}
+      PRT.currentEncounter.encounter = selectedEncounter
+      PRT.currentEncounter.encounter.id = encounterID
+    end
   end
 
   -- options selected
   if mainKey == "options" then
-    PRT.AddOptionWidgets(container, PRT.db.profile)
-
     -- profiles selected
+    PRT.AddOptionWidgets(container, PRT.db.profile)
   elseif mainKey == "profiles" then
-    PRT.AddProfilesWidget(container, PRT.db.char.profileSettings)
-
     -- custom placeholder selected
+    PRT.AddProfilesWidget(container, PRT.db.char.profileSettings)
   elseif mainKey == "customPlaceholder" then
-    PRT.AddCustomPlaceholdersWidget(container, PRT.db.profile.customPlaceholders)
-
     -- spell database selected
+    PRT.AddCustomPlaceholdersWidget(container, PRT.db.profile.customPlaceholders)
   elseif mainKey == "spellDatabase" then
-    PRT.AddSpellCacheWidget(container)
-
     -- templates selected
+    PRT.AddSpellCacheWidget(container)
   elseif mainKey == "templates" then
-    PRT.AddTemplateWidgets(container, PRT.db.profile)
-
     -- encounters selected
+    PRT.AddTemplateWidgets(container, PRT.db.profile)
   elseif mainKey == "encounters" and not triggerType and not triggerName and not encounterID then
-    PRT.AddEncountersWidgets(container, PRT.db.profile)
-
     -- single encounter selected
+    PRT.AddEncountersWidgets(container, PRT.db.profile)
   elseif encounterID and not triggerType and not triggerName then
-    PRT.AddEncounterOptions(container, PRT.db.profile, encounterID)
-
     -- TODO Provide encounter directly
-
     -- encounter trigger type selected
+    PRT.AddEncounterOptions(container, PRT.db.profile, encounterID)
   elseif triggerType and not triggerName then
+    -- single timer selected
     if triggerType == "timers" then
       PRT.AddTimerOptionsWidgets(container, PRT.db.profile, encounterID)
     elseif triggerType == "rotations" then
@@ -351,20 +342,15 @@ function Core.OnGroupSelected(container, key)
     elseif triggerType == "customPlaceholders" then
       PRT.AddCustomPlaceholderOptions(container, PRT.db.profile, encounterID)
     end
-
-    -- single timer selected
   elseif triggerType == "timers" and triggerName then
-    PRT.AddTimerWidget(container, PRT.db.profile, tonumber(encounterID), triggerName)
-
     -- single rotaion selected
+    PRT.AddTimerWidget(container, PRT.db.profile, tonumber(encounterID), triggerName)
   elseif triggerType == "rotations" and triggerName then
-    PRT.AddRotationWidget(container, PRT.db.profile, tonumber(encounterID), triggerName)
-
     -- single healthPercentages selected
+    PRT.AddRotationWidget(container, PRT.db.profile, tonumber(encounterID), triggerName)
   elseif triggerType == "healthPercentages" and triggerName then
-    PRT.AddHealthPercentageWidget(container, PRT.db.profile, tonumber(encounterID), triggerName)
-
     -- single powerPercentages selected
+    PRT.AddHealthPercentageWidget(container, PRT.db.profile, tonumber(encounterID), triggerName)
   elseif triggerType == "powerPercentages" and triggerName then
     PRT.AddPowerPercentageWidget(container, PRT.db.profile, tonumber(encounterID), triggerName)
   end
@@ -381,7 +367,7 @@ end
 
 function Core.ReselectExchangeLast(last)
   if PRT.mainWindowContent.selectedValue then
-    local xs = { strsplit("\001", PRT.mainWindowContent.selectedValue) }
+    local xs = {strsplit("\001", PRT.mainWindowContent.selectedValue)}
     tremove(xs, #xs)
     tinsert(xs, last)
     local selectValue = strjoin("\001", unpack(xs))
@@ -414,10 +400,10 @@ local function ExpandTreeEntry(statusTable, key)
 
   -- Only expand if we clicked an encounter
   if mainKey and encounterID and not triggerType and not triggerName and statusTable.groups[key] then
-    local timerKey = key.."\001".."timers"
-    local rotationKey = key.."\001".."rotations"
-    local healthPercentageKey = key.."\001".."healthPercentages"
-    local powerPercentageKey = key.."\001".."powerPercentages"
+    local timerKey = key .. "\001" .. "timers"
+    local rotationKey = key .. "\001" .. "rotations"
+    local healthPercentageKey = key .. "\001" .. "healthPercentages"
+    local powerPercentageKey = key .. "\001" .. "powerPercentages"
 
     statusTable.groups[timerKey] = true
     statusTable.groups[rotationKey] = true
@@ -433,19 +419,23 @@ function Core.CreateMainWindowContent()
   -- Generate tree group for the main menue structure
   local tree = Core.GenerateTreeByProfile(PRT.db.profile)
   local treeGroup = PRT.TreeGroup(tree)
-  local treeGroupStatus = { groups = {} }
+  local treeGroupStatus = {groups = {}}
   treeGroup:SetTreeWidth(600)
   PRT.mainWindowContent = treeGroup
-  treeGroup:SetCallback("OnClick",
+  treeGroup:SetCallback(
+    "OnClick",
     function(_, _, key)
       ExpandTreeEntry(treeGroupStatus, key)
       treeGroup:RefreshTree()
-    end)
-  treeGroup:SetCallback("OnGroupSelected",
+    end
+  )
+  treeGroup:SetCallback(
+    "OnGroupSelected",
     function(_, _, key)
       treeGroup.selectedValue = key
       Core.OnGroupSelected(treeContentScrollFrame, key, PRT.db.profile)
-    end)
+    end
+  )
 
   -- Expand encounters by default
 
@@ -465,10 +455,11 @@ end
 -- Public API
 
 function PRT.CreateMainWindow()
-  local mainWindow = PRT.Window("PhenomRaidTools".." - v"..PRT.db.profile.version)
+  local mainWindow = PRT.Window("PhenomRaidTools" .. " - v" .. PRT.db.profile.version)
   local mainWindowContent = Core.CreateMainWindowContent(PRT.db.profile)
 
-  mainWindow:SetCallback("OnClose",
+  mainWindow:SetCallback(
+    "OnClose",
     function(widget)
       PRT.Release(widget)
       PRT.ReceiverOverlay.HideAll()
@@ -483,14 +474,15 @@ function PRT.CreateMainWindow()
       PRT.db.profile.mainWindow.top = UIParent:GetHeight() - top
 
       PRT.db.profile.mainWindowContent.treeGroup.width = mainWindowContent.treeframe:GetWidth()
-    end)
+    end
+  )
 
   mainWindow:SetWidth(PRT.db.profile.mainWindow.width or 970)
   mainWindow:SetHeight(PRT.db.profile.mainWindow.height or 600)
   mainWindow.frame:SetClampedToScreen(true)
 
   if PRT.db.profile.mainWindow.left or PRT.db.profile.mainWindow.top then
-    mainWindow.frame:SetPoint("TOPLEFT",UIParent,"TOPLEFT", PRT.db.profile.mainWindow.left or 0, -(PRT.db.profile.mainWindow.top or 0))
+    mainWindow.frame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", PRT.db.profile.mainWindow.left or 0, -(PRT.db.profile.mainWindow.top or 0))
   end
   mainWindow.frame:SetMinResize(1000, 600)
   RegisterESCHandler("mainWindow", mainWindow)
