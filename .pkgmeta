@@ -27,6 +27,7 @@ ignore:
   - LICENSE
   - .gitignore
   - .pkgmeta
+  - generate-doc.bat
 
 manual-changelog:
     filename: CHANGELOG.md
