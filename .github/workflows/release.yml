@@ -31,6 +31,11 @@ jobs:
       - name: Package and release
         uses: BigWigsMods/packager@v1
 
+      - name: Package and release BC
+        uses: BigWigsMods/packager@master
+        with:
+          args: -g bc -m .pkgmeta-bc
+
       - name: Send Status to Discord
         uses: nebularg/actions-discord-webhook@v1
         with:
