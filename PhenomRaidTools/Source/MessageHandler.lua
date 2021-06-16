@@ -99,6 +99,7 @@ local function ExecuteRaidTarget(message)
 end
 
 local function ExecuteMessage(message)
+  PRT.IsClassic()
   local messageTargets = MessageHandler.ExpandMessageTargets(message)
 
   for _, target in ipairs(messageTargets) do

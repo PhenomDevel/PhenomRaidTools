@@ -9,7 +9,9 @@ local EventHandler = {
     "PLAYER_REGEN_ENABLED",
     "ENCOUNTER_START",
     "ENCOUNTER_END",
-    "PLAYER_ENTERING_WORLD",
+    "PLAYER_ENTERING_WORLD"
+  },
+  retailWorldEvents = {
     "PLAYER_SPECIALIZATION_CHANGED"
   },
   trackedInCombatEvents = {
@@ -273,10 +275,18 @@ end
 
 function PRT.RegisterWorldEvents()
   PRT.RegisterEvents(EventHandler.worldEvents)
+
+  if PRT.IsRetail() then
+    PRT.RegisterEvents(EventHandler.retailWorldEvents)
+  end
 end
 
 function PRT.UnrgisterWorldEvents()
   PRT.UnregisterEvents(EventHandler.worldEvents)
+
+  if PRT.IsRetail() then
+    PRT.UnregisterEvents(EventHandler.retailWorldEvents)
+  end
 end
 
 function addon:ENCOUNTER_START(event, encounterID, encounterName)
@@ -534,6 +544,8 @@ function addon:PLAYER_ENTERING_WORLD(_)
   )
 end
 
-function addon:PLAYER_SPECIALIZATION_CHANGED()
-  SetProfileBySpec()
+if PRT.IsRetail() then
+  function addon:PLAYER_SPECIALIZATION_CHANGED()
+    SetProfileBySpec()
+  end
 end

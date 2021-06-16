@@ -519,3 +519,16 @@ function PRT.IsDevelopmentVersion()
 
   return not tonumber(numericVersionString)
 end
+
+function PRT.IsClassic()
+  local wowVersion = GetBuildInfo()
+  local numericVersionString = string.gsub(wowVersion, "[.]", "")
+  local version = tonumber(numericVersionString)
+
+  -- If version is smaller than WoW: Shadowlands we assume it must be classic
+  return version < 90000
+end
+
+function PRT.IsRetail()
+  return not PRT.IsClassic()
+end
