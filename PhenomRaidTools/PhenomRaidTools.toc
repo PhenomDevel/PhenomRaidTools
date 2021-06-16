@@ -1,5 +1,5 @@
 ## Interface: 90005
-## Interface-BC: 20501
+## Interface-BCC: 20501
 ## Title: PhenomRaidTools
 ## Version: @project-version@
 ## Author: @project-author@
