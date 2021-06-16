@@ -12,11 +12,6 @@ jobs:
   release:
     runs-on: ubuntu-latest
 
-    env:
-      CF_API_KEY: ${{ secrets.CF_API_KEY }}
-      WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
-      WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
-
     steps:
       - name: Clone project
         uses: actions/checkout@v1
@@ -31,11 +26,17 @@ jobs:
 
       - name: Package and release
         uses: BigWigsMods/packager@v1
+        env:
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
+          WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
 
       - name: Package and release BC
         uses: BigWigsMods/packager@master
         with:
           args: -g bcc -m .pkgmeta-bcc
+        env:
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
+          WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
 
       - name: Send Status to Discord
         uses: nebularg/actions-discord-webhook@v1
