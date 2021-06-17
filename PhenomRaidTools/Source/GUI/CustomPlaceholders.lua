@@ -128,7 +128,10 @@ function PRT.AddCustomPlaceholdersTabGroup(container, customPlaceholders)
     end
   )
 
-  PRT.SelectFirstTab(placeholdersTabGroup, customPlaceholders)
+  if placeholderTabs[1] and PRT.TableUtils.Count(placeholderTabs) > 1 then
+    placeholdersTabGroup:SelectTab(placeholderTabs[1].value)
+  end
+
   container:AddChild(placeholdersTabGroup)
 end
 
@@ -197,11 +200,9 @@ end
 
 function PRT.AddCustomPlaceholderOptions(container, profile, encounterID)
   local _, encounter = PRT.GetSelectedVersionEncounterByID(profile.encounters, tonumber(encounterID))
-  local CustomPlaceholders = encounter.CustomPlaceholders
 
-  if not CustomPlaceholders then
+  if not encounter.CustomPlaceholders then
     encounter.CustomPlaceholders = {}
-    CustomPlaceholders = {}
   end
 
   local removeAllButton = PRT.Button(L["Remove all"])
@@ -211,7 +212,8 @@ function PRT.AddCustomPlaceholderOptions(container, profile, encounterID)
       PRT.ConfirmationDialog(
         L["Are you sure you want to remove all custom placeholders?"],
         function()
-          wipe(CustomPlaceholders)
+          wipe(encounter.CustomPlaceholders)
+          PRT.PrintTable(encounter.CustomPlaceholders)
           container:ReleaseChildren()
           PRT.AddCustomPlaceholderOptions(container, profile, encounterID)
         end
@@ -221,5 +223,5 @@ function PRT.AddCustomPlaceholderOptions(container, profile, encounterID)
 
   PRT.AddCustomPlaceholderDescription(container)
   container:AddChild(removeAllButton)
-  PRT.AddCustomPlaceholdersTabGroup(container, CustomPlaceholders)
+  PRT.AddCustomPlaceholdersTabGroup(container, encounter.CustomPlaceholders)
 end

@@ -127,7 +127,7 @@ function Message.GenerateRaidRosterDropdownItems()
   if PRT.currentEncounter then
     if PRT.currentEncounter.encounter then
       if PRT.currentEncounter.encounter.CustomPlaceholders then
-        for _, customEncounterPlaceholder in pairs(PRT.currentEncounter.encounter.CustomPlaceholders) do
+        for customEncounterPlaceholderName, customEncounterPlaceholder in pairs(PRT.currentEncounter.encounter.CustomPlaceholders) do
           local coloredNames = {}
 
           for _, name in ipairs(customEncounterPlaceholder.characterNames) do
@@ -135,24 +135,26 @@ function Message.GenerateRaidRosterDropdownItems()
           end
 
           local name = strjoin(", ", unpack(coloredNames))
-          name = "$" .. customEncounterPlaceholder.name .. " (" .. name .. ")"
-          tinsert(raidRosterItems, {id = "$" .. customEncounterPlaceholder.name, name = name})
+          name = "$" .. customEncounterPlaceholderName .. " (" .. name .. ")"
+          tinsert(raidRosterItems, {id = "$" .. customEncounterPlaceholderName, name = name})
         end
       end
     end
   end
 
   -- Add Custom Placeholder
-  for _, customPlaceholder in pairs(PRT.GetProfileDB().customPlaceholders) do
+  for customPlaceholderName, customPlaceholder in pairs(PRT.GetProfileDB().customPlaceholders) do
     local coloredNames = {}
 
     for _, name in ipairs(customPlaceholder.characterNames) do
       tinsert(coloredNames, PRT.ClassColoredName(name))
     end
 
+    --if not PRT.TableUtils.IsEmpty(coloredNames) then
     local name = strjoin(", ", unpack(coloredNames))
-    name = "$" .. customPlaceholder.name .. " (" .. name .. ")"
-    tinsert(raidRosterItems, {id = "$" .. customPlaceholder.name, name = name})
+    name = "$" .. customPlaceholderName .. " (" .. name .. ")"
+    tinsert(raidRosterItems, {id = "$" .. customPlaceholderName, name = name})
+    --end
   end
 
   -- Add groups

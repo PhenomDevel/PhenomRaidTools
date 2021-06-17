@@ -86,6 +86,26 @@ local migrationFunctions = {
 
       return true
     end
+  },
+  [4] = {
+    version = "2.17.6",
+    migrationFunction = function(profile)
+      -- Make sure global placeholders have their name set
+      for placeholderName, placeholder in pairs(profile.customPlaceholders) do
+        placeholder.name = placeholderName
+      end
+
+      -- make sure encounter placeholders have their name set
+      for _, encounter in ipairs(profile.encounters) do
+        for _, encounterVersion in ipairs(encounter.versions) do
+          local placeholders = encounterVersion.CustomPlaceholders
+
+          for placeholderName, placeholder in pairs(placeholders) do
+            placeholder.name = placeholderName
+          end
+        end
+      end
+    end
   }
 }
 
