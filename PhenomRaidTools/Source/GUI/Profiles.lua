@@ -212,6 +212,8 @@ function PRT.AddProfilesWidget(container, options)
   Profiles.DeleteProfileWidget(deleteGroup)
   container:AddChild(deleteGroup)
 
-  -- Spec Specific Profiles
-  Profiles.AddSpecSpecificGroupWidget(options, container)
+  if PRT.IsRetail() then
+    -- Spec Specific Profiles
+    Profiles.AddSpecSpecificGroupWidget(options, container)
+  end
 end
