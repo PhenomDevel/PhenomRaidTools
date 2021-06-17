@@ -254,6 +254,7 @@ function PRT.TabGroup(label, tabs)
   container:SetFullWidth(true)
   container:SetFullHeight(true)
   container:SetAutoAdjustHeight(true)
+  container:SelectTab(nil)
 
   return container
 end
