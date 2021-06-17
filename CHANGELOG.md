@@ -1,3 +1,14 @@
+# Release 2.17.5
+## Bugfixes
+None
+## Features
+ - Performance optimizations
+ - Fully add profiles page into PRT instead of blizzard ui
+ - Restructure custom placeholders so it is more consistent and does not
+   allow multiple placeholders with the same name.
+ - Added first approach to a custom API which can be used by other addons or e.g. WeakAuras. Currently you only can create placeholders. Plan is to add a lot more in the future.
+ - (!) Add The Bruning Crusade Classic Build to CurseForce and Wago-Addons
+
 # Release 2.16.1
 ## Bugfixes
  - Make sure encounter can be viewed even if there is no more version
