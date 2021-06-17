@@ -5,7 +5,7 @@
 If you want to access the addon just use `/prt` or the minimap icon in game and the addon will open. If you seek help visit the discord server and feel free to ask for help :)
 
 ## About
-PhenomRaidTools is an addon to use next to the usual raid utility addons like `WeakAuras2`, `DBM`, and `BigWigs`. With PhenomRaidTools you'll be able to configure your own timers, rotations and other triggers to show messages on the screen. You can choose when and how the messages should be displayed as well as who in the raid team should see the messages.
+PhenomRaidTools is an addon to use next to the usual raid utility addons like [WeakAuras2](https://github.com/WeakAuras/WeakAuras2), [DeadlyBossMods](https://github.com/DeadlyBossMods/DeadlyBossMods), and [BigWigs](https://github.com/BigWigsMods/BigWigs). With PhenomRaidTools you'll be able to configure your own timers, rotations and other triggers to show messages on the screen. You can choose when and how the messages should be displayed as well as who in the raid team should see the messages.
 
 ## Guide
 For a brief introduction into the addon please read: [PhenomRaidTools Beginner Guide](https://github.com/PhenomDevel/PhenomRaidTools/blob/master/doc/PhenomRaidTools_Beginner_Guide.pdf)
@@ -40,6 +40,8 @@ You can export `Timers` into a ExRT note. This will generate a nicel
 Please note that this will only work for messages with type `cooldown` since the note is presented in a certain way and can be used for e.g. heal cooldown assignments.
 
 ## API
+> WORK IN PROGRESS
+
 You can find the API documentation at [API](https://phenomdevel.github.io/PhenomRaidTools/api/index.html)
 
 ## Setup
