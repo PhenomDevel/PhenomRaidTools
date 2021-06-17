@@ -213,7 +213,6 @@ function PRT.AddCustomPlaceholderOptions(container, profile, encounterID)
         L["Are you sure you want to remove all custom placeholders?"],
         function()
           wipe(encounter.CustomPlaceholders)
-          PRT.PrintTable(encounter.CustomPlaceholders)
           container:ReleaseChildren()
           PRT.AddCustomPlaceholderOptions(container, profile, encounterID)
         end

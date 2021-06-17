@@ -150,11 +150,9 @@ function Message.GenerateRaidRosterDropdownItems()
       tinsert(coloredNames, PRT.ClassColoredName(name))
     end
 
-    --if not PRT.TableUtils.IsEmpty(coloredNames) then
     local name = strjoin(", ", unpack(coloredNames))
     name = "$" .. customPlaceholderName .. " (" .. name .. ")"
     tinsert(raidRosterItems, {id = "$" .. customPlaceholderName, name = name})
-    --end
   end
 
   -- Add groups
