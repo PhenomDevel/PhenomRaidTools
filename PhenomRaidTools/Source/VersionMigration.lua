@@ -57,7 +57,7 @@ local migrationFunctions = {
           else
             newTable[placeholder.name] = {
               type = placeholder.type,
-              characterNames = placeholder.names or {}
+              characterNames = placeholder.names or placeholder.characterNames or {}
             }
           end
         end
@@ -95,7 +95,7 @@ local migrationFunctions = {
       -- Make sure global placeholders have their name set
       for placeholderName, placeholder in pairs(profile.customPlaceholders) do
         placeholder.name = placeholderName
-        placeholder.characterNames = placeholder.names or {}
+        placeholder.characterNames = placeholder.names or placeholder.characterNames or {}
       end
 
       -- make sure encounter placeholders have their name set
@@ -106,7 +106,7 @@ local migrationFunctions = {
           if placeholders then
             for placeholderName, placeholder in pairs(placeholders) do
               placeholder.name = placeholderName
-              placeholder.characterNames = placeholder.names or {}
+              placeholder.characterNames = placeholder.names or placeholder.characterNames or {}
             end
           end
         end
