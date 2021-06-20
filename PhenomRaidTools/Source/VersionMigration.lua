@@ -90,7 +90,7 @@ local migrationFunctions = {
     end
   },
   [4] = {
-    version = "2.17.13",
+    version = "2.17.14",
     migrationFunction = function(profile)
       -- Make sure global placeholders have their name set
       for placeholderName, placeholder in pairs(profile.customPlaceholders) do
