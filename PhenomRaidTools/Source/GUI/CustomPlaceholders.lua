@@ -76,7 +76,8 @@ local function addCustomPlaceholderWidget(customPlaceholder, container, _, place
 
   local namesGroup = PRT.InlineGroup(L["Names"])
   namesGroup:SetLayout("Flow")
-  for idx, name in ipairs(customPlaceholder.characterNames) do
+
+  for idx, name in ipairs(customPlaceholder.characterNames or {}) do
     local nameEditBox = PRT.EditBox(L["Name" .. idx], nil, name)
     nameEditBox:SetRelativeWidth(0.333)
     nameEditBox:SetCallback(

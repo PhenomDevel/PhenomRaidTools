@@ -130,7 +130,7 @@ function Message.GenerateRaidRosterDropdownItems()
         for customEncounterPlaceholderName, customEncounterPlaceholder in pairs(PRT.currentEncounter.encounter.CustomPlaceholders) do
           local coloredNames = {}
 
-          for _, name in ipairs(customEncounterPlaceholder.characterNames) do
+          for _, name in pairs(customEncounterPlaceholder.characterNames or {}) do
             tinsert(coloredNames, PRT.ClassColoredName(name))
           end
 
@@ -146,7 +146,7 @@ function Message.GenerateRaidRosterDropdownItems()
   for customPlaceholderName, customPlaceholder in pairs(PRT.GetProfileDB().customPlaceholders) do
     local coloredNames = {}
 
-    for _, name in ipairs(customPlaceholder.characterNames) do
+    for _, name in pairs(customPlaceholder.characterNames or {}) do
       tinsert(coloredNames, PRT.ClassColoredName(name))
     end
 

@@ -57,7 +57,7 @@ local migrationFunctions = {
           else
             newTable[placeholder.name] = {
               type = placeholder.type,
-              characterNames = placeholder.names
+              characterNames = placeholder.names or {}
             }
           end
         end
@@ -90,21 +90,23 @@ local migrationFunctions = {
     end
   },
   [4] = {
-    version = "2.17.6",
+    version = "2.17.13",
     migrationFunction = function(profile)
       -- Make sure global placeholders have their name set
       for placeholderName, placeholder in pairs(profile.customPlaceholders) do
         placeholder.name = placeholderName
+        placeholder.characterNames = placeholder.names or {}
       end
 
       -- make sure encounter placeholders have their name set
       for _, encounter in ipairs(profile.encounters) do
         for _, encounterVersion in ipairs(encounter.versions) do
-          if encounterVersion.CustomPlaceholders then
-            local placeholders = encounterVersion.CustomPlaceholders
+          local placeholders = encounterVersion.CustomPlaceholders
 
+          if placeholders then
             for placeholderName, placeholder in pairs(placeholders) do
               placeholder.name = placeholderName
+              placeholder.characterNames = placeholder.names or {}
             end
           end
         end

@@ -80,7 +80,7 @@ function AceHelper.AddNewTab(widget, t, item)
 end
 
 function AceHelper.RemoveTab(widget, t, item)
-  tremove(t, item)
+  t[item] = nil
   widget:SetTabs(PRT.TableToTabs(t, true))
   widget:DoLayout()
   widget:SelectTab(1)

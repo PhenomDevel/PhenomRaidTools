@@ -307,10 +307,12 @@ do
   function PRT.SetupGlobalCustomPlaceholders()
     wipe(placeholders.global)
 
-    for placeholderName, _ in pairs(PRT.GetProfileDB().customPlaceholders) do
-      -- use tables because you can have placeholders with same name (intended?)
-      if not placeholders.global[placeholderName] then
-        placeholders.global[placeholderName] = true
+    if PRT.GetProfileDB().customPlaceholders then
+      for placeholderName, _ in pairs(PRT.GetProfileDB().customPlaceholders) do
+        -- use tables because you can have placeholders with same name (intended?)
+        if not placeholders.global[placeholderName] then
+          placeholders.global[placeholderName] = true
+        end
       end
     end
   end
@@ -318,10 +320,12 @@ do
   function PRT.SetupEncounterSpecificCustomPlaceholders()
     wipe(placeholders.encounterSpecific)
 
-    for placeholderName, _ in pairs(PRT.currentEncounter.encounter.CustomPlaceholders) do
-      -- use tables because you can have placeholders with same name (intended?)
-      if not placeholders.encounterSpecific[placeholderName] then
-        placeholders.encounterSpecific[placeholderName] = true
+    if PRT.currentEncounter.encounter.CustomPlaceholders then
+      for placeholderName, _ in pairs(PRT.currentEncounter.encounter.CustomPlaceholders) do
+        -- use tables because you can have placeholders with same name (intended?)
+        if not placeholders.encounterSpecific[placeholderName] then
+          placeholders.encounterSpecific[placeholderName] = true
+        end
       end
     end
   end
