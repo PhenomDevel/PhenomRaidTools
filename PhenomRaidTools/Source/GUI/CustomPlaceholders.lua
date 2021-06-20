@@ -102,16 +102,44 @@ local function addCustomPlaceholderWidget(customPlaceholder, container, _, place
 end
 
 local function importSuccess(container, customPlaceholders, importedCustomPlaceholders)
-  if customPlaceholders then
-    for _, customPlaceholder in ipairs(importedCustomPlaceholders) do
-      tinsert(customPlaceholders, customPlaceholder)
+  if
+    customPlaceholders.customPlaceholders or customPlaceholders.CustomPlaceholders or importedCustomPlaceholders.customPlaceholders or importedCustomPlaceholders.CustomPlaceholders
+   then
+    PRT.Error("Import data is not in the right format. Did you try importing an encounter into placeholders?")
+  else
+    local migratedPlaceholders = PRT.MigratePlaceholdersAfter2160(customPlaceholders, importedCustomPlaceholders)
+
+    wipe(customPlaceholders)
+    for name, placeholder in pairs(migratedPlaceholders) do
+      customPlaceholders[name] = placeholder
     end
+
     container:ReleaseChildren()
     PRT.AddCustomPlaceholdersWidget(container, customPlaceholders)
     PRT.Info("Custom placeholders imported successfully.")
-  else
-    PRT.Error("Something went wrong while importing custom placeholders.")
   end
+end
+
+function PRT.MigratePlaceholdersAfter2160(oldPlaceholders, placeholders)
+  local migratedPlaceholders = PRT.TableUtils.Clone(oldPlaceholders) or {}
+
+  -- if the index is a number proceed. If not we already did this migration (most likely)
+  for _, placeholder in pairs(placeholders) do
+    if migratedPlaceholders[placeholder.name] then
+      -- There has to be a duplicate placeholder. So stop processing!
+      PRT.Debug(string.format("Placeholder %s already exists. Merging character names.", PRT.HighlightString(placeholder.name)))
+      migratedPlaceholders[placeholder.name].characterNames =
+        PRT.TableUtils.MergeMany(migratedPlaceholders[placeholder.name].characterNames, placeholder.names, placeholder.characterNames)
+    else
+      migratedPlaceholders[placeholder.name] = {
+        type = placeholder.type,
+        characterNames = placeholder.names or placeholder.characterNames or {},
+        name = placeholder.name
+      }
+    end
+  end
+
+  return migratedPlaceholders
 end
 
 -------------------------------------------------------------------------------

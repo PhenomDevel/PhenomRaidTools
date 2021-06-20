@@ -125,6 +125,9 @@ local function importVersionSuccess(encounter, encounterVersionData)
     PRT.ConfirmationDialog(
       L["Encounter found. Do you want to import the new version?"],
       function()
+        local migratedPlaceholders = PRT.MigratePlaceholdersAfter2160({}, encounterVersionData.CustomPlaceholders)
+        encounterVersionData.CustomPlaceholders = migratedPlaceholders
+
         encounterVersionData.name = encounterVersionData.name .. " - Import: " .. PRT.Now()
         encounterVersionData.createdAt = PRT.Now()
         tinsert(encounter.versions, encounterVersionData)
