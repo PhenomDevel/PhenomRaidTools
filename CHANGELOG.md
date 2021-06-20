@@ -1,3 +1,10 @@
+# Release 2.17.14
+## Bugfixes
+ - Fixed placeholder migration for upgrade fron 2.16.0
+   - (!) For everyone not seeing any placeholder names anymore... I fucked it up and you most likely have to redo those placeholders. I am very sorry!
+## Features
+None
+
 # Release 2.17.5
 ## Bugfixes
 None
