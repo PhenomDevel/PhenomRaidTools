@@ -76,11 +76,13 @@ local migrationFunctions = {
           local placeholders = encounterVersion.CustomPlaceholders
           local newPlaceholders = {}
 
-          for placeholderIndex, placeholder in pairs(placeholders) do
-            migratePlaceholder(placeholderIndex, placeholder, newPlaceholders)
-          end
+          if encounterVersion.CustomPlaceholders then
+            for placeholderIndex, placeholder in pairs(placeholders) do
+              migratePlaceholder(placeholderIndex, placeholder, newPlaceholders)
+            end
 
-          encounter.CustomPlaceholders = newPlaceholders
+            encounter.CustomPlaceholders = newPlaceholders
+          end
         end
       end
 
@@ -98,13 +100,17 @@ local migrationFunctions = {
       -- make sure encounter placeholders have their name set
       for _, encounter in ipairs(profile.encounters) do
         for _, encounterVersion in ipairs(encounter.versions) do
-          local placeholders = encounterVersion.CustomPlaceholders
+          if encounterVersion.CustomPlaceholders then
+            local placeholders = encounterVersion.CustomPlaceholders
 
-          for placeholderName, placeholder in pairs(placeholders) do
-            placeholder.name = placeholderName
+            for placeholderName, placeholder in pairs(placeholders) do
+              placeholder.name = placeholderName
+            end
           end
         end
       end
+
+      return true
     end
   }
 }
