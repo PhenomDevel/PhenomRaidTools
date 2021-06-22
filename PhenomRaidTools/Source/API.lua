@@ -1,15 +1,14 @@
 --- API
 -- Contains all functions which are exposed to the open world
+-- @module api
+-- @author Phenom
 
 local _, PRT = ...
 
 local API = {}
 
--------------------------------------------------------------------------------
--- Public API
-
--------------------------------------------------------------------------------
--- Messages
+--- Message
+-- @section Message
 do
   local validMessageTypes = {
     "raidtarget",
@@ -28,13 +27,10 @@ do
   function API:SendMessage(messageType, targets)
     assert(tContains(validMessageTypes, messageType), "`type` needs to be either `raidtarget`, `raidwarning`, `cooldown`, or `advanced`.")
     assert(type(targets) == "table", "`targets` needs to be a table of player names.")
-
-    -- TODO
   end
 end
-
--------------------------------------------------------------------------------
--- Placeholders
+--- Placeholder
+-- @section Placeholder
 do
   local validPlaceholderTypes = {
     "player",
@@ -52,7 +48,7 @@ do
     assert(type(characterNames) == "table", "`characterNames` needs to be a table of player names.")
   end
 
-  --- Add a new global placeholder
+  --- Add a new global placeholder.
   -- If a placeholder with this name already exists the character names will be merged when you set `overwriteCharacterNames` to true.
   -- @param[type=string] placeholderType the type of the placeholder. Can either be `group` or `player`
   -- @param[type=string] name the name of the placeholder. Can only be a name which is not already present
@@ -86,7 +82,7 @@ do
     return true
   end
 
-  --- Add a new encounter placeholder
+  --- Add a new encounter placeholder.
   -- If a placeholder with this name already exists the charracter names will be merged when you set `overwriteCharacterNames` to true.
   -- @param[type=number] encounterID the encounter id for which the placeholder should be added
   -- @param[type=string] placeholderType the type of the placeholder. Can either be `group` or `player`
@@ -126,9 +122,12 @@ do
   end
 end
 
--------------------------------------------------------------------------------
--- Conditions
+--- Condition
+-- @section Condition
 
+--- Trigger the given condition.
+-- Work in progress
+-- @return WIP
 function API:TriggerCondition()
 end
 
