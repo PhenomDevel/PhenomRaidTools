@@ -28,6 +28,7 @@ ignore:
   - .gitignore
   - .pkgmeta
   - generate-doc.bat
+  - ldoc
 
 manual-changelog:
     filename: CHANGELOG.md
