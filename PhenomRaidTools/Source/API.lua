@@ -22,7 +22,7 @@ do
   -- @usage local PRT = _G["PRT"]
   -- @usage PRT:SendAdvancedMessage(...)
   -- @return true
-  function API:SendAdvancedMessage(...)
+  function API:SendAdvancedMessage()
   end
 
   --- Send a cooldown message to the given players.
@@ -30,7 +30,7 @@ do
   -- @usage local PRT = _G["PRT"]
   -- @usage PRT:SendCooldownMessage(...)
   -- @return true
-  function API:SendCooldownMessage(...)
+  function API:SendCooldownMessage()
   end
 
   --- Send a raid warning message to the given players.
@@ -38,7 +38,7 @@ do
   -- @usage local PRT = _G["PRT"]
   -- @usage PRT:SendRaidwarningMessage(...)
   -- @return true
-  function API:SendRaidwarningMessage(...)
+  function API:SendRaidwarningMessage()
   end
 
   --- Set a raidtarget for the given player
@@ -46,7 +46,7 @@ do
   -- @usage local PRT = _G["PRT"]
   -- @usage PRT:SendRaidtargetMessage(...)
   -- @return true
-  function API:SendRaidtargetMessage(...)
+  function API:SendRaidtargetMessage()
   end
 end
 --- Placeholder
