@@ -1,3 +1,10 @@
+# Release 2.18.1
+## Bugfixes
+None
+## Features
+ - Make sure that a unit has to be in the same zone to be eligible as placeholder replacement
+
+
 # Release 2.17.15
 ## Bugfixes
  - Fixed placeholder migration for upgrade fron 2.16.0
