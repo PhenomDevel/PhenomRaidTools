@@ -17,16 +17,36 @@ do
     "advanced"
   }
 
-  --- Send a message to the given players.
-  -- The message will be sent to all players in `targets` and it will perform the corresponding action based on `type`.
-  -- @param[type=string] type type of the message you want to send
-  -- @param[type=table] targets table of targets which should receive the message
+  --- Send an advanced message to the given players.
+  -- WIP
   -- @usage local PRT = _G["PRT"]
-  -- @usage PRT:SendMessage("advanced", {"Phenom"})
+  -- @usage PRT:SendAdvancedMessage(...)
   -- @return true
-  function API:SendMessage(messageType, targets)
-    assert(tContains(validMessageTypes, messageType), "`type` needs to be either `raidtarget`, `raidwarning`, `cooldown`, or `advanced`.")
-    assert(type(targets) == "table", "`targets` needs to be a table of player names.")
+  function API:SendAdvancedMessage(...)
+  end
+
+  --- Send a cooldown message to the given players.
+  -- WIP
+  -- @usage local PRT = _G["PRT"]
+  -- @usage PRT:SendCooldownMessage(...)
+  -- @return true
+  function API:SendCooldownMessage(...)
+  end
+
+  --- Send a raid warning message to the given players.
+  -- WIP
+  -- @usage local PRT = _G["PRT"]
+  -- @usage PRT:SendRaidwarningMessage(...)
+  -- @return true
+  function API:SendRaidwarningMessage(...)
+  end
+
+  --- Set a raidtarget for the given player
+  -- WIP
+  -- @usage local PRT = _G["PRT"]
+  -- @usage PRT:SendRaidtargetMessage(...)
+  -- @return true
+  function API:SendRaidtargetMessage(...)
   end
 end
 --- Placeholder
