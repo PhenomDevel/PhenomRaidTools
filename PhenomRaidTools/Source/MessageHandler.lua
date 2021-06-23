@@ -170,7 +170,7 @@ end
 
 function addon:OnAddonMessage(message)
   if PRT.IsEnabled() then
-    if PRT.IsInFight() or IsEncounterInProgress() or PRT.IsTestMode() then
+    if PRT.EncounterInProgress() or IsEncounterInProgress() or PRT.IsTestMode() or PRT.IsInFight() then
       if PRT.IsReceiver() then
         local _, messageTable = PRT.Deserialize(message)
 

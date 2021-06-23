@@ -346,7 +346,7 @@ do
         local found = false
         local lastInPartyButDead
         for _, name in ipairs(temp.characterNames) do
-          if (PRT.UnitInParty(name) or UnitExists(name)) and UnitIsConnected(name) then
+          if UnitExists(name) and UnitIsConnected(name) then
             if not UnitIsDeadOrGhost(name) then
               tinsert(t, strtrim(name, " "))
               found = true
@@ -504,6 +504,10 @@ function PRT.IsReceiver()
 end
 
 function PRT.IsInFight()
+  return UnitAffectingCombat("player")
+end
+
+function PRT.EncounterInProgress()
   if PRT.currentEncounter then
     return PRT.currentEncounter.inFight
   end
