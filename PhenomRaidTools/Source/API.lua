@@ -10,12 +10,12 @@ local API = {}
 --- Message
 -- @section Message
 do
-  local validMessageTypes = {
-    "raidtarget",
-    "raidwarning",
-    "cooldown",
-    "advanced"
-  }
+  --local validMessageTypes = {
+  --  "raidtarget",
+  --  "raidwarning",
+  --  "cooldown",
+  --  "advanced"
+  --}
 
   --- Send an advanced message to the given players.
   -- WIP
