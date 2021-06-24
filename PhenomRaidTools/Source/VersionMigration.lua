@@ -121,7 +121,7 @@ local function GetPendingMigrations(profile)
   local pendingMigrations = {}
   local processedMigrations = profile.processedMigrations
 
-  for _, migration in pairs(migrationFunctions) do
+  for _, migration in ipairs(migrationFunctions) do
     if not processedMigrations[migration.version] then
       tinsert(pendingMigrations, migration)
     end
