@@ -1,3 +1,10 @@
+# Release 2.18.6
+## Bugfixes
+ - Make sure Migrations are executed in the right order
+## Features
+None
+
+
 # Release 2.18.3
 ## Bugfixes
 None
