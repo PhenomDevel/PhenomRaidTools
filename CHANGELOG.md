@@ -1,3 +1,10 @@
+# Release 2.19.1
+## Bugfixes
+ - Make sure backdrops for simple groups are not rendered after elvui update
+## Features
+ - Update for patch 9.1
+
+
 # Release 2.18.6
 ## Bugfixes
  - Make sure Migrations are executed in the right order
