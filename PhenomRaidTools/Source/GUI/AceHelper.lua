@@ -277,8 +277,8 @@ function PRT.SimpleGroup()
   -- NOTE: Make sure a simple group is displayed without backdrop even for ElvUI users
   -- since we just use it to structure some controls and not to actually group them
   if container.frame then
-    if container.frame.backdrop then
-      container.frame.backdrop:SetBackdrop({})
+    if container.frame then
+      container.frame:SetBackdrop({})
     end
   end
 
