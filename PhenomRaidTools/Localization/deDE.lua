@@ -1,11 +1,13 @@
-local L =  LibStub:GetLibrary("AceLocale-3.0"):NewLocale("PhenomRaidTools", "deDE")
-if not L then return end
+local L = LibStub:GetLibrary("AceLocale-3.0"):NewLocale("PhenomRaidTools", "deDE")
+if not L then
+  return
+end
 
 L = L or {}
 L["- %s This only works for messages with type %s"] = "- %s Das funktioniert nur für Nachrichten vom Typ %s"
 L["--- Castle Nathria ---"] = "--- Schloss Nathria ---"
 L["--- De Other Side ---"] = "--- Die Andere Seite ---"
-L["- Export any timer as ExRT note"] = "- Exportiere jeden Timer als ExRT Notiz"
+L["- Export any timer as ExRT note"] = "- Exportiere jeden Timer als MethodRaidTools Notiz"
 L["--- Halls of Atonement ---"] = "--- Hallen der Sühne ---"
 L["--- Mists of Tirna Scithe ---"] = "--- Die Nebel von Tirna Scithe ---"
 L["--- Necrotic Wake ---"] = "--- Die Nekrotische Schneise ---"
@@ -21,7 +23,7 @@ L["- You can now enable and select specialization specific profiles"] = "- Du ka
 L["\"PhenomRaidTools will only load for the configured difficulties."] = "PhenomRaidTools wird nur für die konfigurierten Schwierigkeitsgrade geladen."
 L["%s (%s) health match (%s%% %s %s%%)"] = true
 L["* Custom *"] = "* Benutzerdefiniert *"
-L["Ability to export timers as ExRT note"] = "Möglichkeit Timer als ExRT Notiz zu exportieren"
+L["Ability to export timers as ExRT note"] = "Möglichkeit Timer als MethodRaidTools Notiz zu exportieren"
 L["Activates the debug mode."] = "Aktiviert den Debug Modus."
 L["Activates the receiver mode."] = "Aktiviert den Empfänger Modus."
 L["Activates the sender mode."] = "Aktiviert den Sender Modus."
@@ -34,10 +36,10 @@ L["Additional Events"] = "Zusätzliche Events"
 L["Advanced"] = "Erweitert"
 L["After how many occurrences of\\nstart condition the timer should start."] = "Nach wie vielen Vorkommnissen der Start Bedingung soll der Timer starten."
 L[ [=[After how many seconds the
-message should be displayed.]=] ] = [=[Nach wie vielen Sekunden
+message should be displayed.]=] ] = [=[Nach wie vielen Sekunden 
 soll die Nachricht angezeigt werden.]=]
 L[ [=[After how many seconds the
-message should be displayed.]=] ] = [=[Nach wie vielen Sekunden die
+message should be displayed.]=] ] = [=[Nach wie vielen Sekunden die 
 Nachricht angezeigt werden soll.]=]
 L["Always includes yourself as valid sender."] = "Akzeptiert dich immer als validen Absender."
 L["Are you sure you want to clear the current raid roster?"] = "Bist Du dir sicher, dass du den Raidkader leeren willst?"
@@ -155,19 +157,19 @@ L["Entries %s"] = "Einträge %s"
 L["Event"] = "Ereignis"
 L["Export"] = "Exportieren"
 L["Export String"] = "Export Daten"
-L["ExRT Note"] = "ExRT Notiz"
-L["ExRT Note Generator"] = "ExRT Notiz Generator"
+L["ExRT  Note"] = "MethodRaidTools Notiz"
+L["ExRT Note Generator"] = "MethodRaidTools Notiz Generator"
 L["Filter by"] = "Einschränken nach"
 L[ [=[Filter out all messages
 below selected guild rank.]=] ] = "Alle Nachrichten unter dem ausgewählten Gildenrank filtern."
 L[ [=[Filter out all messages
-below selected guild rank.]=] ] = [=[Alle Nachrichten unter
+below selected guild rank.]=] ] = [=[Alle Nachrichten unter 
 einem bestimmten Gildenrank filtern.]=]
 L["Font"] = "Schrift"
 L["Font Color"] = "Schriftfarbe"
-L["Force ExRT note update"] = "ExRT Notiz update erzwingen"
+L["Force ExRT note update"] = "MethodRaidTools Notiz update erzwingen"
 L["General"] = "Allgemein"
-L["Generate ExRT Note"] = "ExRT Notiz generieren"
+L["Generate ExRT Note"] = "MethodRaidTools Notiz generieren"
 L["Group"] = "Gruppe"
 L["Grow Direction"] = "Wachstumsrichtung"
 L["guild rank"] = "Gildenrank"
@@ -259,10 +261,10 @@ L["Reset Profile"] = "Profil zurücksetzen"
 L["Resets the counter of start conditions\\nwhen the timer is stopped."] = "Setzt den Zähler zurück wenn der Timer gestoppt wird."
 L["Restart"] = "Neustarten"
 L[ [=[Restarts the rotation when
-no more entries are found.]=] ] = [=[Startet die Rotation neu,
+no more entries are found.]=] ] = [=[Startet die Rotation neu, 
 wenn keine Einträge mehr gefunden werden.]=]
 L[ [=[Restarts the rotation when
-no more entries are found.]=] ] = [=[Startet die Rotation neu,
+no more entries are found.]=] ] = [=[Startet die Rotation neu, 
 wenn keine Einträge mehr gefunden werden.]=]
 L["Rotation"] = true
 L["Rotation Entry"] = "Rotationseintrag"
@@ -277,7 +279,7 @@ L["Select the profile you want to change to."] = "Wähle das Profil aus, auf das
 L["Select Timers"] = "Timer auswählen"
 L["Select version"] = "Version auswählen"
 L[ [=[Selected player/placeholder will be
-added to the list of targets.]=] ] = [=[Ausgewählter Spieler/Platzhalter
+added to the list of targets.]=] ] = [=[Ausgewählter Spieler/Platzhalter 
 wird der Liste der Empfänger hinzugefügt.]=]
 L[ [=[Selected player/placeholder will be
 added to the list of targets.]=] ] = [=[Ausgewählter Spieler/Platzhalter wird
@@ -330,11 +332,11 @@ L["The defined default values will be used when creating new messages."] = "Die 
 L["The spell database is globally available for all of your characters and will be build up regardless of which character you are playing."] = "Die Zauber Datenbank ist global für jeden Charakter verfügbar. Die Zauber Datenbank wird im Hintergrund aufgebaut solange PRT aktiviert ist. "
 L["The spell database will rebuild once the patch version changes. This is done so you always have the newest spells in the database."] = "Die Zauber Datenbank wird zurückgesetzt, wenn ein neuer Patch veröffentlicht wird, um sicherzustellen, dass immer alle Zauber in der Datenbank zur Verfügung stehen."
 L["There are currently no templates."] = "Aktuell gibt es keine Vorlagen."
-L["This feature will export your selected timers to a ExRT note. This will only work for message of type %s."] = "Diese Funktion exportiert die ausgewählten Timer als ExRT Notiz. Das funktioniert nur für Nachrichten mit dem Typ %s."
+L["This feature will export your selected timers to a ExRT note. This will only work for message of type %s."] = "Diese Funktion exportiert die ausgewählten Timer als MethodRaidTools Notiz. Das funktioniert nur für Nachrichten mit dem Typ %s."
 L["This feature will export your selected timers to a ExRT note. This will only work for message of type %s.\\n\\nIf you want to keep your current note you can use %s and %s. The prt generated note will be put inbetween those tags."] = "Diese Funktion exportiert die ausgewählten Timer entsprechend der vorgenommenen Einstellungen. Das funktioniert nur für Nachrichten vom typ %s.\\n\\nWenn Du deine aktuelle Notiz beibehalten willst kannst du die zwei Tags %s und %s benutzen. Die generierte Notiz wird dann zwischen diesen beiden Tags eingefügt."
 L["This will hide all entries which are not interesting for the given player."] = "Alle Einträge, welche nicht für einen Spieler relevant sind werden in dessen Notiz nicht mehr dargestellt."
-L["This will try and force ExRT to directly update the note."] = "Es wird versucht ExRT dazu zu zwingen die Notiz zu aktualisieren."
-L["This will update the existing ExRT note and just replace the content between %s and %s tag with the generated content."] = "Hiermit wird die erzeugte Notiz nicht die ExRT Notiz überschreiben sondern den Inhalt zwischen das Tag %s und %s schreiben."
+L["This will try and force ExRT to directly update the note."] = "Es wird versucht MethodRaidTools dazu zu zwingen die Notiz zu aktualisieren."
+L["This will update the existing ExRT note and just replace the content between %s and %s tag with the generated content."] = "Hiermit wird die erzeugte Notiz nicht die MethodRaidTools Notiz überschreiben sondern den Inhalt zwischen das Tag %s und %s schreiben."
 L["Timer"] = true
 L["Timers"] = "Timer"
 L["Timings"] = "Zeit Einträge"
@@ -366,5 +368,5 @@ L["You can import or define your raid roster and use the placeholder within your
 L["You currently filter messages by %s, but haven't configured any name yet. Therefore all messages from all players will be displayed."] = "Du filterst aktuell alle Nachrichten nach %s aber hast noch keinen Namen spezifiziert. Daher werden alle Nachrichten empfangen und nicht gefiltert."
 L["You currently filter messages by %s. Therefore only message from players with the configured guild rank or higher will be displayed."] = "Du filterst aktuell alle Nachrichten nach %s. Daher werden nur Nachrichten von Spielern mit dem angegebenen Gildenrank oder höher angezeigt."
 L["You currently filter messages by %s. Therefore only messages from those players will be displayed."] = "Du filterst aktuell alle Nachrichten nach %s. Daher werden Dir nur Nachrichten von den spezifizierten Spielern angezeigt."
-L["You want to force update ExRT note without replacing PRT tag content. This will overwrite the whole note. Are you sure about that?"] = "Du willst gerade ExRT dazu zwingen die Notiz zu aktualisieren ohne den Inhalt der PRT Tags auszutauschen. Das sorgt dafür, dass die gesamte Notiz überschrieben wird. Willst Du das wirklich?"
+L["You want to force update ExRT note without replacing PRT tag content. This will overwrite the whole note. Are you sure about that?"] = "Du willst gerade MethodRaidTools dazu zwingen die Notiz zu aktualisieren ohne den Inhalt der PRT Tags auszutauschen. Das sorgt dafür, dass die gesamte Notiz überschrieben wird. Willst Du das wirklich?"
 L["yourself"] = "Du"
