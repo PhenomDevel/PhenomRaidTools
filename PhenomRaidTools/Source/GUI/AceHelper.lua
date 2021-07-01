@@ -278,7 +278,9 @@ function PRT.SimpleGroup()
   -- since we just use it to structure some controls and not to actually group them
   if container.frame then
     if container.frame then
-      container.frame:SetBackdrop({})
+      if container.frame.SetBackdrop then
+        container.frame:SetBackdrop({})
+      end
     end
   end
 
