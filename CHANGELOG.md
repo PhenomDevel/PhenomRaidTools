@@ -1,5 +1,14 @@
 # Release 2.19.1
 ## Bugfixes
+ - Be able to use spec specific profiles again
+## Features
+ - Rename ExRT to MethodRaidTools
+ - More conditons presets for Sanctum of Domination
+ - Only add spells to spell database if there is a description for it
+
+
+# Release 2.19.1
+## Bugfixes
  - Make sure backdrops for simple groups are not rendered after elvui update
 ## Features
  - Update for patch 9.1
