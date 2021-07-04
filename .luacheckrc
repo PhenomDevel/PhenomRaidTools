@@ -69,7 +69,7 @@ globals = {
   "SendChatMessage",
   "UnitIsGroupLeader",
   "GetBuildInfo",
-
+  "GetSpellDescription",
 
   -- Locals
   "L",

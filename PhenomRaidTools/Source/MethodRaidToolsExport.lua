@@ -3,7 +3,7 @@ local _, PRT = ...
 -------------------------------------------------------------------------------
 -- Local Helper
 
-local ExRTCombatEventTranslations = {
+local MethodRaidToolsCombatEventTranslations = {
   ["SPELL_CAST_SUCCESS"] = "SCC",
   ["SPELL_CAST_START"] = "SCS",
   ["SPELL_AURA_APPLIED"] = "SAA",
@@ -47,13 +47,16 @@ local function SecondsToTimePrefix(entry, options)
   timePrefixString = string.format("{time:%s", PRT.SecondsToClock(entry.time))
 
   if entry.startCondition then
-    local translatedEvent = ExRTCombatEventTranslations[entry.startCondition.event]
+    local translatedEvent = MethodRaidToolsCombatEventTranslations[entry.startCondition.event]
 
     if translatedEvent and entry.startCondition.spellID then
       timePrefixString = timePrefixString .. string.format(",%s:%s:%s", translatedEvent, entry.startCondition.spellID, entry.triggerAtOccurence or 0)
     else
       PRT.Debug(
-        string.format("Could not translate start condition event %s to ExRT event. ExRT note timers might not work correctly.", PRT.HighlightString(entry.startCondition.event))
+        string.format(
+          "Could not translate start condition event %s to MethodRaidTools event. MethodRaidTools note timers might not work correctly.",
+          PRT.HighlightString(entry.startCondition.event)
+        )
       )
     end
   end
@@ -61,7 +64,7 @@ local function SecondsToTimePrefix(entry, options)
   timePrefixString = timePrefixString .. "}"
 
   if options.withTimingNames then
-    timePrefixString = timePrefixString .. string.format(" %s -> ", PRT.ColoredString(entry.name, PRT.Static.Colors.Tertiary))
+    timePrefixString = timePrefixString .. string.format(" %s -> ", PRT.ColoredString((entry.name or "N/A"), PRT.Static.Colors.Tertiary))
   end
 
   return timePrefixString
@@ -135,7 +138,7 @@ local function GenerateTimingString(entry, options)
   return WrapPersonalization(finalString, targetsString, options)
 end
 
-local function MessagePerStringToExRTNote(messagesPerTiming, options)
+local function MessagePerStringToMethodRaidToolsNote(messagesPerTiming, options)
   local timingStrings = {}
 
   for _, entry in ipairs(messagesPerTiming) do
@@ -151,10 +154,10 @@ end
 -------------------------------------------------------------------------------
 -- Public API
 
-function PRT.ExRTExportFromTimer(options, timer)
+function PRT.MethodRaidToolsExportFromTimer(options, timer)
   local localTimer = PRT.TableUtils.Clone(timer)
   local collectedMessagePerTiming = CollectMessagesPerTiming(localTimer)
-  local timingStrings = MessagePerStringToExRTNote(collectedMessagePerTiming, options)
+  local timingStrings = MessagePerStringToMethodRaidToolsNote(collectedMessagePerTiming, options)
 
   PRT.TableUtils.Remove(timingStrings, PRT.StringUtils.IsEmpty)
 
@@ -182,13 +185,13 @@ function PRT.ExRTExportFromTimer(options, timer)
   return finalString
 end
 
-function PRT.ExRTExportFromTimers(options, timers, encounterName)
+function PRT.MethodRaidToolsExportFromTimers(options, timers, encounterName)
   local strings = {}
   local finalString
   local contentString
 
   for _, timer in ipairs(timers) do
-    tinsert(strings, PRT.ExRTExportFromTimer(options, timer))
+    tinsert(strings, PRT.MethodRaidToolsExportFromTimer(options, timer))
   end
 
   PRT.TableUtils.Remove(strings, PRT.StringUtils.IsEmpty)

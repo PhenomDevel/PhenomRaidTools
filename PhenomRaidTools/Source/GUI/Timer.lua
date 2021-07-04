@@ -8,7 +8,7 @@ local IsAddOnLoaded = IsAddOnLoaded
 -------------------------------------------------------------------------------
 -- Local Helper
 
-local function AddExRTExportOptionsWidget(container, context)
+local function AddMethodRaidToolsExportOptionsWidget(container, context)
   local optionsGroup = PRT.InlineGroup(L["Options"])
   optionsGroup:SetLayout("Flow")
 
@@ -17,11 +17,12 @@ local function AddExRTExportOptionsWidget(container, context)
   local withTimingNames = PRT.CheckBox(L["Include line prefix"], L["Shows the timing names before each line of a given prt timer."], context.withTimingNames)
   local withEmptyLines = PRT.CheckBox(L["Include empty lines"], L["Includes lines even if there are no entries within the prt timer."], context.withEmptyLines)
   local withPersonalization = PRT.CheckBox(L["Personalize note"], L["This will hide all entries which are not interesting for the given player."], context.withPersonalization)
-  local forceExRTUpdate = PRT.CheckBox(L["Force ExRT note update"], L["This will try and force ExRT to directly update the note."], context.forceExRTUpdate)
+  local forceMethodRaidToolsUpdate =
+    PRT.CheckBox(L["Force MethodRaidTools note update"], L["This will try and force MethodRaidTools to directly update the note."], context.forceMethodRaidToolsUpdate)
   local updatePRTTag =
     PRT.CheckBox(
     L["Replace PRT tag content"],
-    L["This will update the existing ExRT note and just replace the content between %s and %s tag with the generated content."]:format(
+    L["This will update the existing MethodRaidTools note and just replace the content between %s and %s tag with the generated content."]:format(
       PRT.HighlightString("{prtstart}"),
       PRT.HighlightString("{prtend}")
     ),
@@ -73,20 +74,20 @@ local function AddExRTExportOptionsWidget(container, context)
     end
   )
 
-  -- Directly Update ExRT Note
-  forceExRTUpdate:SetDisabled(not IsAddOnLoaded("ExRT"))
-  forceExRTUpdate:SetRelativeWidth(0.5)
-  forceExRTUpdate:SetCallback(
+  -- Directly Update MethodRaidTools Note
+  forceMethodRaidToolsUpdate:SetDisabled(not IsAddOnLoaded("ExRT"))
+  forceMethodRaidToolsUpdate:SetRelativeWidth(0.5)
+  forceMethodRaidToolsUpdate:SetCallback(
     "OnValueChanged",
     function(widget)
       local value = widget:GetValue()
-      context.forceExRTUpdate = value
+      context.forceMethodRaidToolsUpdate = value
       updatePRTTag:SetDisabled(not value)
     end
   )
 
-  -- Update ExRT and replace tag content
-  updatePRTTag:SetDisabled(not context.forceExRTUpdate)
+  -- Update MethodRaidTools and replace tag content
+  updatePRTTag:SetDisabled(not context.forceMethodRaidToolsUpdate)
   updatePRTTag:SetRelativeWidth(0.5)
   updatePRTTag:SetCallback(
     "OnValueChanged",
@@ -100,13 +101,13 @@ local function AddExRTExportOptionsWidget(container, context)
   optionsGroup:AddChild(withTimingNames)
   optionsGroup:AddChild(withEmptyLines)
   optionsGroup:AddChild(withPersonalization)
-  optionsGroup:AddChild(forceExRTUpdate)
+  optionsGroup:AddChild(forceMethodRaidToolsUpdate)
   optionsGroup:AddChild(updatePRTTag)
 
   container:AddChild(optionsGroup)
 end
 
-local function AddExRTExportSelectorWidget(container, context)
+local function AddMethodRaidToolsExportSelectorWidget(container, context)
   local timerGroup = PRT.InlineGroup(L["Select Timers"])
   timerGroup:SetLayout("Flow")
 
@@ -148,9 +149,9 @@ local function AddExRTExportSelectorWidget(container, context)
   container:AddChild(timerGroup)
 end
 
-local function UpdateExRTNote()
+local function UpdateMethodRaidToolsNote()
   -- We use this function to FORCE exrt to update the note.
-  PRT.Debug("Forcing ExRT Note to update.")
+  PRT.Debug("Forcing MethodRaidTools Note to update.")
   DEFAULT_CHAT_FRAME.editBox:SetText("/exrt note timer")
   ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 
@@ -158,7 +159,7 @@ local function UpdateExRTNote()
   ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
 end
 
-local function injectPRTExRTNoteExportIntoNote(export)
+local function injectPRTMethodRaidToolsNoteExportIntoNote(export)
   local currentNote = _G.VExRT.Note.Text1
   if currentNote then
     local tagLength = string.len("{prtend}")
@@ -172,11 +173,11 @@ local function injectPRTExRTNoteExportIntoNote(export)
 
       newNote = string.format("%s{prtstart}%s{prtend}%s", noteStart, export, noteEnd)
       _G.VExRT.Note.Text1 = newNote
-      UpdateExRTNote()
+      UpdateMethodRaidToolsNote()
     else
       PRT.Error(
         string.format(
-          "Couldn't find either %s or %s. Aborting ExRT force update. Please make sure you have put both tag into your current note.",
+          "Couldn't find either %s or %s. Aborting MethodRaidTools force update. Please make sure you have put both tag into your current note.",
           PRT.HighlightString("{prtstart}"),
           PRT.HighlightString("{prtend}")
         )
@@ -185,7 +186,7 @@ local function injectPRTExRTNoteExportIntoNote(export)
   else
     PRT.Error(
       string.format(
-        "Couldn't find either %s or %s. Aborting ExRT force update. Please make sure you have put both tag into your current note.",
+        "Couldn't find either %s or %s. Aborting MethodRaidTools force update. Please make sure you have put both tag into your current note.",
         PRT.HighlightString("{prtstart}"),
         PRT.HighlightString("{prtend}")
       )
@@ -193,7 +194,7 @@ local function injectPRTExRTNoteExportIntoNote(export)
   end
 end
 
-local function AddExRTExportResultWidget(container, encounter, context)
+local function AddMethodRaidToolsExportResultWidget(container, encounter, context)
   local timers = {}
 
   for _, timer in pairs(context.selectedTimers) do
@@ -202,30 +203,30 @@ local function AddExRTExportResultWidget(container, encounter, context)
 
   PRT.TableUtils.SortByKey(timers, "name")
 
-  local exportString = PRT.ExRTExportFromTimers(context, timers, PRT.ColoredString(encounter.name, PRT.Static.Colors.Primary))
+  local exportString = PRT.MethodRaidToolsExportFromTimers(context, timers, PRT.ColoredString(encounter.name, PRT.Static.Colors.Primary))
   exportString = string.gsub(exportString, "|", "||")
   container:ReleaseChildren()
   container:SetLayout("Fill")
 
-  local exportTextBox = PRT.MultiLineEditBox(L["ExRT Note"], exportString)
+  local exportTextBox = PRT.MultiLineEditBox(L["MethodRaidTools Note"], exportString)
   exportTextBox:SetFocus()
   exportTextBox:DisableButton(true)
   exportTextBox:HighlightText()
 
-  if context.forceExRTUpdate and IsAddOnLoaded("ExRT") then
+  if context.forceMethodRaidToolsUpdate and IsAddOnLoaded("ExRT") then
     if context.updatePRTTag then
-      injectPRTExRTNoteExportIntoNote(exportString)
+      injectPRTMethodRaidToolsNoteExportIntoNote(exportString)
     else
       _G.VExRT.Note.Text1 = exportString
-      UpdateExRTNote()
+      UpdateMethodRaidToolsNote()
     end
   end
 
   container:AddChild(exportTextBox)
 end
 
-local function AddExRTExportWidget(container, encounter, timers)
-  local exrtExportButton = PRT.Button(L["Generate ExRT Note"])
+local function AddMethodRaidToolsExportWidget(container, encounter, timers)
+  local exrtExportButton = PRT.Button(L["Generate MethodRaidTools Note"])
   exrtExportButton:SetCallback(
     "OnClick",
     function()
@@ -236,7 +237,7 @@ local function AddExRTExportWidget(container, encounter, timers)
         withEncounterName = true,
         withTimerNames = true,
         withTimingNames = true,
-        forceExRTUpdate = false,
+        forceMethodRaidToolsUpdate = false,
         updatePRTTag = true
       }
 
@@ -244,7 +245,7 @@ local function AddExRTExportWidget(container, encounter, timers)
       local description =
         PRT.Label(
         L[
-          "This feature will export your selected timers to a ExRT note. This will only work for message of type %s.\n\nIf you want" ..
+          "This feature will export your selected timers to a MethodRaidTools note. This will only work for message of type %s.\n\nIf you want" ..
             " to keep your current note you can use %s and %s. The prt generated note will be put inbetween those tags."
         ]:format(PRT.HighlightString("cooldown"), PRT.HighlightString("{prtstart}"), PRT.HighlightString("{prtend}"))
       )
@@ -254,26 +255,26 @@ local function AddExRTExportWidget(container, encounter, timers)
       exportButton:SetCallback(
         "OnClick",
         function()
-          if exrtExportContext.forceExRTUpdate and not exrtExportContext.updatePRTTag then
+          if exrtExportContext.forceMethodRaidToolsUpdate and not exrtExportContext.updatePRTTag then
             PRT.ConfirmationDialog(
-              L["You want to force update ExRT note without replacing PRT tag content. This will overwrite the whole note. Are you sure about that?"],
+              L["You want to force update MethodRaidTools note without replacing PRT tag content. This will overwrite the whole note. Are you sure about that?"],
               function()
-                AddExRTExportResultWidget(modalContainer, encounter, exrtExportContext)
+                AddMethodRaidToolsExportResultWidget(modalContainer, encounter, exrtExportContext)
               end
             )
           else
-            AddExRTExportResultWidget(modalContainer, encounter, exrtExportContext)
+            AddMethodRaidToolsExportResultWidget(modalContainer, encounter, exrtExportContext)
           end
         end
       )
 
       -- Add widgets to modal container
       modalContainer:AddChild(description)
-      AddExRTExportOptionsWidget(modalContainer, exrtExportContext)
-      AddExRTExportSelectorWidget(modalContainer, exrtExportContext)
+      AddMethodRaidToolsExportOptionsWidget(modalContainer, exrtExportContext)
+      AddMethodRaidToolsExportSelectorWidget(modalContainer, exrtExportContext)
       modalContainer:AddChild(exportButton)
 
-      local modal = PRT.CreateModal(modalContainer, L["ExRT Note Generator"])
+      local modal = PRT.CreateModal(modalContainer, L["MethodRaidTools Note Generator"])
       modal:EnableResize(false)
     end
   )
@@ -479,7 +480,7 @@ function PRT.AddTimerOptionsWidgets(container, profile, encounterID)
 
   timerOptionsGroup:AddChild(addButton)
   timerOptionsGroup:AddChild(pasteButton)
-  AddExRTExportWidget(timerOptionsGroup, encounter, timers)
+  AddMethodRaidToolsExportWidget(timerOptionsGroup, encounter, timers)
   container:AddChild(timerOptionsGroup)
 end
 
