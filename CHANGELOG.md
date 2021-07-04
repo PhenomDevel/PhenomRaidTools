@@ -1,4 +1,13 @@
-# Release 2.19.1
+# Release 2.20.0
+## Bugfixes
+None
+## Features
+ - Add raid targets as quick access icons
+ - Disable invalid target selections
+ - Be able to select `None` as target and raid target
+
+
+# Release 2.19.3
 ## Bugfixes
  - Be able to use spec specific profiles again
 ## Features
