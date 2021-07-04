@@ -11,7 +11,7 @@ ignore:
   - .pkgmeta
   - generate-doc.bat
   - ldoc
-  - changelog-config.yml
+  - scripts
 
 manual-changelog:
     filename: CHANGELOG.md

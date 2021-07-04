@@ -13,17 +13,5 @@ jobs:
       # Checks-out your repository
       - uses: actions/checkout@v2
 
-      - name: Create Changelog
-        uses: saadmk11/changelog-ci@v0.8.0
-        with:
-        # Optional, you can provide any name for your changelog file,
-        # defaults to `CHANGELOG.md` if not provided.
-          changelog_filename: 'CHANGELOG.md'
-        # Optional, only required when you want more customization
-        # e.g: group your changelog by labels with custom titles,
-        # different version prefix, pull request title and version number regex etc.
-        # config file can be in JSON or YAML format.
-          config_file: changelog-config.yml
-        # Optional, This will be used to configure git
-        # defaults to `github-actions[bot]` if not provided.
-          committer_username: 'Phenom'
+      - name: Generate Changelog
+        run: ./scripts/changelog.sh > CHANGELOG.md
