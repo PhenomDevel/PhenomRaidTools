@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/bash
 
 # Obtain the latest tag, include lightweight tags.
 CURRENT=$(git describe --long --tags)
