@@ -70,16 +70,10 @@ end
 
 local function ExecuteRaidTarget(message)
   if message.targets and message.targets[1] then
-    local target = message.targets[1]
+    local target = PRT.ReplacePlayerNameTokens(message.targets[1])
 
     if target == "$target" then
       target = message.eventTarget
-    end
-
-    local raidTargetName = "N/A"
-
-    if message.raidtarget then
-      raidTargetName = PRT.Static.Tables.RaidTargets[message.raidtarget].name
     end
 
     if PRT.IsTestMode() then
@@ -88,9 +82,22 @@ local function ExecuteRaidTarget(message)
     end
 
     if PRT.IsTestMode() or (UnitInRaid(target) and UnitExists(target)) then
+      local raidTargetName = "N/A"
+      if message.raidtarget then
+        if message.raidtarget ~= 999 then
+          raidTargetName = PRT.Static.Tables.RaidTargets[message.raidtarget].name
+        end
+      end
+
       if not (GetRaidTargetIndex(target) == message.raidtarget) then
+        -- If no raid target is selected we unselect the existing one
+        local targetIndex = message.raidtarget
+        if message.raidtarget == 999 then
+          message.raidtarget = nil
+        end
+
         PRT.Debug("Setting raid target", raidTargetName, "for unit", PRT.HighlightString(target))
-        SetRaidTarget(target, message.raidtarget)
+        SetRaidTarget(target, targetIndex)
       else
         PRT.Debug("Skipped setting raid target", raidTargetName, "because unit already has this raid target")
       end

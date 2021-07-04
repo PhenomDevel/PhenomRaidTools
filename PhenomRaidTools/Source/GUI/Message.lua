@@ -110,7 +110,7 @@ function Message.ColoredRaidPlayerNames()
   return playerNames
 end
 
-function Message.GenerateRaidRosterDropdownItems()
+function Message.GenerateRaidRosterDropdownItems(onlySingleTargets)
   local raidRosterItems = {}
 
   -- Add Raid Roster entries
@@ -130,13 +130,15 @@ function Message.GenerateRaidRosterDropdownItems()
         for customEncounterPlaceholderName, customEncounterPlaceholder in pairs(PRT.currentEncounter.encounter.CustomPlaceholders) do
           local coloredNames = {}
 
-          for _, name in pairs(customEncounterPlaceholder.characterNames or {}) do
-            tinsert(coloredNames, PRT.ClassColoredName(name))
-          end
+          if (customEncounterPlaceholder.type == "group" and (not onlySingleTargets)) or customEncounterPlaceholder.type == "player" then
+            for _, name in pairs(customEncounterPlaceholder.characterNames or {}) do
+              tinsert(coloredNames, PRT.ClassColoredName(name))
+            end
 
-          local name = strjoin(", ", unpack(coloredNames))
-          name = "$" .. customEncounterPlaceholderName .. " (" .. name .. ")"
-          tinsert(raidRosterItems, {id = "$" .. customEncounterPlaceholderName, name = name})
+            local playerNames = strjoin(", ", unpack(coloredNames))
+            local displayName = "$" .. customEncounterPlaceholderName .. " (" .. playerNames .. ")"
+            tinsert(raidRosterItems, {id = "$" .. customEncounterPlaceholderName, name = displayName, disabled = PRT.StringUtils.IsEmpty(playerNames)})
+          end
         end
       end
     end
@@ -146,34 +148,38 @@ function Message.GenerateRaidRosterDropdownItems()
   for customPlaceholderName, customPlaceholder in pairs(PRT.GetProfileDB().customPlaceholders) do
     local coloredNames = {}
 
-    for _, name in pairs(customPlaceholder.characterNames or {}) do
-      tinsert(coloredNames, PRT.ClassColoredName(name))
-    end
+    if (customPlaceholder.type == "group" and (not onlySingleTargets)) or customPlaceholder.type == "player" then
+      for _, name in pairs(customPlaceholder.characterNames or {}) do
+        tinsert(coloredNames, PRT.ClassColoredName(name))
+      end
 
-    local name = strjoin(", ", unpack(coloredNames))
-    name = "$" .. customPlaceholderName .. " (" .. name .. ")"
-    tinsert(raidRosterItems, {id = "$" .. customPlaceholderName, name = name})
+      local playerNames = strjoin(", ", unpack(coloredNames))
+      local displayName = "$" .. customPlaceholderName .. " (" .. playerNames .. ")"
+      tinsert(raidRosterItems, {id = "$" .. customPlaceholderName, name = displayName, disabled = PRT.StringUtils.IsEmpty(playerNames)})
+    end
   end
 
   -- Add groups
-  local groupItems = {}
-  for i = 1, 8, 1 do
-    local identifier = "$group" .. i
-    if not tContains(groupItems, identifier) then
-      tinsert(groupItems, identifier)
+  if (not onlySingleTargets) then
+    local groupItems = {}
+    for i = 1, 8, 1 do
+      local identifier = "$group" .. i
+      if not tContains(groupItems, identifier) then
+        tinsert(groupItems, identifier)
+      end
     end
-  end
 
-  for _, v in ipairs(groupItems) do
-    tinsert(raidRosterItems, {id = v, name = v})
-  end
+    for _, v in ipairs(groupItems) do
+      tinsert(raidRosterItems, {id = v, name = v})
+    end
 
-  -- Add default targets (HEALER, TANK etc.)
-  for _, name in ipairs(Message.defaultTargets) do
-    tinsert(raidRosterItems, {id = name, name = name})
-  end
+    -- Add default targets (HEALER, TANK etc.)
+    for _, name in ipairs(Message.defaultTargets) do
+      tinsert(raidRosterItems, {id = name, name = name})
+    end
 
-  tinsert(raidRosterItems, {id = "$target", name = "$target"})
+    tinsert(raidRosterItems, {id = "$target", name = "$target"})
+  end
 
   raidRosterItems = PRT.TableUtils.MergeMany(raidRosterItems, Message.ColoredRaidPlayerNames())
   PRT.TableUtils.SortByKey(raidRosterItems, "name")
@@ -263,7 +269,7 @@ local function AddRaidWarningActionWidgets(container, action)
 end
 
 local function AddRaidTargetActionWidgets(container, action)
-  local possibleTargets = Message.ColoredRaidPlayerNames()
+  local possibleTargets = Message.GenerateRaidRosterDropdownItems(true)
   tinsert(possibleTargets, "$target")
 
   local targetDropdown = PRT.Dropdown(L["Target"], L["Player who should be marked"], possibleTargets, action.targets[1], true)
@@ -281,9 +287,7 @@ local function AddRaidTargetActionWidgets(container, action)
     "OnValueChanged",
     function(widget)
       local value = widget:GetValue()
-      if value == 999 then
-        value = 0
-      end
+
       action.raidtarget = value
     end
   )

@@ -397,7 +397,7 @@ end
 function PRT.Dropdown(label, tooltip, dropdownValues, dropdownValue, withEmpty, orderByKey)
   local dropdownItems = {}
   if withEmpty then
-    dropdownItems[999] = ""
+    dropdownItems[999] = L["None"]
   end
 
   for _, v in ipairs(dropdownValues) do
