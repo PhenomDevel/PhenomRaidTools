@@ -64,10 +64,15 @@ local encounterPhaseMapping = {
   -- Eye of the Jailer
   [2433] = {
     {id = "intermissionStart", name = L["Intermission Start"], event = "SPELL_AURA_APPLIED", spellID = 348805},
+    {id = "intermissionEnd", name = L["Intermission End"], event = "SPELL_AURA_REMOVED", spellID = 348805},
     {id = "phase3start", name = L["Phase 3 Start"], event = "SPELL_CAST_START", spellID = 348974}
   },
+  -- The Nine
+  [2429] = {},
   -- Remnant of Ner'zhul
-  [2432] = {},
+  [2432] = {
+    {id = "intermissionStart", name = L["Intermission Start"], event = "SPELL_CAST_SUCCESS", spellID = 355525}
+  },
   -- Soulrender Dormazin
   [2434] = {},
   -- Guardian of the First Ones
@@ -79,15 +84,13 @@ local encounterPhaseMapping = {
     {id = "intermissionStart", name = L["Intermission Start"], event = "SPELL_AURA_APPLIED", spellID = 351969}
   },
   -- Kel'Thuzad
-  [2422] = {},
+  [2422] = {
+    {id = "intermissionEnd", name = L["Intermission End"], event = "SPELL_CAST_START", spellID = 352355}
+  },
   -- Painsmith
   [2430] = {
     {id = "intermissionStart", name = L["Intermission Start"], event = "SPELL_AURA_APPLIED", spellID = 355525},
     {id = "intermissionStop", name = L["Intermission Stop"], event = "SPELL_AURA_REMOVED", spellID = 355525}
-  },
-  -- The Nine
-  [2429] = {
-    {id = "phase2start", name = L["Phase 2 Start"], event = "SPELL_CAST_START", spellID = 350467}
   }
 }
 
