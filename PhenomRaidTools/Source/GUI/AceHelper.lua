@@ -362,6 +362,17 @@ function PRT.Label(label, fontSize)
   return widget
 end
 
+function PRT.InteractiveLabel(label, fontSize)
+  local widget = AceGUI:Create("InteractiveLabel")
+  widget:SetJustifyV("CENTER")
+
+  widget:SetText(label)
+  widget:SetFont(GameFontHighlightSmall:GetFont(), (fontSize or 14), "OUTLINE")
+  widget:SetWidth(widget.label:GetStringWidth())
+
+  return widget
+end
+
 function PRT.EditBox(label, tooltip, value)
   local widget = AceGUI:Create("EditBox")
   widget:SetLabel(label)

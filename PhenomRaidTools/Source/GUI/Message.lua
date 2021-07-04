@@ -201,6 +201,7 @@ function Message.CompilePossibleCooldownItems()
       name = "|cFFf5b247" .. L["* Custom *"] .. "|r"
     }
   }
+
   for _, cooldownGroup in pairs(Cooldowns) do
     for _, spellID in ipairs(cooldownGroup) do
       local name = GetSpellInfo(spellID)
@@ -545,8 +546,28 @@ local function AddAdvancedActionWidgets(container, message)
 
   container:AddChild(messageGroup)
 
-  for cooldownGroupName, cooldownGroup in pairs(Cooldowns) do
-    local cooldownGroupContainer = PRT.SimpleGroup(cooldownGroupName)
+  -- Add target icons for quick access
+  local raidTargetGroup = PRT.SimpleGroup()
+  raidTargetGroup:SetLayout("Flow")
+  for i = 8, 1, -1 do
+    local iconText = PRT.ExchangeRaidTargets("{rt" .. i .. "}")
+    local raidTargetLabel = PRT.InteractiveLabel(iconText)
+    raidTargetLabel:SetWidth(24)
+    raidTargetLabel:SetCallback(
+      "OnClick",
+      function()
+        message.message = message.message .. "{rt" .. i .. "}"
+        messageEditBox:SetText(message.message)
+        messagePreviewLabel:SetText(L["Preview: "] .. PRT.PrepareMessageForDisplay(message.message))
+      end
+    )
+    raidTargetGroup:AddChild(raidTargetLabel)
+  end
+  container:AddChild(raidTargetGroup)
+
+  -- Add cooldowns for quick access
+  for _, cooldownGroup in pairs(Cooldowns) do
+    local cooldownGroupContainer = PRT.SimpleGroup()
     cooldownGroupContainer:SetLayout("Flow")
 
     for _, spellID in ipairs(cooldownGroup) do
