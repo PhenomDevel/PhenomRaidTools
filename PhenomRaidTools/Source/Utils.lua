@@ -532,7 +532,7 @@ function PRT.IsDevelopmentVersion()
   local versionString = PRT.GetProfileDB().version
   local numericVersionString = string.gsub(versionString, "[.]", "")
 
-  return not tonumber(numericVersionString)
+  return (not tonumber(numericVersionString))
 end
 
 function PRT.IsClassic()
@@ -540,9 +540,9 @@ function PRT.IsClassic()
   local numericVersion = PRT.ParseVersionString(wowVersion)
 
   -- If version is smaller than WoW: Shadowlands we assume it must be classic
-  return numericVersion < 90000
+  return (numericVersion < 900)
 end
 
 function PRT.IsRetail()
-  return not PRT.IsClassic()
+  return (not PRT.IsClassic())
 end
