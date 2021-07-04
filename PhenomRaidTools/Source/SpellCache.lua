@@ -6,7 +6,7 @@ local SpellCache = {}
 
 PRT.SpellCache = SpellCache
 
-local GetBuildInfo = GetBuildInfo
+local GetBuildInfo, GetSpellDescription = GetBuildInfo, GetSpellDescription
 
 -------------------------------------------------------------------------------
 -- Public API
@@ -49,21 +49,19 @@ function SpellCache.Build(spellCache)
 
           while failedAttempt < 400 do
             id = id + 1
+
             local name, _, icon = GetSpellInfo(id)
+            local description = GetSpellDescription(id)
 
-            if not PRT.StringUtils.IsEmpty(name) then
-              -- PRT.Debug("SpellCache: Found spell", PRT.HighlightString(name), "(", PRT.HighlightString(id), ")")
-
-              if (icon == 136243) then -- 136243 is the a gear icon, we can ignore those spells
-                failedAttempt = 0
-              else
+            if (not PRT.StringUtils.IsEmpty(name)) then
+              if icon ~= 136243 or (not PRT.StringUtils.IsEmpty(description)) then
                 spellCache.spells[id] = {
                   id = id,
                   name = name
                 }
-
-                failedAttempt = 0
               end
+
+              failedAttempt = 0
             else
               failedAttempt = failedAttempt + 1
             end
