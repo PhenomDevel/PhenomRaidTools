@@ -6,7 +6,7 @@ on:
       - Development
 
 jobs:
-  Luacheck:
+  Changelog:
     runs-on: ubuntu-latest
 
     steps:
