@@ -19,57 +19,65 @@ local defaultTranslations = {
   ["defaultCheckAgainAfter"] = L["Check after"]
 }
 
+local defaultIgnorableKeys = {
+  "defaultTargetOverlay",
+  "defaultMessageType",
+  "defaultEvent"
+}
+
 -------------------------------------------------------------------------------
 -- Private Helper
 
 local function addDefaultsWidgets(container, t)
   if t then
     for k, v in pairs(t) do
-      local widget = nil
-      if type(v) == "boolean" then
-        widget = PRT.CheckBox(defaultTranslations[k], nil, v)
-        widget:SetCallback(
-          "OnValueChanged",
-          function()
-            t[k] = widget:GetValue()
-          end
-        )
-      elseif type(v) == "string" then
-        widget = PRT.EditBox(defaultTranslations[k], nil, v)
-        widget:SetCallback(
-          "OnEnterPressed",
-          function()
-            t[k] = widget:GetText()
-            widget:ClearFocus()
-          end
-        )
-      elseif type(v) == "number" then
-        widget = PRT.Slider(defaultTranslations[k], nil, v)
-        widget:SetCallback(
-          "OnValueChanged",
-          function()
-            t[k] = widget:GetValue()
-          end
-        )
-      elseif type(v) == "table" then
-        widget = PRT.EditBox(defaultTranslations[k], nil, strjoin(", ", unpack(v)), true)
-        widget:SetWidth(300)
-        widget:SetCallback(
-          "OnEnterPressed",
-          function()
-            if widget:GetText() == "" then
-              t[k] = {}
-            else
-              t[k] = {strsplit(",", widget:GetText())}
+      if not tContains(defaultIgnorableKeys, k) then
+        local widget = nil
+        if type(v) == "boolean" then
+          widget = PRT.CheckBox(defaultTranslations[k], nil, v)
+          widget:SetCallback(
+            "OnValueChanged",
+            function()
+              t[k] = widget:GetValue()
             end
-            widget:ClearFocus()
-          end
-        )
-      end
+          )
+        elseif type(v) == "string" then
+          widget = PRT.EditBox(defaultTranslations[k], nil, v)
+          widget:SetCallback(
+            "OnEnterPressed",
+            function()
+              t[k] = widget:GetText()
+              widget:ClearFocus()
+            end
+          )
+        elseif type(v) == "number" then
+          widget = PRT.Slider(defaultTranslations[k], nil, v)
+          widget:SetCallback(
+            "OnValueChanged",
+            function()
+              t[k] = widget:GetValue()
+            end
+          )
+        elseif type(v) == "table" then
+          widget = PRT.EditBox(defaultTranslations[k], nil, strjoin(", ", unpack(v)), true)
+          widget:SetWidth(300)
+          widget:SetCallback(
+            "OnEnterPressed",
+            function()
+              if widget:GetText() == "" then
+                t[k] = {}
+              else
+                t[k] = {strsplit(",", widget:GetText())}
+              end
+              widget:ClearFocus()
+            end
+          )
+        end
 
-      if widget then
-        widget:SetRelativeWidth(0.33)
-        container:AddChild(widget)
+        if widget then
+          widget:SetRelativeWidth(0.33)
+          container:AddChild(widget)
+        end
       end
     end
   end
@@ -166,6 +174,7 @@ function PRT.AddDefaultsGroups(container, options)
     for k, v in pairs(options) do
       local groupWidget = PRT.InlineGroup(defaultTranslations[k])
       groupWidget:SetLayout("Flow")
+
       addDefaultsWidgets(groupWidget, v)
 
       if k == "messageDefaults" then
