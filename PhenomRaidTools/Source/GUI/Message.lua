@@ -246,6 +246,27 @@ local function AddLoadTemplateActionWidgets(container, action)
   container:AddChild(templatesDropdown)
 end
 
+local function AddRaidTargetQuickAccessIcons(container, message, messageWidget, messageLabelWidget)
+  -- Add target icons for quick access
+  local raidTargetGroup = PRT.SimpleGroup()
+  raidTargetGroup:SetLayout("Flow")
+  for i = 8, 1, -1 do
+    local iconText = PRT.ExchangeRaidTargets("{rt" .. i .. "}")
+    local raidTargetLabel = PRT.InteractiveLabel(iconText)
+    raidTargetLabel:SetWidth(24)
+    raidTargetLabel:SetCallback(
+      "OnClick",
+      function()
+        message.message = message.message .. "{rt" .. i .. "}"
+        messageWidget:SetText(message.message)
+        messageLabelWidget:SetText(L["Preview: "] .. PRT.PrepareMessageForDisplay(message.message))
+      end
+    )
+    raidTargetGroup:AddChild(raidTargetLabel)
+  end
+  container:AddChild(raidTargetGroup)
+end
+
 local function AddRaidWarningActionWidgets(container, action)
   local messagePreviewLabel = PRT.Label(L["Preview: "] .. PRT.PrepareMessageForDisplay(action.message))
   messagePreviewLabel:SetRelativeWidth(1)
@@ -266,6 +287,7 @@ local function AddRaidWarningActionWidgets(container, action)
 
   container:AddChild(messageEditBox)
   container:AddChild(messagePreviewLabel)
+  AddRaidTargetQuickAccessIcons(container, action, messageEditBox, messagePreviewLabel)
   container:AddChild(note)
 end
 
@@ -546,24 +568,7 @@ local function AddAdvancedActionWidgets(container, message)
 
   container:AddChild(messageGroup)
 
-  -- Add target icons for quick access
-  local raidTargetGroup = PRT.SimpleGroup()
-  raidTargetGroup:SetLayout("Flow")
-  for i = 8, 1, -1 do
-    local iconText = PRT.ExchangeRaidTargets("{rt" .. i .. "}")
-    local raidTargetLabel = PRT.InteractiveLabel(iconText)
-    raidTargetLabel:SetWidth(24)
-    raidTargetLabel:SetCallback(
-      "OnClick",
-      function()
-        message.message = message.message .. "{rt" .. i .. "}"
-        messageEditBox:SetText(message.message)
-        messagePreviewLabel:SetText(L["Preview: "] .. PRT.PrepareMessageForDisplay(message.message))
-      end
-    )
-    raidTargetGroup:AddChild(raidTargetLabel)
-  end
-  container:AddChild(raidTargetGroup)
+  AddRaidTargetQuickAccessIcons(container, message, messageEditBox, messagePreviewLabel)
 
   -- Add cooldowns for quick access
   for _, cooldownGroup in pairs(Cooldowns) do
