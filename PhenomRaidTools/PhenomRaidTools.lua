@@ -243,12 +243,6 @@ do
     -- Initialize Minimap Icon
     LibDBIcon:Register("PhenomRaidTools", PhenomRaidToolsLDB, PRT.GetProfileDB().minimap)
 
-    local encounterIdx, _ = PRT.TableUtils.GetBy(PRT.GetProfileDB().encounters, "id", 9999)
-
-    if not encounterIdx and PRT.TableUtils.IsEmpty(PRT.GetProfileDB().encounters) then
-      table.insert(PRT.GetProfileDB().encounters, PRT.ExampleEncounter())
-    end
-
     -- Reset versions
     PRT.GetProfileDB().versionCheck = {}
 
