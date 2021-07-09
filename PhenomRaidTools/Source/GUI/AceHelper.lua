@@ -79,8 +79,27 @@ function AceHelper.AddNewTab(widget, t, item)
   PRT.Core.UpdateScrollFrame()
 end
 
+function AceHelper.ReIndexTable(t)
+  local backup = PRT.TableUtils.Clone(t)
+  local index = 1
+
+  wipe(t)
+
+  for _, v in pairs(backup) do
+    t[index] = v
+    index = index + 1
+  end
+end
+
 function AceHelper.RemoveTab(widget, t, item)
   t[item] = nil
+
+  if PRT.TableUtils.EveryKey(t, tonumber) then
+    PRT.PrintTable(t, 5)
+    AceHelper.ReIndexTable(t)
+    PRT.PrintTable(t, 5)
+  end
+
   widget:SetTabs(PRT.TableToTabs(t, true))
   widget:DoLayout()
   widget:SelectTab(1)
@@ -119,8 +138,11 @@ end
 function PRT.SelectFirstTab(container, t)
   container:SelectTab(nil)
   if t then
-    if getn(t) > 0 then
-      container:SelectTab(1)
+    if PRT.TableUtils.Count(t) > 0 then
+      for k, _ in pairs(t) do
+        container:SelectTab(k)
+        break
+      end
     end
   end
 end
@@ -164,6 +186,7 @@ function PRT.TabGroupDeleteButton(container, tabGroup, t, key, label)
         L[confirmationLabel]:format(PRT.HighlightString(item.name)),
         function()
           AceHelper.RemoveTab(tabGroup, t, key)
+          PRT.SelectFirstTab(tabGroup, t)
         end
       )
     end
@@ -189,6 +212,7 @@ function PRT.TabGroupCloneButton(container, tabGroup, t, key, label)
         L[confirmationLabel]:format(PRT.HighlightString(item.name)),
         function()
           local clonedItem = PRT.TableUtils.Clone(item)
+          clonedItem.name = clonedItem.name .. " - Clone" .. random(0, 100000)
           AceHelper.AddNewTab(tabGroup, t, clonedItem)
         end
       )
