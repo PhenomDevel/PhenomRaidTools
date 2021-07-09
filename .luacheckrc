@@ -83,5 +83,5 @@ max_cyclomatic_complexity=200
 ignore={
  ".*self",
  "date",
- 512
+ "loop is executed at most once"
 }
