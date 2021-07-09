@@ -1,4 +1,4 @@
-# Release 2.21.0
+# Release 2.21.2
 ## Bugfixes
  - Make sure trigger defaults are rendered correctly
  - Re-Index numeric tables for all trigger types
