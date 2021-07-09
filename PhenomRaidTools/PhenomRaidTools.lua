@@ -180,7 +180,9 @@ do
           defaultDuration = 5,
           defaultTargets = {
             "$me"
-          }
+          },
+          defaultCooldownWithCountdownPattern = "{spell:%s} %%.0f {spell:%s}",
+          defaultCooldownWithoutCountdownPattern = "{spell:%s}"
         }
       },
       timerExportDefaults = {
