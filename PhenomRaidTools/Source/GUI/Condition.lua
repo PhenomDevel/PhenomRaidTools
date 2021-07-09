@@ -77,7 +77,8 @@ local encounterPhaseMapping = {
   [2434] = {},
   -- Guardian of the First Ones
   [2436] = {
-    {id = "intermissionStart", name = L["Intermission Start"], event = "SPELL_AURA_APPLIED", spellID = 352385}
+    {id = "intermissionStart", name = L["Intermission Start"], event = "SPELL_AURA_APPLIED", spellID = 352385},
+    {id = "intermissionEnd", name = L["Intermission End"], event = "SPELL_CAST_START", spellID = 352589}
   },
   -- Fatescribe Roh-Kalo
   [2431] = {
