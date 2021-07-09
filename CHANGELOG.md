@@ -1,3 +1,14 @@
+# Release 2.21.0
+## Bugfixes
+ - Make sure trigger defaults are rendered correctly
+ - Re-Index numeric tables for all trigger types
+## Features
+ - Add raid target quick access buttons for raid warning actions
+ - Stopped adding example encounter if there are no encounters anymore
+ - Remember the last settings for MRT exports
+ - Added intermission end condition preset for Guardian of the first ones
+ - Add cooldown message pattern to default options so you can overwrite it
+
 # Release 2.20.0
 ## Bugfixes
 None
