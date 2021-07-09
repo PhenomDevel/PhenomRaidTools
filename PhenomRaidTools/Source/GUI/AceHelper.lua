@@ -95,9 +95,7 @@ function AceHelper.RemoveTab(widget, t, item)
   t[item] = nil
 
   if PRT.TableUtils.EveryKey(t, tonumber) then
-    PRT.PrintTable(t, 5)
     AceHelper.ReIndexTable(t)
-    PRT.PrintTable(t, 5)
   end
 
   widget:SetTabs(PRT.TableToTabs(t, true))
