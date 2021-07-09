@@ -16,7 +16,9 @@ local defaultTranslations = {
   ["percentageDefaults"] = L["Percentage"],
   ["defaultUnitID"] = L["Unit"],
   ["defaultCheckAgain"] = L["Check again"],
-  ["defaultCheckAgainAfter"] = L["Check after"]
+  ["defaultCheckAgainAfter"] = L["Check after"],
+  ["defaultCooldownWithCountdownPattern"] = L["Cooldown with countdown pattern"],
+  ["defaultCooldownWithoutCountdownPattern"] = L["Cooldown without countdown pattern"]
 }
 
 local defaultIgnorableKeys = {
@@ -114,8 +116,7 @@ local function AddMessageDefaultWidgets(container, t)
     },
     [3] = {
       id = "raidtarget",
-      name = L["Raidtarget"],
-      disabled = true
+      name = L["Raidtarget"]
     },
     [4] = {
       id = "advanced",
@@ -143,7 +144,7 @@ end
 
 local function AddConditionDefaults(container, t)
   local eventDropDown = PRT.Dropdown(L["Event"], nil, PRT.Static.Tables.SupportedEvents, t.defaultEvent, true)
-  eventDropDown:SetRelativeWidth(1)
+  eventDropDown:SetWidth(400)
   eventDropDown:SetCallback(
     "OnValueChanged",
     function(widget)
