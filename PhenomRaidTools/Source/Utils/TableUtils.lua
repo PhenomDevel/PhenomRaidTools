@@ -142,3 +142,35 @@ function TableUtils.SwapKey(t, old, new)
   t[old] = nil
   t[new] = value
 end
+
+function TableUtils.Keys(t)
+  local keyset = {}
+  local n = 0
+
+  for k, _ in pairs(t) do
+    n = n + 1
+    keyset[n] = k
+  end
+
+  return keyset
+end
+
+function TableUtils.EveryKey(t, pred)
+  for k, _ in pairs(t) do
+    if not pred(k) then
+      return false
+    end
+  end
+
+  return true
+end
+
+function TableUtils.EveryValue(t, pred)
+  for _, v in pairs(t) do
+    if not pred(v) then
+      return false
+    end
+  end
+
+  return true
+end
