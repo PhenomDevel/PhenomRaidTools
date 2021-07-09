@@ -183,6 +183,14 @@ do
           }
         }
       },
+      timerExportDefaults = {
+        withEmptyLines = false,
+        withEncounterName = true,
+        withTimerNames = true,
+        withTimingNames = true,
+        forceMethodRaidToolsUpdate = false,
+        updatePRTTag = true
+      },
       encounters = {},
       currentEncounter = {
         inFight = false

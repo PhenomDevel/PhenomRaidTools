@@ -34,7 +34,9 @@ local function AddMethodRaidToolsExportOptionsWidget(container, context)
   withEncounterName:SetCallback(
     "OnValueChanged",
     function(widget)
-      context.withEncounterName = widget:GetValue()
+      local value = widget:GetValue()
+      context.withEncounterName = value
+      PRT.GetProfileDB().timerExportDefaults.withEncounterName = value
     end
   )
 
@@ -43,7 +45,9 @@ local function AddMethodRaidToolsExportOptionsWidget(container, context)
   withTimerNames:SetCallback(
     "OnValueChanged",
     function(widget)
-      context.withTimerNames = widget:GetValue()
+      local value = widget:GetValue()
+      context.withTimerNames = value
+      PRT.GetProfileDB().timerExportDefaults.withTimerNames = value
     end
   )
 
@@ -52,7 +56,9 @@ local function AddMethodRaidToolsExportOptionsWidget(container, context)
   withTimingNames:SetCallback(
     "OnValueChanged",
     function(widget)
-      context.withTimingNames = widget:GetValue()
+      local value = widget:GetValue()
+      context.withTimingNames = value
+      PRT.GetProfileDB().timerExportDefaults.withTimingNames = value
     end
   )
 
@@ -61,7 +67,9 @@ local function AddMethodRaidToolsExportOptionsWidget(container, context)
   withEmptyLines:SetCallback(
     "OnValueChanged",
     function(widget)
-      context.withEmptyLines = widget:GetValue()
+      local value = widget:GetValue()
+      context.withEmptyLines = value
+      PRT.GetProfileDB().timerExportDefaults.withEmptyLines = value
     end
   )
 
@@ -70,7 +78,9 @@ local function AddMethodRaidToolsExportOptionsWidget(container, context)
   withPersonalization:SetCallback(
     "OnValueChanged",
     function(widget)
-      context.withPersonalization = widget:GetValue()
+      local value = widget:GetValue()
+      context.withPersonalization = value
+      PRT.GetProfileDB().timerExportDefaults.withPersonalization = value
     end
   )
 
@@ -82,6 +92,7 @@ local function AddMethodRaidToolsExportOptionsWidget(container, context)
     function(widget)
       local value = widget:GetValue()
       context.forceMethodRaidToolsUpdate = value
+      PRT.GetProfileDB().timerExportDefaults.forceMethodRaidToolsUpdate = value
       updatePRTTag:SetDisabled(not value)
     end
   )
@@ -92,7 +103,9 @@ local function AddMethodRaidToolsExportOptionsWidget(container, context)
   updatePRTTag:SetCallback(
     "OnValueChanged",
     function(widget)
-      context.updatePRTTag = widget:GetValue()
+      local value = widget:GetValue()
+      context.updatePRTTag = value
+      PRT.GetProfileDB().timerExportDefaults.updatePRTTag = value
     end
   )
 
@@ -233,12 +246,12 @@ local function AddMethodRaidToolsExportWidget(container, encounter, timers)
       local exrtExportContext = {
         timers = timers,
         selectedTimers = {},
-        withEmptyLines = false,
-        withEncounterName = true,
-        withTimerNames = true,
-        withTimingNames = true,
-        forceMethodRaidToolsUpdate = false,
-        updatePRTTag = true
+        withEmptyLines = PRT.GetProfileDB().timerExportDefaults.withEmptyLines,
+        withEncounterName = PRT.GetProfileDB().timerExportDefaults.withEncounterName,
+        withTimerNames = PRT.GetProfileDB().timerExportDefaults.withTimerNames,
+        withTimingNames = PRT.GetProfileDB().timerExportDefaults.withTimingNames,
+        forceMethodRaidToolsUpdate = PRT.GetProfileDB().timerExportDefaults.forceMethodRaidToolsUpdate,
+        updatePRTTag = PRT.GetProfileDB().timerExportDefaults.updatePRTTag
       }
 
       local modalContainer = PRT.SimpleGroup()
