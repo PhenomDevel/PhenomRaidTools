@@ -9,7 +9,7 @@ on:
       - "!**-alpha**"
 
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -47,18 +47,3 @@ jobs:
           webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
           status: ${{ job.status }}
         if: failure()
-
-      - name: Read CHANGELOG.md
-        id: changelog
-        uses: juliangruber/read-file-action@v1
-        with:
-          path: ./CHANGELOG.md
-
-      - name: send message
-        uses: appleboy/discord-action@master
-        with:
-          webhook_id: ${{ secrets.DISCORD_WEBHOOK_ID }}
-          webhook_token: ${{ secrets.DISCORD_WEBHOOK_TOKEN }}
-          color: "#48f442"
-          username: "GitHub Bot"
-          message: "New Version\n ${{ steps.changelog.outputs.content }}"
