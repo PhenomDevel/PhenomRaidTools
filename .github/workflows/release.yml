@@ -48,6 +48,10 @@ jobs:
           status: ${{ job.status }}
         if: failure()
 
+      - name: Read changelog
+        run: |
+          echo ::set-env name=CHANGELOG::$(cat CHANGELOG.md)
+
       - name: send message
         uses: appleboy/discord-action@master
         with:
@@ -55,4 +59,4 @@ jobs:
           webhook_token: ${{ secrets.DISCORD_WEBHOOK_TOKEN }}
           color: "#48f442"
           username: "GitHub Bot"
-          message: "A new commit has been pushed with custom color."
+          message: "New Version\n ${{ env.TAG_NAME }}"
