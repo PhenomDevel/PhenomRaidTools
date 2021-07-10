@@ -1,4 +1,4 @@
-[![Luacheck](https://github.com/PhenomDevel/PhenomRaidTools/actions/workflows/luacheck.yml/badge.svg)](https://github.com/PhenomDevel/PhenomRaidTools/actions/workflows/luacheck.yml) [![Release](https://github.com/PhenomDevel/PhenomRaidTools/actions/workflows/release.yml/badge.svg)](https://github.com/PhenomDevel/PhenomRaidTools/actions/workflows/release.yml) [![PhenomRaidTools on Discord](https://img.shields.io/badge/discord-PhenomRaidTools-738bd7.svg)](https://discord.gg/GAYDjBF)
+[![Luacheck](https://github.com/PhenomDevel/PhenomRaidTools/actions/workflows/luacheck.yml/badge.svg)](https://github.com/PhenomDevel/PhenomRaidTools/actions/workflows/luacheck.yml) [![Release](https://github.com/PhenomDevel/PhenomRaidTools/actions/workflows/release.yml/badge.svg)](https://github.com/PhenomDevel/PhenomRaidTools/actions/workflows/release.yml) [![Discord General](https://img.shields.io/discord/596662921753526275?label=discord)](https://discord.com/invite/GAYDjBF)
 # PhenomRaidTools
 
 ## Quickstart
