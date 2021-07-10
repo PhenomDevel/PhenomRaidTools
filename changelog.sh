@@ -21,6 +21,9 @@ NOW=$(date +'%d.%m.%Y - %H:%M:%S')
 MARKDOWN="# Release $LATEST_TAG ~ $NOW"
 MARKDOWN+='\n'
 
+BUG_PATTERN="\[bug\]|\[fix\]"
+FEATURE_PATTERN="\[feature\]|\[feat\]"
+
 MARKDOWN_BUGS=""
 MARKDOWN_FEATURES=""
 MARKDOWN_MISC=""
@@ -35,24 +38,29 @@ for COMMIT in $COMMITS; do
     SUBJECT=$(git log -1 ${COMMIT} --pretty=format:"%s")
     BODY=$(git log -1 ${COMMIT} --pretty=format:"%b")
 
-    IS_BUG=$( grep -Eo "^\[bug\]" <<< "$SUBJECT")
-    IS_FEATURE=$( grep -Eo "^\[feature\]" <<< "$SUBJECT")
+    CLEAN_SUBJECT="${SUBJECT/\[bug\]/}"
+    CLEAN_SUBJECT="${CLEAN_SUBJECT/\[fix\]/}"
+    CLEAN_SUBJECT="${CLEAN_SUBJECT/\[feature\]/}"
+    CLEAN_SUBJECT="${CLEAN_SUBJECT/\[feat\]/}"
+
+    IS_BUG=$( grep -Eo $BUG_PATTERN <<< "$SUBJECT")
+    IS_FEATURE=$( grep -Eo $FEATURE_PATTERN <<< "$SUBJECT")
 
     if [[ ! -z $IS_BUG ]]; then
 	BUG_COUNT=$((BUG_COUNT + 1))
-	MARKDOWN_BUGS+=" - $SUBJECT"
+	MARKDOWN_BUGS+=" - $CLEAN_SUBJECT"
 	MARKDOWN_BUGS+="\n"
     fi
 
     if [[ ! -z $IS_FEATURE ]]; then
 	FEATURE_COUNT=$((MARKDOWN_COUNT + 1))
-	MARKDOWN_FEATURES+=" - $SUBJECT"
+	MARKDOWN_FEATURES+=" - $CLEAN_SUBJECT"
 	MARKDOWN_FEATURES+="\n"
     fi
 
     if [ ! $IS_BUG ] && [ ! $IS_FEATURE ]; then
 	MISC_COUNT=$((MISC_COUNT + 1))
-	MARKDOWN_MISC+=" - $SUBJECT"
+	MARKDOWN_MISC+=" - $CLEAN_SUBJECT"
 	MARKDOWN_MISC+="\n"
     fi
 done
@@ -62,7 +70,7 @@ echo "Found $FEATURE_COUNT feature commit(s)"
 echo "Found $MISC_COUNT misc commit(s)"
 
 if [[ "$BUG_COUNT" -gt 0 ]]; then
-    MARKDOWN+="## Bugs\n$MARKDOWN_BUGS\n"
+    MARKDOWN+="## Bugfixes\n$MARKDOWN_BUGS\n"
 fi
 
 if [[ "$FEATURE_COUNT" -gt 0 ]]; then
