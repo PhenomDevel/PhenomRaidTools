@@ -13,13 +13,12 @@ PREVIOUS_TAG=$(git describe --abbrev=0 --tags `git rev-list --tags --skip=1 --ma
 
 COMMITS=$(git log $PREVIOUS_TAG..$LATEST_TAG --pretty=format:"%H")
 
-echo $LATEST_TAG
-echo $PREVIOUS_TAG
+echo "Processing all commits between tags $LATEST_TAG and $PREVIOUS_TAG"
 
 NOW=$(date +'%d.%m.%Y - %H:%M:%S')
 
 # Store our changelog in a variable to be saved to a file at the end
-MARKDOWN="# Release $LATEST_TAG - $NOW"
+MARKDOWN="# Release $LATEST_TAG ~ $NOW"
 MARKDOWN+='\n'
 
 MARKDOWN_BUGS=""
@@ -39,35 +38,39 @@ for COMMIT in $COMMITS; do
     IS_BUG=$( grep -Eo "^\[bug\]" <<< "$SUBJECT")
     IS_FEATURE=$( grep -Eo "^\[feature\]" <<< "$SUBJECT")
 
-    if [[ $IS_BUG ]]; then
+    if [[ ! -z $IS_BUG ]]; then
 	BUG_COUNT=$((BUG_COUNT + 1))
 	MARKDOWN_BUGS+=" - $SUBJECT"
 	MARKDOWN_BUGS+="\n"
     fi
 
-    if [[ $IS_FEATURE ]]; then
-	MARKDOWN_COUNT=$((MARKDOWN_COUNT + 1))
-	MARKDOWN_FEATURE+=" - $SUBJECT"
-	MARKDOWN_FEATURE+="\n"
+    if [[ ! -z $IS_FEATURE ]]; then
+	FEATURE_COUNT=$((MARKDOWN_COUNT + 1))
+	MARKDOWN_FEATURES+=" - $SUBJECT"
+	MARKDOWN_FEATURES+="\n"
     fi
 
-    if [ ! $IS_BUG ] && [ ! $IS_FEATURE]; then
+    if [ ! $IS_BUG ] && [ ! $IS_FEATURE ]; then
 	MISC_COUNT=$((MISC_COUNT + 1))
 	MARKDOWN_MISC+=" - $SUBJECT"
 	MARKDOWN_MISC+="\n"
     fi
 done
 
+echo "Found $BUG_COUNT bug commit(s)"
+echo "Found $FEATURE_COUNT feature commit(s)"
+echo "Found $MISC_COUNT misc commit(s)"
+
 if [[ "$BUG_COUNT" -gt 0 ]]; then
-    MARKDOWN+="## Bugs\n$MARKDOWN_BUGS\n\n"
+    MARKDOWN+="## Bugs\n$MARKDOWN_BUGS\n"
 fi
 
 if [[ "$FEATURE_COUNT" -gt 0 ]]; then
-    MARKDOWN+="## Features\n$MARKDOWN_FEATURES\n\n"
+    MARKDOWN+="## Features\n$MARKDOWN_FEATURES\n"
 fi
 
 if [[ "$MISC_COUNT" -gt 0 ]]; then
-    MARKDOWN+="## Misc\n$MARKDOWN_MISC\n\n"
+    MARKDOWN+="## Misc\n$MARKDOWN_MISC\n"
 fi
 
 # Save our markdown to a file
