@@ -48,9 +48,10 @@ jobs:
           status: ${{ job.status }}
         if: failure()
 
-      - name: Read changelog
-        run: |
-          echo ::set-env name=CHANGELOG::$(cat CHANGELOG.md)
+      - name: Read CHANGELOG.md
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./CHANGELOG.md
 
       - name: send message
         uses: appleboy/discord-action@master
@@ -59,4 +60,4 @@ jobs:
           webhook_token: ${{ secrets.DISCORD_WEBHOOK_TOKEN }}
           color: "#48f442"
           username: "GitHub Bot"
-          message: "New Version\n ${{ env.TAG_NAME }}"
+          message: "New Version\n ${{ steps.package.outputs.content }}"
