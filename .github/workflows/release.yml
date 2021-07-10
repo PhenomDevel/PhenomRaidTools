@@ -25,7 +25,7 @@ jobs:
           annotate: warning
 
       - name: Generate Changelog
-        run: ./bin/changelog.sh
+        run: ./changelog.sh
 
       - name: Package and release
         uses: BigWigsMods/packager@v1
