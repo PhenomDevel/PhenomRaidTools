@@ -84,7 +84,7 @@ local function ExecuteRaidTarget(message)
     if PRT.IsTestMode() or (UnitInRaid(target) and UnitExists(target)) then
       local raidTargetName = "N/A"
       if message.raidtarget then
-        if message.raidtarget ~= 999 then
+        if message.raidtarget ~= PRT.Static.TargetNoneNumber then
           raidTargetName = PRT.Static.Tables.RaidTargets[message.raidtarget].name
         end
       end
@@ -92,7 +92,7 @@ local function ExecuteRaidTarget(message)
       if not (GetRaidTargetIndex(target) == message.raidtarget) then
         -- If no raid target is selected we unselect the existing one
         local targetIndex = message.raidtarget
-        if message.raidtarget == 999 then
+        if message.raidtarget == PRT.Static.TargetNoneNumber then
           message.raidtarget = nil
         end
 

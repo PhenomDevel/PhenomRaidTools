@@ -5,6 +5,8 @@ local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 -- Public API
 
 PRT.Static = {
+  TargetNone = "999",
+  TargetNoneNumber = 999,
   Colors = {
     Primary = "ff577f",
     Secondary = "ff884b",
