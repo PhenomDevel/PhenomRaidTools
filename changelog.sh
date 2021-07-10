@@ -16,8 +16,10 @@ COMMITS=$(git log $PREVIOUS_TAG..$LATEST_TAG --pretty=format:"%H")
 echo $LATEST_TAG
 echo $PREVIOUS_TAG
 
+NOW=$(date +'%d.%m.%Y')
+
 # Store our changelog in a variable to be saved to a file at the end
-MARKDOWN="Version $LATEST_TAG"
+MARKDOWN="# Release $LATEST_TAG - $NOW"
 MARKDOWN+='\n'
 
 MARKDOWN_BUGS=""
