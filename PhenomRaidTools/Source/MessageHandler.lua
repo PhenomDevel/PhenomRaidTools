@@ -30,7 +30,7 @@ local MessageHandler = {
 function MessageHandler.ExpandMessageTargets(message)
   local splittetTargets = {}
 
-  for _, v in ipairs(message.targets) do
+  for _, v in pairs(message.targets) do
     if v == "$target" then
       -- Set event target as message target
       tinsert(splittetTargets, {message.eventTarget})
@@ -45,7 +45,7 @@ function MessageHandler.ExpandMessageTargets(message)
   local existingTarget = {}
   local distinctTargets = {}
 
-  for _, target in ipairs(targets) do
+  for _, target in pairs(targets) do
     local trimmedTarget = strtrim(target, " ")
     if (not existingTarget[trimmedTarget]) then
       table.insert(distinctTargets, trimmedTarget)

@@ -191,7 +191,8 @@ do
         withTimerNames = true,
         withTimingNames = true,
         forceMethodRaidToolsUpdate = false,
-        updatePRTTag = true
+        updatePRTTag = true,
+        withPersonalization = false
       },
       encounters = {},
       currentEncounter = {

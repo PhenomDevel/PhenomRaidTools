@@ -251,7 +251,8 @@ local function AddMethodRaidToolsExportWidget(container, encounter, timers)
         withTimerNames = PRT.GetProfileDB().timerExportDefaults.withTimerNames,
         withTimingNames = PRT.GetProfileDB().timerExportDefaults.withTimingNames,
         forceMethodRaidToolsUpdate = PRT.GetProfileDB().timerExportDefaults.forceMethodRaidToolsUpdate,
-        updatePRTTag = PRT.GetProfileDB().timerExportDefaults.updatePRTTag
+        updatePRTTag = PRT.GetProfileDB().timerExportDefaults.updatePRTTag,
+        withPersonalization = PRT.GetProfileDB().timerExportDefaults.withPersonalization
       }
 
       local modalContainer = PRT.SimpleGroup()
