@@ -1,3 +1,7 @@
+# Release 2.21.3 - 10.07.2021
+## Bugs
+- Make sure timings are merged together for MRT exports
+
 # Release 2.21.2
 ## Bugfixes
  - Make sure trigger defaults are rendered correctly
