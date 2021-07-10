@@ -11,7 +11,8 @@ local MethodRaidToolsCombatEventTranslations = {
 }
 
 local function IsValidMessage(message)
-  return (message.type == "cooldown")
+  local targetNone = (message.targets[1] == PRT.Static.TargetNone) or (message.targets[1] == PRT.Static.TargetNoneNumber)
+  return ((message.type == "cooldown") and (not targetNone))
 end
 
 local function GetLineTargets(entry)
@@ -88,25 +89,25 @@ end
 local function CollectMessagesPerTiming(timer)
   local messagesPerTiming = {}
 
-  for _, timing in ipairs(timer.timings) do
-    for _, timeInSeconds in ipairs(timing.seconds) do
+  for _, timing in pairs(timer.timings) do
+    for _, timeInSeconds in pairs(timing.seconds) do
       if not messagesPerTiming[timeInSeconds] then
-        local newEntry = {
+        messagesPerTiming[timeInSeconds] = {
           name = timing.name,
           triggerAtOccurence = timer.triggerAtOccurence,
           startCondition = timer.startCondition,
           messages = {}
         }
+      end
 
-        for _, message in ipairs(timing.messages) do
-          if IsValidMessage(message) then
-            tinsert(newEntry.messages, message)
-          end
+      for _, message in ipairs(timing.messages) do
+        if IsValidMessage(message) then
+          tinsert(messagesPerTiming[timeInSeconds].messages, message)
         end
+      end
 
-        if PRT.TableUtils.Count(newEntry.messages) > 0 then
-          messagesPerTiming[timeInSeconds] = newEntry
-        end
+      if PRT.TableUtils.Count(messagesPerTiming[timeInSeconds].messages) > 0 then
+        messagesPerTiming[timeInSeconds] = messagesPerTiming[timeInSeconds]
       end
     end
   end
