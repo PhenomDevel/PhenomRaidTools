@@ -21,6 +21,7 @@ jobs:
         id: changelog
         uses: juliangruber/read-file-action@v1
         with:
+          trim: true
           path: ./CHANGELOG.md
 
       - name: send message
@@ -30,4 +31,4 @@ jobs:
           webhook_token: ${{ secrets.DISCORD_WEBHOOK_TOKEN }}
           color: "#48f442"
           username: "PhenomRaidTools"
-          message: "${{ steps.changelog.outputs.content }}*Please note that it might take some time until the new release is available on the addon distribution applications. Please be a little patient :)*"
+          message: "${{ steps.changelog.outputs.content }}\nPlease note that it might take some time until the new release is available on the addon distribution applications. Please be a little patient :)"
