@@ -24,6 +24,9 @@ jobs:
           args: "--no-color -q"
           annotate: warning
 
+      - name: Generate Changelog
+        run: ./bin/changelog.sh
+
       - name: Package and release
         uses: BigWigsMods/packager@v1
         env:
