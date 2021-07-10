@@ -49,6 +49,7 @@ jobs:
         if: failure()
 
       - name: Read CHANGELOG.md
+        id: changelog
         uses: juliangruber/read-file-action@v1
         with:
           path: ./CHANGELOG.md
@@ -60,4 +61,4 @@ jobs:
           webhook_token: ${{ secrets.DISCORD_WEBHOOK_TOKEN }}
           color: "#48f442"
           username: "GitHub Bot"
-          message: "New Version\n ${{ steps.package.outputs.content }}"
+          message: "New Version\n ${{ steps.changelog.outputs.content }}"
