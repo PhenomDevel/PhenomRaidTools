@@ -4,7 +4,7 @@ local AceGUI = LibStub("AceGUI-3.0")
 local Media = LibStub("LibSharedMedia-3.0")
 
 local AceHelper = {
-  widgetDefaultWidth = 250,
+  widgetDefaultWidth = 350,
   LSMLists = {
     font = Media:HashTable("font"),
     sound = Media:HashTable("sound")
@@ -429,13 +429,17 @@ function PRT.ColorPicker(label, value)
   return widget
 end
 
-function PRT.Dropdown(label, tooltip, dropdownValues, dropdownValue, withEmpty, orderByKey)
+function PRT.MultiDropdown(label, tooltip, possibleValues, selectedValues, withEmpty, orderByKey)
+  return PRT.Dropdown(label, tooltip, possibleValues, selectedValues, withEmpty, orderByKey, true)
+end
+
+function PRT.Dropdown(label, tooltip, possibleValues, selectedValue, withEmpty, orderByKey, multiSelect)
   local dropdownItems = {}
   if withEmpty then
     dropdownItems[PRT.Static.TargetNoneNumber] = L["None"]
   end
 
-  for _, v in ipairs(dropdownValues) do
+  for _, v in pairs(possibleValues) do
     if type(v) == "string" then
       dropdownItems[v] = v
     else
@@ -445,10 +449,14 @@ function PRT.Dropdown(label, tooltip, dropdownValues, dropdownValue, withEmpty, 
 
   local widget = AceGUI:Create("Dropdown")
 
+  if multiSelect then
+    widget:SetMultiselect(multiSelect)
+  end
+
   if orderByKey then
     local order = {}
 
-    for _, v in ipairs(dropdownValues) do
+    for _, v in pairs(possibleValues) do
       local value
       if type(v) == "string" then
         value = v
@@ -463,10 +471,10 @@ function PRT.Dropdown(label, tooltip, dropdownValues, dropdownValue, withEmpty, 
   end
 
   widget:SetLabel(label)
-  widget:SetText(dropdownItems[dropdownValue])
+  widget:SetText(dropdownItems[selectedValue])
   widget:SetWidth(AceHelper.widgetDefaultWidth)
 
-  for _, v in ipairs(dropdownValues) do
+  for _, v in pairs(possibleValues) do
     if v.disabled then
       local id
       if type(v) == "string" then
@@ -479,6 +487,13 @@ function PRT.Dropdown(label, tooltip, dropdownValues, dropdownValue, withEmpty, 
   end
 
   AceHelper.AddTooltip(widget, tooltip)
+
+  -- If multiselect and value is a table
+  if widget:GetMultiselect() and type(possibleValues) == "table" then
+    for _, value in pairs(selectedValue) do
+      widget:SetItemValue(value, true)
+    end
+  end
 
   return widget
 end

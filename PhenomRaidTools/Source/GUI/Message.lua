@@ -83,10 +83,10 @@ function Message.TargetsPreviewString(targets)
   if targets then
     local previewNames = {}
 
-    for _, target in ipairs(targets) do
+    for _, target in pairs(targets) do
       local names = {strsplit(",", PRT.ReplacePlayerNameTokens(target))}
 
-      for _, name in ipairs(names) do
+      for _, name in pairs(names) do
         local trimmedName = strtrim(name, " ")
         local coloredName = PRT.ClassColoredName(trimmedName)
 
@@ -322,7 +322,7 @@ end
 local function AddCooldownActionWidgets(container, action)
   local possibleTargets = Message.GenerateRaidRosterDropdownItems()
   local possibleCooldowns = Message.CompilePossibleCooldownItems()
-  local targetDropdown = PRT.Dropdown(L["Target"], L["Player who should receive the message"], possibleTargets, action.targets[1], true)
+  local targetDropdown = PRT.MultiDropdown(L["Targets"], L["Players who should receive the message"], possibleTargets, action.targets)
   local cooldownSpellDropdownValue
 
   if action.hasCustomSpellID then
@@ -336,9 +336,17 @@ local function AddCooldownActionWidgets(container, action)
   actionPreview:SetRelativeWidth(1)
   targetDropdown:SetCallback(
     "OnValueChanged",
-    function(widget)
-      wipe(action.targets)
-      tinsert(action.targets, widget:GetValue())
+    function(widget, _, value, selected)
+      if not widget:GetMultiselect() then
+        wipe(action.targets)
+        tinsert(action.targets, widget:GetValue())
+      else
+        if not selected then
+          action.targets[value] = nil
+        else
+          action.targets[value] = value
+        end
+      end
     end
   )
 
@@ -438,7 +446,7 @@ end
 
 local function AddAdvancedActionWidgets(container, message)
   -- TODO: Rename message to action
-  local targetsString = strjoin(", ", unpack(message.targets))
+  local targetsString = strjoin(", ", unpack(PRT.TableUtils.Vals(message.targets)))
   local targetsPreviewString = Message.TargetsPreviewString(message.targets)
   local raidRosterItems = Message.GenerateRaidRosterDropdownItems()
 
@@ -496,8 +504,8 @@ local function AddAdvancedActionWidgets(container, message)
   raidRosterDropdown:SetCallback(
     "OnValueChanged",
     function(widget)
-      tinsert(message.targets, widget:GetValue())
-      targetsEditBox:SetText(strjoin(", ", unpack(message.targets)))
+      message.targets[widget:GetValue()] = widget:GetValue()
+      targetsEditBox:SetText(strjoin(", ", unpack(PRT.TableUtils.Vals(message.targets))))
       targetsPreviewLabel:SetText(L["Preview: "] .. PRT.PrepareMessageForDisplay(Message.TargetsPreviewString(message.targets)))
       widget:SetValue(nil)
     end
@@ -619,8 +627,9 @@ end
 
 local function SetActionTypeDefaults(action)
   if action.type == "cooldown" then
-    action.message = nil
+    action.message = ""
     action.spellID = nil
+    wipe(action.targets)
   end
 end
 

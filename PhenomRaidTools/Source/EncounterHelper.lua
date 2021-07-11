@@ -16,7 +16,7 @@ end
 -- Message
 
 function PRT.EmptyMessage()
-  return {
+  local message = {
     message = PRT.GetProfileDB().triggerDefaults.messageDefaults.defaultMessage or "TODO",
     useCustomSound = false,
     duration = PRT.GetProfileDB().triggerDefaults.messageDefaults.defaultDuration or 5,
@@ -26,6 +26,12 @@ function PRT.EmptyMessage()
     type = PRT.GetProfileDB().triggerDefaults.messageDefaults.defaultMessageType or "cooldown",
     withCountdown = true
   }
+
+  if message.type == "cooldown" then
+    message.targets = {}
+  end
+
+  return message
 end
 
 -------------------------------------------------------------------------------

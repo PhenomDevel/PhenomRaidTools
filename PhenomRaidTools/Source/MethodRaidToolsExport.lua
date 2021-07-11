@@ -11,16 +11,34 @@ local MethodRaidToolsCombatEventTranslations = {
 }
 
 local function IsValidMessage(message)
-  local targetNone = (message.targets[1] == PRT.Static.TargetNone) or (message.targets[1] == PRT.Static.TargetNoneNumber)
-  return ((message.type == "cooldown") and (not targetNone))
+  return (message.type == "cooldown")
+end
+
+local function GetDistinctTargets(inputTargets)
+  local targets = {}
+
+  for _, target in pairs(inputTargets) do
+    local updatedTarget = PRT.ReplacePlayerNameTokens(target)
+
+    if (target ~= PRT.Static.TargetNone) and (target ~= PRT.Static.TargetNoneNumber) then
+      tinsert(targets, updatedTarget)
+    end
+  end
+
+  return PRT.TableUtils.Distinct(targets)
 end
 
 local function GetLineTargets(entry)
   local targets = {}
 
   for _, message in ipairs(entry.messages) do
-    local target = PRT.ReplacePlayerNameTokens(message.targets[1])
-    tinsert(targets, target)
+    for _, target in pairs(message.targets) do
+      local updatedTarget = PRT.ReplacePlayerNameTokens(target)
+
+      if (target ~= PRT.Static.TargetNone) and (target ~= PRT.Static.TargetNoneNumber) then
+        tinsert(targets, updatedTarget)
+      end
+    end
   end
 
   return PRT.TableUtils.Distinct(targets)
@@ -30,6 +48,9 @@ local function WrapPersonalization(contentString, targetString, options)
   local personalizedString = ""
 
   if options.withPersonalization then
+    if PRT.StringUtils.IsEmpty(targetString) then
+      targetString = "N/A"
+    end
     personalizedString = string.format("{p:%s}", targetString)
   end
 
@@ -75,12 +96,24 @@ local function GenerateTimingContent(messages, options)
   local contents = {}
 
   for _, message in ipairs(messages) do
-    local targetString = PRT.ReplacePlayerNameTokens(message.targets[1])
-    local content = string.format("{spell:%s} %s", message.spellID, PRT.ClassColoredName(targetString))
+    local distinctTargets = GetDistinctTargets(message.targets)
+    local coloredTargets = {}
 
-    local finalString = WrapPersonalization(content, targetString, options)
+    for k, target in pairs(distinctTargets) do
+      coloredTargets[k] = PRT.ClassColoredName(target)
+    end
 
-    tinsert(contents, finalString)
+    local targetStringColored = strjoin(", ", unpack(coloredTargets))
+    local targetString = strjoin(",", unpack(distinctTargets))
+
+    if targetStringColored and message.spellID then
+      local content = string.format("{spell:%s} %s", message.spellID, targetStringColored)
+      local finalString = WrapPersonalization(content, targetString, options)
+
+      if not PRT.TableUtils.IsEmpty(distinctTargets) then
+        tinsert(contents, finalString)
+      end
+    end
   end
 
   return contents

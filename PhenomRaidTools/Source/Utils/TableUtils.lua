@@ -155,6 +155,18 @@ function TableUtils.Keys(t)
   return keyset
 end
 
+function TableUtils.Vals(t)
+  local keyset = {}
+  local n = 0
+
+  for _, v in pairs(t) do
+    n = n + 1
+    keyset[n] = v
+  end
+
+  return keyset
+end
+
 function TableUtils.EveryKey(t, pred)
   for k, _ in pairs(t) do
     if not pred(k) then

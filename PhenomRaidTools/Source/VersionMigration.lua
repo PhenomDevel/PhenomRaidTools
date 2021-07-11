@@ -114,6 +114,51 @@ local migrationFunctions = {
 
       return true
     end
+  },
+  [5] = {
+    version = "2.22.0",
+    migrationFunction = function(profile)
+      PRT.Debug("Change targets table to `[name] = name`")
+
+      local updateEntries = function(entries)
+        for _, entry in pairs(entries) do
+          for _, message in pairs(entry.messages) do
+            local targetsBackup = PRT.TableUtils.Clone(message.targets)
+            wipe(message.targets)
+
+            for _, target in pairs(targetsBackup) do
+              message.targets[target] = target
+            end
+          end
+        end
+      end
+
+      for _, encounter in ipairs(profile.encounters) do
+        for _, encounterVersion in ipairs(encounter.versions) do
+          -- Timer
+          for _, timer in pairs(encounterVersion.Timers) do
+            updateEntries(timer.timings)
+          end
+
+          -- Rotation
+          for _, rotation in pairs(encounterVersion.Rotations) do
+            updateEntries(rotation.entries)
+          end
+
+          -- HP
+          for _, percentage in pairs(encounterVersion.HealthPercentages) do
+            updateEntries(percentage.values)
+          end
+
+          -- Power
+          for _, percentage in pairs(encounterVersion.PowerPercentages) do
+            updateEntries(percentage.values)
+          end
+        end
+      end
+
+      return true
+    end
   }
 }
 
