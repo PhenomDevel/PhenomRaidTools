@@ -29,6 +29,6 @@ jobs:
         with:
           webhook_id: ${{ secrets.DISCORD_WEBHOOK_ID }}
           webhook_token: ${{ secrets.DISCORD_WEBHOOK_TOKEN }}
-          color: "#48f442"
+          color: "#696969"
           username: "PhenomRaidTools"
           message: "${{ steps.changelog.outputs.content }}\n\nPlease note that it might take some time until the new release is available on the add-on distribution applications. Please be a little patient :)"
