@@ -61,6 +61,14 @@ function TriggerHandler.ValidTestModeEvent(event, combatEvent, conditionEvent)
   end
 end
 
+function TriggerHandler.CheckOccurence(trigger)
+  if (trigger.occurence or 1) >= (trigger.triggerAtOccurence or 1) then
+    return true
+  end
+
+  return false
+end
+
 function TriggerHandler.CheckCondition(condition, event, combatEvent, spellID, targetGUID, sourceGUID)
   if
     condition ~= nil and
@@ -142,6 +150,16 @@ function TriggerHandler.FilterPercentagesTable(percentages, percent)
   return value
 end
 
+function TriggerHandler.GetTriggerOccurence(trigger)
+  if trigger ~= nil then
+    if trigger.occurence ~= nil then
+      return trigger.occurence
+    else
+      return 0
+    end
+  end
+end
+
 function TriggerHandler.GetTriggerCounter(trigger)
   if trigger ~= nil then
     if trigger.counter ~= nil then
@@ -159,12 +177,22 @@ function TriggerHandler.GetRotationMessages(rotation)
       if rotationCounter <= table.getn(rotation.entries) then
         local messagesByCounter = rotation.entries[rotationCounter]
 
+        print(rotationCounter, messagesByCounter)
+
         if messagesByCounter.messages ~= nil then
           return messagesByCounter.messages
         end
       end
     end
   end
+end
+
+function TriggerHandler.IncrementTriggerOccurence(trigger)
+  local triggerOccurence = TriggerHandler.GetTriggerOccurence(trigger)
+  local newValue = triggerOccurence + 1
+
+  PRT.Debug("Incrementing trigger occurence (", (trigger.name or "NO NAME"), ") to", newValue)
+  trigger.occurence = newValue
 end
 
 function TriggerHandler.IncrementTriggerCounter(trigger)
@@ -180,6 +208,7 @@ function TriggerHandler.UpdateRotationCounter(rotation)
     if rotation.entries ~= nil then
       local rotationCurrentCount = TriggerHandler.GetTriggerCounter(rotation)
       local rotationMaxCount = table.getn(rotation.entries)
+
       if rotationCurrentCount >= rotationMaxCount then
         if rotation.shouldRestart == true then
           PRT.Debug("Resetting rotation counter to 1 for", PRT.HighlightString(rotation.name))
@@ -272,8 +301,9 @@ function PRT.CheckTimerStartConditions(timers, event, combatEvent, spellID, targ
       if timer.enabled == true or timer.enabled == nil then
         if timer.startCondition ~= nil and timer.started ~= true then
           if TriggerHandler.CheckCondition(timer.startCondition, event, combatEvent, spellID, targetGUID, sourceGUID) then
-            TriggerHandler.IncrementTriggerCounter(timer)
-            if (timer.triggerAtOccurence or 1) == timer.counter then
+            TriggerHandler.IncrementTriggerOccurence(timer)
+
+            if TriggerHandler.CheckOccurence(timer) then
               PRT.Debug("Started timer", PRT.HighlightString(timer.name))
               timer.started = true
               timer.startedAt = GetTime()
@@ -295,8 +325,8 @@ function PRT.CheckTimerStopConditions(timers, event, combatEvent, spellID, targe
             timer.started = false
             timer.startedAt = nil
 
-            if timer.resetCounterOnStop then
-              timer.counter = 0
+            if timer.resetOccurenceOnStop or timer.resetCounterOnStop then
+              timer.occurence = 0
             end
 
             for _, timing in pairs(timer.timings) do
@@ -319,8 +349,12 @@ function PRT.CheckTriggersStartConditions(triggers, event, combatEvent, spellID,
       if trigger.enabled == true or trigger.enabled == nil then
         if trigger.startCondition ~= nil and trigger.active ~= true then
           if TriggerHandler.CheckCondition(trigger.startCondition, event, combatEvent, spellID, targetGUID, sourceGUID) then
-            PRT.Debug("Started trigger", PRT.HighlightString(trigger.name))
-            trigger.active = true
+            TriggerHandler.IncrementTriggerOccurence(trigger)
+
+            if TriggerHandler.CheckOccurence(trigger) then
+              PRT.Debug("Started trigger", PRT.HighlightString(trigger.name))
+              trigger.active = true
+            end
           end
         end
       end
@@ -334,6 +368,10 @@ function PRT.CheckTriggersStopConditions(triggers, event, combatEvent, spellID, 
       if trigger.enabled == true or trigger.enabled == nil then
         if trigger.stopCondition ~= nil and (trigger.active == true or trigger.active == nil) then
           if TriggerHandler.CheckCondition(trigger.stopCondition, event, combatEvent, spellID, sourceGUID, targetGUID) then
+            if trigger.resetOccurenceOnStop or trigger.resetCounterOnStop then
+              trigger.occurence = 0
+            end
+
             PRT.Debug("Stopped trigger", PRT.HighlightString(trigger.name))
             trigger.active = false
           end
@@ -347,7 +385,7 @@ function PRT.CheckTimerTimings(timers)
   local currentTime = GetTime()
   if timers ~= nil then
     for _, timer in ipairs(timers) do
-      if PRT.IsTriggerActive(timer) then
+      if PRT.IsTriggerActive(timer) and TriggerHandler.CheckOccurence(timer) then
         if timer.started == true and timer.timings ~= nil then
           local elapsedTime = PRT.Round(currentTime - timer.startedAt)
           local timings = timer.timings
@@ -376,7 +414,7 @@ end
 function PRT.CheckRotationTriggerCondition(rotations, event, combatEvent, eventSpellID, targetGUID, targetName, sourceGUID, sourceName)
   if rotations ~= nil then
     for _, rotation in ipairs(rotations) do
-      if PRT.IsTriggerActive(rotation) then
+      if PRT.IsTriggerActive(rotation) and TriggerHandler.CheckOccurence(rotation) then
         if rotation.triggerCondition ~= nil then
           TriggerHandler.CheckStopIgnoreRotationCondition(rotation)
 

@@ -54,9 +54,9 @@ function PRT.EmptyTimer()
     startCondition = PRT.EmptyCondition(),
     stopCondition = {},
     hasStopCondition = false,
-    counter = 0,
+    occurence = 0,
     triggerAtOccurence = 1,
-    resetCounterOnStop = false,
+    resetOccurenceOnStop = false,
     name = "Timer Name" .. random(0, 100000),
     enabledDifficulties = {
       Normal = true,
@@ -87,6 +87,8 @@ function PRT.EmptyRotation()
     triggerCondition = PRT.EmptyCondition(),
     name = "Rotation Name" .. random(0, 100000),
     counter = 0,
+    occurence = 0,
+    triggerAtOccurence = 1,
     entries = {
       PRT.EmptyRotationEntry()
     },

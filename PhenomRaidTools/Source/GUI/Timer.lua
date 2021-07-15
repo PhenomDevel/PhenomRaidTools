@@ -419,17 +419,18 @@ function Timer.TimerWidget(timerName, timers, container)
     end
   )
 
-  local resetCounterOnStopCheckbox = PRT.CheckBox(L["Reset counter on stop"], L["Resets the counter of start conditions\nwhen the timer is stopped."], timer.resetCounterOnStop)
-  resetCounterOnStopCheckbox:SetCallback(
+  local resetOccurenceOnStopCheckbox =
+    PRT.CheckBox(L["Reset occurence counter on stop"], L["Resets the occurence counter of start conditions\nwhen the timer is stopped."], timer.resetOccurenceOnStop)
+  resetOccurenceOnStopCheckbox:SetCallback(
     "OnValueChanged",
     function(widget)
-      timer.resetCounterOnStop = widget:GetValue()
+      timer.resetOccurenceOnStop = widget:GetValue()
       PRT.Core.UpdateTree()
     end
   )
 
   timerOptionsGroup:AddChild(triggerAtOccurenceSlider)
-  timerOptionsGroup:AddChild(resetCounterOnStopCheckbox)
+  timerOptionsGroup:AddChild(resetOccurenceOnStopCheckbox)
   container:AddChild(timerOptionsGroup)
 
   -- Start Condition
