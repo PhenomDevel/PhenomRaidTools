@@ -57,7 +57,7 @@ local function NewDefaultReceiverOverlay(id, name, fontSize, r, g, b)
     },
     enableSound = true,
     defaultSoundFile = "Interface\\AddOns\\PhenomRaidTools\\Media\\Sounds\\ReceiveMessage.ogg",
-    defaultSoundFileName = "ReceiveMessage"
+    defaultSoundFileName = "PRT: Default"
   }
 end
 
