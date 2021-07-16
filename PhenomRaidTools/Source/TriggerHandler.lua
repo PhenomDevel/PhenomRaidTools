@@ -62,7 +62,7 @@ function TriggerHandler.ValidTestModeEvent(event, combatEvent, conditionEvent)
 end
 
 function TriggerHandler.CheckOccurence(trigger)
-  if (trigger.occurence or 1) >= (trigger.triggerAtOccurence or 1) then
+  if (trigger.occurence or 0) >= (trigger.triggerAtOccurence or 1) then
     return true
   end
 
@@ -189,7 +189,9 @@ function TriggerHandler.IncrementTriggerOccurence(trigger)
   local triggerOccurence = TriggerHandler.GetTriggerOccurence(trigger)
   local newValue = triggerOccurence + 1
 
-  PRT.Debug("Incrementing trigger occurence (", (trigger.name or "NO NAME"), ") to", newValue)
+  PRT.Debug(
+    string.format("Incrementing trigger occurence (" .. (trigger.name or "NO NAME") .. ") from %s to %s", PRT.HighlightString(triggerOccurence), PRT.HighlightString(newValue))
+  )
   trigger.occurence = newValue
 end
 
@@ -197,7 +199,7 @@ function TriggerHandler.IncrementTriggerCounter(trigger)
   local triggerCounter = TriggerHandler.GetTriggerCounter(trigger)
   local newValue = triggerCounter + 1
 
-  PRT.Debug("Incrementing trigger counter (", (trigger.name or "NO NAME"), ") to", newValue)
+  PRT.Debug(string.format("Incrementing trigger counter (" .. (trigger.name or "NO NAME") .. ") from %s to %s", PRT.HighlightString(triggerCounter), PRT.HighlightString(newValue)))
   trigger.counter = newValue
 end
 
@@ -364,7 +366,7 @@ function PRT.CheckTriggersStopConditions(triggers, event, combatEvent, spellID, 
   if triggers ~= nil then
     for _, trigger in ipairs(triggers) do
       if trigger.enabled == true or trigger.enabled == nil then
-        if trigger.stopCondition ~= nil and (trigger.active == true or trigger.active == nil) then
+        if trigger.stopCondition ~= nil and PRT.IsTriggerActive(trigger) then
           if TriggerHandler.CheckCondition(trigger.stopCondition, event, combatEvent, spellID, sourceGUID, targetGUID) then
             if trigger.resetOccurenceOnStop or trigger.resetCounterOnStop then
               trigger.occurence = 0
