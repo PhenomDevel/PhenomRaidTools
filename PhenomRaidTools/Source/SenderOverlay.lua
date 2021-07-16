@@ -59,7 +59,7 @@ function SenderOverlay.UpdateFrame(encounter, options)
           elseif timer.enabled ~= true then
             timerString = PRT.ColoredString(timerString .. " - disabled|n", PRT.Static.Colors.Disabled)
           else
-            timerString = PRT.ColoredString(timerString .. " - inactive|n", PRT.Static.Colors.Inactive)
+            timerString = PRT.ColoredString(string.format(timerString .. " - inactive (%s/%s)|n", timer.occurence or 0, timer.triggerAtOccurence), PRT.Static.Colors.Inactive)
           end
         end
 
@@ -86,7 +86,8 @@ function SenderOverlay.UpdateFrame(encounter, options)
             local isRotationActive = PRT.IsTriggerActive(rotation)
 
             if not isRotationActive then
-              rotationString = PRT.ColoredString(rotationString .. " - inactive|n", SenderOverlay.inactiveColor)
+              rotationString =
+                PRT.ColoredString(string.format(rotationString .. " - inactive (%s/%s)|n", rotation.occurence or 0, rotation.triggerAtOccurence), SenderOverlay.inactiveColor)
             elseif isRotationActive and rotation.counter then
               rotationString = rotationString .. " - " .. PRT.ColoredString(rotation.counter, PRT.Static.Colors.Secondary) .. "|n"
             else
