@@ -369,7 +369,7 @@ function PRT.Heading(label, fontSize)
   widget:SetText(label)
   widget.label:SetFont(GameFontHighlightSmall:GetFont(), (fontSize or 14), "OUTLINE")
   widget:SetFullWidth(true)
-  widget:SetHeight(60)
+  widget:SetHeight(40)
 
   return widget
 end
