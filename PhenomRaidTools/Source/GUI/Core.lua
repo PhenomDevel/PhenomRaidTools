@@ -304,34 +304,23 @@ function Core.OnGroupSelected(container, key)
     end
   end
 
-  -- options selected
   if mainKey == "options" then
-    -- profiles selected
     PRT.AddOptionWidgets(container)
   elseif mainKey == "profiles" then
-    -- custom placeholder selected
     PRT.AddProfilesWidget(container, PRT.GetCharDB().profileSettings)
   elseif mainKey == "customPlaceholder" then
-    -- spell database selected
     PRT.AddCustomPlaceholdersWidget(container, PRT.GetProfileDB().customPlaceholders)
   elseif mainKey == "spellDatabase" then
-    -- templates selected
     PRT.AddSpellCacheWidget(container)
   elseif mainKey == "templates" then
-    -- encounters selected
     PRT.AddTemplateWidgets(container, PRT.GetProfileDB())
   elseif mainKey == "encounters" and not triggerType and not triggerName and not encounterID then
-    -- single encounter selected
     PRT.AddEncountersWidgets(container, PRT.GetProfileDB())
   elseif encounterID and not triggerType and not triggerName then
-    -- TODO Provide encounter directly
-    -- encounter trigger type selected
-    -- Update encounter specific placeholders for message previews
     PRT.SetupEncounterSpecificCustomPlaceholders()
 
     PRT.AddEncounterOptions(container, PRT.GetProfileDB(), encounterID)
   elseif triggerType and not triggerName then
-    -- single timer selected
     if triggerType == "timers" then
       PRT.AddTimerOptionsWidgets(container, PRT.GetProfileDB(), encounterID)
     elseif triggerType == "rotations" then
@@ -346,13 +335,10 @@ function Core.OnGroupSelected(container, key)
       PRT.AddCustomPlaceholderOptions(container, PRT.GetProfileDB(), encounterID)
     end
   elseif triggerType == "timers" and triggerName then
-    -- single rotaion selected
     PRT.AddTimerWidget(container, PRT.GetProfileDB(), tonumber(encounterID), triggerName)
   elseif triggerType == "rotations" and triggerName then
-    -- single healthPercentages selected
     PRT.AddRotationWidget(container, PRT.GetProfileDB(), tonumber(encounterID), triggerName)
   elseif triggerType == "healthPercentages" and triggerName then
-    -- single powerPercentages selected
     PRT.AddHealthPercentageWidget(container, PRT.GetProfileDB(), tonumber(encounterID), triggerName)
   elseif triggerType == "powerPercentages" and triggerName then
     PRT.AddPowerPercentageWidget(container, PRT.GetProfileDB(), tonumber(encounterID), triggerName)

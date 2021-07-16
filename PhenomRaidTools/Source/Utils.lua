@@ -309,7 +309,6 @@ do
 
     if PRT.GetProfileDB().customPlaceholders then
       for placeholderName, _ in pairs(PRT.GetProfileDB().customPlaceholders) do
-        -- use tables because you can have placeholders with same name (intended?)
         if not placeholders.global[placeholderName] then
           placeholders.global[placeholderName] = true
         end
@@ -322,7 +321,6 @@ do
 
     if PRT.currentEncounter.encounter.CustomPlaceholders then
       for placeholderName, _ in pairs(PRT.currentEncounter.encounter.CustomPlaceholders) do
-        -- use tables because you can have placeholders with same name (intended?)
         if not placeholders.encounterSpecific[placeholderName] then
           placeholders.encounterSpecific[placeholderName] = true
         end
@@ -424,11 +422,23 @@ function PRT.RGBAToHex(r, g, b, a)
   return format("%02x%02x%02x%02x", (a * 255), (r * 255), (g * 255), (b * 255))
 end
 
+function PRT.RandomNumber()
+  return (PRT.Time() + random(100000))
+end
+
+function PRT.NewCloneName()
+  return "Clone " .. PRT.RandomNumber()
+end
+
 -------------------------------------------------------------------------------
 -- Date Helper
 
 function PRT.Now()
   return date("%d.%m.%y - %H:%M:%S")
+end
+
+function PRT.Time()
+  return time()
 end
 
 -------------------------------------------------------------------------------

@@ -57,7 +57,7 @@ function PRT.EmptyTimer()
     occurence = 0,
     triggerAtOccurence = 1,
     resetOccurenceOnStop = false,
-    name = "Timer Name" .. random(0, 100000),
+    name = "Timer Name" .. PRT.RandomNumber(),
     enabledDifficulties = {
       Normal = true,
       Heroic = true,
@@ -85,7 +85,7 @@ function PRT.EmptyRotation()
   return {
     enabled = true,
     triggerCondition = PRT.EmptyCondition(),
-    name = "Rotation Name" .. random(0, 100000),
+    name = "Rotation Name" .. PRT.RandomNumber(),
     counter = 0,
     occurence = 0,
     triggerAtOccurence = 1,
@@ -120,7 +120,7 @@ end
 function PRT.EmptyPercentage()
   return {
     enabled = true,
-    name = "Percentage Name" .. random(0, 100000),
+    name = "Percentage Name" .. PRT.RandomNumber(),
     unitID = PRT.GetProfileDB().triggerDefaults.percentageDefaults.defaultUnitID,
     values = {
       PRT.EmptyPercentageEntry()
@@ -162,8 +162,8 @@ function PRT.NewEncounterVersion(encounter)
 end
 
 function PRT.EmptyEncounter()
-  local name = "Encounter Name" .. random(0, 100000)
-  local id = random(0, 100000)
+  local name = "Encounter Name" .. PRT.RandomNumber()
+  local id = PRT.RandomNumber()
 
   return {
     enabled = true,

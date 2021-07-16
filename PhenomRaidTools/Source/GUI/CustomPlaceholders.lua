@@ -7,7 +7,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 local function newCustomPlaceholder()
   return {
     type = "player",
-    name = "Placeholder" .. random(0, 100000),
+    name = "Placeholder" .. PRT.RandomNumber(),
     characterNames = {
       "Change me"
     }

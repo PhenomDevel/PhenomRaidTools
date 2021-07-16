@@ -211,7 +211,7 @@ function PRT.TabGroupCloneButton(container, tabGroup, t, key, label)
         function()
           local clonedItem = PRT.TableUtils.Clone(item)
           if clonedItem.name then
-            clonedItem.name = clonedItem.name .. " - Clone" .. random(0, 100000)
+            clonedItem.name = PRT.NewCloneName()
           end
           AceHelper.AddNewTab(tabGroup, t, clonedItem)
         end
@@ -362,11 +362,13 @@ function PRT.Button(label, tooltip)
   return widget
 end
 
-function PRT.Heading(label)
+function PRT.Heading(label, fontSize)
   local widget = AceGUI:Create("Heading")
 
   widget:SetText(label)
+  widget.label:SetFont(GameFontHighlightSmall:GetFont(), (fontSize or 14), "OUTLINE")
   widget:SetFullWidth(true)
+  widget:SetHeight(60)
 
   return widget
 end
@@ -377,8 +379,6 @@ end
 
 function PRT.Label(label, fontSize)
   local widget = AceGUI:Create("Label")
-  widget:SetJustifyV("CENTER")
-
   widget:SetText(label)
   widget:SetFont(GameFontHighlightSmall:GetFont(), (fontSize or 14), "OUTLINE")
   widget:SetWidth(widget.label:GetStringWidth())
@@ -388,12 +388,9 @@ end
 
 function PRT.InteractiveLabel(label, fontSize)
   local widget = AceGUI:Create("InteractiveLabel")
-  widget:SetJustifyV("CENTER")
-
   widget:SetText(label)
   widget:SetFont(GameFontHighlightSmall:GetFont(), (fontSize or 14), "OUTLINE")
   widget:SetWidth(widget.label:GetStringWidth())
-
   return widget
 end
 
@@ -435,6 +432,7 @@ end
 
 function PRT.Dropdown(label, tooltip, possibleValues, selectedValue, withEmpty, orderByKey, multiSelect)
   local dropdownItems = {}
+
   if withEmpty then
     dropdownItems[PRT.Static.TargetNoneNumber] = L["None"]
   end

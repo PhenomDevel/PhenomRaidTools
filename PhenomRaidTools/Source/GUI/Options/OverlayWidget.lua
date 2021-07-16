@@ -145,7 +145,7 @@ end
 
 function Overlay.AddSenderOverlayWidget(container, options)
   local hideDisabledTriggersCheckbox = PRT.CheckBox(L["Hide disabled triggers"], nil, options.hideDisabledTriggers)
-  local showOverlayCheckbox = PRT.CheckBox(L["Enabled"], nil, options.enabled)
+  local showOverlayCheckbox = PRT.CheckBox(L["Enabled"], L["This will show/hide the sender overlay while in combat."], options.enabled)
   local hideOverlayAfterCombatCheckbox = PRT.CheckBox(L["Hide after combat"], nil, options.hideAfterCombat)
   local backdropColor = PRT.ColorPicker(L["Backdrop Color"], options.backdropColor)
 
@@ -215,10 +215,10 @@ function Overlay.AddReceiverOverlayWidget(options, container, index)
   optionsGroup:SetLayout("Flow")
 
   local lockedCheckBox = PRT.CheckBox(L["Locked"], nil, options.locked)
-  local labelEditBox = PRT.EditBox(L["Overlay"], nil, options.label)
+  local labelEditBox = PRT.EditBox(L["Name"], nil, options.label)
   local growDirectionDropdown = PRT.Dropdown(L["Grow Direction"], nil, growDirectionDropdownOptions, (options.growDirection or "UP"))
 
-  lockedCheckBox:SetRelativeWidth(0.33)
+  lockedCheckBox:SetRelativeWidth(1)
   labelEditBox:SetRelativeWidth(0.33)
   growDirectionDropdown:SetRelativeWidth(0.33)
 

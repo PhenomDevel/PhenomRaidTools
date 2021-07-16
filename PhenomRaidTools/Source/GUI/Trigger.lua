@@ -29,7 +29,7 @@ local function AddActionsWidgets(container, triggerName, triggers, copyStorePath
         L["Are you sure you want to clone %s?"]:format(PRT.HighlightString(triggerName)),
         function()
           local clone = PRT.TableUtils.Clone(triggers[triggerIndex])
-          clone.name = clone.name .. "- Clone" .. random(0, 100000)
+          clone.name = PRT.NewCloneName()
           tinsert(triggers, clone)
           PRT.Core.UpdateTree()
           PRT.mainWindowContent:DoLayout()
@@ -45,7 +45,7 @@ local function AddActionsWidgets(container, triggerName, triggers, copyStorePath
     "OnClick",
     function()
       local copy = PRT.TableUtils.Clone(trigger)
-      copy.name = copy.name .. " Copy" .. random(0, 100000)
+      copy.name = copy.name .. " Copy" .. PRT.RandomNumber()
       PRT.GetProfileDB().clipboard[copyStorePath] = copy
       PRT.Debug("Copied trigger", PRT.HighlightString(trigger.name), "to clipboard")
     end
