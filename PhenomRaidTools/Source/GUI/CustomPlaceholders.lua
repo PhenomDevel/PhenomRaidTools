@@ -39,9 +39,6 @@ local function addCustomPlaceholderWidget(customPlaceholder, container, _, place
       if placeholders[cleanedText] and not (customPlaceholder.name == cleanedText) then
         PRT.Error("A placeholder with this name already exists.")
       else
-        local placeholder = PRT.TableUtils.Clone(customPlaceholder)
-        placeholder.name = cleanedText
-
         PRT.TableUtils.SwapKey(placeholders, customPlaceholder.name, cleanedText)
         customPlaceholder.name = cleanedText
 
@@ -180,6 +177,89 @@ function PRT.AddCustomPlaceholderDescription(container)
   container:AddChild(subDescription)
 end
 
+local function renderPlaceholder(container, refreshContainerFn, placeholders, placeholder)
+  local placeholderTypesDropdownItems = {
+    {id = "group", name = L["Group"]},
+    {id = "player", name = L["Player"]}
+  }
+
+  local placeholderTypeSelect = PRT.Dropdown(L["Type"], nil, placeholderTypesDropdownItems, (placeholder.type or "player"))
+  placeholderTypeSelect:SetCallback(
+    "OnValueChanged",
+    function(widget)
+      local text = widget:GetValue()
+      placeholder.type = text
+    end
+  )
+
+  local placeholderNameEditBox = PRT.EditBox(L["Name"], nil, placeholder.name, true)
+  placeholderNameEditBox:SetCallback(
+    "OnEnterPressed",
+    function(widget)
+      local text = widget:GetText()
+      local cleanedText = string.gsub(text, " ", "")
+
+      if placeholders[cleanedText] and not (placeholder.name == cleanedText) then
+        PRT.Error("A placeholder with this name already exists.")
+      else
+        PRT.TableUtils.SwapKey(placeholders, placeholder.name, cleanedText)
+        placeholder.name = cleanedText
+
+        widget:SetText(cleanedText)
+        widget:ClearFocus()
+      end
+
+      -- Update global placeholders
+      PRT.SetupGlobalCustomPlaceholders()
+      refreshContainerFn()
+    end
+  )
+
+  local clearEmptyNamesButton = PRT.Button(L["Remove empty names"])
+  clearEmptyNamesButton:SetCallback(
+    "OnClick",
+    function()
+      PRT.TableUtils.Remove(placeholder.characterNames, PRT.StringUtils.IsEmpty)
+      PRT.ReSelectTab(container)
+    end
+  )
+
+  local addNameButton = PRT.Button(L["Add Name"])
+  addNameButton:SetCallback(
+    "OnClick",
+    function()
+      tinsert(placeholder.characterNames, "")
+      PRT.ReSelectTab(container)
+    end
+  )
+
+  local namesGroup = PRT.InlineGroup(L["Names"])
+  namesGroup:SetLayout("Flow")
+
+  for idx, name in ipairs(placeholder.characterNames or {}) do
+    local nameEditBox = PRT.EditBox(L["Name" .. idx], nil, name)
+    nameEditBox:SetRelativeWidth(0.333)
+    nameEditBox:SetCallback(
+      "OnEnterPressed",
+      function(widget)
+        local text = widget:GetText()
+        placeholder.characterNames[idx] = text
+        widget:ClearFocus()
+
+        -- Update global placeholders
+        PRT.SetupGlobalCustomPlaceholders()
+      end
+    )
+    namesGroup:AddChild(nameEditBox)
+  end
+
+  container:AddChild(placeholderNameEditBox)
+  container:AddChild(placeholderTypeSelect)
+  container:AddChild(namesGroup)
+  container:AddChild(addNameButton)
+  container:AddChild(clearEmptyNamesButton)
+end
+
 function PRT.AddCustomPlaceholdersWidget(container, customPlaceholders)
   PRT.AddCustomPlaceholderDescription(container)
   local actionsGroup = PRT.SimpleGroup()
@@ -205,26 +285,11 @@ function PRT.AddCustomPlaceholdersWidget(container, customPlaceholders)
     end
   )
 
-  local removeAllButton = PRT.Button(L["Remove all"])
-  removeAllButton:SetCallback(
-    "OnClick",
-    function()
-      PRT.ConfirmationDialog(
-        L["Are you sure you want to remove all custom placeholders?"],
-        function()
-          wipe(customPlaceholders)
-          container:ReleaseChildren()
-          PRT.AddCustomPlaceholdersWidget(container, customPlaceholders)
-        end
-      )
-    end
-  )
-
   actionsGroup:AddChild(importButton)
   actionsGroup:AddChild(exportButton)
-  actionsGroup:AddChild(removeAllButton)
   container:AddChild(actionsGroup)
-  PRT.AddCustomPlaceholdersTabGroup(container, customPlaceholders)
+  container:AddChild(PRT.Heading(L["Placeholders"], 18))
+  container:AddChild(PRT.TabGroupContainer({confirmDelete = true, withClone = true}, customPlaceholders, renderPlaceholder, newCustomPlaceholder))
 end
 
 function PRT.AddCustomPlaceholderOptions(container, profile, encounterID)
@@ -234,22 +299,7 @@ function PRT.AddCustomPlaceholderOptions(container, profile, encounterID)
     encounter.CustomPlaceholders = {}
   end
 
-  local removeAllButton = PRT.Button(L["Remove all"])
-  removeAllButton:SetCallback(
-    "OnClick",
-    function()
-      PRT.ConfirmationDialog(
-        L["Are you sure you want to remove all custom placeholders?"],
-        function()
-          wipe(encounter.CustomPlaceholders)
-          container:ReleaseChildren()
-          PRT.AddCustomPlaceholderOptions(container, profile, encounterID)
-        end
-      )
-    end
-  )
-
   PRT.AddCustomPlaceholderDescription(container)
-  container:AddChild(removeAllButton)
-  PRT.AddCustomPlaceholdersTabGroup(container, encounter.CustomPlaceholders)
+  container:AddChild(PRT.Heading(L["Placeholders"], 18))
+  container:AddChild(PRT.TabGroupContainer({confirmDelete = true, withClone = true}, encounter.CustomPlaceholders, renderPlaceholder, newCustomPlaceholder))
 end

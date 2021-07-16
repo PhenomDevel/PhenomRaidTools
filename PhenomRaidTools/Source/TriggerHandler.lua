@@ -177,8 +177,6 @@ function TriggerHandler.GetRotationMessages(rotation)
       if rotationCounter <= table.getn(rotation.entries) then
         local messagesByCounter = rotation.entries[rotationCounter]
 
-        print(rotationCounter, messagesByCounter)
-
         if messagesByCounter.messages ~= nil then
           return messagesByCounter.messages
         end

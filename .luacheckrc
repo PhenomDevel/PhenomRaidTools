@@ -70,6 +70,8 @@ globals = {
   "UnitIsGroupLeader",
   "GetBuildInfo",
   "GetSpellDescription",
+  "time",
+  "date",
 
   -- Locals
   "L",

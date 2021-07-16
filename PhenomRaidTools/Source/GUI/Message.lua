@@ -235,6 +235,7 @@ local function AddLoadTemplateActionWidgets(container, action)
 
       if templateMessage then
         local newAction = PRT.TableUtils.Clone(templateMessage)
+        newAction.name = nil
         PRT.TableUtils.OverwriteValues(action, newAction)
         container:ReleaseChildren()
         PRT.MessageWidget(action, container)
@@ -705,8 +706,9 @@ local function AddTemplateWidgets(container, message)
 
             -- make sure a message always has a type
             message.type = message.type or "advanced"
-
-            PRT.GetProfileDB().templateStore.messages[templateName] = PRT.TableUtils.Clone(message)
+            local clone = PRT.TableUtils.Clone(message)
+            clone.name = templateName
+            PRT.GetProfileDB().templateStore.messages[templateName] = clone
             saveAsTemplateNameEditbox:SetText("")
           end
         end,
