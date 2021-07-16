@@ -1,14 +1,5 @@
 #!/bin/bash
 
-# Repo URL to base links off of
-REPOSITORY_URL=https://github.com/PhenomDevel/PhenomRaidTools
-
-# Get a list of all tags in reverse order
-# Assumes the tags are in version format like v1.2.3
-GIT_TAGS=$(git tag -l --sort=-version:refname)
-
-# Make the tags an array
-
 LATEST_TAG=$(git describe --tags --abbrev=0)
 PREVIOUS_TAG=$(git describe --tags --exclude '*beta*' --abbrev=0 `git rev-list --tags --skip=1 --max-count=1 --abbrev=0`)
 
@@ -20,7 +11,7 @@ NOW=$(date +'%d.%m.%Y - %H:%M:%S')
 
 # Store our changelog in a variable to be saved to a file at the end
 MARKDOWN="# Release $LATEST_TAG ~ $NOW"
-MARKDOWN+="Previous Version: $PREVIOUS_TAG"
+MARKDOWN+="\nPrevious Version: $PREVIOUS_TAG"
 MARKDOWN+='\n'
 
 BUG_PATTERN="\[bug\]|\[fix\]"
