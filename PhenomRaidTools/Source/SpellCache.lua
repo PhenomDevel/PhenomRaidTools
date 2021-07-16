@@ -92,7 +92,7 @@ function SpellCache.Build(spellCache)
 end
 
 function SpellCache.PauseBuild(spellCache)
-  if spellCache.timerId and not spellCache.completed then
+  if spellCache.enabled and spellCache.timerId and not spellCache.completed then
     AceTimer:CancelTimer(spellCache.timerId)
     spellCache.timerId = nil
     PRT.Debug("Building of spell database paused.")
@@ -100,7 +100,7 @@ function SpellCache.PauseBuild(spellCache)
 end
 
 function SpellCache.Resume(spellCache)
-  if not spellCache.timerId and not spellCache.completed then
+  if spellCache.enabled and not spellCache.timerId and not spellCache.completed then
     SpellCache.Build(spellCache)
     PRT.Debug("Building of spell database resumed.")
   end
