@@ -55,6 +55,7 @@ function PRT.AddInformationWidgets(container)
   addEntryWidgets(specialThanksGroup, specialThanksEntries)
 
   container:AddChild(linkGroup)
+  PRT.AddChangelogWidgets(container)
   container:AddChild(developerGroup)
   container:AddChild(specialThanksGroup)
 end

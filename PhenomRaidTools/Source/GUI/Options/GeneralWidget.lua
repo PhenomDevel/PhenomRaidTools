@@ -253,8 +253,6 @@ function PRT.AddGeneralWidgets(container, options)
     GeneralOptions.AddMessageFilter(container, options.messageFilter)
   end
 
-  PRT.AddChangelogWidgets(container)
-
   if PRT.IsSender() then
     GeneralOptions.AddTestMode(container, options)
   end

@@ -116,9 +116,9 @@ local migrationFunctions = {
     end
   },
   [5] = {
-    version = "2.22.0",
+    version = "2.23.5",
     migrationFunction = function(profile)
-      PRT.Debug("Change targets table to `[name] = name`")
+      PRT.Debug("Change targets table to `[name] = name` for `cooldown` messages")
 
       local updateEntries = function(entries)
         for _, entry in pairs(entries) do
@@ -126,8 +126,10 @@ local migrationFunctions = {
             local targetsBackup = PRT.TableUtils.Clone(message.targets)
             wipe(message.targets)
 
-            for _, target in pairs(targetsBackup) do
-              message.targets[target] = target
+            if message.type == "cooldown" then
+              for _, target in pairs(targetsBackup) do
+                message.targets[target] = target
+              end
             end
           end
         end
@@ -157,7 +159,24 @@ local migrationFunctions = {
         end
       end
 
-      return true
+      --return true
+    end
+  },
+  [6] = {
+    version = "2.23.6",
+    migrationFunction = function(profile)
+      PRT.Debug("Change message template tables to `[template.name] = template`")
+
+      if profile.templateStore.messages then
+        local messageTemplateBackup = PRT.TableUtils.Clone(profile.templateStore.messages)
+        wipe(profile.templateStore.messages)
+
+        for _, template in pairs(messageTemplateBackup) do
+          if template.name then
+            profile.templateStore.messages[template.name] = template
+          end
+        end
+      end
     end
   }
 }

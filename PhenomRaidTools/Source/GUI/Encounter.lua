@@ -222,7 +222,7 @@ local function AddVersionWidgets(container, profile, encounterID)
     "OnClick",
     function()
       local clonedEncounterVersion = PRT.TableUtils.Clone(selectedVersionEncounter)
-      clonedEncounterVersion.name = clonedEncounterVersion.name .. " - Clone: " .. PRT.Now()
+      clonedEncounterVersion.name = "Clone " .. PRT.Now()
       clonedEncounterVersion.createdAt = PRT.Now()
       tinsert(encounter.versions, clonedEncounterVersion)
       encounter.selectedVersion = PRT.TableUtils.Count(encounter.versions)

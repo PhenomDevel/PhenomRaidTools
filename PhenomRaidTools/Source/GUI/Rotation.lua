@@ -60,6 +60,28 @@ function Rotation.RotationWidget(rotationName, rotations, container)
     end
   )
 
+  local triggerAtOccurenceSlider = PRT.Slider(L["Occurrence"], L["After how many occurrences of\nstart condition the rotation should start."], (rotation.triggerAtOccurence or 1))
+  triggerAtOccurenceSlider:SetSliderValues(1, 20, 1)
+  triggerAtOccurenceSlider:SetCallback(
+    "OnValueChanged",
+    function(widget)
+      local value = widget:GetValue()
+      rotation.triggerAtOccurence = value
+    end
+  )
+
+  local resetOccurenceOnStopCheckbox =
+    PRT.CheckBox(L["Reset occurence counter on stop"], L["Resets the occurence counter of start conditions\nwhen the rotaion is stopped."], rotation.resetOccurenceOnStop)
+  resetOccurenceOnStopCheckbox:SetCallback(
+    "OnValueChanged",
+    function(widget)
+      rotation.resetOccurenceOnStop = widget:GetValue()
+      PRT.Core.UpdateTree()
+    end
+  )
+
+  rotationOptionsGroup:AddChild(triggerAtOccurenceSlider)
+  rotationOptionsGroup:AddChild(resetOccurenceOnStopCheckbox)
   rotationOptionsGroup:AddChild(shouldRestartCheckBox)
   rotationOptionsGroup:AddChild(ignoreAfterActivationCheckBox)
   rotationOptionsGroup:AddChild(ignoreDurationSlider)

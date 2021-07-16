@@ -1,6 +1,7 @@
 local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 local AceGUI = LibStub("AceGUI-3.0")
+local AceTimer = LibStub("AceTimer-3.0")
 local Media = LibStub("LibSharedMedia-3.0")
 
 local AceHelper = {
@@ -211,7 +212,7 @@ function PRT.TabGroupCloneButton(container, tabGroup, t, key, label)
         function()
           local clonedItem = PRT.TableUtils.Clone(item)
           if clonedItem.name then
-            clonedItem.name = clonedItem.name .. " - Clone" .. random(0, 100000)
+            clonedItem.name = PRT.NewCloneName()
           end
           AceHelper.AddNewTab(tabGroup, t, clonedItem)
         end
@@ -362,11 +363,13 @@ function PRT.Button(label, tooltip)
   return widget
 end
 
-function PRT.Heading(label)
+function PRT.Heading(label, fontSize)
   local widget = AceGUI:Create("Heading")
 
   widget:SetText(label)
+  widget.label:SetFont(GameFontHighlightSmall:GetFont(), (fontSize or 14), "OUTLINE")
   widget:SetFullWidth(true)
+  widget:SetHeight(60)
 
   return widget
 end
@@ -377,8 +380,6 @@ end
 
 function PRT.Label(label, fontSize)
   local widget = AceGUI:Create("Label")
-  widget:SetJustifyV("CENTER")
-
   widget:SetText(label)
   widget:SetFont(GameFontHighlightSmall:GetFont(), (fontSize or 14), "OUTLINE")
   widget:SetWidth(widget.label:GetStringWidth())
@@ -388,12 +389,9 @@ end
 
 function PRT.InteractiveLabel(label, fontSize)
   local widget = AceGUI:Create("InteractiveLabel")
-  widget:SetJustifyV("CENTER")
-
   widget:SetText(label)
   widget:SetFont(GameFontHighlightSmall:GetFont(), (fontSize or 14), "OUTLINE")
   widget:SetWidth(widget.label:GetStringWidth())
-
   return widget
 end
 
@@ -435,15 +433,16 @@ end
 
 function PRT.Dropdown(label, tooltip, possibleValues, selectedValue, withEmpty, orderByKey, multiSelect)
   local dropdownItems = {}
+
   if withEmpty then
     dropdownItems[PRT.Static.TargetNoneNumber] = L["None"]
   end
 
-  for _, v in pairs(possibleValues) do
+  for k, v in pairs(possibleValues) do
     if type(v) == "string" then
       dropdownItems[v] = v
     else
-      dropdownItems[v.id] = v.name
+      dropdownItems[v.id or v.name or k] = v.name or v.id or k
     end
   end
 
@@ -471,7 +470,7 @@ function PRT.Dropdown(label, tooltip, possibleValues, selectedValue, withEmpty, 
   end
 
   widget:SetLabel(label)
-  widget:SetText(dropdownItems[selectedValue])
+  widget:SetValue(selectedValue)
   widget:SetWidth(AceHelper.widgetDefaultWidth)
 
   for _, v in pairs(possibleValues) do
@@ -557,4 +556,128 @@ function PRT.FontSelect(label, value)
   AceHelper.AddTooltip(widget, nil)
 
   return widget
+end
+
+local function tabGroupContainerContent(container, options, dataTable, itemRenderFn, newItemFn)
+  PRT.TableUtils.SortByKey(dataTable, "name")
+
+  local refreshContainer = function()
+    container:ReleaseChildren()
+    tabGroupContainerContent(container, options, dataTable, itemRenderFn, newItemFn)
+    PRT.Core.UpdateScrollFrame()
+  end
+
+  local tabGroup = PRT.TabGroup(nil, PRT.TableToTabs(dataTable))
+  tabGroup:SetLayout("Flow")
+  tabGroup:SetCallback(
+    "OnGroupSelected",
+    function(widget, _, value)
+      local selectedItem = dataTable[value]
+      widget:ReleaseChildren()
+
+      -- Make sure the item has a name
+      if not selectedItem.name then
+        selectedItem.name = value
+      end
+      itemRenderFn(widget, refreshContainer, dataTable, selectedItem)
+
+      -- Delay rerendering of scrollframe a little.
+      AceTimer:ScheduleTimer(PRT.Core.UpdateScrollFrame, 50)
+    end
+  )
+
+  local newButton = PRT.Button(L["Add"])
+  newButton:SetCallback(
+    "OnClick",
+    function()
+      local newItem = newItemFn()
+
+      if newItem.name then
+        dataTable[newItem.name] = newItem
+        refreshContainer()
+        tabGroup:SelectTab(newItem.name)
+      else
+        PRT.Debug("The new item does not have a name. Therefore the creation was skipped.")
+      end
+    end
+  )
+
+  local deleteDropdown = PRT.Dropdown(L["Delete"], nil, dataTable, nil)
+  deleteDropdown:SetDisabled(PRT.TableUtils.IsEmpty(dataTable))
+  deleteDropdown:SetCallback(
+    "OnValueChanged",
+    function(widget, _, value)
+      print(value)
+      local deleteItem = function()
+        dataTable[value] = nil
+        refreshContainer()
+      end
+      if not options.confirmDelete then
+        deleteItem()
+      else
+        local confirmationLabel = "Are you sure you want to delete %s?"
+
+        PRT.ConfirmationDialog(
+          L[confirmationLabel]:format(PRT.HighlightString(value)),
+          function()
+            deleteItem()
+          end
+        )
+      end
+      widget:SetValue(nil)
+    end
+  )
+  container:AddChild(deleteDropdown)
+
+  local removeAllButton = PRT.Button(L["Delete all"])
+  removeAllButton:SetCallback(
+    "OnClick",
+    function()
+      PRT.ConfirmationDialog(
+        L["Are you sure you want to remove all entries?"],
+        function()
+          wipe(dataTable)
+          refreshContainer()
+        end
+      )
+    end
+  )
+
+  container:AddChild(removeAllButton)
+
+  if options.withClone then
+    local cloneDropdown = PRT.Dropdown(L["Clone"], nil, dataTable, nil)
+    cloneDropdown:SetDisabled(PRT.TableUtils.IsEmpty(dataTable))
+    cloneDropdown:SetCallback(
+      "OnValueChanged",
+      function(_, _, value)
+        local selectedItem = dataTable[value]
+        local clone = PRT.TableUtils.Clone(selectedItem)
+        clone.name = PRT.NewCloneName()
+        dataTable[clone.name] = clone
+        refreshContainer()
+        tabGroup:SelectTab(clone.name)
+      end
+    )
+    container:AddChild(cloneDropdown)
+  end
+
+  container:AddChild(newButton)
+
+  if PRT.TableUtils.Count(dataTable) > 0 then
+    container:AddChild(tabGroup)
+  else
+    local noEntriesLabel = PRT.Label(L["There are currently no entries."])
+    container:AddChild(noEntriesLabel)
+  end
+  PRT.SelectFirstTab(tabGroup, dataTable)
+end
+
+function PRT.TabGroupContainer(options, dataTable, itemRenderFn, newItemFn)
+  local container = PRT.SimpleGroup()
+  container:SetLayout("List")
+
+  tabGroupContainerContent(container, options, dataTable, itemRenderFn, newItemFn)
+
+  return container
 end
