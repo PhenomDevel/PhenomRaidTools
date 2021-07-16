@@ -116,7 +116,7 @@ local migrationFunctions = {
     end
   },
   [5] = {
-    version = "2.23.5",
+    version = "2.23.0",
     migrationFunction = function(profile)
       PRT.Debug("Change targets table to `[name] = name` for `cooldown` messages")
 
@@ -159,11 +159,11 @@ local migrationFunctions = {
         end
       end
 
-      --return true
+      return true
     end
   },
   [6] = {
-    version = "2.23.6",
+    version = "2.23.1",
     migrationFunction = function(profile)
       PRT.Debug("Change message template tables to `[template.name] = template`")
 
@@ -177,6 +177,8 @@ local migrationFunctions = {
           end
         end
       end
+
+      return true
     end
   }
 }
