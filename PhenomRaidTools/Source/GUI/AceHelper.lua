@@ -607,7 +607,6 @@ local function tabGroupContainerContent(container, options, dataTable, itemRende
   deleteDropdown:SetCallback(
     "OnValueChanged",
     function(widget, _, value)
-      print(value)
       local deleteItem = function()
         dataTable[value] = nil
         refreshContainer()
