@@ -124,9 +124,9 @@ local migrationFunctions = {
         for _, entry in pairs(entries) do
           for _, message in pairs(entry.messages) do
             local targetsBackup = PRT.TableUtils.Clone(message.targets)
-            wipe(message.targets)
 
             if message.type == "cooldown" then
+              wipe(message.targets)
               for _, target in pairs(targetsBackup) do
                 message.targets[target] = target
               end
