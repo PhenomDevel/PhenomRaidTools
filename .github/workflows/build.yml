@@ -27,8 +27,16 @@ jobs:
       - name: Generate Changelog
         run: ./changelog.sh
 
-      - name: Package and release
+      - name: Package and Release - Retail
         uses: BigWigsMods/packager@v1
+        env:
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
+          WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
+
+      - name: Package and Release - BC
+        uses: BigWigsMods/packager@master
+        with:
+          args: -g bcc -m .pkgmeta-bcc
         env:
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
           WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
@@ -36,6 +44,8 @@ jobs:
       - name: Build Changelog for Github Release
         id: github_release
         uses: mikepenz/release-changelog-builder-action@v1
+        with:
+          commitMode: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -47,14 +57,6 @@ jobs:
           body: ${{steps.github_release.outputs.changelog}}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Package and release BC
-        uses: BigWigsMods/packager@master
-        with:
-          args: -g bcc -m .pkgmeta-bcc
-        env:
-          CF_API_KEY: ${{ secrets.CF_API_KEY }}
-          WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
 
       - name: Send Status to Discord
         uses: nebularg/actions-discord-webhook@v1
