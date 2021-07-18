@@ -187,11 +187,15 @@ function Message.GenerateRaidRosterDropdownItems(onlySingleTargets)
 end
 
 local function CooldownActionPreviewString(action)
+  local formatString
+  local messageDefaults = PRT.GetProfileDB().triggerDefaults.messageDefaults
   if action.withCountdown then
-    return format("{spell:%s} %%.0f {spell:%s}", action.spellID or "", action.spellID or "")
+    formatString = messageDefaults.defaultCooldownWithCountdownPattern or "{spell:%s} %%.0f {spell:%s}"
   else
-    return format("{spell:%s}", action.spellID or "")
+    formatString = messageDefaults.defaultCooldownWithoutCountdownPattern or "{spell:%s}"
   end
+
+  return format(formatString, action.spellID or "", action.spellID or "")
 end
 
 function Message.CompilePossibleCooldownItems()
