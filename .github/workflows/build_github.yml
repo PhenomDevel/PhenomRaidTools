@@ -1,0 +1,33 @@
+name: Build Github
+
+on:
+  push:
+    tags:
+      - "*"
+      - "!**-beta**"
+      - "!**-alpha**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone project
+        uses: actions/checkout@v1
+
+      - name: Build Changelog for Github Release
+        id: github_release
+        uses: mikepenz/release-changelog-builder-action@v1
+        with:
+          commitMode: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Github Release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          body: ${{steps.github_release.outputs.changelog}}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
