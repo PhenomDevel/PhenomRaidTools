@@ -1,3 +1,15 @@
+# Release 2.24.0 - 18.07.2021
+## Bugs
+ - Make sure the default sound is used correctly
+ -
+## Features
+ - Be able to select multiple targets for actions of type `cooldown`
+ - Be able to use `occurence` for rotations aswell
+ - Unified template and placeholder ui behaviour
+ - Show current occurrences for timers and rotation in sender overlay
+ - Be able to adjust format string of action `cooldown`
+
+
 # Release 2.21.3 - 10.07.2021
 ## Bugs
 - Make sure timings are merged together for MRT exports
