@@ -15,19 +15,20 @@ jobs:
       - name: Clone project
         uses: actions/checkout@v1
 
-      - name: Build Changelog for Github Release
-        id: github_release
-        uses: mikepenz/release-changelog-builder-action@v1
+      - name: Generate Changelog
+        run: ./changelog.sh
+
+      - name: Read CHANGELOG.md
+        id: changelog
+        uses: juliangruber/read-file-action@v1
         with:
-          commitMode: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          path: ./CHANGELOG.md
 
       - name: Create Github Release
         uses: actions/create-release@v1
         with:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
-          body: ${{steps.github_release.outputs.changelog}}
+          body: ${{ steps.package.outputs.content }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
