@@ -62,7 +62,7 @@ function TriggerHandler.ValidTestModeEvent(event, combatEvent, conditionEvent)
 end
 
 function TriggerHandler.CheckOccurence(trigger)
-  if (trigger.occurence or 0) >= (trigger.triggerAtOccurence or 1) then
+  if ((trigger.occurence or 0) >= (trigger.triggerAtOccurence or 1)) or trigger.startCondition == nil then
     return true
   end
 
