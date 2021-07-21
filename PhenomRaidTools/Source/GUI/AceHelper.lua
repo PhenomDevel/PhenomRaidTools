@@ -211,9 +211,7 @@ function PRT.TabGroupCloneButton(container, tabGroup, t, key, label)
         L[confirmationLabel]:format(PRT.HighlightString(item.name)),
         function()
           local clonedItem = PRT.TableUtils.Clone(item)
-          if clonedItem.name then
-            clonedItem.name = PRT.NewCloneName()
-          end
+          clonedItem.name = nil
           AceHelper.AddNewTab(tabGroup, t, clonedItem)
         end
       )
