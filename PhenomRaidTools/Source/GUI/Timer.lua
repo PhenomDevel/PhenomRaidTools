@@ -168,7 +168,6 @@ end
 -- Public API
 
 function PRT.AddTimerOptionsWidgets(container, profile, encounterID)
-  local _, encounter = PRT.GetEncounterById(profile.encounters, tonumber(encounterID))
   local _, selectedEncounter = PRT.GetSelectedVersionEncounterByID(profile.encounters, tonumber(encounterID))
   local timers = selectedEncounter.Timers
 
