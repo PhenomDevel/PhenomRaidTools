@@ -456,6 +456,7 @@ function PRT.AddEncounterOptions(container, profile, encounterID)
   encounterOptionsGroup:AddChild(encounterNameEditBox)
   encounterOptionsGroup:AddChild(encounterSelectDropdown)
   encounterOptionsGroup:AddChild(deleteButton)
+  PRT.AddMethodRaidToolsExportWidget(encounterOptionsGroup, encounter)
 
   container:AddChild(encounterOptionsGroup)
   container:AddChild(encounterVersionOptionsGroup)

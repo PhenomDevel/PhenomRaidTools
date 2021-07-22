@@ -185,11 +185,13 @@ do
           defaultCooldownWithoutCountdownPattern = "{spell:%s}"
         }
       },
-      timerExportDefaults = {
+      mrtExportDefaults = {
+        includeTimers = true,
+        includeRotations = true,
         withEmptyLines = false,
         withEncounterName = true,
-        withTimerNames = true,
-        withTimingNames = true,
+        withTriggerNames = true,
+        withLinePrefix = true,
         forceMethodRaidToolsUpdate = false,
         updatePRTTag = true,
         withPersonalization = false
