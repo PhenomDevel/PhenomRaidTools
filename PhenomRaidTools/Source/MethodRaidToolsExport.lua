@@ -592,6 +592,7 @@ end
 function PRT.AddMethodRaidToolsExportWidget(container, encounter)
   local encounterVersion = encounter.versions[encounter.selectedVersion]
   local mrtExportButton = PRT.Button(L["Generate MethodRaidTools Note"])
+  mrtExportButton:SetWidth(400)
   mrtExportButton:SetCallback(
     "OnClick",
     function()
