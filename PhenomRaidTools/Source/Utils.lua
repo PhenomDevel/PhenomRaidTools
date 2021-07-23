@@ -363,7 +363,6 @@ do
 end
 
 function PRT.PlayerNamesByToken(token)
-  token = strtrim(token, " ")
   local playerNames = {}
 
   if token == "me" then
@@ -378,6 +377,17 @@ function PRT.PlayerNamesByToken(token)
       local name, _, group = GetRaidRosterInfo(i)
       if name and group and (groupNumber == group) then
         tinsert(playerNames, strtrim(name, " "))
+      end
+    end
+  elseif tContains(PRT.TableUtils.Keys(PRT.Static.ClassTokens), token) then
+    -- Go through all raid players and check for class
+    local tokenClassIndex = PRT.Static.ClassTokens[token]
+    for i = 1, 40, 1 do
+      local unitID = "raid" .. i
+      local _, _, unitClass = UnitClass(unitID)
+      if unitClass == tokenClassIndex then
+        local unitName = UnitName(unitID)
+        tinsert(playerNames, strtrim(unitName, " "))
       end
     end
   elseif PRT.GetProfileDB().customPlaceholders then

@@ -178,6 +178,11 @@ function Message.GenerateRaidRosterDropdownItems(onlySingleTargets)
       tinsert(raidRosterItems, {id = name, name = name})
     end
 
+    -- Add class tokens
+    for token, _ in pairs(PRT.Static.ClassTokens) do
+      tinsert(raidRosterItems, {id = "$" .. token, name = "$" .. token})
+    end
+
     tinsert(raidRosterItems, {id = "$target", name = "$target"})
   end
 
