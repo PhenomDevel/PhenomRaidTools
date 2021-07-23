@@ -6,7 +6,7 @@ local Message = {
     "$me",
     "ALL",
     "HEALER",
-    "TANKS",
+    "TANK",
     "DAMAGER"
   }
 }
