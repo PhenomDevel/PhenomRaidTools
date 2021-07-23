@@ -89,7 +89,7 @@ local function addRotationOverviewEntry(container, rotation)
   addOverviewHeader(container, rotation.name, rotation.enabled)
 
   if rotation.hasStartCondition then
-    addStringByCondition(container, L["Timings %s"], rotation.startCondition)
+    addStringByCondition(container, L["Start on"], rotation.startCondition)
   end
 
   if rotation.hasStopCondition then
