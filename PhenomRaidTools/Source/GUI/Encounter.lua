@@ -26,7 +26,7 @@ local Encounter = {
     {id = 2436, name = L["SoD - Guardian of the First Ones"]},
     {id = 2431, name = L["SoD - Fatescribe Roh-Kalo"]},
     {id = 2422, name = L["SoD - Kel'Thuzad"]},
-    {id = 0, name = L["SoD - Sylvanas Windrunner"]}
+    {id = 2435, name = L["SoD - Sylvanas Windrunner"]}
   }
 }
 
