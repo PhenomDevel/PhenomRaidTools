@@ -16,9 +16,8 @@ function PRT.CreateModal(contentContainer, title)
         PRT.Core.UnregisterFrame(modalName)
       end
     )
-
     modalFrame:AddChild(contentContainer)
-    modalFrame:SetHeight(max(modalFrame.frame:GetHeight(), contentContainer.frame:GetHeight() + 100))
+    modalFrame.frame:SetHeight(contentContainer.frame:GetHeight() + 134)
     modalFrame:Show()
 
     PRT.Core.RegisterFrame(modalName, modalFrame)
