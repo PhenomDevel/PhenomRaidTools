@@ -92,6 +92,10 @@ local encounterPhaseMapping = {
   [2430] = {
     {id = "intermissionStart", name = L["Intermission Start"], event = "SPELL_AURA_APPLIED", spellID = 355525},
     {id = "intermissionStop", name = L["Intermission Stop"], event = "SPELL_AURA_REMOVED", spellID = 355525}
+  },
+  [2435] = {
+    {id = "intermissionStart", name = L["Phase 2 Start (Chains)"], event = "SPELL_AURA_APPLIED", spellID = 348146},
+    {id = "intermissionStop", name = L["Phase 2 Stop (Chains)"], event = "SPELL_CAST_START", spellID = 357729}
   }
 }
 
