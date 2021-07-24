@@ -240,7 +240,8 @@ local function noteFromTimers(options, timers)
 end
 
 local function noteFromRotation(options, rotation)
-  local rotationNote = ""
+  local rotationNote
+  local rotationNoteEntries = {}
 
   if not PRT.TableUtils.IsEmpty(rotation.entries) then
     if options.withTriggerNames then
@@ -258,7 +259,7 @@ local function noteFromRotation(options, rotation)
       end
 
       if (options.withEmptyLines and PRT.TableUtils.IsEmpty(validMessages)) or (not PRT.TableUtils.IsEmpty(validMessages)) then
-        local entryNote = string.format("<%s>", entryIndex)
+        local entryNote = ""
 
         for _, message in ipairs(validMessages) do
           local distinctTargets = GetDistinctTargets(message.targets)
@@ -271,14 +272,28 @@ local function noteFromRotation(options, rotation)
           entryNote = WrapPersonalization(entryNote, targetString, options)
         end
 
-        rotationNote = rotationNote .. "\n" .. entryNote
+        if not PRT.StringUtils.IsEmpty(entryNote) then
+          rotationNoteEntries[entryIndex] = entryNote
+        end
       end
     end
   else
     return nil
   end
 
-  return rotationNote .. "\n"
+  if not PRT.TableUtils.IsEmpty(rotationNoteEntries) then
+    for idx, entryNote in pairs(rotationNoteEntries) do
+      rotationNote = rotationNote .. string.format("<%s> %s\n", idx, entryNote)
+    end
+
+    if rotation.shouldRestart then
+      rotationNote = rotationNote .. "Repeat\n"
+    end
+  else
+    return nil
+  end
+
+  return rotationNote
 end
 
 local function noteFromRotations(options, rotations)
