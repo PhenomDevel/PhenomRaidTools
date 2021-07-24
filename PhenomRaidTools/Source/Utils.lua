@@ -166,7 +166,7 @@ function PRT.ConfirmationDialog(text, successFn, bodyWidgets, ...)
       end
     end
 
-    confirmationFrame:SetHeight(max(100, textLabel.label:GetStringHeight() + textLabel.frame:GetHeight() + widgetHeight + okButton.frame:GetHeight() + 15))
+    confirmationFrame:SetHeight(max(100, textLabel.label:GetStringHeight() + textLabel.frame:GetHeight() + widgetHeight + okButton.frame:GetHeight() + 30))
 
     confirmationActionsGroup:AddChild(okButton)
     confirmationActionsGroup:AddChild(cancelButton)
