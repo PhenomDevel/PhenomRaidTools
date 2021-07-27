@@ -3,7 +3,7 @@
 GITHUB_COMMIT_URL="https://github.com/PhenomDevel/PhenomRaidTools/commit"
 
 LATEST_TAG=$(git describe --tags --abbrev=0)
-PREVIOUS_TAG=$(git describe --tags --exclude '*alpha*' --abbrev=0 `git rev-list --tags --skip=1 --max-count=1 --abbrev=0`)
+PREVIOUS_TAG=$(git describe --tags --exclude '*beta*' --abbrev=0 `git rev-list --tags --skip=1 --max-count=1 --abbrev=0`)
 
 COMMITS=$(git log $PREVIOUS_TAG..$LATEST_TAG --pretty=format:"%h")
 
