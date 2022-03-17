@@ -26,7 +26,20 @@ local Encounter = {
     {id = 2436, name = L["SoD - Guardian of the First Ones"]},
     {id = 2431, name = L["SoD - Fatescribe Roh-Kalo"]},
     {id = 2422, name = L["SoD - Kel'Thuzad"]},
-    {id = 2435, name = L["SoD - Sylvanas Windrunner"]}
+    {id = 2435, name = L["SoD - Sylvanas Windrunner"]},
+    -- Sepulcher of the First Ones
+    {id = 20999, name = L["--- 	Sepulcher of the First Ones ---"], disabled = true},
+    {id = 2458, name = L["SofFO - Vigilant Guardian"]},
+    {id = 2465, name = L["SofFO - Skolex, the Insatiable Ravener"]},
+    {id = 2470, name = L["SofFO - Artificer Xy'mox"]},
+    {id = 2463, name = L["SofFO - Halondrus the Reclaimer"]},
+    {id = 2459, name = L["SofFO - Dausegne, the Fallen Oracle"]},
+    {id = 2460, name = L["SofFO - Prototype Pantheon"]},
+    {id = 2461, name = L["SofFO - Lihuvim, Principle Architect"]},
+    {id = 2469, name = L["SofFO - Anduin Wrynn"]},
+    {id = 2457, name = L["SofFO - Lords of Dread"]},
+    {id = 2467, name = L["SofFO - Rygelon"]},
+    {id = 2464, name = L["SofFO - The Jailer"]}
   }
 }
 
