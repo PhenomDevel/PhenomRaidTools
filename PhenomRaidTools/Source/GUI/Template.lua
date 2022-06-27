@@ -12,7 +12,7 @@ local function renderTemplate(container, refreshContainerFn, messages, message)
     function(widget)
       local newName = widget:GetText()
 
-      if not (message.name == newName) then
+      if message.name ~= newName then
         if not messages[newName] then
           PRT.TableUtils.SwapKey(messages, message.name, newName)
           message.name = newName

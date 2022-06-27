@@ -56,7 +56,7 @@ function PRT.CreateImportFrame(successFunction)
         if worked == true then
           successFunction(t)
         else
-          if not (text == "") then
+          if text ~= "" then
             PRT.Error("Import was not successfull.")
           end
         end

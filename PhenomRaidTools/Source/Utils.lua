@@ -481,7 +481,7 @@ function PRT.PartyNames(withServer)
       playerName = PRT.UnitFullName(index)
     end
 
-    if not (playerName == myName) then
+    if playerName ~= myName then
       tinsert(names, playerName)
     end
   end

@@ -36,7 +36,7 @@ local function addCustomPlaceholderWidget(customPlaceholder, container, _, place
       local text = widget:GetText()
       local cleanedText = string.gsub(text, " ", "")
 
-      if placeholders[cleanedText] and not (customPlaceholder.name == cleanedText) then
+      if placeholders[cleanedText] and (customPlaceholder.name ~= cleanedText) then
         PRT.Error("A placeholder with this name already exists.")
       else
         PRT.TableUtils.SwapKey(placeholders, customPlaceholder.name, cleanedText)
@@ -199,7 +199,7 @@ local function renderPlaceholder(container, refreshContainerFn, placeholders, pl
       local text = widget:GetText()
       local cleanedText = string.gsub(text, " ", "")
 
-      if placeholders[cleanedText] and not (placeholder.name == cleanedText) then
+      if placeholders[cleanedText] and placeholder.name ~= cleanedText then
         PRT.Error("A placeholder with this name already exists.")
       else
         PRT.TableUtils.SwapKey(placeholders, placeholder.name, cleanedText)

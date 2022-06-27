@@ -89,7 +89,7 @@ local function ExecuteRaidTarget(message)
         end
       end
 
-      if not (GetRaidTargetIndex(target) == message.raidtarget) then
+      if GetRaidTargetIndex(target) ~= message.raidtarget then
         -- If no raid target is selected we unselect the existing one
         local targetIndex = message.raidtarget
         if message.raidtarget == PRT.Static.TargetNoneNumber then
