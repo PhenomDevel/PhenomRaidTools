@@ -122,7 +122,7 @@ function Overlay.CreateOverlay(options, withBackdrop)
   end
 
   overlayFrame:SetPoint("CENTER", 0, 0)
-  overlayFrame.text = overlayFrame:CreateFontString(overlayFrame, "OVERLAY")
+  overlayFrame.text = overlayFrame:CreateFontString(nil, "OVERLAY", "GameTooltipText")
   overlayFrame.text:SetFont(GameFontHighlightSmall:GetFont(), options.fontSize, "OUTLINE")
   overlayFrame.text:SetText("")
 

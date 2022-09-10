@@ -472,7 +472,7 @@ function PRT.CreateMainWindow()
   if PRT.GetProfileDB().mainWindow.left or PRT.GetProfileDB().mainWindow.top then
     mainWindow.frame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", PRT.GetProfileDB().mainWindow.left or 0, -(PRT.GetProfileDB().mainWindow.top or 0))
   end
-  mainWindow.frame:SetMinResize(1000, 600)
+  --mainWindow.frame:SetMinResize(1000, 600)
   RegisterESCHandler("mainWindow", mainWindow)
 
   -- Initialize sender and receiver frames
