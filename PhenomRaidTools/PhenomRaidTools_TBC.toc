@@ -1,0 +1,69 @@
+## Interface: 20504
+## Title: PhenomRaidTools
+## Version: @project-version@
+## Author: @project-author@
+## Notes: Easy to use encounter configuration to send messages to your raid team on certain events.
+## Notes-deDE: Einfach zu konfigurierender Boss Helfer. Nutze Countdowns, Rotationen und andere Auslöser, um Nachrichten anzuzeigen während eines Bosses.
+## OptionalDeps: Ace3
+## SavedVariables: PhenomRaidToolsDB
+## X-Category: Raid
+## X-Wago-ID: nQN57KBw
+## X-Curse-Project-ID: 381654
+
+
+# Init
+embeds.xml
+PhenomRaidTools.lua
+
+# Localization
+Localization/enUS.lua
+Localization/deDE.lua
+
+# Media
+Source/Media.lua
+
+# Utils
+Source/Utils/GuildUtils.lua
+Source/Utils/TableUtils.lua
+Source/Utils/StringUtils.lua
+Source/Utils/Log.lua
+
+# Source
+Source/Utils.lua
+Source/SpellCache.lua
+Source/Static.lua
+Source/EncounterHelper.lua
+Source/EventHandler.lua
+Source/MessageHandler.lua
+Source/TriggerHandler.lua
+Source/ImportExport.lua
+Source/Overlay.lua
+Source/SenderOverlay.lua
+Source/ReceiverOverlay.lua
+Source/VersionMigration.lua
+Source/MethodRaidToolsExport.lua
+Source/API.lua
+
+# GUI Source
+Source/GUI/AceHelper.lua
+Source/GUI/Condition.lua
+Source/GUI/Message.lua
+Source/GUI/Trigger.lua
+Source/GUI/Timer.lua
+Source/GUI/CustomPlaceholders.lua
+Source/GUI/Rotation.lua
+Source/GUI/Percentage.lua
+Source/GUI/Encounter.lua
+Source/GUI/Template.lua
+Source/GUI/Core.lua
+Source/GUI/Profiles.lua
+Source/GUI/Changelog.lua
+Source/GUI/Options/SpellCacheWidget.lua
+Source/GUI/Options/DefaultsWidget.lua
+Source/GUI/Options/DifficultiesWidget.lua
+Source/GUI/Options/GeneralWidget.lua
+Source/GUI/Options/OverlayWidget.lua
+Source/GUI/Options/RaidRosterWidget.lua
+Source/GUI/Options/InformationWidget.lua
+Source/GUI/Options.lua
+Source/GUI/ModalFrame.lua
