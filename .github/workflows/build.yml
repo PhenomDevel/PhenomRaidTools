@@ -27,16 +27,8 @@ jobs:
       - name: Generate Changelog
         run: ./changelog.sh
 
-      - name: Package and Release - Retail
-        uses: BigWigsMods/packager@v1
-        env:
-          CF_API_KEY: ${{ secrets.CF_API_KEY }}
-          WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
-
-      - name: Package and Release - BC
-        uses: BigWigsMods/packager@master
-        with:
-          args: -g bcc -m .pkgmeta-bcc
+      - name: Package and Release
+        uses: BigWigsMods/packager@v2
         env:
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
           WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}

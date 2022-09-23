@@ -2,7 +2,16 @@ local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 local Encounter = {
-  currentEncounters = {
+  currentEncounters = {}
+}
+
+if PRT.IsClassic() then
+  Encounter.currentEncounters = {
+    {id = 9999, name = L["--- Naxxramas ---"], disabled = true},
+    {id = 2398, name = L["NAX - Something"]}
+  }
+elseif PRT.IsRetail() then
+  Encounter.currentEncounters = {
     -- Castle Nathria
     {id = 9999, name = L["--- Castle Nathria ---"], disabled = true},
     {id = 2398, name = L["CN - Shriekwing"]},
@@ -41,7 +50,7 @@ local Encounter = {
     {id = 2467, name = L["SofFO - Rygelon"]},
     {id = 2464, name = L["SofFO - The Jailer"]}
   }
-}
+end
 
 local function addOverviewHeader(container, header, enabled)
   local coloredText
