@@ -7,8 +7,45 @@ local Encounter = {
 
 if PRT.IsClassic() then
   Encounter.currentEncounters = {
+    -- Naxxramas
     {id = 9999, name = L["--- Naxxramas ---"], disabled = true},
-    {id = 2398, name = L["NAX - Something"]}
+    {id = 1107, name = L["NAX - Anub'rekhan"]},
+    {id = 1110, name = L["NAX - Grand Widow Faerlina"]},
+    {id = 1116, name = L["NAX - Maexxna"]},
+    {id = 1117, name = L["NAX - Noth the Plaguebringer"]},
+    {id = 1112, name = L["NAX - Heigan the Unclean"]},
+    {id = 1115, name = L["NAX - Loatheb"]},
+    {id = 1113, name = L["NAX - Instructor Razuvious"]},
+    {id = 1109, name = L["NAX - Gothik the Harvester"]},
+    {id = 1121, name = L["NAX - The Four Horsemen"]},
+    {id = 1118, name = L["NAX - Patchwerk"]},
+    {id = 1111, name = L["NAX - Grobbulus"]},
+    {id = 1108, name = L["NAX - Gluth"]},
+    {id = 1120, name = L["NAX - Thaddius"]},
+    {id = 1119, name = L["NAX - Sapphiron"]},
+    {id = 1114, name = L["NAX - Kel'Thuzad"]},
+    -- Obsidian Sanctum
+    {id = 109999, name = L["--- The Obsidian Sanctum ---"], disabled = true},
+    {id = 1090, name = L["TOS - Sartharion"]},
+    -- Eye of Eternity
+    {id = 209999, name = L["--- The Eye of Eternity ---"], disabled = true},
+    {id = 1094, name = L["TEoE - Malygos"]},
+    -- Ulduar
+    {id = 309999, name = L["--- Ulduar ---"], disabled = true},
+    {id = 1132, name = L["ULD - Flame Leviathan"]},
+    {id = 1136, name = L["ULD - Ignis the Furnace Master"]},
+    {id = 1139, name = L["ULD - Razorscale"]},
+    {id = 1142, name = L["ULD - XT-002 Deconstructor"]},
+    {id = 1140, name = L["ULD - Assembly of Iron"]},
+    {id = 1137, name = L["ULD - Kologarn"]},
+    {id = 1131, name = L["ULD - Auriaya"]},
+    {id = 1133, name = L["ULD - Freya"]},
+    {id = 1135, name = L["ULD - Hodir"]},
+    {id = 1138, name = L["ULD - Mimiron"]},
+    {id = 1141, name = L["ULD - Thorim"]},
+    {id = 1134, name = L["ULD - General Vezax"]},
+    {id = 1143, name = L["ULD - Yogg-Saron"]},
+    {id = 1130, name = L["ULD - Algalon the Observer"]}
   }
 elseif PRT.IsRetail() then
   Encounter.currentEncounters = {
@@ -37,7 +74,7 @@ elseif PRT.IsRetail() then
     {id = 2422, name = L["SoD - Kel'Thuzad"]},
     {id = 2435, name = L["SoD - Sylvanas Windrunner"]},
     -- Sepulcher of the First Ones
-    {id = 20999, name = L["--- 	Sepulcher of the First Ones ---"], disabled = true},
+    {id = 20999, name = L["--- Sepulcher of the First Ones ---"], disabled = true},
     {id = 2458, name = L["SofFO - Vigilant Guardian"]},
     {id = 2465, name = L["SofFO - Skolex, the Insatiable Ravener"]},
     {id = 2470, name = L["SofFO - Artificer Xy'mox"]},

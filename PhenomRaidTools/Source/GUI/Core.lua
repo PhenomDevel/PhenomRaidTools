@@ -116,7 +116,7 @@ function Core.GenerateHealthPercentagesTree(percentages)
   local tree = Core.GeneratePercentagesTree(percentages)
   tree.value = "healthPercentages"
   tree.text = L["Health Percentage"]
-  tree.icon = 648207
+  tree.icon = 136168
   tree.iconCoords = {0.1, 0.9, 0.1, 0.9}
 
   return tree
@@ -143,7 +143,7 @@ function Core.GenerateRotationsTree(rotations)
   local t = {
     value = "rotations",
     text = L["Rotation"],
-    icon = 450907,
+    icon = 132369,
     iconCoords = {0.1, 0.9, 0.1, 0.9}
   }
 
