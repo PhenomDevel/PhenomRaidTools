@@ -36,10 +36,10 @@ L["Additional Events"] = "Zusätzliche Events"
 L["Advanced"] = "Erweitert"
 L["After how many occurrences of\\nstart condition the timer should start."] = "Nach wie vielen Vorkommnissen der Start Bedingung soll der Timer starten."
 L[ [=[After how many seconds the
-message should be displayed.]=] ] = [=[Nach wie vielen Sekunden 
+message should be displayed.]=] ] = [=[Nach wie vielen Sekunden
 soll die Nachricht angezeigt werden.]=]
 L[ [=[After how many seconds the
-message should be displayed.]=] ] = [=[Nach wie vielen Sekunden die 
+message should be displayed.]=] ] = [=[Nach wie vielen Sekunden die
 Nachricht angezeigt werden soll.]=]
 L["Always includes yourself as valid sender."] = "Akzeptiert dich immer als validen Absender."
 L["Are you sure you want to clear the current raid roster?"] = "Bist Du dir sicher, dass du den Raidkader leeren willst?"
@@ -146,6 +146,8 @@ L["Difficulties"] = "Schwierigkeitsgrade"
 L["Disabled"] = "Deaktiviert"
 L["Dungeon"] = true
 L["Duration"] = "Dauer"
+L["Each event has to be in a seperate line."] = "Jedes Event muss in einer eigenen Zeile stehen."
+L["Each unit has to be in a seperate line."] = "Jede Einheit muss in einer eigenen Zeile stehen."
 L["Enable on"] = "Aktivieren für"
 L["Enabled"] = "Aktiviert"
 L["Encounter"] = "Boss"
@@ -155,6 +157,7 @@ L["Encounter start"] = "Boss gestartet"
 L["Encounter-ID"] = "Boss-ID"
 L["Entries %s"] = "Einträge %s"
 L["Event"] = "Ereignis"
+L["Events to track"] = "Zu verfolgende Events"
 L["Export"] = "Exportieren"
 L["Export String"] = "Export Daten"
 L["ExRT  Note"] = "MethodRaidTools Notiz"
@@ -163,7 +166,7 @@ L["Filter by"] = "Einschränken nach"
 L[ [=[Filter out all messages
 below selected guild rank.]=] ] = "Alle Nachrichten unter dem ausgewählten Gildenrank filtern."
 L[ [=[Filter out all messages
-below selected guild rank.]=] ] = [=[Alle Nachrichten unter 
+below selected guild rank.]=] ] = [=[Alle Nachrichten unter
 einem bestimmten Gildenrank filtern.]=]
 L["Font"] = "Schrift"
 L["Font Color"] = "Schriftfarbe"
@@ -183,6 +186,9 @@ L["Heroic"] = "Heroisch"
 L["Hide after combat"] = "Nach dem Kampf ausblenden"
 L["Hide disabled triggers"] = "Deaktivierte Auslöser verstecken"
 L["How long the message should be displayed."] = "Wie lange die Nachricht dargestellt werden soll."
+L["If you want to track all events put `ALL` in the editbox."] = "Wenn Du alle Events verfolgen möchtest trage `ALL` ein."
+L["If you want to track all units in your raid put `RAID` in the editbox."] = "Wenn Du alle Einheiten in deinem Raid verfolgen möchtest trage `RAID` ein."
+L["If you want to track all units put `ALL` in the editbox."] = "Wenn Du alle Einheiten verfolgen möchtest trage `ALL` ein."
 L["Ignore after activation"] = "Nach der Aktivierung ignorieren"
 L["Ignore all events for X seconds."] = "Ignoriere alle Ereignisse für X Sekunden."
 L["Ignore for"] = "Ignorieren für"
@@ -216,6 +222,7 @@ L["Normal"] = true
 L["Note: Not every element can be displayed in a raid warning e.g. icons."] = "Anmerkung: Nicht jedes Element kann in einer Schlachtzugswarnung dargestellt werden. "
 L["Occurence"] = "Vorkommnis"
 L["Occurrence"] = "Vorkommnisse"
+L["Ocurrences"] = "Vorkommen"
 L["of"] = "von"
 L["Offset"] = "Versatz"
 L["Offset will be applied to all timings."] = "Der Versatz wird auf alle Zeit Einträge angewendet."
@@ -257,14 +264,16 @@ L["Remove all"] = "Alle entfernen"
 L["Remove empty names"] = "Leere Namen entfernen"
 L["Replace PRT tag content"] = "PRT Tag Inhalt ersetzen"
 L["Reset counter on stop"] = "Zähler nach Stop zurücksetzen"
+L["Reset Data"] = "Daten zurücksetzen"
+L["Reset on Encounter start"] = "Bei Kampfbeginn zurücksetzen"
 L["Reset Profile"] = "Profil zurücksetzen"
 L["Resets the counter of start conditions\\nwhen the timer is stopped."] = "Setzt den Zähler zurück wenn der Timer gestoppt wird."
 L["Restart"] = "Neustarten"
 L[ [=[Restarts the rotation when
-no more entries are found.]=] ] = [=[Startet die Rotation neu, 
+no more entries are found.]=] ] = [=[Startet die Rotation neu,
 wenn keine Einträge mehr gefunden werden.]=]
 L[ [=[Restarts the rotation when
-no more entries are found.]=] ] = [=[Startet die Rotation neu, 
+no more entries are found.]=] ] = [=[Startet die Rotation neu,
 wenn keine Einträge mehr gefunden werden.]=]
 L["Rotation"] = true
 L["Rotation Entry"] = "Rotationseintrag"
@@ -279,7 +288,7 @@ L["Select the profile you want to change to."] = "Wähle das Profil aus, auf das
 L["Select Timers"] = "Timer auswählen"
 L["Select version"] = "Version auswählen"
 L[ [=[Selected player/placeholder will be
-added to the list of targets.]=] ] = [=[Ausgewählter Spieler/Platzhalter 
+added to the list of targets.]=] ] = [=[Ausgewählter Spieler/Platzhalter
 wird der Liste der Empfänger hinzugefügt.]=]
 L[ [=[Selected player/placeholder will be
 added to the list of targets.]=] ] = [=[Ausgewählter Spieler/Platzhalter wird
@@ -353,6 +362,7 @@ L["Types\\n%s - Only the first player found within the group will be messaged\\n
 L["Unit"] = "Einheit"
 L["Unit died"] = "NPC gestorben"
 L["Unit killed"] = "NPC getötet"
+L["Units to track"] = "Zu verfolgende Einheiten"
 L["Unselect all"] = "Alle abwählen"
 L["Update"] = "Aktualisieren"
 L["Version Check"] = "Versionsüberprüfung"

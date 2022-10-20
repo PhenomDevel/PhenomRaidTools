@@ -37,7 +37,7 @@ local EventHandler = {
 }
 
 -- Create local copies of API functions which we use
-local GetTime, CombatLogGetCurrentEventInfo, UnitGUID, GetInstanceInfo = GetTime, CombatLogGetCurrentEventInfo, UnitGUID, GetInstanceInfo
+local GetTime, CombatLogGetCurrentEventInfo, UnitGUID, GetInstanceInfo, GetZoneText = GetTime, CombatLogGetCurrentEventInfo, UnitGUID, GetInstanceInfo, GetZoneText
 
 local GetSpecialization, GetSpecializationInfo = GetSpecialization, GetSpecializationInfo
 
@@ -168,6 +168,10 @@ local function LogEncounterStatistics(currentEncounter)
 end
 
 function EventHandler.StartEncounter(event, encounterID, encounterName)
+  if PRT.GetGlobalDB().combatEventRecorder.options.resetOnEncounterStart then
+    PRT.GetGlobalDB().combatEventRecorder.data = {}
+  end
+
   if PRT.IsEnabled() then
     wipe(PRT.GetProfileDB().debugLog)
 
@@ -335,7 +339,45 @@ function addon:PLAYER_REGEN_ENABLED(event)
   end
 end
 
+local function recordCombatEvent(...)
+  local ts, combatEvent, _, _, sourceName, _, _, _, targetName, _, _, eventSpellID, _, _ = ...
+
+  if tContains(PRT.GetGlobalDB().combatEventRecorder.options.unitsToRecord, "RAID") then
+    if not PRT.UnitInParty(sourceName) then
+      return
+    end
+  elseif
+    (not tContains(PRT.GetGlobalDB().combatEventRecorder.options.unitsToRecord, sourceName)) and (not tContains(PRT.GetGlobalDB().combatEventRecorder.options.unitsToRecord, "ALL"))
+   then
+    return
+  end
+
+  if
+    (not tContains(PRT.GetGlobalDB().combatEventRecorder.options.eventsToRecord, combatEvent)) and
+      (not tContains(PRT.GetGlobalDB().combatEventRecorder.options.eventsToRecord, "ALL"))
+   then
+    return
+  end
+
+  if PRT.GetGlobalDB().combatEventRecorder.data and combatEvent and sourceName and eventSpellID then
+    local entry = {
+      ts = ts,
+      event = combatEvent,
+      spellID = eventSpellID,
+      dateTime = PRT.Now(),
+      sourceName = sourceName,
+      targetName = targetName,
+      zoneName = GetZoneText()
+    }
+    tinsert(PRT.GetGlobalDB().combatEventRecorder.data, entry)
+  end
+end
+
 function addon:COMBAT_LOG_EVENT_UNFILTERED(event)
+  if PRT.GetGlobalDB().combatEventRecorder.options.enabled then
+    recordCombatEvent(CombatLogGetCurrentEventInfo())
+  end
+
   if PRT.currentEncounter and PRT.IsSender() then
     local _, combatEvent, _, sourceGUID, sourceName, _, _, targetGUID, targetName, _, _, eventSpellID, _, _ = CombatLogGetCurrentEventInfo()
 

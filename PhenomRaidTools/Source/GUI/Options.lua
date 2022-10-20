@@ -54,10 +54,6 @@ function PRT.AddOptionWidgets(container)
       elseif key == "information" then
         PRT.AddInformationWidgets(tabGroup)
       end
-
-      if PRT.mainWindowContent.scrollFrame then
-        PRT.Core.UpdateScrollFrame()
-      end
     end
   )
 

@@ -186,3 +186,46 @@ function TableUtils.EveryValue(t, pred)
 
   return true
 end
+
+function TableUtils.GroupByField(t, field)
+  local groupedTable = {}
+
+  for k, v in pairs(t) do
+    if v[field] then
+      local fieldName = v[field]
+      if not groupedTable[fieldName] then
+        groupedTable[fieldName] = {}
+      end
+
+      tinsert(groupedTable[fieldName], v)
+    end
+  end
+
+  return groupedTable
+end
+
+function TableUtils.FilterByKey(t, key, value)
+  local filteredTable = {}
+
+  for k, v in pairs(t) do
+    if v[key] == value then
+      filteredTable[k] = v
+    end
+  end
+
+  return filteredTable
+end
+
+function TableUtils.First(t)
+  for k, v in pairs(t) do
+    return v
+  end
+end
+
+function TableUtils.Map(t, f)
+  for k, v in pairs(t) do
+    if v and f then
+      t[k] = f(v)
+    end
+  end
+end

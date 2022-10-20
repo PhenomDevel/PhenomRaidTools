@@ -280,6 +280,7 @@ function Core.GenerateTreeByProfile()
   end
 
   tinsert(t, {value = "spellDatabase", text = L["Spell Database"]})
+  tinsert(t, {value = "combatEventRecorder", text = L["Combat Event Recorder"]})
 
   if PRT.IsSender() then
     tinsert(t, Core.GenerateTemplatesTree())
@@ -304,48 +305,58 @@ function Core.OnGroupSelected(container, key)
     end
   end
 
+  local contentScrollFrame = PRT.ScrollFrame()
+
   if mainKey == "options" then
-    PRT.AddOptionWidgets(container)
+    PRT.AddOptionWidgets(contentScrollFrame)
   elseif mainKey == "profiles" then
-    PRT.AddProfilesWidget(container, PRT.GetCharDB().profileSettings)
+    PRT.AddProfilesWidget(contentScrollFrame, PRT.GetCharDB().profileSettings)
   elseif mainKey == "customPlaceholder" then
-    PRT.AddCustomPlaceholdersWidget(container, PRT.GetProfileDB().customPlaceholders)
+    PRT.AddCustomPlaceholdersWidget(contentScrollFrame, PRT.GetProfileDB().customPlaceholders)
   elseif mainKey == "spellDatabase" then
-    PRT.AddSpellCacheWidget(container)
+    PRT.AddSpellCacheWidget(contentScrollFrame)
   elseif mainKey == "templates" then
-    PRT.AddTemplateWidgets(container, PRT.GetProfileDB())
+    PRT.AddTemplateWidgets(contentScrollFrame, PRT.GetProfileDB())
+  elseif mainKey == "combatEventRecorder" then
+    PRT.AddCombatEventRecorderWidgets(container, PRT.GetProfileDB())
   elseif mainKey == "encounters" and not triggerType and not triggerName and not encounterID then
-    PRT.AddEncountersWidgets(container, PRT.GetProfileDB())
+    PRT.AddEncountersWidgets(contentScrollFrame, PRT.GetProfileDB())
   elseif encounterID and not triggerType and not triggerName then
     PRT.SetupEncounterSpecificCustomPlaceholders()
-
-    PRT.AddEncounterOptions(container, PRT.GetProfileDB(), encounterID)
+    PRT.AddEncounterOptions(contentScrollFrame, PRT.GetProfileDB(), encounterID)
   elseif triggerType and not triggerName then
     if triggerType == "timers" then
-      PRT.AddTimerOptionsWidgets(container, PRT.GetProfileDB(), encounterID)
+      PRT.AddTimerOptionsWidgets(contentScrollFrame, PRT.GetProfileDB(), encounterID)
     elseif triggerType == "rotations" then
-      PRT.AddRotationOptions(container, PRT.GetProfileDB(), encounterID)
+      PRT.AddRotationOptions(contentScrollFrame, PRT.GetProfileDB(), encounterID)
     elseif triggerType == "healthPercentages" then
-      PRT.AddHealthPercentageOptions(container, PRT.GetProfileDB(), encounterID)
+      PRT.AddHealthPercentageOptions(contentScrollFrame, PRT.GetProfileDB(), encounterID)
     elseif triggerType == "powerPercentages" then
-      PRT.AddPowerPercentageOptions(container, PRT.GetProfileDB(), encounterID)
+      PRT.AddPowerPercentageOptions(contentScrollFrame, PRT.GetProfileDB(), encounterID)
     elseif triggerType == "bossMods" then
-      PRT.AddBossModOptions(container, PRT.GetProfileDB(), encounterID)
+      PRT.AddBossModOptions(contentScrollFrame, PRT.GetProfileDB(), encounterID)
     elseif triggerType == "customPlaceholders" then
-      PRT.AddCustomPlaceholderOptions(container, PRT.GetProfileDB(), encounterID)
+      PRT.AddCustomPlaceholderOptions(contentScrollFrame, PRT.GetProfileDB(), encounterID)
     end
   elseif triggerType == "timers" and triggerName then
-    PRT.AddTimerWidget(container, PRT.GetProfileDB(), tonumber(encounterID), triggerName)
+    PRT.AddTimerWidget(contentScrollFrame, PRT.GetProfileDB(), tonumber(encounterID), triggerName)
   elseif triggerType == "rotations" and triggerName then
-    PRT.AddRotationWidget(container, PRT.GetProfileDB(), tonumber(encounterID), triggerName)
+    PRT.AddRotationWidget(contentScrollFrame, PRT.GetProfileDB(), tonumber(encounterID), triggerName)
   elseif triggerType == "healthPercentages" and triggerName then
-    PRT.AddHealthPercentageWidget(container, PRT.GetProfileDB(), tonumber(encounterID), triggerName)
+    PRT.AddHealthPercentageWidget(contentScrollFrame, PRT.GetProfileDB(), tonumber(encounterID), triggerName)
   elseif triggerType == "powerPercentages" and triggerName then
-    PRT.AddPowerPercentageWidget(container, PRT.GetProfileDB(), tonumber(encounterID), triggerName)
+    PRT.AddPowerPercentageWidget(contentScrollFrame, PRT.GetProfileDB(), tonumber(encounterID), triggerName)
+  end
+
+  if not (mainKey == "combatEventRecorder") then
+    container:AddChild(contentScrollFrame)
+    if PRT.mainWindowContent then
+      PRT.mainWindowContent.scrollFrame = contentScrollFrame
+    end
   end
 
   container:DoLayout()
-  PRT.mainWindowContent:RefreshTree()
+  container:RefreshTree()
 end
 
 function Core.ReselectCurrentValue()
@@ -370,12 +381,14 @@ function Core.UpdateTree()
 end
 
 function Core.UpdateScrollFrame()
-  local scrollvalueBefore = PRT.mainWindowContent.scrollFrame.localstatus.scrollvalue
-  PRT.mainWindowContent.scrollFrame:FixScroll()
-  PRT.mainWindowContent.scrollFrame:DoLayout()
+  if PRT.mainWindowContent.scrollFrame then
+    local scrollvalueBefore = PRT.mainWindowContent.scrollFrame.localstatus.scrollvalue
+    PRT.mainWindowContent.scrollFrame:FixScroll()
+    PRT.mainWindowContent.scrollFrame:DoLayout()
 
-  if scrollvalueBefore and scrollvalueBefore > 0 then
-    PRT.mainWindowContent.scrollFrame:SetScroll(scrollvalueBefore)
+    if scrollvalueBefore and scrollvalueBefore > 0 then
+      PRT.mainWindowContent.scrollFrame:SetScroll(scrollvalueBefore)
+    end
   end
 end
 
@@ -402,15 +415,11 @@ local function ExpandTreeEntry(statusTable, key)
 end
 
 function Core.CreateMainWindowContent()
-  -- Create a sroll frame for the tree group content
-  local treeContentScrollFrame = PRT.ScrollFrame()
-
   -- Generate tree group for the main menue structure
   local tree = Core.GenerateTreeByProfile(PRT.GetProfileDB())
   local treeGroup = PRT.TreeGroup(tree)
   local treeGroupStatus = {groups = {}}
   treeGroup:SetTreeWidth(600)
-  PRT.mainWindowContent = treeGroup
   treeGroup:SetCallback(
     "OnClick",
     function(_, _, key)
@@ -422,7 +431,7 @@ function Core.CreateMainWindowContent()
     "OnGroupSelected",
     function(_, _, key)
       treeGroup.selectedValue = key
-      Core.OnGroupSelected(treeContentScrollFrame, key, PRT.GetProfileDB())
+      Core.OnGroupSelected(treeGroup, key, PRT.GetProfileDB())
     end
   )
 
@@ -432,10 +441,6 @@ function Core.CreateMainWindowContent()
   treeGroupStatus.groups["encounters"] = true
   treeGroup:SelectByValue("options")
   treeGroup:RefreshTree()
-
-  PRT.mainWindowContent.scrollFrame = treeContentScrollFrame
-
-  treeGroup:AddChild(treeContentScrollFrame)
 
   return treeGroup
 end
@@ -472,7 +477,13 @@ function PRT.CreateMainWindow()
   if PRT.GetProfileDB().mainWindow.left or PRT.GetProfileDB().mainWindow.top then
     mainWindow.frame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", PRT.GetProfileDB().mainWindow.left or 0, -(PRT.GetProfileDB().mainWindow.top or 0))
   end
-  --mainWindow.frame:SetMinResize(1000, 600)
+
+  if mainWindow.frame.GetResizeBounds then
+    mainWindow.frame:GetResizeBounds(1000, 600)
+  else
+    mainWindow.frame:SetMinResize(1000, 600)
+  end
+
   RegisterESCHandler("mainWindow", mainWindow)
 
   -- Initialize sender and receiver frames

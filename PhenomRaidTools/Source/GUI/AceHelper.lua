@@ -408,13 +408,15 @@ function PRT.EditBox(label, tooltip, value)
   return widget
 end
 
-function PRT.MultiLineEditBox(label, value)
+function PRT.MultiLineEditBox(label, value, tooltip)
   local widget = AceGUI:Create("MultiLineEditBox")
   widget:SetLabel(label)
 
   if value then
     widget:SetText(value)
   end
+
+  AceHelper.AddTooltip(widget, tooltip)
 
   return widget
 end
