@@ -83,7 +83,7 @@ local function addSpellDetailWidget(container, spellEntries)
   rowLegendContainer:AddChild(targetLegendLabel)
   container:AddChild(rowLegendContainer)
 
-  for k, v in pairs(entries) do
+  for _, v in pairs(entries) do
     local rowContainer = PRT.SimpleGroup()
     rowContainer:SetLayout("Flow")
     local datetimeLabel = PRT.Label(v.dateTime)
@@ -236,10 +236,10 @@ function PRT.AddCombatEventRecorderWidgets(container)
       elseif zone and unit and event and spell then
         local groupedData = PRT.TableUtils.GroupByField(PRT.GetGlobalDB().combatEventRecorder.data, "spellID")
         local entries = groupedData[tonumber(spell)]
-        local filteredEntries = PRT.TableUtils.FilterByKey(entries, "event", event)
-        local filteredEntries = PRT.TableUtils.FilterByKey(filteredEntries, "sourceName", unit)
+        local filteredEntriesByEvent = PRT.TableUtils.FilterByKey(entries, "event", event)
+        local filteredEntriesBySourceName = PRT.TableUtils.FilterByKey(filteredEntriesByEvent, "sourceName", unit)
 
-        addSpellDetailWidget(treeContentScrollFrame, filteredEntries)
+        addSpellDetailWidget(treeContentScrollFrame, filteredEntriesBySourceName)
       end
     end
   )

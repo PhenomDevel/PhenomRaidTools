@@ -190,7 +190,7 @@ end
 function TableUtils.GroupByField(t, field)
   local groupedTable = {}
 
-  for k, v in pairs(t) do
+  for _, v in pairs(t) do
     if v[field] then
       local fieldName = v[field]
       if not groupedTable[fieldName] then
@@ -217,7 +217,7 @@ function TableUtils.FilterByKey(t, key, value)
 end
 
 function TableUtils.First(t)
-  for k, v in pairs(t) do
+  for _, v in pairs(t) do
     return v
   end
 end

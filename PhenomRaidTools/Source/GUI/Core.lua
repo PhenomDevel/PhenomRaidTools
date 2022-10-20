@@ -348,7 +348,7 @@ function Core.OnGroupSelected(container, key)
     PRT.AddPowerPercentageWidget(contentScrollFrame, PRT.GetProfileDB(), tonumber(encounterID), triggerName)
   end
 
-  if not (mainKey == "combatEventRecorder") then
+  if mainKey ~= "combatEventRecorder" then
     container:AddChild(contentScrollFrame)
     if PRT.mainWindowContent then
       PRT.mainWindowContent.scrollFrame = contentScrollFrame

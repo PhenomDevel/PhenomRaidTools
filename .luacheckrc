@@ -70,20 +70,20 @@ globals = {
   "UnitIsGroupLeader",
   "GetBuildInfo",
   "GetSpellDescription",
+  "GetZoneText",
   "time",
   "date",
-
   -- Locals
-  "L",
+  "L"
 }
-max_line_length=200
-max_code_line_length=200
-max_string_line_length=200
-max_comment_line_length=200
-max_cyclomatic_complexity=200
+max_line_length = 200
+max_code_line_length = 200
+max_string_line_length = 200
+max_comment_line_length = 200
+max_cyclomatic_complexity = 200
 
-ignore={
- ".*self",
- "date",
- "512"
+ignore = {
+  ".*self",
+  "date",
+  "512"
 }
