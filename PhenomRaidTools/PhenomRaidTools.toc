@@ -1,5 +1,4 @@
 ## Interface: 90207
-## Interface-BCC: 20504
 ## Interface-Wrath: 30400
 ## Title: PhenomRaidTools
 ## Version: @project-version@
@@ -60,6 +59,7 @@ Source/GUI/Template.lua
 Source/GUI/Core.lua
 Source/GUI/Profiles.lua
 Source/GUI/Changelog.lua
+Source/GUI/CombatEventRecorder.lua
 Source/GUI/Options/SpellCacheWidget.lua
 Source/GUI/Options/DefaultsWidget.lua
 Source/GUI/Options/DifficultiesWidget.lua
