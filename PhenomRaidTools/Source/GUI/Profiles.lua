@@ -188,11 +188,11 @@ end
 -- Public API
 
 function PRT.AddProfilesWidget(container, options)
-  -- Current Profile
-  Profiles.AddCurrentProfileWidget(container)
-
   -- Reset Profile
   Profiles.AddResetCurrentProfileWidget(container)
+
+  -- Current Profile
+  Profiles.AddCurrentProfileWidget(container)
 
   -- Change Profile
   local changeGroup = PRT.InlineGroup(L["Change"])

@@ -162,19 +162,16 @@ function PRT.AddCustomPlaceholdersTabGroup(container, customPlaceholders)
 end
 
 function PRT.AddCustomPlaceholderDescription(container)
-  local description = PRT.Label(L["You can define custom placeholder which can be used as message targets."])
-  local subDescription =
-    PRT.Label(
-    L["Types\n%s - Only the first player found within the group will be messaged\n%s - All players will be messaged"]:format(
-      PRT.HighlightString(L["Player"]),
-      PRT.HighlightString(L["Group"])
-    ),
-    12
+  PRT.AddHelpContainer(
+    container,
+    {
+      L["You can define custom placeholder which can be used as message targets."],
+      L["Types\n%s - Only the first player found within the group will be messaged\n%s - All players will be messaged"]:format(
+        PRT.HighlightString(L["Player"]),
+        PRT.HighlightString(L["Group"])
+      )
+    }
   )
-  description:SetRelativeWidth(1)
-  subDescription:SetRelativeWidth(1)
-  container:AddChild(description)
-  container:AddChild(subDescription)
 end
 
 local function renderPlaceholder(container, refreshContainerFn, placeholders, placeholder)

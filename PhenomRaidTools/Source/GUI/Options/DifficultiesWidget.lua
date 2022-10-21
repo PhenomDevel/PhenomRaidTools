@@ -13,8 +13,7 @@ local Difficulties = {
 -- Public API
 
 function PRT.AddDifficultyWidgets(container, options)
-  local explanationLabel = PRT.Label(L["PhenomRaidTools will only load for the configured difficulties."])
-  explanationLabel:SetRelativeWidth(1)
+  PRT.AddHelpContainer(container, L["PhenomRaidTools will only load for the configured difficulties."])
 
   local dungeonGroup = PRT.InlineGroup(L["Dungeon"])
   dungeonGroup:SetLayout("Flow")
@@ -46,7 +45,6 @@ function PRT.AddDifficultyWidgets(container, options)
     raidGroup:AddChild(widget)
   end
 
-  container:AddChild(explanationLabel)
   container:AddChild(dungeonGroup)
   container:AddChild(raidGroup)
 end

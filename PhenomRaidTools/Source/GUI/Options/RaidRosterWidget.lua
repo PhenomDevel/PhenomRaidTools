@@ -68,8 +68,7 @@ function PRT.AddRaidRosterWidget(container, options)
     end
   )
 
-  local explanationLabel = PRT.Label(L["You can import or define your raid roster and use the placeholder within your triggers."])
-  explanationLabel:SetRelativeWidth(1)
+  PRT.AddHelpContainer(container, L["You can import or define your raid roster and use the placeholder within your triggers."])
 
   local tankGroup = PRT.InlineGroup(L["Tanks"])
   tankGroup:SetLayout("Flow")
@@ -141,7 +140,6 @@ function PRT.AddRaidRosterWidget(container, options)
     ddGroup:AddChild(ddEditBox)
   end
 
-  container:AddChild(explanationLabel)
   container:AddChild(importByGroupButton)
   container:AddChild(clearRaidRosterButton)
   container:AddChild(tankGroup)

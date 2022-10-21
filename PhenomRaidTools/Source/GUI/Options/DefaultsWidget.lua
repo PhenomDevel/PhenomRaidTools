@@ -167,9 +167,7 @@ end
 -- Public API
 
 function PRT.AddDefaultsGroups(container, options)
-  local explanationLabel = PRT.Label(L["The defined default values will be used when creating new messages."])
-  explanationLabel:SetRelativeWidth(1)
-  container:AddChild(explanationLabel)
+  PRT.AddHelpContainer(container, L["The defined default values will be used when creating new messages."])
 
   if options then
     for k, v in pairs(options) do

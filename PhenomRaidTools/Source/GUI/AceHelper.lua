@@ -685,3 +685,27 @@ function PRT.TabGroupContainer(options, dataTable, itemRenderFn, newItemFn)
 
   return container
 end
+
+function PRT.AddHelpContainer(container, text)
+  local helpContainer = PRT.SimpleGroup()
+  helpContainer:SetLayout("Flow")
+
+  local iconLabel = PRT.Label(PRT.TextureString(134400, 14) .. PRT.ColoredString(L["Help"], "c9c904"))
+  iconLabel:SetRelativeWidth(1)
+  helpContainer:AddChild(iconLabel)
+
+  if type(text) ~= "table" then
+    local helpLabel = PRT.Label(text)
+    helpLabel:SetRelativeWidth(1)
+    helpContainer:AddChild(helpLabel)
+  else
+    for _, v in pairs(text) do
+      local helpLabel = PRT.Label(v)
+      helpLabel:SetRelativeWidth(1)
+      helpContainer:AddChild(helpLabel)
+    end
+  end
+
+  helpContainer:AddChild(PRT.Heading())
+  container:AddChild(helpContainer)
+end

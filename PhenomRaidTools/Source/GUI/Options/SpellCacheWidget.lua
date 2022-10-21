@@ -75,21 +75,22 @@ function PRT.AddSpellCacheWidget(container)
   local spellCache = PRT.GetGlobalDB().spellCache
   local spellCacheGroup = PRT.SimpleGroup()
 
-  local descriptionLines = {
-    L[
-      "Here you can search the spell database. The database is build up in the background and may not contain " ..
-        "all known spells just yet. If you can't find a spell please check back later when status is `completed`."
-    ],
-    L["The spell database is globally available for all of your characters and will be build up regardless of which character you are playing."],
-    PRT.ColoredString(
-      L["The spell database will rebuild once the patch version changes. This is done so you always have the newest spells in the database."],
-      PRT.Static.Colors.Inactive
-    )
-  }
+  PRT.AddHelpContainer(
+    container,
+    {
+      L[
+        "Here you can search the spell database. The database is build up in the background and may not contain " ..
+          "all known spells just yet. If you can't find a spell please check back later when status is `completed`."
+      ],
+      L["The spell database is globally available for all of your characters and will be build up regardless of which character you are playing."],
+      PRT.ColoredString(
+        L["The spell database will rebuild once the patch version changes. This is done so you always have the newest spells in the database."],
+        PRT.Static.Colors.Inactive
+      )
+    }
+  )
 
   local enabledCheckBox = PRT.CheckBox(L["Enabled"], nil, spellCache.enabled)
-  local descriptionText = strjoin("\n\n", unpack(descriptionLines))
-  local descriptionLabel = PRT.Label(descriptionText)
   local statusGroup, _, statusValueLabel = addLabelWithValue(L["Status"], getStatusText(spellCache))
   local lastCheckedGroup, _, lastCheckedValueLabel = addLabelWithValue(L["Last checked id"], spellCache.lastCheckedId)
   local spellCountGroup, _, spellCountValueLabel = addLabelWithValue(L["Spell count"], PRT.TableUtils.Count(spellCache.spells))
@@ -99,10 +100,6 @@ function PRT.AddSpellCacheWidget(container)
 
   local invalidateCacheButton = PRT.Button(L["Rebuild spell database"])
 
-  descriptionLabel:SetRelativeWidth(1)
-
-  spellCacheGroup:AddChild(descriptionLabel)
-  spellCacheGroup:AddChild(PRT.Heading(nil))
   spellCacheGroup:AddChild(enabledCheckBox)
   spellCacheGroup:AddChild(statusGroup)
   spellCacheGroup:AddChild(lastCheckedGroup)

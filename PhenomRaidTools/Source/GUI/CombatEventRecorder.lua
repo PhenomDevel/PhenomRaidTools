@@ -101,6 +101,11 @@ end
 local function addOptionsWidget(container, options)
   container:SetLayout("List")
 
+  PRT.AddHelpContainer(
+    container,
+    L["For the Combat Event Recorder to work PRT has to be in an encounter scenario. So either on a real configured encounter or in test mode with any encounter."]
+  )
+
   local enabledCheckBox = PRT.CheckBox(L["Enabled"], nil, options.enabled)
   enabledCheckBox:SetCallback(
     "OnValueChanged",
