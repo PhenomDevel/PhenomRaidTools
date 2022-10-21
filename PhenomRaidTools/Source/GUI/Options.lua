@@ -5,6 +5,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 -- Public API
 
 function PRT.AddOptionWidgets(container)
+  container:SetLayout("Fill")
   local optionsTabs = {
     {
       value = "general",
@@ -34,29 +35,33 @@ function PRT.AddOptionWidgets(container)
     }
   }
 
+  local contentScrollFrame = PRT.ScrollFrame()
+  contentScrollFrame:SetFullHeight(true)
+  contentScrollFrame:SetFullWidth(true)
+
   local optionsTabsGroup = PRT.TabGroup(nil, optionsTabs)
   optionsTabsGroup:SetLayout("Flow")
   optionsTabsGroup:SetCallback(
     "OnGroupSelected",
     function(tabGroup, _, key)
-      tabGroup:ReleaseChildren()
+      contentScrollFrame:ReleaseChildren()
 
       if key == "general" then
-        PRT.AddGeneralWidgets(tabGroup, PRT.GetProfileDB())
+        PRT.AddGeneralWidgets(contentScrollFrame, PRT.GetProfileDB())
       elseif key == "difficulties" then
-        PRT.AddDifficultyWidgets(tabGroup, PRT.GetProfileDB().enabledDifficulties)
+        PRT.AddDifficultyWidgets(contentScrollFrame, PRT.GetProfileDB().enabledDifficulties)
       elseif key == "defaults" then
-        PRT.AddDefaultsGroups(tabGroup, PRT.GetProfileDB().triggerDefaults)
+        PRT.AddDefaultsGroups(contentScrollFrame, PRT.GetProfileDB().triggerDefaults)
       elseif key == "raidRoster" then
-        PRT.AddRaidRosterWidget(tabGroup, PRT.GetProfileDB().raidRoster)
+        PRT.AddRaidRosterWidget(contentScrollFrame, PRT.GetProfileDB().raidRoster)
       elseif key == "overlay" then
-        PRT.AddOverlayWidget(tabGroup, PRT.GetProfileDB().overlay)
+        PRT.AddOverlayWidget(contentScrollFrame, PRT.GetProfileDB().overlay)
       elseif key == "information" then
-        PRT.AddInformationWidgets(tabGroup)
+        PRT.AddInformationWidgets(contentScrollFrame)
       end
     end
   )
-
+  optionsTabsGroup:AddChild(contentScrollFrame)
   container:AddChild(optionsTabsGroup)
   optionsTabsGroup:SelectTab("general")
 end

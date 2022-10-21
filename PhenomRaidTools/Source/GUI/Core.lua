@@ -308,7 +308,7 @@ function Core.OnGroupSelected(container, key)
   local contentScrollFrame = PRT.ScrollFrame()
 
   if mainKey == "options" then
-    PRT.AddOptionWidgets(contentScrollFrame)
+    PRT.AddOptionWidgets(container)
   elseif mainKey == "profiles" then
     PRT.AddProfilesWidget(contentScrollFrame, PRT.GetCharDB().profileSettings)
   elseif mainKey == "customPlaceholder" then
