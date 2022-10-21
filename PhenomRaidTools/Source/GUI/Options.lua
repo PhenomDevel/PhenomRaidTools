@@ -43,7 +43,7 @@ function PRT.AddOptionWidgets(container)
   optionsTabsGroup:SetLayout("Flow")
   optionsTabsGroup:SetCallback(
     "OnGroupSelected",
-    function(tabGroup, _, key)
+    function(_, _, key)
       contentScrollFrame:ReleaseChildren()
 
       if key == "general" then
