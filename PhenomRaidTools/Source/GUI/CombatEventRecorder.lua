@@ -113,7 +113,7 @@ local function addOptionsWidget(container, options)
   resetDataButton:SetCallback(
     "OnClick",
     function()
-      PRT.GetGlobalDB().combatEventRecorder.data = {}
+      PRT.GetProfileDB().combatEventRecorder.data = {}
       PRT.Core.ReselectCurrentValue()
     end
   )
@@ -215,7 +215,7 @@ function PRT.AddCombatEventRecorderWidgets(container)
     text = L["Options"]
   }
 
-  local tree = generateTree(PRT.GetGlobalDB().combatEventRecorder.data, {"zoneName", "sourceName", "event", "spellID"})
+  local tree = generateTree(PRT.GetProfileDB().combatEventRecorder.data, {"zoneName", "sourceName", "event", "spellID"})
   local treeGroupStatus = {groups = {}}
   local treeGroup = PRT.TreeGroup(tree)
 
@@ -232,9 +232,9 @@ function PRT.AddCombatEventRecorderWidgets(container)
       local zone, unit, event, spell = strsplit("\001", key)
 
       if key == "options" then
-        addOptionsWidget(treeContentScrollFrame, PRT.GetGlobalDB().combatEventRecorder.options)
+        addOptionsWidget(treeContentScrollFrame, PRT.GetProfileDB().combatEventRecorder.options)
       elseif zone and unit and event and spell then
-        local groupedData = PRT.TableUtils.GroupByField(PRT.GetGlobalDB().combatEventRecorder.data, "spellID")
+        local groupedData = PRT.TableUtils.GroupByField(PRT.GetProfileDB().combatEventRecorder.data, "spellID")
         local entries = groupedData[tonumber(spell)]
         local filteredEntriesByEvent = PRT.TableUtils.FilterByKey(entries, "event", event)
         local filteredEntriesBySourceName = PRT.TableUtils.FilterByKey(filteredEntriesByEvent, "sourceName", unit)

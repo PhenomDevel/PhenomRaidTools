@@ -168,8 +168,8 @@ local function LogEncounterStatistics(currentEncounter)
 end
 
 function EventHandler.StartEncounter(event, encounterID, encounterName)
-  if PRT.GetGlobalDB().combatEventRecorder.options.resetOnEncounterStart then
-    PRT.GetGlobalDB().combatEventRecorder.data = {}
+  if PRT.GetProfileDB().combatEventRecorder.options.resetOnEncounterStart then
+    PRT.GetProfileDB().combatEventRecorder.data = {}
   end
 
   if PRT.IsEnabled() then
@@ -342,24 +342,25 @@ end
 local function recordCombatEvent(...)
   local ts, combatEvent, _, _, sourceName, _, _, _, targetName, _, _, eventSpellID, _, _ = ...
 
-  if tContains(PRT.GetGlobalDB().combatEventRecorder.options.unitsToRecord, "RAID") then
+  if tContains(PRT.GetProfileDB().combatEventRecorder.options.unitsToRecord, "RAID") then
     if not PRT.UnitInParty(sourceName) then
       return
     end
   elseif
-    (not tContains(PRT.GetGlobalDB().combatEventRecorder.options.unitsToRecord, sourceName)) and (not tContains(PRT.GetGlobalDB().combatEventRecorder.options.unitsToRecord, "ALL"))
+    (not tContains(PRT.GetProfileDB().combatEventRecorder.options.unitsToRecord, sourceName)) and
+      (not tContains(PRT.GetProfileDB().combatEventRecorder.options.unitsToRecord, "ALL"))
    then
     return
   end
 
   if
-    (not tContains(PRT.GetGlobalDB().combatEventRecorder.options.eventsToRecord, combatEvent)) and
-      (not tContains(PRT.GetGlobalDB().combatEventRecorder.options.eventsToRecord, "ALL"))
+    (not tContains(PRT.GetProfileDB().combatEventRecorder.options.eventsToRecord, combatEvent)) and
+      (not tContains(PRT.GetProfileDB().combatEventRecorder.options.eventsToRecord, "ALL"))
    then
     return
   end
 
-  if PRT.GetGlobalDB().combatEventRecorder.data and combatEvent and sourceName and eventSpellID then
+  if PRT.GetProfileDB().combatEventRecorder.data and combatEvent and sourceName and eventSpellID then
     local entry = {
       ts = ts,
       event = combatEvent,
@@ -369,12 +370,12 @@ local function recordCombatEvent(...)
       targetName = targetName,
       zoneName = GetZoneText()
     }
-    tinsert(PRT.GetGlobalDB().combatEventRecorder.data, entry)
+    tinsert(PRT.GetProfileDB().combatEventRecorder.data, entry)
   end
 end
 
 function addon:COMBAT_LOG_EVENT_UNFILTERED(event)
-  if PRT.GetGlobalDB().combatEventRecorder.options.enabled then
+  if PRT.GetProfileDB().combatEventRecorder.options.enabled then
     recordCombatEvent(CombatLogGetCurrentEventInfo())
   end
 

@@ -77,23 +77,6 @@ do
         completed = false,
         lastCheckedId = 0,
         spells = {}
-      },
-      combatEventRecorder = {
-        data = {},
-        options = {
-          enabled = true,
-          unitsToRecord = {
-            "ALL"
-          },
-          eventsToRecord = {
-            "SPELL_AURA_APPLIED",
-            "SPELL_AURA_REMOVED",
-            "SPELL_CAST_START",
-            "SPELL_CAST_SUCCESS",
-            "SPELL_INTERRUPT",
-            "UNIT_DIED"
-          }
-        }
       }
     },
     profile = {
@@ -229,7 +212,24 @@ do
         messages = {}
       },
       debugLog = {},
-      processedMigrations = {}
+      processedMigrations = {},
+      combatEventRecorder = {
+        data = {},
+        options = {
+          enabled = true,
+          unitsToRecord = {
+            "ALL"
+          },
+          eventsToRecord = {
+            "SPELL_AURA_APPLIED",
+            "SPELL_AURA_REMOVED",
+            "SPELL_CAST_START",
+            "SPELL_CAST_SUCCESS",
+            "SPELL_INTERRUPT",
+            "UNIT_DIED"
+          }
+        }
+      }
     }
   }
 
