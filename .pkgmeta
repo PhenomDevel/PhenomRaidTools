@@ -28,6 +28,7 @@ ignore:
   - generate-doc.bat
   - ldoc
   - scripts
+  - changelog.sh
 
 manual-changelog:
     filename: CHANGELOG.md
