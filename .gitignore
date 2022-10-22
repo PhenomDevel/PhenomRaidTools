@@ -4,3 +4,8 @@ CHANGELOG.html
 README.html
 NOTES.html
 ./ldoc
+Libs/Ace*
+Libs/LibStub
+Libs/LibShared*
+Libs/DBIcon*
+Libs/Data*
