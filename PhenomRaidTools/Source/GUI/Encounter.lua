@@ -1,6 +1,14 @@
 local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
+local EJ_SelectTier, EJ_GetCurrentTier, EJ_GetInstanceByIndex, EJ_SelectInstance, EJ_GetInstanceInfo, EJ_GetEncounterInfoByIndex =
+  EJ_SelectTier,
+  EJ_GetCurrentTier,
+  EJ_GetInstanceByIndex,
+  EJ_SelectInstance,
+  EJ_GetInstanceInfo,
+  EJ_GetEncounterInfoByIndex
+
 local Encounter = {
   currentEncounters = {}
 }
@@ -49,44 +57,55 @@ if PRT.IsClassic() then
   }
 elseif PRT.IsRetail() then
   Encounter.currentEncounters = {
-    -- Castle Nathria
-    {id = 9999, name = L["--- Castle Nathria ---"], disabled = true},
-    {id = 2398, name = L["CN - Shriekwing"]},
-    {id = 2418, name = L["CN - Altimor the Huntsman"]},
-    {id = 2383, name = L["CN - Hungering Destroyer"]},
-    {id = 2405, name = L["CN - Artificer Xy'Mox"]},
-    {id = 2402, name = L["CN - Sun King's Salvation"]},
-    {id = 2406, name = L["CN - Lady Inerva Darkvein"]},
-    {id = 2412, name = L["CN - The Council of Blood"]},
-    {id = 2399, name = L["CN - Sludgefist"]},
-    {id = 2417, name = L["CN - Stone Legion Generals"]},
-    {id = 2407, name = L["CN - Sire Denathrius"]},
-    -- Sanctum of Domination
-    {id = 10999, name = L["--- Sanctum of Domination ---"], disabled = true},
-    {id = 2423, name = L["SoD - The Tarragrue"]},
-    {id = 2433, name = L["SoD - The Eye of the Jailer"]},
-    {id = 2429, name = L["SoD - The Nine"]},
-    {id = 2432, name = L["SoD - Remnant of Ner'zhul"]},
-    {id = 2434, name = L["SoD - Soulrender Dormazain"]},
-    {id = 2430, name = L["SoD - Painsmith Raznal"]},
-    {id = 2436, name = L["SoD - Guardian of the First Ones"]},
-    {id = 2431, name = L["SoD - Fatescribe Roh-Kalo"]},
-    {id = 2422, name = L["SoD - Kel'Thuzad"]},
-    {id = 2435, name = L["SoD - Sylvanas Windrunner"]},
-    -- Sepulcher of the First Ones
-    {id = 20999, name = L["--- Sepulcher of the First Ones ---"], disabled = true},
-    {id = 2458, name = L["SofFO - Vigilant Guardian"]},
-    {id = 2465, name = L["SofFO - Skolex, the Insatiable Ravener"]},
-    {id = 2470, name = L["SofFO - Artificer Xy'mox"]},
-    {id = 2463, name = L["SofFO - Halondrus the Reclaimer"]},
-    {id = 2459, name = L["SofFO - Dausegne, the Fallen Oracle"]},
-    {id = 2460, name = L["SofFO - Prototype Pantheon"]},
-    {id = 2461, name = L["SofFO - Lihuvim, Principle Architect"]},
-    {id = 2469, name = L["SofFO - Anduin Wrynn"]},
-    {id = 2457, name = L["SofFO - Lords of Dread"]},
-    {id = 2467, name = L["SofFO - Rygelon"]},
-    {id = 2464, name = L["SofFO - The Jailer"]}
+    -- Vault of the Incarnates
+    {id = 9999, name = L["--- Vault of the Incarnates ---"], disabled = true},
+    {id = 2587, name = L["VotI - Eranog"]},
+    {id = 2639, name = L["VotI - Terros"]},
+    {id = 2590, name = L["VotI - The Primal Council"]},
+    {id = 2592, name = L["VotI - Sennarth, The Cold Breath"]},
+    {id = 2635, name = L["VotI - Dathea, Ascended"]},
+    {id = 2605, name = L["VotI - Kurog Grimtotem"]},
+    {id = 2614, name = L["VotI - Broodkeeper Diurna"]},
+    {id = 2607, name = L["VotI - Raszageth the Storm-Eater"]}
   }
+end
+
+local function GenerateEncounterList()
+  if PRT.IsClassic() then
+    return Encounter.currentEncounters
+  end
+
+  local currentEncounters = {}
+
+  EJ_SelectTier(EJ_GetCurrentTier())
+
+  local instanceIndex = 1
+  local instanceId = EJ_GetInstanceByIndex(instanceIndex, true)
+
+  while instanceId do
+    EJ_SelectInstance(instanceId)
+    local instanceName, _, _, _, _, _, _ = EJ_GetInstanceInfo(instanceId)
+
+    tinsert(currentEncounters, {id = 9000 + instanceId, name = instanceName, disabled = true})
+
+    local bossIndex = 1
+    local boss, _, _, _, _, _, encounterId = EJ_GetEncounterInfoByIndex(bossIndex, instanceId)
+
+    while boss do
+      if encounterId then
+        bossIndex = bossIndex + 1
+        boss, _, _, _, _, _, encounterId = EJ_GetEncounterInfoByIndex(bossIndex, instanceId)
+
+        if boss and encounterId then
+          tinsert(currentEncounters, {id = encounterId, name = ("%s (%s)"):format(boss, encounterId)})
+        end
+      end
+    end
+    instanceIndex = instanceIndex + 1
+    instanceId = EJ_GetInstanceByIndex(instanceIndex, true)
+  end
+
+  return currentEncounters
 end
 
 local function addOverviewHeader(container, header, enabled)
@@ -419,7 +438,7 @@ function PRT.AddEncounterOptions(container, profile, encounterID)
   local enabledCheckBox = PRT.CheckBox(L["Enabled"], nil, encounter.enabled)
   local encounterIDEditBox = PRT.EditBox(L["Encounter-ID"], nil, encounter.id)
   local encounterNameEditBox = PRT.EditBox(L["Name"], nil, encounter.name)
-  local encounterSelectDropdown = PRT.Dropdown(L["Select Encounter"], nil, Encounter.currentEncounters, nil, nil, true)
+  local encounterSelectDropdown = PRT.Dropdown(L["Select Encounter"], nil, GenerateEncounterList(), nil, nil, true)
   local deleteButton = PRT.NewTriggerDeleteButton(container, profile.encounters, encounterIndex, L["Delete"], encounter.name)
   local overviewGroup = Encounter.OverviewWidget(selectedVersionEncounter)
 

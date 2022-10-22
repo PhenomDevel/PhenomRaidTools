@@ -72,6 +72,12 @@ globals = {
   "GetSpellDescription",
   "GetZoneText",
   "time",
+  "EJ_SelectTier",
+  "EJ_GetCurrentTier",
+  "EJ_GetInstanceByIndex",
+  "EJ_SelectInstance",
+  "EJ_GetInstanceInfo",
+  "EJ_GetEncounterInfoByIndex",
   "date",
   -- Locals
   "L"
