@@ -4,8 +4,9 @@ CHANGELOG.html
 README.html
 NOTES.html
 ./ldoc
-Libs/Ace*
-Libs/LibStub
-Libs/LibShared*
-Libs/DBIcon*
-Libs/Data*
+PhenomRaidTools/Libs/Ace*
+PhenomRaidTools/Libs/LibStub
+PhenomRaidTools/Libs/LibShared*
+PhenomRaidTools/Libs/LibDBIcon*
+PhenomRaidTools/Libs/LibData*
+PhenomRaidTools/Libs/Callback*
