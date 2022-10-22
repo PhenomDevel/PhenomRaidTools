@@ -223,7 +223,6 @@ function PRT.AddCombatEventRecorderWidgets(container)
   local tree = generateTree(PRT.GetProfileDB().combatEventRecorder.data, {"zoneName", "sourceName", "event", "spellID"})
   local treeGroupStatus = {groups = {}}
   local treeGroup = PRT.TreeGroup(tree)
-
   tinsert(tree, 1, optionsEntry)
   treeGroup:SetLayout("Fill")
   treeGroup:AddChild(treeContentScrollFrame)
@@ -248,6 +247,14 @@ function PRT.AddCombatEventRecorderWidgets(container)
       end
     end
   )
+
+  treeGroup:SetCallback(
+    "OnTreeResize",
+    function(_, _, width)
+      PRT.GetProfileDB().combatEventRecorder.options.width = width
+    end
+  )
+
   treeGroup:SelectByValue("options")
 
   treeGroup:SetCallback(
@@ -259,6 +266,7 @@ function PRT.AddCombatEventRecorderWidgets(container)
   )
 
   treeGroup:SetStatusTable(treeGroupStatus)
+  treeGroup.treeframe:SetWidth(PRT.GetProfileDB().combatEventRecorder.options.width or 300)
 
   container:AddChild(treeGroup)
   PRT.Core.UpdateScrollFrame()

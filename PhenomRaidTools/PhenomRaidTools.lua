@@ -216,6 +216,7 @@ do
       combatEventRecorder = {
         data = {},
         options = {
+          width = 300,
           enabled = true,
           unitsToRecord = {
             "ALL"
