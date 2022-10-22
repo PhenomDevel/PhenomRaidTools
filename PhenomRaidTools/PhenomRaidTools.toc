@@ -10,7 +10,7 @@
 ## X-Category: Raid
 ## X-Wago-ID: nQN57KBw
 ## X-Curse-Project-ID: 381654
-
+## OptionalDeps: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, LibDBIcon-1.0
 
 # Init
 embeds.xml
