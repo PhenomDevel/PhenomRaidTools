@@ -79,33 +79,35 @@ local function GenerateEncounterList()
 
   EJ_SelectTier(EJ_GetCurrentTier())
 
-  local instanceIndex = 1
-  local instanceId = EJ_GetInstanceByIndex(instanceIndex, true)
+  for _, inRaid in ipairs({false, true}) do
+    local instanceIndex = 1
+    local instanceId = EJ_GetInstanceByIndex(instanceIndex, inRaid)
 
-  while instanceId do
-    EJ_SelectInstance(instanceId)
-    local instanceName, _, _, _, _, _, _ = EJ_GetInstanceInfo(instanceId)
+    while instanceId do
+      EJ_SelectInstance(instanceId)
+      local instanceName, _, _, _, _, _, _ = EJ_GetInstanceInfo(instanceId)
 
-    tinsert(currentEncounters, {id = 9000 + instanceId, name = instanceName, disabled = true})
+      tinsert(currentEncounters, {id = 9000 + instanceId, name = instanceName, disabled = true})
 
-    local bossIndex = 1
-    local boss, _, _, _, _, _, encounterId = EJ_GetEncounterInfoByIndex(bossIndex, instanceId)
+      local bossIndex = 1
+      local boss, _, _, _, _, _, encounterId = EJ_GetEncounterInfoByIndex(bossIndex, instanceId)
 
-    while boss do
-      if encounterId then
-        bossIndex = bossIndex + 1
-        boss, _, _, _, _, _, encounterId = EJ_GetEncounterInfoByIndex(bossIndex, instanceId)
+      while boss do
+        if encounterId then
+          bossIndex = bossIndex + 1
+          boss, _, _, _, _, _, encounterId = EJ_GetEncounterInfoByIndex(bossIndex, instanceId)
 
-        if boss and encounterId then
-          tinsert(currentEncounters, {id = encounterId, name = ("%s (%s)"):format(boss, encounterId)})
+          if boss and encounterId then
+            tinsert(currentEncounters, {id = encounterId, name = ("%s (%s)"):format(boss, encounterId)})
+          end
         end
       end
+      instanceIndex = instanceIndex + 1
+      instanceId = EJ_GetInstanceByIndex(instanceIndex, inRaid)
     end
-    instanceIndex = instanceIndex + 1
-    instanceId = EJ_GetInstanceByIndex(instanceIndex, true)
   end
 
-  return currentEncounters
+  Encounter.currentEncounters = currentEncounters
 end
 
 local function addOverviewHeader(container, header, enabled)
@@ -431,6 +433,7 @@ function PRT.AddEncountersWidgets(container, profile)
 end
 
 function PRT.AddEncounterOptions(container, profile, encounterID)
+  GenerateEncounterList()
   local encounterIndex, encounter = PRT.TableUtils.GetBy(profile.encounters, "id", tonumber(encounterID))
   local _, selectedVersionEncounter = PRT.GetSelectedVersionEncounterByID(profile.encounters, tonumber(encounterID))
 
@@ -438,7 +441,7 @@ function PRT.AddEncounterOptions(container, profile, encounterID)
   local enabledCheckBox = PRT.CheckBox(L["Enabled"], nil, encounter.enabled)
   local encounterIDEditBox = PRT.EditBox(L["Encounter-ID"], nil, encounter.id)
   local encounterNameEditBox = PRT.EditBox(L["Name"], nil, encounter.name)
-  local encounterSelectDropdown = PRT.Dropdown(L["Select Encounter"], nil, GenerateEncounterList(), nil, nil, true)
+  local encounterSelectDropdown = PRT.Dropdown(L["Select Encounter"], nil, Encounter.currentEncounters, nil, nil, true)
   local deleteButton = PRT.NewTriggerDeleteButton(container, profile.encounters, encounterIndex, L["Delete"], encounter.name)
   local overviewGroup = Encounter.OverviewWidget(selectedVersionEncounter)
 
