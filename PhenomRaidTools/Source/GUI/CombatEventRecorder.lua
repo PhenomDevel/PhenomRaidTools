@@ -104,9 +104,9 @@ local function addOptionsWidget(container, options)
   PRT.AddHelpContainer(
     container,
     {
-      L["For the Combat Event Recorder to work PRT has to be in an encounter scenario. So either on a real configured encounter or in test mode with any encounter."],
+      L["For the Combat Event Recorder to work, PRT has to be in an encounter scenario. Either on a real configured encounter or in test mode with any encounter."],
       L["The events will be cleared when a new combat is started."],
-      L["Please make sure to only add the units you really want to track because the amount of data will skyrocket otherwise."]
+      PRT.ColoredString(L["Please make sure to only add the units you really want to track because the amount of data will skyrocket otherwise."], PRT.Static.Colors.Error)
     }
   )
 

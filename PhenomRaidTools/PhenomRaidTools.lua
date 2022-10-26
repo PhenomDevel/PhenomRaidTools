@@ -220,7 +220,7 @@ do
           enabled = true,
           resetOnEncounterStart = true,
           unitsToRecord = {
-            "ALL"
+            UnitName("player")
           },
           eventsToRecord = {
             "SPELL_AURA_APPLIED",
