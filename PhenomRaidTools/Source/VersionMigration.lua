@@ -199,6 +199,10 @@ end
 -------------------------------------------------------------------------------
 -- Public API
 
+function PRT.MigrateGlobalDB(db)
+  db.spellCache = nil
+end
+
 function PRT.MigrateProfileDB(profile)
   --if PRT.IsDevelopmentVersion() then
   --profile.processedMigrations["2.7.4"] = false

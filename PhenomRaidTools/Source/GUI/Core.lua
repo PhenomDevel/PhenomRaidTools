@@ -279,7 +279,6 @@ function Core.GenerateTreeByProfile()
     tinsert(t, {value = "customPlaceholder", text = L["Custom Placeholder"]})
   end
 
-  tinsert(t, {value = "spellDatabase", text = L["Spell Database"]})
   tinsert(t, {value = "combatEventRecorder", text = L["Combat Event Recorder"]})
 
   if PRT.IsSender() then

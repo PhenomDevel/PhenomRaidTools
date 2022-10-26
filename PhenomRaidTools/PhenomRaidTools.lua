@@ -218,6 +218,7 @@ do
         options = {
           width = 300,
           enabled = true,
+          resetOnEncounterStart = true,
           unitsToRecord = {
             "ALL"
           },
@@ -296,9 +297,7 @@ do
 
     -- Check if profile db needs migration
     AceTimer:ScheduleTimer(PRT.MigrateProfileDB, 1, PRT.GetProfileDB())
-
-    -- Start spell cache building if needed
-    PRT.SpellCache.Build(PRT.GetGlobalDB().spellCache)
+    AceTimer:ScheduleTimer(PRT.MigrateGlobalDB, 1, PRT.GetGlobalDB())
 
     -- Initially load global placeholders
     PRT.SetupGlobalCustomPlaceholders()

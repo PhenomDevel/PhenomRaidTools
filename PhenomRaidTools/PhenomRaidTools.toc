@@ -31,7 +31,6 @@ Source/Utils/Log.lua
 
 # Source
 Source/Utils.lua
-Source/SpellCache.lua
 Source/Static.lua
 Source/EncounterHelper.lua
 Source/EventHandler.lua
@@ -60,7 +59,6 @@ Source/GUI/Core.lua
 Source/GUI/Profiles.lua
 Source/GUI/Changelog.lua
 Source/GUI/CombatEventRecorder.lua
-Source/GUI/Options/SpellCacheWidget.lua
 Source/GUI/Options/DefaultsWidget.lua
 Source/GUI/Options/DifficultiesWidget.lua
 Source/GUI/Options/GeneralWidget.lua

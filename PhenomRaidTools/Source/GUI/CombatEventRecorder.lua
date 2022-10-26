@@ -103,7 +103,11 @@ local function addOptionsWidget(container, options)
 
   PRT.AddHelpContainer(
     container,
-    L["For the Combat Event Recorder to work PRT has to be in an encounter scenario. So either on a real configured encounter or in test mode with any encounter."]
+    {
+      L["For the Combat Event Recorder to work PRT has to be in an encounter scenario. So either on a real configured encounter or in test mode with any encounter."],
+      L["The events will be cleared when a new combat is started."],
+      L["Please make sure to only add the units you really want to track because the amount of data will skyrocket otherwise."]
+    }
   )
 
   local enabledCheckBox = PRT.CheckBox(L["Enabled"], nil, options.enabled)
@@ -120,14 +124,6 @@ local function addOptionsWidget(container, options)
     function()
       PRT.GetProfileDB().combatEventRecorder.data = {}
       PRT.Core.ReselectCurrentValue()
-    end
-  )
-
-  local resetInCombatCheckbox = PRT.CheckBox(L["Reset on Encounter start"], nil, options.resetOnEncounterStart)
-  resetInCombatCheckbox:SetCallback(
-    "OnValueChanged",
-    function(widget)
-      options.resetOnEncounterStart = widget:GetValue()
     end
   )
 
@@ -200,7 +196,6 @@ local function addOptionsWidget(container, options)
 
   container:AddChild(resetDataButton)
   container:AddChild(enabledCheckBox)
-  container:AddChild(resetInCombatCheckbox)
   trackedUnitsAndEventsContainer:AddChild(unitsToRecordEditbox)
   trackedUnitsAndEventsContainer:AddChild(eventsToRecordEditbox)
   container:AddChild(trackedUnitsAndEventsContainer)
