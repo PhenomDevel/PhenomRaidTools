@@ -285,7 +285,6 @@ function PRT.AddCustomPlaceholdersWidget(container, customPlaceholders)
   actionsGroup:AddChild(importButton)
   actionsGroup:AddChild(exportButton)
   container:AddChild(actionsGroup)
-  container:AddChild(PRT.Heading(L["Placeholders"], 18))
   container:AddChild(PRT.TabGroupContainer({confirmDelete = true, withClone = true}, customPlaceholders, renderPlaceholder, newCustomPlaceholder))
 end
 
@@ -297,6 +296,5 @@ function PRT.AddCustomPlaceholderOptions(container, profile, encounterID)
   end
 
   PRT.AddCustomPlaceholderDescription(container)
-  container:AddChild(PRT.Heading(L["Placeholders"], 18))
   container:AddChild(PRT.TabGroupContainer({confirmDelete = true, withClone = true}, encounter.CustomPlaceholders, renderPlaceholder, newCustomPlaceholder))
 end

@@ -25,7 +25,6 @@ local CooldownSoundFileMapping = {
   [320420] = "PRT: Darkness",
   [51052] = "PRT: Anti Magic Zone",
   [97462] = "PRT: Rallying Cry",
-  [109964] = "PRT: Spirit Shell",
   [316958] = "PRT: Ashen Hallow"
 }
 
@@ -53,7 +52,6 @@ local Cooldowns = {
     31821, -- Aura Mastery
     320420, -- Darkness
     51052, -- AMC
-    109964, -- Spirit Shell
     316958, -- Ashen Hallow
     97462 -- Rallying Cry
   },

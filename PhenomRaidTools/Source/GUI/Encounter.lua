@@ -94,12 +94,12 @@ local function GenerateEncounterList()
 
       while boss do
         if encounterId then
-          bossIndex = bossIndex + 1
           boss, _, _, _, _, _, encounterId = EJ_GetEncounterInfoByIndex(bossIndex, instanceId)
 
           if boss and encounterId then
             tinsert(currentEncounters, {id = encounterId, name = ("%s (%s)"):format(boss, encounterId)})
           end
+          bossIndex = bossIndex + 1
         end
       end
       instanceIndex = instanceIndex + 1
