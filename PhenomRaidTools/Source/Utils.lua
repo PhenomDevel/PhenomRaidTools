@@ -14,7 +14,8 @@ local classColors = {
   [9] = "FF9482C9",
   [10] = "FF00FF96",
   [11] = "FFFF7D0A",
-  [12] = "FFA330C9"
+  [12] = "FFA330C9",
+  [13] = "FF33937F"
 }
 
 -- Create local copies of API functions which we use
