@@ -53,7 +53,10 @@ local Cooldowns = {
     320420, -- Darkness
     51052, -- AMC
     316958, -- Ashen Hallow
-    97462 -- Rallying Cry
+    97462, -- Rallying Cry,
+    359816, -- Dream Flight
+    363534, -- Rewind
+    370960 -- Emerald Communion
   },
   utility = {
     192077, -- Windrush Totem
@@ -61,7 +64,8 @@ local Cooldowns = {
     16191, -- Mana Tide
     64901, -- Symbol of Hope
     108281, -- Ancestral Guidance
-    15286 -- Embrace
+    15286, -- Embrace,
+    374968 -- Time Spiral
   },
   immunities = {
     642, -- Divine Shield
