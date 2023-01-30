@@ -433,7 +433,9 @@ function PRT.AddEncountersWidgets(container, profile)
 end
 
 function PRT.AddEncounterOptions(container, profile, encounterID)
-  GenerateEncounterList()
+  if PRT.IsRetail() then
+    GenerateEncounterList()
+  end
   local encounterIndex, encounter = PRT.TableUtils.GetBy(profile.encounters, "id", tonumber(encounterID))
   local _, selectedVersionEncounter = PRT.GetSelectedVersionEncounterByID(profile.encounters, tonumber(encounterID))
 
