@@ -33,11 +33,11 @@ if PRT.IsClassic() then
     {id = 1119, name = L["NAX - Sapphiron"]},
     {id = 1114, name = L["NAX - Kel'Thuzad"]},
     -- Obsidian Sanctum
-    {id = 109999, name = L["--- The Obsidian Sanctum ---"], disabled = true},
-    {id = 1090, name = L["TOS - Sartharion"]},
+    {id = 109999, name = L["--- OS ---"], disabled = true},
+    {id = 1090, name = L["OS - Sartharion"]},
     -- Eye of Eternity
-    {id = 209999, name = L["--- The Eye of Eternity ---"], disabled = true},
-    {id = 1094, name = L["TEoE - Malygos"]},
+    {id = 209999, name = L["--- EoE ---"], disabled = true},
+    {id = 1094, name = L["EoE - Malygos"]},
     -- Ulduar
     {id = 309999, name = L["--- Ulduar ---"], disabled = true},
     {id = 1132, name = L["ULD - Flame Leviathan"]},
@@ -53,8 +53,25 @@ if PRT.IsClassic() then
     {id = 1141, name = L["ULD - Thorim"]},
     {id = 1134, name = L["ULD - General Vezax"]},
     {id = 1143, name = L["ULD - Yogg-Saron"]},
-    {id = 1130, name = L["ULD - Algalon the Observer"]}
-  }
+    {id = 1130, name = L["ULD - Algalon the Observer"]},
+    -- Icecrown Citadel
+    {id = 40999, name = L["--- Icecrown Citadel ---"], disabled = true},
+    {id = 1101, name = L["ICC - Lord Marrowgar"]},
+    {id = 1100, name = L["ICC - Lady Deathwhisper"]},
+    {id = 1099, name = L["ICC - Icecrown Gunship Battle"]},
+    {id = 1096, name = L["ICC - Deathbringer Saurfang"]},
+    {id = 1097, name = L["ICC - Festergut"]},
+    {id = 1104, name = L["ICC - Rotface"]},
+    {id = 1102, name = L["ICC - Professor Putricide"]},
+    {id = 1095, name = L["ICC - Blood Prince Council"]},
+    {id = 1103, name = L["ICC - Blood-Queen Lana'thel"]},
+    {id = 1098, name = L["ICC - Valithria Dreamwalker"]},
+    {id = 1105, name = L["ICC - Sindragosa"]},
+    {id = 1106, name = L["ICC - The Lich King"]},
+    -- Zul'gurub
+    {id = 50999, name = L["--- Zul'Gurub ---"], disabled = true},
+    {id = 1178, name = L["High Priest Venoxis"]},
+   }
 elseif PRT.IsRetail() then
   Encounter.currentEncounters = {
     -- Vault of the Incarnates
