@@ -51,13 +51,14 @@ function PRT.ConditionWidget(condition, textID)
       "OnValueChanged",
       function(widget, _, key)
         local _, phasePreset = PRT.TableUtils.GetBy(encounterPresets, "id", key)
-        local icon = select(3, GetSpellInfo(phasePreset.spellID))
+        local spellInfo = C_Spell.GetSpellInfo(tonumber(phasePreset.spellID))
+        local texture = spellInfo.originalIconID
         ClearConditionValues(condition)
         SetValueIfPresent(condition, phasePreset, "event")
         SetValueIfPresent(condition, phasePreset, "spellID")
         SetValueIfPresent(condition, phasePreset, "source")
         SetValueIfPresent(condition, phasePreset, "target")
-        condition.spellIcon = icon
+        condition.spellIcon = texture
         PRT.UpdateIcon(spellIcon, phasePreset.spellID)
 
         eventDropDown:SetValue(condition.event)
@@ -75,9 +76,12 @@ function PRT.ConditionWidget(condition, textID)
   end
 
   eventGroup:SetLayout("Flow")
-  spellIcon:SetHeight(40)
-  spellIcon:SetWidth(40)
-  spellIcon:SetImageSize(30, 30)
+
+  if spellIcon then
+    spellIcon:SetHeight(40)
+    spellIcon:SetWidth(40)
+    spellIcon:SetImageSize(30, 30)
+  end
 
   eventDropDown:SetCallback(
     "OnValueChanged",
@@ -99,7 +103,9 @@ function PRT.ConditionWidget(condition, textID)
     function(widget)
       local text = widget:GetText()
 
-      local _, _, icon, _, _, _, spellId = GetSpellInfo(text)
+      local spellInfo = C_Spell.GetSpellInfo(tonumber(phasePreset.spellID))
+      local icon = spellInfo.originalIconID
+      local spellId = spellInfo.spellID
 
       if not spellId then
         condition.spellID = nil
@@ -153,7 +159,9 @@ function PRT.ConditionWidget(condition, textID)
 
   eventGroup:AddChild(eventDropDown)
   eventGroup:AddChild(spellIDEditBox)
-  eventGroup:AddChild(spellIcon)
+  if spellIcon then
+    eventGroup:AddChild(spellIcon)
+  end
   unitGroup:AddChild(targetEditBox)
   unitGroup:AddChild(sourceEditBox)
 

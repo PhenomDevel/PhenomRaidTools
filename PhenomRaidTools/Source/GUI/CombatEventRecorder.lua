@@ -12,7 +12,9 @@ local function treeEntryByField(key, data, field)
 
   if field == "spellID" then
     local spellID = data[1].spellID or -1
-    local spellName, _, icon = GetSpellInfo(spellID)
+    local spellInfo = C_Spell.GetSpellInfo(tonumber(spellID))
+    local spellName = spellInfo.name
+    local icon = spellInfo.originalIconID
 
     treeEntry.text = " " .. (spellID or "-1") .. " - " .. (spellName or "N/A") .. " (" .. PRT.TableUtils.Count(data) .. ")"
     treeEntry.value = spellID or 0

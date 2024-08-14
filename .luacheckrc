@@ -23,6 +23,7 @@ globals = {
   "GameFontHighlightSmall",
   "tremove",
   "GetSpellInfo",
+  "C_Spell",
   "UISpecialFrames",
   "strtrim",
   "strmatch",

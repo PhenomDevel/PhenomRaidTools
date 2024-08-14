@@ -19,7 +19,7 @@ local classColors = {
 }
 
 -- Create local copies of API functions which we use
-local UnitClass, GetSpellInfo, UnitExists, UnitName, UnitIsConnected, UnitIsDeadOrGhost = UnitClass, GetSpellInfo, UnitExists, UnitName, UnitIsConnected, UnitIsDeadOrGhost
+local UnitClass, UnitExists, UnitName, UnitIsConnected, UnitIsDeadOrGhost = UnitClass, UnitExists, UnitName, UnitIsConnected, UnitIsDeadOrGhost
 local GetRaidRosterInfo, GetUnitName, GetNumGroupMembers, UnitInParty, UnitInRaid = GetRaidRosterInfo, GetUnitName, GetNumGroupMembers, UnitInParty, UnitInRaid
 
 -------------------------------------------------------------------------------
@@ -275,7 +275,8 @@ function PRT.HighlightString(s)
 end
 
 function PRT.TextureStringBySpellID(spellID, size)
-  local _, _, texture = GetSpellInfo(tonumber(spellID))
+  local spellInfo = C_Spell.GetSpellInfo(tonumber(spellID))
+  local texture = spellInfo.originalIconID
 
   return PRT.TextureString(texture, size)
 end
@@ -293,7 +294,8 @@ function PRT.ExchangeSpellIcons(s)
     s,
     "{spell:([^}]+)}",
     function(match)
-      local _, _, texture = GetSpellInfo(tonumber(match))
+      local spellInfo = C_Spell.GetSpellInfo(tonumber(match))
+      local texture = spellInfo.originalIconID
       return "|T" .. (texture or "Interface\\Icons\\INV_MISC_QUESTIONMARK") .. ":16:16:0:0:64:64:6:58:6:58|t"
     end
   )
