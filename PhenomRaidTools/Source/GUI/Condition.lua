@@ -103,7 +103,7 @@ function PRT.ConditionWidget(condition, textID)
     function(widget)
       local text = widget:GetText()
 
-      local spellInfo = C_Spell.GetSpellInfo(tonumber(phasePreset.spellID))
+      local spellInfo = C_Spell.GetSpellInfo(tonumber(text))
       local icon = spellInfo.originalIconID
       local spellId = spellInfo.spellID
 

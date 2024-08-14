@@ -215,7 +215,7 @@ function Message.CompilePossibleCooldownItems()
 
   for _, cooldownGroup in pairs(Cooldowns) do
     for _, spellID in ipairs(cooldownGroup) do
-      local spellInfo = C_Spell.GetSpellInfo(tonumber(phasePreset.spellID))
+      local spellInfo = C_Spell.GetSpellInfo(tonumber(spellID))
       local name = spellInfo.name
 
       if name then
@@ -429,7 +429,7 @@ local function AddCooldownActionWidgets(container, action)
       "OnEnterPressed",
       function(widget)
         local text = widget:GetText()
-        local spellInfo = C_Spell.GetSpellInfo(tonumber(phasePreset.spellID))
+        local spellInfo = C_Spell.GetSpellInfo(tonumber(text))
         local spellId = spellInfo.spellID
 
         if not spellId then

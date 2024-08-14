@@ -163,7 +163,6 @@ local function addStringByCondition(container, name, condition)
     local spellInfo = C_Spell.GetSpellInfo(condition.spellID)
     local spellName = spellInfo.name
     local texture = spellInfo.originalIconID
-    
     conditionString = conditionString .. PRT.TextureString(texture, 14) .. (spellName or "N/A") .. " ( " .. PRT.HighlightString(condition.spellID) .. " )"
   else
     conditionString = conditionString .. "N/A"
