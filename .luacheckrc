@@ -80,7 +80,7 @@ globals = {
   "EJ_GetInstanceInfo",
   "EJ_GetEncounterInfoByIndex",
   "date",
-  "C_AddOns"
+  "C_AddOns",
   -- Locals
   "L",
 }
