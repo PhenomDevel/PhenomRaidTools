@@ -80,8 +80,9 @@ globals = {
   "EJ_GetInstanceInfo",
   "EJ_GetEncounterInfoByIndex",
   "date",
+  "C_AddOns"
   -- Locals
-  "L"
+  "L",
 }
 max_line_length = 200
 max_code_line_length = 200
