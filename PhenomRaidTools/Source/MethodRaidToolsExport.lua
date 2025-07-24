@@ -1,8 +1,6 @@
 local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
-local IsAddOnLoaded = IsAddOnLoaded
-
 -------------------------------------------------------------------------------
 -- Local Helper
 
@@ -445,7 +443,7 @@ local function AddMethodRaidToolsExportOptionsWidget(container, options)
   )
 
   -- Directly Update MethodRaidTools Note
-  forceMethodRaidToolsUpdate:SetDisabled(not IsAddOnLoaded("ExRT"))
+  forceMethodRaidToolsUpdate:SetDisabled(not C_AddOns.IsAddOnLoaded("ExRT"))
   forceMethodRaidToolsUpdate:SetRelativeWidth(0.5)
   forceMethodRaidToolsUpdate:SetCallback(
     "OnValueChanged",
