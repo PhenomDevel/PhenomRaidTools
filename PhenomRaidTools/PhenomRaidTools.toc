@@ -11,6 +11,18 @@
 ## X-Wago-ID: nQN57KBw
 ## X-Curse-Project-ID: 381654
 ## OptionalDeps: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, LibDBIcon-1.0
+## Category: Combat
+## Category-deDE: Kampf
+## Category-esES: Combate
+## Category-esMX: Combate
+## Category-frFR: Combat
+## Category-itIT: Combattimento
+## Category-koKR: 전투
+## Category-ptBR: Combate
+## Category-ruRU: Бой
+## Category-zhCN: 战斗
+## Category-zhTW: 戰鬥
+## IconTexture: Interface/Addons/PhenomRaidTools/Media/Icons/PRT.blp
 
 # Init
 embeds.xml
