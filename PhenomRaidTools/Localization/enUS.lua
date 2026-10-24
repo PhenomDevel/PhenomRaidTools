@@ -19,7 +19,6 @@ L["- To do so you have to navigate to %s within any encounter and click %s"] = t
 L["- Within the spell database you can search any spell the game has to over"] = true
 L["- You can now enable and select specialization specific profiles"] = true
 L["\"PhenomRaidTools will only load for the configured difficulties."] = true
-L["%s (%s) health match (%s%% %s %s%%)"] = true
 L["* Custom *"] = true
 L["Ability to export timers as ExRT note"] = "Ability to export timers as MethodRaidTools note"
 L["Activates the debug mode."] = true

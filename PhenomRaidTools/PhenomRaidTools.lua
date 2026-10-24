@@ -212,26 +212,7 @@ do
         messages = {}
       },
       debugLog = {},
-      processedMigrations = {},
-      combatEventRecorder = {
-        data = {},
-        options = {
-          width = 300,
-          enabled = true,
-          resetOnEncounterStart = true,
-          unitsToRecord = {
-            UnitName("player")
-          },
-          eventsToRecord = {
-            "SPELL_AURA_APPLIED",
-            "SPELL_AURA_REMOVED",
-            "SPELL_CAST_START",
-            "SPELL_CAST_SUCCESS",
-            "SPELL_INTERRUPT",
-            "UNIT_DIED"
-          }
-        }
-      }
+      processedMigrations = {}
     }
   }
 

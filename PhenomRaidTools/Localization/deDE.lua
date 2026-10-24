@@ -21,7 +21,6 @@ L["- To do so you have to navigate to %s within any encounter and click %s"] = "
 L["- Within the spell database you can search any spell the game has to over"] = "- In der Zauber Datenbank kannst Du nach jeglichem Zauber im Spiel suchen"
 L["- You can now enable and select specialization specific profiles"] = "- Du kannst jetzt Spezialisierungsspezifische Profile aktivieren und auswählen"
 L["\"PhenomRaidTools will only load for the configured difficulties."] = "PhenomRaidTools wird nur für die konfigurierten Schwierigkeitsgrade geladen."
-L["%s (%s) health match (%s%% %s %s%%)"] = true
 L["* Custom *"] = "* Benutzerdefiniert *"
 L["Ability to export timers as ExRT note"] = "Möglichkeit Timer als MethodRaidTools Notiz zu exportieren"
 L["Activates the debug mode."] = "Aktiviert den Debug Modus."
