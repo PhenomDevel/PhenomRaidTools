@@ -1,7 +1,6 @@
 local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 local addon = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
-local AceTimer = LibStub("AceTimer-3.0")
 
 local EventHandler = {
   worldEvents = {
@@ -44,19 +43,6 @@ local GetTime, GetInstanceInfo = GetTime, GetInstanceInfo
 -------------------------------------------------------------------------------
 -- Local Helper
 
-function EventHandler.StartReceiveMessages()
-  if PRT.GetProfileDB().enabled then
-    if PRT.IsReceiver() then
-      PRT.ReceiverOverlay.ShowAll()
-      AceTimer:ScheduleRepeatingTimer(PRT.ReceiverOverlay.UpdateFrameText, 0.01)
-    else
-      PRT.Debug(PRT.HighlightString("Receiver mode"), "is disabled. We won't track messages.")
-    end
-  else
-    PRT.Debug(PRT.HighlightString("PhenomRaidTools"), "is disabled. We won't track messages.")
-  end
-end
-
 local function NewEncounter()
   return {
     inFight = true,
@@ -64,10 +50,10 @@ local function NewEncounter()
   }
 end
 
--- The plan to run: the own one in sender mode, otherwise the one received
--- from the raid lead (PlanSync). Returns plan, received.
+-- The plan to run: the own one in sender and test mode, otherwise the one
+-- received from the raid lead (PlanSync). Returns plan, received.
 function EventHandler.GetPlan(encounterID)
-  if PRT.IsSender() then
+  if PRT.IsSender() or PRT.IsTestMode() then
     local _, encounter = PRT.GetEncounterById(PRT.GetProfileDB().encounters, encounterID)
     if encounter and not encounter.enabled then
       PRT.Warn("Found encounter but it is disabled. Skipping encounter.")
@@ -88,9 +74,15 @@ function EventHandler.GetPlan(encounterID)
   end
 end
 
+-- Timings are checked ten times a second: often enough for fractional times,
+-- cheap because a check only compares numbers.
+local TIMING_INTERVAL = 0.1
+
 function EventHandler.StartEncounter(event, encounterID, encounterName)
   if PRT.IsEnabled() then
     wipe(PRT.GetProfileDB().debugLog)
+    -- A start without an end before (e.g. test mode, a reload in combat).
+    PRT.EncounterTimer:CancelAllTimers()
 
     PRT.currentEncounter = NewEncounter()
 
@@ -107,27 +99,21 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
 
       PRT.SetupEncounterSpecificCustomPlaceholders()
 
-      -- Make sure timings are once queried at the start so timing with < 0.5s will trigger
-      AceTimer:ScheduleTimer(PRT.CheckTimerTimings, 0.1, PRT.currentEncounter.encounter.Timers)
-      AceTimer:ScheduleRepeatingTimer(PRT.CheckTimerTimings, 0.5, PRT.currentEncounter.encounter.Timers)
-
-      if PRT.IsReceiver() then
-        PRT.ReceiverOverlay.ReInitialize(PRT.GetProfileDB().overlay.receivers)
-      end
+      PRT.EncounterTimer:ScheduleRepeatingTimer(PRT.CheckTimerTimings, TIMING_INTERVAL, PRT.currentEncounter.encounter.Timers)
 
       if not received and PRT.GetProfileDB().overlay.sender.enabled then
-        AceTimer:ScheduleRepeatingTimer(PRT.SenderOverlay.UpdateFrame, 1, PRT.currentEncounter.encounter, PRT.GetProfileDB().overlay.sender)
-        PRT.SenderOverlay.Show()
-        PRT.SenderOverlay.Lock()
+        PRT.SenderOverlay.Start(PRT.currentEncounter.encounter)
       end
     end
 
+    -- Pull and combat start are the same moment here: combat starts before
+    -- ENCOUNTER_START, and test mode starts on combat without an encounter.
     EventHandler.DispatchEvent(event)
+    EventHandler.DispatchEvent(event == "ENCOUNTER_START" and "PLAYER_REGEN_DISABLED" or "ENCOUNTER_START")
 
-    -- Simulate encounter start events when in test mode
-    if PRT.IsTestMode() then
-      EventHandler.DispatchEvent("PLAYER_REGEN_DISABLED")
-      EventHandler.DispatchEvent("ENCOUNTER_START")
+    PRT.CheckTimerTimings(PRT.currentEncounter.encounter.Timers)
+    if PRT.currentEncounter.running and PRT.IsReceiver() then
+      PRT.Upcoming.Start(PRT.currentEncounter.encounter)
     end
   else
     PRT.Debug(PRT.HighlightString("PhenomRaidTools"), "is disabled. We won't start encounter.")
@@ -142,23 +128,10 @@ function EventHandler.StopEncounter(event)
     PRT.currentEncounter = {}
   end
 
-  -- Hide overlay if necessary
-  if PRT.GetProfileDB().overlay.sender.hideAfterCombat then
-    PRT.SenderOverlay.Hide()
-  end
-
-  if PRT.GetProfileDB().overlay.sender.enabled then
-    PRT.SenderOverlay.Unlock()
-  end
-
-  -- Clear ReceiverFrame
-  if PRT.IsReceiver() then
-    PRT.ReceiverOverlay.ClearMessageStack()
-    PRT.ReceiverOverlay.UpdateFrameText()
-    PRT.ReceiverOverlay.HideAll()
-  end
-
-  AceTimer:CancelAllTimers()
+  PRT.EncounterTimer:CancelAllTimers()
+  PRT.SenderOverlay.Stop()
+  PRT.Upcoming.Stop()
+  PRT.ReceiverOverlay.Clear()
 end
 
 -------------------------------------------------------------------------------
@@ -186,7 +159,7 @@ function PRT.RegisterWorldEvents()
   end
 end
 
-function PRT.UnrgisterWorldEvents()
+function PRT.UnregisterWorldEvents()
   PRT.UnregisterEvents(EventHandler.worldEvents)
 
   if PRT.IsRetail() then
@@ -202,10 +175,6 @@ function addon:ENCOUNTER_START(event, encounterID, encounterName)
 end
 
 function addon:PLAYER_REGEN_DISABLED(event)
-  -- Initialize overlays
-  PRT.SenderOverlay.Initialize(PRT.GetProfileDB().overlay.sender)
-  PRT.ReceiverOverlay.Initialize(PRT.GetProfileDB().overlay.receiver)
-
   if PRT.IsTestMode() then
     PRT.Debug("You are currently in test mode.")
 
@@ -221,9 +190,6 @@ function addon:PLAYER_REGEN_DISABLED(event)
       PRT.Warn("You are in test mode and have no encounter selected.")
     end
   end
-
-  -- Always try to start receiver
-  EventHandler.StartReceiveMessages()
 end
 
 function addon:READY_CHECK()
@@ -285,7 +251,7 @@ function addon:PLAYER_ENTERING_WORLD(_)
   PRT.Debug("Zone entered.")
   PRT.Debug("Will check zone/difficulty in 5 seconds to determine if addon should be loaded.")
 
-  AceTimer:ScheduleTimer(
+  PRT.Timer:ScheduleTimer(
     function()
       local name, type, difficultyID, _ = GetInstanceInfo()
       local difficultyNameEN = EventHandler.difficultyIDToNameMapping[difficultyID]

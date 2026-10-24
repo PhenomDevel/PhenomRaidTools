@@ -108,11 +108,23 @@ local function AllConfirmed(state)
   return true
 end
 
--- The overview page reflects new plans and confirmations right away.
+-- The overview reflects new plans and confirmations; a ready check brings
+-- one ack per member and encounter, so refreshes are coalesced (GetStatus
+-- serializes every sent plan).
+local refreshPending = false
+
 local function RefreshOverview()
-  if PRT.UI then
-    PRT.UI.RefreshPage("overview")
+  if refreshPending or not PRT.UI then
+    return
   end
+  refreshPending = true
+  PRT.Timer:ScheduleTimer(
+    function()
+      refreshPending = false
+      PRT.UI.RefreshPage("overview")
+    end,
+    0.25
+  )
 end
 
 -------------------------------------------------------------------------------

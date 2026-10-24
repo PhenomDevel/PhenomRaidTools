@@ -1089,6 +1089,139 @@ rowTypes.sound = {
   end
 }
 
+-- Assignments over time ({ lanes, length, empty }): one lane per target
+-- group, a marker per message at its time after the pull. lanes() ->
+-- { { label, markers = { { time, color, tooltipTitle, tooltip, onClick } } } }.
+local TIMELINE_LABEL_WIDTH = 96
+local TIMELINE_LANE_HEIGHT = 20
+local TIMELINE_AXIS_HEIGHT = 18
+local TIMELINE_MARKER_WIDTH = 6
+
+local function CreateTimelineMarker(row)
+  local marker = CreateFrame("Button", nil, row)
+  marker:SetSize(TIMELINE_MARKER_WIDTH, TIMELINE_LANE_HEIGHT - 6)
+  marker.Texture = marker:CreateTexture(nil, "ARTWORK")
+  marker.Texture:SetAllPoints()
+  marker:SetScript("OnEnter", Widgets.ShowTooltip)
+  marker:SetScript("OnLeave", Widgets.HideTooltip)
+  marker:SetScript(
+    "OnClick",
+    function(self)
+      if self.onClick then
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+        Widgets.HideTooltip(self)
+        self.onClick()
+      end
+    end
+  )
+  return marker
+end
+
+local function TimelineStep(length)
+  if length <= 120 then
+    return 15
+  elseif length <= 300 then
+    return 30
+  elseif length <= 600 then
+    return 60
+  end
+  return 120
+end
+
+rowTypes.timeline = {
+  create = function(parent)
+    local row = CreateFrame("Frame", nil, parent)
+    row.Markers, row.Ticks, row.Lanes = {}, {}, {}
+    row.Axis = row:CreateTexture(nil, "BORDER")
+    row.Axis:SetColorTexture(unpack(colors.border))
+    row.Axis:SetHeight(1)
+    row.Empty = Widgets.Text(row, fonts.dim)
+    row.Empty:SetPoint("TOPLEFT", 0, -6)
+    row.Update = function()
+    end
+    return row
+  end,
+  setup = function(row, spec)
+    local lanes = Resolve(spec.lanes) or {}
+    local length = math.max(30, spec.length or 0)
+    local plotLeft = TIMELINE_LABEL_WIDTH
+    local plotWidth = rowWidth - plotLeft - TIMELINE_MARKER_WIDTH
+    for _, part in ipairs(row.Ticks) do
+      part:Hide()
+    end
+    for _, marker in ipairs(row.Markers) do
+      marker:Hide()
+    end
+    for _, lane in ipairs(row.Lanes) do
+      lane.Label:Hide()
+      lane.Stripe:Hide()
+    end
+
+    row.Empty:SetShown(#lanes == 0)
+    row.Axis:SetShown(#lanes > 0)
+    if #lanes == 0 then
+      row.Empty:SetText(spec.empty or L["Nothing here yet."])
+      row:SetSize(rowWidth, 26)
+      return 26
+    end
+
+    row.Axis:ClearAllPoints()
+    row.Axis:SetPoint("TOPLEFT", plotLeft, -TIMELINE_AXIS_HEIGHT + 2)
+    row.Axis:SetPoint("TOPRIGHT", 0, -TIMELINE_AXIS_HEIGHT + 2)
+    local step, tickIndex = TimelineStep(length), 0
+    for seconds = 0, length, step do
+      tickIndex = tickIndex + 1
+      local tick = row.Ticks[tickIndex]
+      if not tick then
+        tick = Widgets.Text(row, fonts.dim, "CENTER")
+        row.Ticks[tickIndex] = tick
+      end
+      tick:ClearAllPoints()
+      tick:SetPoint("TOP", row, "TOPLEFT", plotLeft + seconds / length * plotWidth, 0)
+      tick:SetText(Widgets.FormatTime(seconds))
+      tick:Show()
+    end
+
+    local markerIndex = 0
+    for laneIndex, laneSpec in ipairs(lanes) do
+      local lane = row.Lanes[laneIndex]
+      if not lane then
+        lane = {Label = Widgets.Text(row, fonts.small), Stripe = row:CreateTexture(nil, "BACKGROUND")}
+        lane.Label:SetWordWrap(false)
+        lane.Label:SetJustifyV("MIDDLE")
+        lane.Stripe:SetColorTexture(unpack(colors.hover))
+        row.Lanes[laneIndex] = lane
+      end
+      local top = TIMELINE_AXIS_HEIGHT + (laneIndex - 1) * TIMELINE_LANE_HEIGHT
+      lane.Label:ClearAllPoints()
+      lane.Label:SetPoint("TOPLEFT", 0, -top)
+      lane.Label:SetSize(TIMELINE_LABEL_WIDTH - 8, TIMELINE_LANE_HEIGHT)
+      lane.Label:SetText(laneSpec.label)
+      lane.Label:Show()
+      lane.Stripe:ClearAllPoints()
+      lane.Stripe:SetPoint("TOPLEFT", plotLeft, -top - 2)
+      lane.Stripe:SetPoint("TOPRIGHT", 0, -top - 2)
+      lane.Stripe:SetHeight(TIMELINE_LANE_HEIGHT - 4)
+      lane.Stripe:SetShown(laneIndex % 2 == 1)
+      for _, markerSpec in ipairs(laneSpec.markers or {}) do
+        markerIndex = markerIndex + 1
+        local marker = row.Markers[markerIndex] or CreateTimelineMarker(row)
+        row.Markers[markerIndex] = marker
+        marker:ClearAllPoints()
+        local x = plotLeft + math.min(markerSpec.time, length) / length * plotWidth
+        marker:SetPoint("TOPLEFT", x, -top - 3)
+        marker.Texture:SetColorTexture(unpack(markerSpec.color or Widgets.brand))
+        marker.tooltipTitle, marker.tooltipText = markerSpec.tooltipTitle, markerSpec.tooltip
+        marker.onClick = markerSpec.onClick
+        marker:Show()
+      end
+    end
+    local height = TIMELINE_AXIS_HEIGHT + #lanes * TIMELINE_LANE_HEIGHT + 4
+    row:SetSize(rowWidth, height)
+    return height
+  end
+}
+
 for _, rowType in pairs(rowTypes) do
   rowType.pool = Widgets.NewPool(rowType.create)
 end
@@ -1591,21 +1724,26 @@ local function CreateSidebar(parent)
   edge:SetPoint("BOTTOMRIGHT")
   edge:SetWidth(1)
 
+  -- Pages with { hidden } (e.g. the first-start guide) are opened by code only.
   local y = 10
   local section
-  for index, page in ipairs(SortedPages()) do
-    if page.section ~= section then
-      section = page.section
-      if index > 1 then
-        y = y + 8
+  local index = 0
+  for _, page in ipairs(SortedPages()) do
+    if not page.hidden then
+      index = index + 1
+      if page.section ~= section then
+        section = page.section
+        if index > 1 then
+          y = y + 8
+        end
+        if section then
+          AddSidebarSection(section, page, y)
+          y = y + 24
+        end
       end
-      if section then
-        AddSidebarSection(section, page, y)
-        y = y + 24
-      end
+      AddSidebarButton(page, y)
+      y = y + SIDEBAR_BUTTON_HEIGHT
     end
-    AddSidebarButton(page, y)
-    y = y + SIDEBAR_BUTTON_HEIGHT
   end
   return y + 10
 end
@@ -1878,11 +2016,11 @@ Render = function()
   for _, card in ipairs(cards) do
     if not card.fullWidth then
       local column = 1
-    for i = 2, columnCount do
-      if columns[i] < columns[column] then
-        column = i
+      for i = 2, columnCount do
+        if columns[i] < columns[column] then
+          column = i
+        end
       end
-    end
       local left = (column - 1) * (columnWidth + CARD_GAP)
       columns[column] = columns[column] + AddCard(card, left, columns[column]) + CARD_GAP
     end

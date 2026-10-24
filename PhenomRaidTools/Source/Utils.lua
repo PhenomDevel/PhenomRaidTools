@@ -1,5 +1,14 @@
 local _, PRT = ...
-local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
+local AceTimer = LibStub("AceTimer-3.0")
+
+-- Own timer handles: CancelAllTimers() on the library itself would also cancel
+-- timers that other addons schedule on the library directly.
+PRT.Timer = {}
+AceTimer:Embed(PRT.Timer)
+
+-- Everything that belongs to the running encounter; cancelled when it ends.
+PRT.EncounterTimer = {}
+AceTimer:Embed(PRT.EncounterTimer)
 
 local classColors = {
   [0] = nil,
@@ -27,155 +36,6 @@ local GetRaidRosterInfo, GetUnitName, GetNumGroupMembers, UnitInParty, UnitInRai
 
 -------------------------------------------------------------------------------
 -- Misc
-
-function PRT.MaybeAddStartCondition(container, trigger)
-  if trigger.hasStartCondition then
-    local startConditionGroup = PRT.ConditionWidget(trigger.startCondition, L["Start Condition"])
-    startConditionGroup:SetLayout("Flow")
-
-    local removeStartConditionButton = PRT.Button(L["Remove"])
-    removeStartConditionButton:SetCallback(
-      "OnClick",
-      function()
-        trigger.hasStartCondition = false
-        trigger.startCondition = nil
-        PRT.Core.ReselectCurrentValue()
-      end
-    )
-    startConditionGroup:AddChild(removeStartConditionButton)
-    container:AddChild(startConditionGroup)
-  else
-    local addStartConditionButton = PRT.Button(L["Add Start Condition"])
-    addStartConditionButton:SetCallback(
-      "OnClick",
-      function()
-        trigger.hasStartCondition = true
-        trigger.startCondition = PRT.EmptyCondition()
-        PRT.Core.ReselectCurrentValue()
-      end
-    )
-    container:AddChild(addStartConditionButton)
-  end
-end
-
-function PRT.MaybeAddStopCondition(container, trigger)
-  if trigger.hasStopCondition then
-    local stopConditionGroup = PRT.ConditionWidget(trigger.stopCondition, L["Stop Condition"])
-    stopConditionGroup:SetLayout("Flow")
-
-    local removeStopConditionButton = PRT.Button(L["Remove"])
-    removeStopConditionButton:SetCallback(
-      "OnClick",
-      function()
-        trigger.hasStopCondition = false
-        trigger.stopCondition = nil
-        PRT.Core.ReselectCurrentValue()
-      end
-    )
-    stopConditionGroup:AddChild(removeStopConditionButton)
-    container:AddChild(stopConditionGroup)
-  else
-    local addStopConditionButton = PRT.Button(L["Add Stop Condition"])
-    addStopConditionButton:SetCallback(
-      "OnClick",
-      function()
-        trigger.hasStopCondition = true
-        trigger.stopCondition = PRT.EmptyCondition()
-        PRT.Core.ReselectCurrentValue()
-      end
-    )
-    container:AddChild(addStopConditionButton)
-  end
-end
-
-function PRT.NewTriggerDeleteButton(container, t, idx, label, entityName)
-  local deleteButton = PRT.Button(label)
-  deleteButton:SetCallback(
-    "OnClick",
-    function()
-      PRT.ConfirmationDialog(
-        L["Are you sure you want to delete %s?"]:format(PRT.HighlightString(entityName)),
-        function()
-          tremove(t, idx)
-          PRT.Core.UpdateTree()
-          PRT.mainWindowContent:DoLayout()
-          container:ReleaseChildren()
-        end
-      )
-    end
-  )
-
-  return deleteButton
-end
-
-function PRT.ConfirmationDialog(text, successFn, bodyWidgets, ...)
-  if not PRT.Core.FrameExists(text) then
-    local args = {...}
-    local confirmationFrame = PRT.Window(L["Confirmation"])
-    confirmationFrame:SetLayout("Flow")
-    confirmationFrame:EnableResize(false)
-    confirmationFrame.frame:SetFrameStrata("TOOLTIP")
-    confirmationFrame:SetCallback(
-      "OnClose",
-      function()
-        confirmationFrame:Hide()
-        PRT.Core.UnregisterFrame(text)
-      end
-    )
-
-    local textLabel = PRT.Label(text)
-    textLabel:SetRelativeWidth(1)
-
-    confirmationFrame:SetWidth(450)
-
-    local confirmationActionsGroup = PRT.SimpleGroup()
-    confirmationActionsGroup:SetLayout("Flow")
-    confirmationActionsGroup:SetRelativeWidth(1)
-
-    local okButton = PRT.Button(L["OK"])
-    okButton:SetRelativeWidth(0.5)
-    okButton:SetCallback(
-      "OnClick",
-      function(_)
-        if successFn then
-          successFn(unpack(args))
-          confirmationFrame:Hide()
-          PRT.Core.UnregisterFrame(text)
-        end
-      end
-    )
-
-    local cancelButton = PRT.Button(L["Cancel"])
-    cancelButton:SetRelativeWidth(0.5)
-    cancelButton:SetCallback(
-      "OnClick",
-      function(_)
-        confirmationFrame:Hide()
-        PRT.Core.UnregisterFrame(text)
-      end
-    )
-
-    confirmationFrame:AddChild(textLabel)
-
-    local widgetHeight = 0
-
-    if bodyWidgets then
-      for _, widget in ipairs(bodyWidgets) do
-        widget:SetRelativeWidth(1)
-        confirmationFrame:AddChild(widget)
-        widgetHeight = widgetHeight + widget.frame:GetHeight() + 15
-      end
-    end
-
-    confirmationFrame:SetHeight(max(100, textLabel.label:GetStringHeight() + textLabel.frame:GetHeight() + widgetHeight + okButton.frame:GetHeight() + 30))
-
-    confirmationActionsGroup:AddChild(okButton)
-    confirmationActionsGroup:AddChild(cancelButton)
-    confirmationFrame:AddChild(confirmationActionsGroup)
-    confirmationFrame:Show()
-    PRT.Core.RegisterFrame(text, confirmationFrame)
-  end
-end
 
 function PRT.Round(num, decimals)
   local mult = 10 ^ (decimals or 0)
@@ -274,11 +134,15 @@ function PRT.HighlightString(s)
   return "`" .. PRT.ColoredString(s, PRT.Static.Colors.Highlight) .. "`"
 end
 
-function PRT.TextureStringBySpellID(spellID, size)
-  local spellInfo = C_Spell.GetSpellInfo(tonumber(spellID))
-  local texture = spellInfo.originalIconID
+-- nil for unknown spells (C_Spell.GetSpellInfo returns nil, e.g. a typo or a
+-- spell from another client).
+function PRT.SpellIcon(spellID)
+  local spellInfo = spellID and tonumber(spellID) and C_Spell.GetSpellInfo(tonumber(spellID))
+  return spellInfo and (spellInfo.originalIconID or spellInfo.iconID)
+end
 
-  return PRT.TextureString(texture, size)
+function PRT.TextureStringBySpellID(spellID, size)
+  return PRT.TextureString(PRT.SpellIcon(spellID), size)
 end
 
 function PRT.TextureString(id, size)
@@ -294,9 +158,7 @@ function PRT.ExchangeSpellIcons(s)
     s,
     "{spell:([^}]+)}",
     function(match)
-      local spellInfo = C_Spell.GetSpellInfo(tonumber(match))
-      local texture = spellInfo.originalIconID
-      return "|T" .. (texture or "Interface\\Icons\\INV_MISC_QUESTIONMARK") .. ":16:16:0:0:64:64:6:58:6:58|t"
+      return PRT.TextureString(PRT.SpellIcon(match))
     end
   )
 end

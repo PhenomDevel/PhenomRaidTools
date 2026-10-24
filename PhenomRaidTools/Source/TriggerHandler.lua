@@ -1,5 +1,4 @@
 local _, PRT = ...
-local AceTimer = LibStub("AceTimer-3.0")
 
 local TriggerHandler = {}
 
@@ -8,15 +7,11 @@ local GetTime = GetTime
 -------------------------------------------------------------------------------
 -- Local Helper
 
+-- Triggers without difficulties (old imports, the example) run on all.
 function TriggerHandler.CheckCurrentDifficulty(trigger)
-  if trigger.enabledDifficulties and PRT.currentDifficulty then
-    return trigger.enabledDifficulties[PRT.currentDifficulty]
+  if PRT.currentDifficulty then
+    return trigger.enabledDifficulties == nil or trigger.enabledDifficulties[PRT.currentDifficulty]
   end
-end
-
--- Test mode starts on combat start instead of the boss pull.
-function TriggerHandler.ValidTestModeEvent(event, conditionEvent)
-  return PRT.IsTestMode() and conditionEvent == "ENCOUNTER_START" and event == "PLAYER_REGEN_DISABLED"
 end
 
 function TriggerHandler.CheckOccurence(trigger)
@@ -31,32 +26,7 @@ end
 -- never match anymore (see PRT.GetUnsupportedReason).
 function TriggerHandler.CheckCondition(condition, event)
   return condition ~= nil and condition.event ~= nil and condition.spellID == nil and condition.source == nil and condition.target == nil and
-    (condition.event == event or TriggerHandler.ValidTestModeEvent(event, condition.event))
-end
-
-function TriggerHandler.FilterTimingsTable(timings, timeOffset)
-  local timingTables = {}
-
-  if timings then
-    for _, v in ipairs(timings) do
-      local secondsWithOffset
-
-      if v.offset then
-        secondsWithOffset = {}
-        for _, second in ipairs(v.seconds) do
-          tinsert(secondsWithOffset, second + (v.offset or 0))
-        end
-      else
-        secondsWithOffset = v.seconds
-      end
-
-      if tContains(secondsWithOffset, timeOffset) then
-        tinsert(timingTables, v)
-      end
-    end
-  end
-
-  return timingTables
+    condition.event == event
 end
 
 function TriggerHandler.GetTriggerOccurence(trigger)
@@ -143,12 +113,11 @@ end
 
 function TriggerHandler.SendMessagesAfterDelay(messages)
   for _, message in ipairs(messages) do
-    AceTimer:ScheduleTimer(
-      function()
-        PRT.ExecuteMessage(message)
-      end,
-      message.delay or 0
-    )
+    if (message.delay or 0) > 0 then
+      PRT.EncounterTimer:ScheduleTimer(PRT.ExecuteMessage, message.delay, message)
+    else
+      PRT.ExecuteMessage(message)
+    end
   end
 end
 
@@ -301,26 +270,27 @@ function PRT.CheckTriggersStopConditions(triggers, event)
   end
 end
 
+-- Fires every timing whose time has passed and that didn't fire yet, so a
+-- late tick sends late instead of never and fractional times work.
 function PRT.CheckTimerTimings(timers)
-  local currentTime = GetTime()
-  if timers ~= nil then
-    for _, timer in ipairs(timers) do
-      if PRT.IsTriggerActive(timer) and TriggerHandler.CheckOccurence(timer) then
-        if timer.started == true and timer.timings ~= nil then
-          local elapsedTime = PRT.Round(currentTime - timer.startedAt)
-          local timings = timer.timings
-          local timingsByTime = TriggerHandler.FilterTimingsTable(timings, elapsedTime)
-
-          for _, timingByTime in ipairs(timingsByTime) do
-            if timingByTime then
-              local messagesByTime = timingByTime.messages
-
-              if messagesByTime ~= nil then
-                messagesByTime.executionTimes = messagesByTime.executionTimes or {}
-                if messagesByTime.executionTimes[elapsedTime] ~= true then
-                  TriggerHandler.SendMessagesAfterDelay(messagesByTime)
-                  messagesByTime.executionTimes[elapsedTime] = true
-                end
+  if not timers then
+    return
+  end
+  local now = GetTime()
+  for _, timer in ipairs(timers) do
+    if timer.started == true and timer.timings and PRT.IsTriggerActive(timer) and TriggerHandler.CheckOccurence(timer) then
+      local elapsed = now - timer.startedAt
+      for _, timing in ipairs(timer.timings) do
+        local messages = timing.messages
+        if messages then
+          local offset = timing.offset or 0
+          for _, second in ipairs(timing.seconds or {}) do
+            local at = second + offset
+            if elapsed >= at then
+              messages.executionTimes = messages.executionTimes or {}
+              if not messages.executionTimes[at] then
+                messages.executionTimes[at] = true
+                TriggerHandler.SendMessagesAfterDelay(messages)
               end
             end
           end

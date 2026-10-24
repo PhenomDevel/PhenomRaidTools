@@ -2,7 +2,7 @@
 # Puts the libraries into PhenomRaidTools/Libs (gitignored) so a git checkout
 # runs in game, without svn:
 #   - Ace3 incl. LibStub and CallbackHandler from GitHub (pinned tag below)
-#   - LibSharedMedia, LibDBIcon, LibDataBroker, SharedMediaWidgets from the
+#   - LibSharedMedia, LibDBIcon, LibDataBroker from the
 #     latest GitHub release zip (built by the packager from .pkgmeta)
 # LibDeflate is tracked in git and left alone.
 #
@@ -13,8 +13,8 @@
 set -euo pipefail
 
 ACE3_TAG="Release-r1403"
-ACE3_LIBS="LibStub CallbackHandler-1.0 AceAddon-3.0 AceComm-3.0 AceConsole-3.0 AceDB-3.0 AceEvent-3.0 AceGUI-3.0 AceLocale-3.0 AceSerializer-3.0 AceTimer-3.0"
-RELEASE_LIBS="LibSharedMedia-3.0 LibDBIcon-1.0 LibDataBroker-1.1 AceGUI-3.0-SharedMediaWidgets"
+ACE3_LIBS="LibStub CallbackHandler-1.0 AceAddon-3.0 AceComm-3.0 AceConsole-3.0 AceDB-3.0 AceEvent-3.0 AceLocale-3.0 AceSerializer-3.0 AceTimer-3.0"
+RELEASE_LIBS="LibSharedMedia-3.0 LibDBIcon-1.0 LibDataBroker-1.1"
 REPO="PhenomDevel/PhenomRaidTools"
 
 root="$(cd "$(dirname "$0")/.." && pwd)"

@@ -2,7 +2,6 @@ local _, PRT = ...
 local addon = LibStub("AceAddon-3.0"):NewAddon("PhenomRaidTools", "AceConsole-3.0", "AceEvent-3.0")
 
 local AceComm = LibStub("AceComm-3.0")
-local AceTimer = LibStub("AceTimer-3.0")
 
 local LibDBIcon = LibStub("LibDBIcon-1.0")
 local PhenomRaidToolsLDB =
@@ -25,7 +24,7 @@ local PhenomRaidToolsLDB =
       GameTooltip:SetOwner(UIParent, "ANCHOR_CURSOR")
       GameTooltip:AddDoubleLine("|cFF69CCF0PhenomRaidTools|r", "v" .. PRT.GetProfileDB().version)
       GameTooltip:AddDoubleLine("|cFFdcabffProfile|r ", PRT.GetCurrentProfile())
-      GameTooltip:AddDoubleLine("|cFFdcabffLeft-Click|r", "Open Config")
+      GameTooltip:AddDoubleLine("|cFFdcabffLeft-Click|r", "Open window")
       GameTooltip:AddDoubleLine("|cFFdcabffMiddle-Click|r", "Hide minimap icon")
       GameTooltip:Show()
     end,
@@ -38,15 +37,14 @@ local PhenomRaidToolsLDB =
 -------------------------------------------------------------------------------
 -- Ace standard functions
 
+-- Positions (x, y) and the layout (style, grow, ...) have code defaults in
+-- ReceiverOverlay, so receivers saved before 3.0 can be migrated.
 local function NewDefaultReceiverOverlay(id, name, fontSize, r, g, b)
   return {
     id = id,
     label = name,
     name = id,
-    anchor = "CENTER",
     locked = true,
-    top = 540 - ((id - 1) * 60),
-    left = 960,
     fontSize = fontSize,
     fontColor = {
       hex = format("%02x%02x%02x%02x", 255, (r * 255), (g * 255), (b * 255)),
@@ -72,25 +70,9 @@ do
       }
     },
     global = {
-      spellCache = {
-        enabled = false,
-        completed = false,
-        lastCheckedId = 0,
-        spells = {}
-      }
+      onboarded = false
     },
     profile = {
-      mainWindow = {
-        width = nil,
-        height = nil,
-        top = nil,
-        left = nil
-      },
-      mainWindowContent = {
-        treeGroup = {
-          width = nil
-        }
-      },
       myName = UnitName("player"),
       version = "@project-version@",
       messageFilter = {
@@ -144,6 +126,15 @@ do
           enabled = true,
           hideAfterCombat = false,
           hideDisabledTriggers = false
+        },
+        upcoming = {
+          enabled = true,
+          locked = true,
+          x = 0,
+          y = -150,
+          count = 3,
+          leadTime = 30,
+          fontSize = 18
         }
       },
       minimap = {
@@ -246,11 +237,16 @@ do
     return db:ResetProfile(profile)
   end
 
+  function PRT.CopyProfile(profile)
+    return db:CopyProfile(profile)
+  end
+
   function PRT.GetCurrentProfile()
     return db:GetCurrentProfile()
   end
 
   function addon:OnInitialize()
+    local isNewInstall = _G.PhenomRaidToolsDB == nil
     db = LibStub("AceDB-3.0"):New("PhenomRaidToolsDB", defaults, true)
 
     -- Initialize Minimap Icon
@@ -262,42 +258,38 @@ do
     -- Reset clipboard
     PRT.GetProfileDB().clipboard = {}
 
-    -- We hold the main frame within the global addon variable
-    -- because we sometimes have to do a re-layout of the complete content
-    PRT.mainWindow = nil
-    PRT.mainWindowContent = nil
-
-    PRT.SenderOverlay.Initialize(PRT.GetProfileDB().overlay.sender)
-    PRT.ReceiverOverlay.Initialize(PRT.GetProfileDB().overlay.receivers)
-    PRT.SenderOverlay.Hide()
-    PRT.ReceiverOverlay.HideAll()
-
     db.RegisterCallback(self, "OnProfileChanged", "RefreshConfig")
     db.RegisterCallback(self, "OnProfileCopied", "RefreshConfig")
     db.RegisterCallback(self, "OnProfileReset", "RefreshConfig")
 
-    -- Check if profile db needs migration
-    AceTimer:ScheduleTimer(PRT.MigrateProfileDB, 1, PRT.GetProfileDB())
-    AceTimer:ScheduleTimer(PRT.MigrateGlobalDB, 1, PRT.GetGlobalDB())
+    -- Migrations run before the overlays read their (migrated) settings.
+    PRT.MigrateGlobalDB(PRT.GetGlobalDB())
+    PRT.MigrateProfileDB(PRT.GetProfileDB())
+    PRT.ReceiverOverlay.Initialize()
 
     -- Initially load global placeholders
     PRT.SetupGlobalCustomPlaceholders()
+
+    PRT.WhatsNew.Initialize(isNewInstall)
   end
 end
 
 function addon:RefreshConfig()
   PRT.Info("Active Profile was changed to", PRT.HighlightString(PRT.GetCurrentProfile()))
 
-  PRT.ReceiverOverlay.ReInitialize(PRT.GetProfileDB().overlay.receivers)
-  PRT.SenderOverlay.ReInitialize(PRT.GetProfileDB().overlay.sender)
-
   local encounterIdx, _ = PRT.TableUtils.GetBy(PRT.GetProfileDB().encounters, "id", 9999)
   if not encounterIdx and PRT.TableUtils.IsEmpty(PRT.GetProfileDB().encounters) then
     table.insert(PRT.GetProfileDB().encounters, PRT.ExampleEncounter())
   end
 
-  -- Check if profile db needs migration
-  AceTimer:ScheduleTimer(PRT.MigrateProfileDB, 0.5, PRT.GetProfileDB())
+  PRT.MigrateProfileDB(PRT.GetProfileDB())
+  PRT.SetupGlobalCustomPlaceholders()
+  PRT.ReceiverOverlay.Clear()
+  PRT.ReceiverOverlay.Refresh()
+  if PRT.SenderOverlay.IsShown() then
+    PRT.SenderOverlay.Refresh()
+  end
+  PRT.UI.Refresh()
 end
 
 function addon:OnEnable()
@@ -313,13 +305,12 @@ function addon:OnDisable()
   PRT.UnregisterWorldEvents()
 end
 
+-- The first start guide opens until it is finished once.
 function addon:Open()
-  if UnitAffectingCombat("player") then
-    PRT.Info("Can't open during combat")
+  if not PRT.GetGlobalDB().onboarded and not PRT.UI.IsShown() then
+    PRT.UI.Navigate("welcome")
   else
-    if (PRT.mainWindow and not PRT.mainWindow:IsShown()) or not PRT.mainWindow then
-      PRT.CreateMainWindow(PRT.GetProfileDB())
-    end
+    PRT.UI.Toggle()
   end
 end
 
@@ -377,7 +368,7 @@ function addon:VersionCheck(_)
     end
 
     AceComm:SendCommMessage(PRT.GetProfileDB().addonPrefixes.versionRequest, PRT.Serialize(request), "RAID")
-    AceTimer:ScheduleTimer(PRT.PrintPartyOrRaidVersions, 5)
+    PRT.Timer:ScheduleTimer(addon.PrintPartyOrRaidVersions, 5, addon)
   else
     PRT.Info("You are currently running version", PRT.ColoredString(PRT.GetProfileDB().version, PRT.Static.Colors.Highlight))
   end
@@ -390,20 +381,21 @@ end
 
 function addon:PrintHelp()
   PRT.Info("You can use following commands:")
-  PRT.Info("/prt - Opens the config")
-  PRT.Info("/prt ui - Opens the new window (preview)")
+  PRT.Info("/prt - Opens the window")
   PRT.Info("/prt versions - Will perform a version check on the current group")
   PRT.Info("/prt sync - Sends your plans to the group (also done on ready check)")
-  PRT.Info("/prt profile - Opens the profile page for PRT")
+  PRT.Info("/prt news - Shows what's new")
   PRT.Info("/prt minimap - Will enable the minimap icon")
   PRT.Info("/prtm $message - Will let you send a message to *ALL* players on the fly")
 end
 
 function addon:ExecuteChatCommand(input)
-  if input == "" or input == nil then
+  if input == "" or input == nil or input == "ui" then
     addon:Open()
-  elseif input == "ui" and PRT.UI then
-    PRT.UI.Toggle()
+  elseif input == "news" then
+    PRT.WhatsNew.Show()
+  elseif input == "profile" or input == "profiles" then
+    PRT.UI.Navigate("profiles")
   elseif input == "help" then
     addon:PrintHelp()
   elseif input == "version" or input == "versions" then
