@@ -1,4 +1,4 @@
--- luacheck: read globals EJ_GetCurrentTier EJ_SelectTier EJ_GetInstanceByIndex EJ_SelectInstance EJ_GetEncounterInfoByIndex EJ_GetNumTiers
+-- luacheck: read globals EJ_GetCurrentTier EJ_SelectTier EJ_GetInstanceByIndex EJ_SelectInstance EJ_GetEncounterInfoByIndex EJ_GetNumTiers EJ_GetCreatureInfo
 local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
@@ -152,16 +152,50 @@ end
 -------------------------------------------------------------------------------
 -- Encounter journal
 
-local journal
+local journal, journalByEncounter
 
--- Raid bosses of the current tier: { { name = instance, bosses = { { id, name } } } };
+-- Bosses of a journal instance: { { id = encounter ID, name, icon } }; the
+-- icon is the boss portrait.
+local function JournalBosses(instanceID)
+  local bosses = {}
+  local index = 1
+  local name, _, journalEncounterID, _, _, _, encounterID = EJ_GetEncounterInfoByIndex(index, instanceID)
+  while name do
+    if encounterID then
+      local icon = EJ_GetCreatureInfo and select(5, EJ_GetCreatureInfo(1, journalEncounterID))
+      bosses[#bosses + 1] = {id = encounterID, name = name, icon = icon}
+    end
+    index = index + 1
+    name, _, journalEncounterID, _, _, _, encounterID = EJ_GetEncounterInfoByIndex(index, instanceID)
+  end
+  return bosses
+end
+
+-- Calls fn(instance) for each raid (or dungeon) of the selected tier, with
+-- instance = { name, icon, bosses }.
+local function EachJournalInstance(isRaid, fn)
+  local index = 1
+  local instanceID, name, _, _, _, _, icon = EJ_GetInstanceByIndex(index, isRaid)
+  while instanceID do
+    EJ_SelectInstance(instanceID)
+    fn({name = name or "?", icon = icon, bosses = JournalBosses(instanceID)})
+    index = index + 1
+    instanceID, name, _, _, _, _, icon = EJ_GetInstanceByIndex(index, isRaid)
+  end
+end
+
+local function HasJournal()
+  return EJ_GetCurrentTier and EJ_GetNumTiers and EJ_SelectTier and EJ_GetInstanceByIndex and EJ_SelectInstance and EJ_GetEncounterInfoByIndex
+end
+
+-- Raid bosses of the current tier: { { name, icon, bosses = { { id, name, icon } } } };
 -- nil without journal (WoW: Forever).
 local function JournalRaids()
   if journal ~= nil then
     return journal or nil
   end
   journal = false
-  if not (EJ_GetCurrentTier and EJ_SelectTier and EJ_GetInstanceByIndex and EJ_SelectInstance and EJ_GetEncounterInfoByIndex) then
+  if not HasJournal() then
     return nil
   end
   local raids = {}
@@ -169,26 +203,14 @@ local function JournalRaids()
     pcall(
     function()
       EJ_SelectTier(EJ_GetCurrentTier())
-      local instanceIndex = 1
-      local instanceID, instanceName = EJ_GetInstanceByIndex(instanceIndex, true)
-      while instanceID do
-        EJ_SelectInstance(instanceID)
-        local raid = {name = instanceName or "?", bosses = {}}
-        local bossIndex = 1
-        local name, _, _, _, _, _, encounterID = EJ_GetEncounterInfoByIndex(bossIndex, instanceID)
-        while name do
-          if encounterID then
-            raid.bosses[#raid.bosses + 1] = {id = encounterID, name = name}
+      EachJournalInstance(
+        true,
+        function(raid)
+          if #raid.bosses > 0 then
+            raids[#raids + 1] = raid
           end
-          bossIndex = bossIndex + 1
-          name, _, _, _, _, _, encounterID = EJ_GetEncounterInfoByIndex(bossIndex, instanceID)
         end
-        if #raid.bosses > 0 then
-          raids[#raids + 1] = raid
-        end
-        instanceIndex = instanceIndex + 1
-        instanceID, instanceName = EJ_GetInstanceByIndex(instanceIndex, true)
-      end
+      )
     end
   )
   if ok and #raids > 0 then
@@ -197,51 +219,59 @@ local function JournalRaids()
   return journal or nil
 end
 
-local instanceByEncounter
-
--- Instance names by encounter id from every tier of the journal, raids and dungeons.
-local function JournalInstances()
-  if instanceByEncounter then
-    return instanceByEncounter
+-- Every boss of every tier, raids and dungeons, by encounter ID:
+-- { instance, instanceIcon, icon }. Scanned once per session.
+local function JournalEncounters()
+  if journalByEncounter then
+    return journalByEncounter
   end
-  instanceByEncounter = {}
-  if not (EJ_GetNumTiers and EJ_SelectTier and EJ_GetInstanceByIndex and EJ_GetEncounterInfoByIndex) then
-    return instanceByEncounter
+  journalByEncounter = {}
+  if not HasJournal() then
+    return journalByEncounter
   end
   pcall(
     function()
       for tier = 1, EJ_GetNumTiers() do
         EJ_SelectTier(tier)
         for _, isRaid in ipairs({true, false}) do
-          local instanceIndex = 1
-          local instanceID, instanceName = EJ_GetInstanceByIndex(instanceIndex, isRaid)
-          while instanceID do
-            local bossIndex = 1
-            local name, _, _, _, _, _, encounterID = EJ_GetEncounterInfoByIndex(bossIndex, instanceID)
-            while name do
-              if encounterID then
-                instanceByEncounter[encounterID] = instanceName
+          EachJournalInstance(
+            isRaid,
+            function(instance)
+              for _, boss in ipairs(instance.bosses) do
+                journalByEncounter[boss.id] = {instance = instance.name, instanceIcon = instance.icon, icon = boss.icon}
               end
-              bossIndex = bossIndex + 1
-              name, _, _, _, _, _, encounterID = EJ_GetEncounterInfoByIndex(bossIndex, instanceID)
             end
-            instanceIndex = instanceIndex + 1
-            instanceID, instanceName = EJ_GetInstanceByIndex(instanceIndex, isRaid)
-          end
+          )
         end
       end
       EJ_SelectTier(EJ_GetCurrentTier())
     end
   )
-  return instanceByEncounter
+  return journalByEncounter
 end
 
 -- The instance of an encounter, remembered once the journal knew it.
 local function Instance(encounter)
   if not encounter.instance then
-    encounter.instance = JournalInstances()[encounter.id]
+    local entry = JournalEncounters()[encounter.id]
+    encounter.instance = entry and entry.instance
   end
   return encounter.instance
+end
+
+local function BossIcon(encounter)
+  local entry = JournalEncounters()[encounter.id]
+  return entry and entry.icon
+end
+
+local function InstanceIcon(encounter)
+  local entry = JournalEncounters()[encounter.id]
+  return entry and entry.instanceIcon
+end
+
+-- "|T…|t name" for titles and labels; just the name without icon.
+local function WithIcon(icon, text)
+  return icon and ("|T%s:16:16|t %s"):format(icon, text) or text
 end
 
 local function CreateEncounter(id, name, instance)
@@ -351,7 +381,7 @@ local function EncounterItem(encounter)
   return {
     label = encounter.name or tostring(encounter.id),
     note = note,
-    color = encounter.enabled and colors.ok or colors.control,
+    icon = BossIcon(encounter),
     dim = not encounter.enabled
   }
 end
@@ -362,7 +392,7 @@ local function EncountersByInstance()
   for _, encounter in ipairs(Encounters()) do
     local name = Instance(encounter) or ""
     if not byName[name] then
-      byName[name] = {name = name, encounters = {}}
+      byName[name] = {name = name, icon = InstanceIcon(encounter), encounters = {}}
       groups[#groups + 1] = byName[name]
     end
     tinsert(byName[name].encounters, encounter)
@@ -382,7 +412,7 @@ end
 local function InstanceCard(group)
   local encounters = group.encounters
   return {
-    title = group.name ~= "" and group.name or L["Other encounters"],
+    title = group.name ~= "" and WithIcon(group.icon, group.name) or L["Other encounters"],
     fullWidth = true,
     rows = {
       {
@@ -450,7 +480,7 @@ local function NewEncounterPage()
       local existing = FindEncounter(boss.id)
       rows[#rows + 1] = {
         type = "nav",
-        label = boss.name,
+        label = WithIcon(boss.icon, boss.name),
         value = existing and L["added"] or nil,
         onClick = function()
           if existing then
@@ -461,7 +491,7 @@ local function NewEncounterPage()
         end
       }
     end
-    cards[#cards + 1] = {title = raid.name, rows = rows}
+    cards[#cards + 1] = {title = WithIcon(raid.icon, raid.name), rows = rows}
   end
   cards[#cards + 1] = {
     title = L["Other encounter"],
@@ -634,7 +664,6 @@ local function AssignmentItems(version, onlyTimer)
       label = Messages.Summary(message),
       note = note,
       icon = Messages.Icon(message),
-      color = off and colors.control or colors.accent,
       dim = off,
       tooltip = Messages.DisplayText(message)
     }

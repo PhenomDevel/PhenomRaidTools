@@ -50,18 +50,10 @@ local function CreatePanel(window)
   Widgets.Border(panel.Screen)
 
   overlay = PRT.ReceiverOverlay.CreatePreview(panel.Screen)
+  -- Always right of the window, even partly off screen: a panel that changes
+  -- sides while the window moves is more confusing than one cut off.
+  panel:SetPoint("TOPLEFT", window, "TOPRIGHT", GAP, 0)
   panel:Hide()
-end
-
--- The side with room on the screen; right of the window if both have.
-local function Place(window)
-  panel:ClearAllPoints()
-  local right = UIParent:GetRight() or 0
-  if (window:GetRight() or 0) + GAP + WIDTH <= right then
-    panel:SetPoint("TOPLEFT", window, "TOPRIGHT", GAP, 0)
-  else
-    panel:SetPoint("TOPRIGHT", window, "TOPLEFT", -GAP, 0)
-  end
 end
 
 local function Append(parts, value)
@@ -134,7 +126,6 @@ function Preview.Apply(window, spec)
   if not panel then
     CreatePanel(window)
   end
-  Place(window)
   panel:Show()
   local newSignature = Signature(spec)
   local changed = not current or current.kind ~= spec.kind or newSignature ~= signature or not overlay.config

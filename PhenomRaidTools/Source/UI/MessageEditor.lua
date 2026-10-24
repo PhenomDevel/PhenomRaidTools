@@ -107,10 +107,14 @@ function Messages.DisplayText(message)
   return PRT.ReceiverOverlay.WithoutTime(PRT.PrepareMessageForDisplay(message.message or ""))
 end
 
--- The spell's icon of a message: its cooldown, or the first spell in its text.
+-- Stands for a message without a spell.
+Messages.TEXT_ICON = "Interface\\Icons\\INV_Misc_Note_01"
+
+-- The spell's icon of a message: its cooldown, or the first spell in its
+-- text; a note for plain text.
 function Messages.Icon(message)
   local spellID = message.type == "cooldown" and message.spellID or (message.message or ""):match("{spell:(%d+)}")
-  return spellID and PRT.SpellIcon(tonumber(spellID) or spellID)
+  return spellID and PRT.SpellIcon(tonumber(spellID) or spellID) or Messages.TEXT_ICON
 end
 
 -- Nil on all difficulties, else e.g. "Heroic, Mythic" or "off".

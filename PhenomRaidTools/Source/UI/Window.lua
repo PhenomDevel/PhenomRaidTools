@@ -1113,8 +1113,6 @@ local TIMELINE_LABEL_WIDTH = 96
 local TIMELINE_LANE_HEIGHT = 24
 local TIMELINE_AXIS_HEIGHT = 18
 local TIMELINE_MARKER_SIZE = 20
--- Stands for a message without a spell.
-local TIMELINE_TEXT_ICON = "Interface\\Icons\\INV_Misc_Note_01"
 
 local function CreateTimelineMarker(row)
   local marker = CreateFrame("Button", nil, row)
@@ -1308,7 +1306,7 @@ rowTypes.timeline = {
         local x = plotLeft + math.min(markerSpec.time, length) / length * plotWidth
         marker:SetPoint("TOP", row, "TOPLEFT", x, -top - (TIMELINE_LANE_HEIGHT - TIMELINE_MARKER_SIZE) / 2)
         marker.Texture:SetColorTexture(unpack(markerSpec.color or Widgets.brand))
-        marker.Icon:SetTexture(markerSpec.icon or TIMELINE_TEXT_ICON)
+        marker.Icon:SetTexture(markerSpec.icon)
         marker.Icon:SetDesaturated(markerSpec.dim or false)
         marker.Icon:SetAlpha(markerSpec.dim and 0.5 or 1)
         marker.tooltipTitle, marker.tooltipText = markerSpec.tooltipTitle, markerSpec.tooltip
