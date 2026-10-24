@@ -159,5 +159,6 @@ function PRT.AddRotationWidget(container, profile, encounterID, rotationName)
   local _, encounter = PRT.GetSelectedVersionEncounterByID(profile.encounters, encounterID)
   local rotations = encounter.Rotations
 
+  PRT.AddUnsupportedNotice(container, "rotation", rotations, rotationName)
   Rotation.RotationWidget(rotationName, rotations, container)
 end

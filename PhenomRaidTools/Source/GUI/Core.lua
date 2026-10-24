@@ -51,6 +51,14 @@ function Core.InactiveText(text, enabled)
   end
 end
 
+-- Triggers that can't fire since Midnight get a marker in front.
+function Core.UnsupportedText(text, triggerType, trigger)
+  if PRT.GetUnsupportedReason(triggerType, trigger) then
+    return PRT.ColoredString("[" .. L["Unsupported"] .. "]", PRT.Static.Colors.Warn) .. " " .. text
+  end
+  return text
+end
+
 function Core.WithDifficultiesText(text, trigger)
   local updatedText = text
 
@@ -76,16 +84,16 @@ function Core.WithDifficultiesText(text, trigger)
   end
 end
 
-function Core.GeneratePercentageTree(percentage)
+function Core.GeneratePercentageTree(percentage, triggerType)
   local t = {
     value = percentage.name,
-    text = Core.InactiveText(Core.WithDifficultiesText(percentage.name, percentage), percentage.enabled)
+    text = Core.UnsupportedText(Core.InactiveText(Core.WithDifficultiesText(percentage.name, percentage), percentage.enabled), triggerType, percentage)
   }
 
   return t
 end
 
-function Core.GeneratePercentagesTree(percentages)
+function Core.GeneratePercentagesTree(percentages, triggerType)
   local children = {}
   local t = {}
 
@@ -94,7 +102,7 @@ function Core.GeneratePercentagesTree(percentages)
       PRT.TableUtils.SortByKey(percentages, "name")
       t.children = children
       for _, percentage in ipairs(percentages) do
-        tinsert(children, Core.GeneratePercentageTree(percentage))
+        tinsert(children, Core.GeneratePercentageTree(percentage, triggerType))
       end
     end
   end
@@ -103,7 +111,7 @@ function Core.GeneratePercentagesTree(percentages)
 end
 
 function Core.GeneratePowerPercentagesTree(percentages)
-  local tree = Core.GeneratePercentagesTree(percentages)
+  local tree = Core.GeneratePercentagesTree(percentages, "powerPercentage")
   tree.value = "powerPercentages"
   tree.text = L["Power Percentage"]
   tree.icon = 132849
@@ -113,7 +121,7 @@ function Core.GeneratePowerPercentagesTree(percentages)
 end
 
 function Core.GenerateHealthPercentagesTree(percentages)
-  local tree = Core.GeneratePercentagesTree(percentages)
+  local tree = Core.GeneratePercentagesTree(percentages, "healthPercentage")
   tree.value = "healthPercentages"
   tree.text = L["Health Percentage"]
   tree.icon = 136168
@@ -125,7 +133,7 @@ end
 function Core.GenerateRotationTree(rotation)
   local t = {
     value = rotation.name,
-    text = Core.InactiveText(Core.WithDifficultiesText(rotation.name, rotation), rotation.enabled)
+    text = Core.UnsupportedText(Core.InactiveText(Core.WithDifficultiesText(rotation.name, rotation), rotation.enabled), "rotation", rotation)
   }
 
   if rotation.triggerCondition then
@@ -162,7 +170,7 @@ end
 function Core.GenerateTimerTree(timer)
   local t = {
     value = timer.name,
-    text = Core.InactiveText(Core.WithDifficultiesText(timer.name, timer), timer.enabled)
+    text = Core.UnsupportedText(Core.InactiveText(Core.WithDifficultiesText(timer.name, timer), timer.enabled), "timer", timer)
   }
 
   if timer.startCondition then

@@ -376,3 +376,9 @@ L["Version"] = true
 L["`/prt ui` opens this window."] = true
 L["`/prt versions` checks the versions in your group."] = true
 L["`/prt` opens the previous window."] = true
+
+-- Midnight restrictions
+L["%s trigger(s) can't fire anymore since Midnight (combat log, boss health/power). They are kept and marked in the configuration: %s"] = true
+L["Unsupported"] = true
+L["Since Midnight addons can't read boss health or power during encounters. This trigger is kept, but it won't fire."] = true
+L["Since Midnight addons can't read the combat log. A condition of this trigger uses a combat log event, so it won't fire. Only encounter start/end and combat start/end are available."] = true

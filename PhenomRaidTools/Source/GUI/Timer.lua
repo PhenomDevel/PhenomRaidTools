@@ -211,5 +211,6 @@ function PRT.AddTimerWidget(container, profile, encounterID, timerName)
   local _, encounter = PRT.GetSelectedVersionEncounterByID(profile.encounters, encounterID)
   local timers = encounter.Timers
 
+  PRT.AddUnsupportedNotice(container, "timer", timers, timerName)
   Timer.TimerWidget(timerName, timers, container)
 end

@@ -409,3 +409,9 @@ L["Version"] = "Version"
 L["`/prt ui` opens this window."] = "`/prt ui` öffnet dieses Fenster."
 L["`/prt versions` checks the versions in your group."] = "`/prt versions` prüft die Versionen in deiner Gruppe."
 L["`/prt` opens the previous window."] = "`/prt` öffnet das bisherige Fenster."
+
+-- Midnight restrictions
+L["%s trigger(s) can't fire anymore since Midnight (combat log, boss health/power). They are kept and marked in the configuration: %s"] = "%s Trigger können seit Midnight nicht mehr auslösen (Kampflog, Boss-Leben/-Ressource). Sie bleiben erhalten und sind in der Konfiguration markiert: %s"
+L["Unsupported"] = "Nicht unterstützt"
+L["Since Midnight addons can't read boss health or power during encounters. This trigger is kept, but it won't fire."] = "Seit Midnight können Addons im Bosskampf weder Leben noch Ressourcen des Bosses lesen. Dieser Trigger bleibt erhalten, löst aber nicht aus."
+L["Since Midnight addons can't read the combat log. A condition of this trigger uses a combat log event, so it won't fire. Only encounter start/end and combat start/end are available."] = "Seit Midnight können Addons das Kampflog nicht mehr lesen. Eine Bedingung dieses Triggers nutzt ein Kampflog-Ereignis, daher löst er nicht aus. Verfügbar sind nur Boss-Start/-Ende und Kampfbeginn/-ende."
