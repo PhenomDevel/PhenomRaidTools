@@ -6,6 +6,10 @@ If you want to access the addon just use `/prt` or the minimap icon in game and 
 
 A new configuration window is being built page by page. Preview it with `/prt ui`; until it is complete, `/prt` keeps opening the current window.
 
+Pages available in the new window so far:
+
+- **Players & groups:** raid roster (`$tank1`, `$heal1`, `$dd1`, ...), custom placeholders with a preview of who they resolve to in your group, import and export of placeholders.
+
 ## About
 PhenomRaidTools is an addon to use next to the usual raid utility addons like [WeakAuras2](https://github.com/WeakAuras/WeakAuras2), [DeadlyBossMods](https://github.com/DeadlyBossMods/DeadlyBossMods), and [BigWigs](https://github.com/BigWigsMods/BigWigs). With PhenomRaidTools you'll be able to configure your own timers, rotations and other triggers to show messages on the screen. You can choose when and how the messages should be displayed as well as who in the raid team should see the messages.
 

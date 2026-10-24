@@ -387,3 +387,35 @@ L["Since Midnight addons can't read the combat log. A condition of this trigger 
 L["Plans can't be sent during an encounter."] = true
 L["Received plan for %s from %s."] = true
 L["Sending %d plan(s) to your group."] = true
+
+-- Players & groups
+L["%d name(s)"] = true
+L["%d placeholder(s): %s. Existing ones with the same name get the new names added."] = true
+L["%d player(s) without a group role were skipped."] = true
+L["A placeholder named %s already exists."] = true
+L["Add to my placeholders"] = true
+L["Clear raid roster"] = true
+L["Clear the raid roster?"] = true
+L["Click to select, then copy with Ctrl+C."] = true
+L["Custom placeholder"] = true
+L["Custom placeholders"] = true
+L["Import current group"] = true
+L["Name the players of your raid once and use their slot as target in any message, e.g. `$tank1`."] = true
+L["Names for players or groups of players, used as message targets. An encounter can add its own."] = true
+L["New placeholder"] = true
+L["No placeholders yet."] = true
+L["Nobody of these is in your group."] = true
+L["Paste an export string"] = true
+L["Placeholders imported."] = true
+L["Players & groups"] = true
+L["Raid roster and placeholders for message targets"] = true
+L["Remove %s?"] = true
+L["Replace the raid roster with your current group?"] = true
+L["Right now: %s"] = true
+L["Separated by commas, in order of priority."] = true
+L["Share"] = true
+L["This is no PRT import string."] = true
+L["This string contains no placeholders. Did you paste an encounter?"] = true
+L["Uses the group roles. Players without a role (common in WoW: Forever) are skipped."] = true
+L["Without `$` and spaces. Messages use `$Name`."] = true
+L["{Player}: the first name that is in the group and alive. {Group}: everyone."] = true
