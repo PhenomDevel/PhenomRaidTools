@@ -416,6 +416,11 @@ L["Unsupported"] = "Nicht unterstützt"
 L["Since Midnight addons can't read boss health or power during encounters. This trigger is kept, but it won't fire."] = "Seit Midnight können Addons im Bosskampf weder Leben noch Ressourcen des Bosses lesen. Dieser Trigger bleibt erhalten, löst aber nicht aus."
 L["Since Midnight addons can't read the combat log. A condition of this trigger uses a combat log event, so it won't fire. Only encounter start/end and combat start/end are available."] = "Seit Midnight können Addons das Kampflog nicht mehr lesen. Eine Bedingung dieses Triggers nutzt ein Kampflog-Ereignis, daher löst er nicht aus. Verfügbar sind nur Boss-Start/-Ende und Kampfbeginn/-ende."
 
+-- Plan sync
+L["Plans can't be sent during an encounter."] = "Pläne können während eines Bosskampfs nicht gesendet werden."
+L["Received plan for %s from %s."] = "Plan für %s von %s erhalten."
+L["Sending %d plan(s) to your group."] = "Sende %d Plan/Pläne an deine Gruppe."
+
 -- Players & groups
 L["%d name(s)"] = "%d Name(n)"
 L["%d placeholder(s): %s. Existing ones with the same name get the new names added."] = "%d Platzhalter: %s. Bei vorhandenen mit gleichem Namen werden die neuen Namen ergänzt."

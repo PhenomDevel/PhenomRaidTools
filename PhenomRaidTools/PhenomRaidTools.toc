@@ -46,6 +46,7 @@ Source/Static.lua
 Source/EncounterHelper.lua
 Source/EventHandler.lua
 Source/MessageHandler.lua
+Source/PlanSync.lua
 Source/TriggerHandler.lua
 Source/ImportExport.lua
 Source/Overlay.lua

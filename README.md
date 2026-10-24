@@ -22,11 +22,11 @@ PhenomRaidTools is an addon to use next to the usual raid utility addons like [W
 Classic Era, Wrath Classic and other clients are not supported anymore.
 
 ### Midnight addon restrictions
-Since 12.0 (also on WoW: Forever) addons can't read the combat log, unit health or unit power during encounters, and addon messages are blocked while an encounter is in progress. Until PhenomRaidTools distributes plans before the pull, this means:
+Since 12.0 (also on WoW: Forever) addons can't read the combat log, unit health or unit power during encounters, and addon messages are blocked while an encounter is in progress. PhenomRaidTools therefore distributes the plans before the pull and every player runs them locally:
 
-- Timers started by `ENCOUNTER_START` work and are shown to yourself.
-- Rotations, health and power percentages and timers started or stopped by combat log events don't trigger. They are kept, marked as *Unsupported* in the configuration, and listed once in chat after updating.
-- Messages to other players are not delivered during an encounter.
+- In sender mode, the group leader or an assistant sends the plans of all enabled encounters on ready check (only what changed or isn't confirmed yet) or with `/prt sync`.
+- Players in receiver mode keep the last plan per encounter (only from the leader or an assistant) and run it on `ENCOUNTER_START`, showing the messages meant for them. Raid warnings and raid markers stay with the lead.
+- Timers started by `ENCOUNTER_START` work. Rotations, health and power percentages and timers started or stopped by combat log events don't trigger. They are kept, marked as *Unsupported* in the configuration, listed once in chat after updating, and not sent with the plan.
 
 ## Guide
 For a brief introduction into the addon please read: [PhenomRaidTools Beginner Guide](https://github.com/PhenomDevel/PhenomRaidTools/blob/master/docs/PhenomRaidTools_Beginner_Guide.pdf)
