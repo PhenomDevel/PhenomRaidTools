@@ -325,6 +325,7 @@ function addon:OnEnable()
   AceComm:RegisterComm(PRT.GetProfileDB().addonPrefixes.addonMessage, self.OnAddonMessage)
   AceComm:RegisterComm(PRT.GetProfileDB().addonPrefixes.versionRequest, self.OnVersionRequest)
   AceComm:RegisterComm(PRT.GetProfileDB().addonPrefixes.versionResponse, self.OnVersionResponse)
+  PRT.PlanSync.Initialize()
 end
 
 function addon:OnDisable()
@@ -411,6 +412,7 @@ function addon:PrintHelp()
   PRT.Info("/prt - Opens the config")
   PRT.Info("/prt ui - Opens the new window (preview)")
   PRT.Info("/prt versions - Will perform a version check on the current group")
+  PRT.Info("/prt sync - Sends your plans to the group (also done on ready check)")
   PRT.Info("/prt profile - Opens the profile page for PRT")
   PRT.Info("/prt minimap - Will enable the minimap icon")
   PRT.Info("/prtm $message - Will let you send a message to *ALL* players on the fly")
@@ -425,6 +427,10 @@ function addon:ExecuteChatCommand(input)
     addon:PrintHelp()
   elseif input == "version" or input == "versions" then
     addon:VersionCheck()
+  elseif input == "sync" then
+    if PRT.PlanSync.SendPlans(true) == 0 then
+      PRT.Info("Nothing sent. Sync needs sender mode, a group and at least one enabled encounter.")
+    end
   elseif input == "minimap" then
     addon:ToggleMinimapIcon()
   else

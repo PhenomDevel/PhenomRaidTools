@@ -9,7 +9,8 @@ local EventHandler = {
     "PLAYER_REGEN_ENABLED",
     "ENCOUNTER_START",
     "ENCOUNTER_END",
-    "PLAYER_ENTERING_WORLD"
+    "PLAYER_ENTERING_WORLD",
+    "READY_CHECK"
   },
   retailWorldEvents = {
     "PLAYER_SPECIALIZATION_CHANGED"
@@ -169,6 +170,30 @@ local function LogEncounterStatistics(currentEncounter)
   end
 end
 
+-- The plan to run: the own one in sender mode, otherwise the one received
+-- from the raid lead (PlanSync). Returns plan, received.
+function EventHandler.GetPlan(encounterID)
+  if PRT.IsSender() then
+    local _, encounter = PRT.GetEncounterById(PRT.GetProfileDB().encounters, encounterID)
+    if encounter and not encounter.enabled then
+      PRT.Warn("Found encounter but it is disabled. Skipping encounter.")
+      return
+    end
+    local _, encounterVersion = PRT.GetSelectedVersionEncounterByID(PRT.GetProfileDB().encounters, encounterID)
+    if encounterVersion then
+      return encounterVersion, false
+    end
+  end
+
+  if PRT.IsReceiver() then
+    local received = PRT.PlanSync.GetReceivedPlan(encounterID)
+    if received then
+      PRT.Debug("Running plan received from", PRT.ClassColoredName(received.sender))
+      return received.plan, true
+    end
+  end
+end
+
 function EventHandler.StartEncounter(event, encounterID, encounterName)
   if PRT.GetProfileDB().combatEventRecorder.options.resetOnEncounterStart then
     PRT.GetProfileDB().combatEventRecorder.data = {}
@@ -179,43 +204,38 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
 
     PRT.currentEncounter = NewEncounter()
 
-    if PRT.IsSender() then
-      PRT.Debug("Starting new encounter", PRT.HighlightString(encounterName), "(", PRT.HighlightString(encounterID), ")", "|r")
-      local _, encounter = PRT.GetEncounterById(PRT.GetProfileDB().encounters, encounterID)
-      local _, encounterVersion = PRT.GetSelectedVersionEncounterByID(PRT.GetProfileDB().encounters, encounterID)
+    PRT.Debug("Starting new encounter", PRT.HighlightString(encounterName), "(", PRT.HighlightString(encounterID), ")", "|r")
+    local plan, received = EventHandler.GetPlan(encounterID)
 
-      if encounter then
-        if encounter.enabled then
-          PRT.Debug(L["Running PhenomRaidTools version %s"]:format(PRT.HighlightString(PRT.GetProfileDB().version)))
-          PRT.EnsureEncounterTrigger(encounterVersion)
-          PRT.RegisterEvents(EventHandler.trackedInCombatEvents)
-          PRT.currentEncounter.encounter = PRT.TableUtils.Clone(encounterVersion)
-          PRT.currentEncounter.encounter.startedAt = GetTime()
+    if plan then
+      PRT.Debug(L["Running PhenomRaidTools version %s"]:format(PRT.HighlightString(PRT.GetProfileDB().version)))
+      PRT.currentEncounter.running = true
+      PRT.currentEncounter.received = received
+      PRT.currentEncounter.encounter = PRT.TableUtils.Clone(plan)
+      PRT.EnsureEncounterTrigger(PRT.currentEncounter.encounter)
+      PRT.RegisterEvents(EventHandler.trackedInCombatEvents)
+      PRT.currentEncounter.encounter.startedAt = GetTime()
 
-          CompileInterestingUnits(PRT.currentEncounter)
-          CompileInterestingEvents(PRT.currentEncounter)
-          LogInterestingUnitsAndEvents(PRT.currentEncounter)
+      CompileInterestingUnits(PRT.currentEncounter)
+      CompileInterestingEvents(PRT.currentEncounter)
+      LogInterestingUnitsAndEvents(PRT.currentEncounter)
 
-          PRT.SetupEncounterSpecificCustomPlaceholders()
+      PRT.SetupEncounterSpecificCustomPlaceholders()
 
-          AceTimer:ScheduleRepeatingTimer(PRT.ProcessMessageQueue, 0.5)
+      AceTimer:ScheduleRepeatingTimer(PRT.ProcessMessageQueue, 0.5)
 
-          -- Make sure timings are once queried at the start so timing with < 0.5s will trigger
-          AceTimer:ScheduleTimer(PRT.CheckTimerTimings, 0.1, PRT.currentEncounter.encounter.Timers)
-          AceTimer:ScheduleRepeatingTimer(PRT.CheckTimerTimings, 0.5, PRT.currentEncounter.encounter.Timers)
+      -- Make sure timings are once queried at the start so timing with < 0.5s will trigger
+      AceTimer:ScheduleTimer(PRT.CheckTimerTimings, 0.1, PRT.currentEncounter.encounter.Timers)
+      AceTimer:ScheduleRepeatingTimer(PRT.CheckTimerTimings, 0.5, PRT.currentEncounter.encounter.Timers)
 
-          if PRT.IsReceiver() then
-            PRT.ReceiverOverlay.ReInitialize(PRT.GetProfileDB().overlay.receivers)
-          end
+      if PRT.IsReceiver() then
+        PRT.ReceiverOverlay.ReInitialize(PRT.GetProfileDB().overlay.receivers)
+      end
 
-          if PRT.GetProfileDB().overlay.sender.enabled then
-            AceTimer:ScheduleRepeatingTimer(PRT.SenderOverlay.UpdateFrame, 1, PRT.currentEncounter.encounter, PRT.GetProfileDB().overlay.sender)
-            PRT.SenderOverlay.Show()
-            PRT.SenderOverlay.Lock()
-          end
-        else
-          PRT.Warn("Found encounter but it is disabled. Skipping encounter.")
-        end
+      if not received and PRT.GetProfileDB().overlay.sender.enabled then
+        AceTimer:ScheduleRepeatingTimer(PRT.SenderOverlay.UpdateFrame, 1, PRT.currentEncounter.encounter, PRT.GetProfileDB().overlay.sender)
+        PRT.SenderOverlay.Show()
+        PRT.SenderOverlay.Lock()
       end
     end
 
@@ -232,7 +252,7 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
 end
 
 function EventHandler.StopEncounter(event)
-  if PRT.IsSender() and PRT.currentEncounter then
+  if PRT.currentEncounter and PRT.currentEncounter.running then
     PRT.Debug("Combat stopped.")
 
     -- Send the last event before unregistering the event
@@ -327,6 +347,10 @@ function addon:PLAYER_REGEN_DISABLED(event)
   EventHandler.StartReceiveMessages()
 end
 
+function addon:READY_CHECK()
+  PRT.PlanSync.OnReadyCheck()
+end
+
 function addon:ENCOUNTER_END(event)
   EventHandler.StopEncounter(event)
 end
@@ -341,7 +365,7 @@ end
 -- trigger conditions. The combat log arguments stay nil: CLEU is not available
 -- to addons anymore.
 function EventHandler.DispatchEvent(event, combatEvent, eventSpellID, targetGUID, targetName, sourceGUID, sourceName)
-  if PRT.currentEncounter and PRT.IsSender() then
+  if PRT.currentEncounter and PRT.currentEncounter.running then
     if PRT.currentEncounter.inFight then
       if PRT.currentEncounter.encounter then
         if PRT.currentEncounter.interestingEvents[combatEvent] or PRT.currentEncounter.interestingEvents[event] then
@@ -396,7 +420,7 @@ local function IsTrackedUnit(currentEncounter, guid)
 end
 
 function addon:UNIT_POWER_FREQUENT(event, unitID)
-  if PRT.currentEncounter and PRT.IsSender() then
+  if PRT.currentEncounter and PRT.currentEncounter.running then
     if PRT.currentEncounter.inFight then
       if PRT.currentEncounter.encounter then
         local unitGUID = UnitGUID(unitID)
@@ -414,7 +438,7 @@ function addon:UNIT_POWER_FREQUENT(event, unitID)
 end
 
 function addon:UNIT_HEALTH(event, unitID)
-  if PRT.currentEncounter and PRT.IsSender() then
+  if PRT.currentEncounter and PRT.currentEncounter.running then
     if PRT.currentEncounter.inFight then
       if PRT.currentEncounter.encounter then
         local unitGUID = UnitGUID(unitID)
