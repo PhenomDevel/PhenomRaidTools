@@ -26,7 +26,7 @@ Classic Era, Wrath Classic and other clients are not supported anymore.
 Since 12.0 (also on WoW: Forever) addons can't read the combat log, unit health or unit power during encounters, and addon messages are blocked while an encounter is in progress. PhenomRaidTools therefore distributes the plans before the pull and every player runs them locally:
 
 - In sender mode, the group leader or an assistant sends the plans of all enabled encounters on ready check (only what changed or isn't confirmed yet) or with `/prt sync`.
-- Players in receiver mode keep the last plan per encounter (only from the leader or an assistant) and run it on `ENCOUNTER_START`, showing the messages meant for them. Raid warnings and raid markers stay with the lead.
+- Players in receiver mode keep the last plan per encounter (only from the leader or an assistant) and run it on `ENCOUNTER_START`, showing the messages meant for them. Raid warnings and raid markers stay with the lead. Placeholders and the raid roster (`$tank1`, ...) resolve with the lead's data, which is sent along.
 - Triggers can only react to encounter start/end and combat start/end. Health and power percentages and timers or rotations using combat log events (or a spell, source or target in a condition) don't trigger. They are kept, marked as *Unsupported* in the configuration, listed once in chat after updating, and not sent with the plan.
 - The combat event recorder and the `$target`/`$source` message placeholders are gone; both depended on the combat log.
 
