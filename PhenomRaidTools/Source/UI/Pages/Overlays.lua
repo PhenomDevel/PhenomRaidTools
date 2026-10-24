@@ -29,6 +29,12 @@ local FROM = {
   {value = "center", label = L["Centered on it"]}
 }
 
+local PURPOSES = {
+  {value = "none", label = L["None"]},
+  {value = "healing", label = L["Healing cooldowns"]},
+  {value = "utility", label = L["Utility cooldowns"]}
+}
+
 local ALIGN = {
   {value = "LEFT", label = L["Left"]},
   {value = "CENTER", label = L["Center"]},
@@ -71,6 +77,7 @@ end
 
 local function ReceiverPage(index)
   local config = Receivers()[index]
+  UI.SetPreview({kind = "receiver", config = config})
   local style = Overlay.Get(config, "style")
   local vertical = Overlay.Get(config, "grow") == "UP" or Overlay.Get(config, "grow") == "DOWN"
 
@@ -123,11 +130,28 @@ local function ReceiverPage(index)
             end
           }
         ),
+        {
+          type = "dropdown",
+          label = L["Cooldowns"],
+          note = L["Cooldowns of this kind from the list go here."],
+          values = PURPOSES,
+          get = function()
+            return config.purpose or "none"
+          end,
+          set = function(value)
+            for _, other in ipairs(Receivers()) do
+              if value ~= "none" and other.purpose == value then
+                other.purpose = nil
+              end
+            end
+            config.purpose = value ~= "none" and value or nil
+          end
+        },
         Field(config, "locked", {type = "checkbox", label = L["Locked"], note = L["Unlock to drag it to its place."], layout = true}),
         {
           type = "button",
-          label = L["Test"],
-          note = L["Shows three sample messages."],
+          label = L["Show on screen"],
+          note = L["Three sample messages where the overlay is."],
           buttonText = L["Test"],
           onClick = function()
             Overlay.Test(index)
@@ -287,6 +311,24 @@ local function ReceiversCard()
         onClick = function()
           Overlay.Test()
         end
+      },
+      {
+        type = "button",
+        label = L["Default overlays"],
+        note = L["Messages at the top, healing cooldowns on the left, utility cooldowns on the right."],
+        buttonText = L["Restore"],
+        danger = true,
+        onClick = function()
+          UI.Confirm(
+            L["Replace your overlays with the three default ones?"],
+            L["Restore"],
+            function()
+              PRT.GetProfileDB().overlay.receivers = Overlay.DefaultReceivers()
+              Overlay.Refresh()
+              UI.Refresh()
+            end
+          )
+        end
       }
     }
   }
@@ -353,7 +395,7 @@ local function SenderCard()
   end
   return {
     title = L["Lead status"],
-    note = L["For the lead during the own plan: timers with the time to their next timing, rotations with their counter."],
+    note = L["For the lead during the own plan: every group with the time to its next assignment."],
     toggle = {get = Get("enabled"), set = Set("enabled")},
     rows = {
       {
@@ -370,7 +412,7 @@ local function SenderCard()
         onClick = PRT.SenderOverlay.Hide
       },
       {type = "checkbox", label = L["Hide after combat"], get = Get("hideAfterCombat"), set = Set("hideAfterCombat")},
-      {type = "checkbox", label = L["Hide disabled triggers"], get = Get("hideDisabledTriggers"), set = Set("hideDisabledTriggers")},
+      {type = "checkbox", label = L["Hide disabled groups"], get = Get("hideDisabledTriggers"), set = Set("hideDisabledTriggers")},
       {type = "slider", label = L["Size"], min = 8, max = 32, get = Get("fontSize"), set = Set("fontSize")},
       {
         type = "color",

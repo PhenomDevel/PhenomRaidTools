@@ -50,7 +50,7 @@ local function Collect(now)
   local options = Options()
   local leadTime = options.leadTime or 30
   for _, timer in ipairs(encounter.Timers or {}) do
-    if timer.started == true and timer.startedAt and PRT.IsTriggerActive(timer) then
+    if timer.started and timer.startedAt then
       for _, timing in ipairs(timer.timings or {}) do
         local offset = timing.offset or 0
         for _, second in ipairs(timing.seconds or {}) do

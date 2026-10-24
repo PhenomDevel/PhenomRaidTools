@@ -39,8 +39,7 @@ UI.RegisterPage(
             {type = "description", label = L["`/prt sync` sends your plans to the group (also on every ready check)."]},
             {type = "description", label = L["`/prt versions` checks the versions in your group."]},
             {type = "description", label = L["`/prt news` shows what's new."]},
-            {type = "description", label = L["`/prt minimap` shows the minimap icon again."]},
-            {type = "description", label = L["`/prtm text` shows a message to everyone in combat; during boss encounters only to you, the game blocks addon messages there."]}
+            {type = "description", label = L["`/prt minimap` shows the minimap icon again."]}
           }
         }
       }

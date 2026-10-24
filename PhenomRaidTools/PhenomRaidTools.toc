@@ -2,8 +2,8 @@
 ## Title: PhenomRaidTools
 ## Version: @project-version@
 ## Author: @project-author@
-## Notes: Easy to use encounter configuration to send messages to your raid team on certain events.
-## Notes-deDE: Einfach zu konfigurierender Boss Helfer. Nutze Countdowns, Rotationen und andere Auslöser, um Nachrichten anzuzeigen während eines Bosses.
+## Notes: Plan per boss which player sees which message when; the raid lead syncs the plan before the pull.
+## Notes-deDE: Plane pro Boss, welcher Spieler wann welche Nachricht sieht; die Raidleitung synchronisiert den Plan vor dem Pull.
 ## SavedVariables: PhenomRaidToolsDB
 ## X-Category: Raid
 ## X-Wago-ID: nQN57KBw
@@ -60,9 +60,9 @@ Source/WhatsNewNotes.lua
 Source/UI/Widgets.lua
 Source/UI/Window.lua
 Source/UI/MessageEditor.lua
+Source/UI/Preview.lua
 Source/UI/Pages/Overview.lua
 Source/UI/Pages/Encounters.lua
-Source/UI/Pages/Players.lua
 Source/UI/Pages/Templates.lua
 Source/UI/Pages/Overlays.lua
 Source/UI/Pages/Settings.lua

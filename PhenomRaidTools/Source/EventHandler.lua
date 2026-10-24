@@ -78,7 +78,9 @@ end
 -- cheap because a check only compares numbers.
 local TIMING_INTERVAL = 0.1
 
-function EventHandler.StartEncounter(event, encounterID, encounterName)
+-- Pull and combat start are the same moment here: combat starts before
+-- ENCOUNTER_START, and test mode starts on combat without an encounter.
+function EventHandler.StartEncounter(encounterID, encounterName)
   if PRT.IsEnabled() then
     wipe(PRT.GetProfileDB().debugLog)
     -- A start without an end before (e.g. test mode, a reload in combat).
@@ -94,37 +96,28 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
       PRT.currentEncounter.running = true
       PRT.currentEncounter.received = received
       PRT.currentEncounter.encounter = PRT.TableUtils.Clone(plan)
-      PRT.EnsureEncounterTrigger(PRT.currentEncounter.encounter)
+      PRT.currentEncounter.encounter.Timers = PRT.currentEncounter.encounter.Timers or {}
       PRT.currentEncounter.encounter.startedAt = GetTime()
 
-      PRT.SetupEncounterSpecificCustomPlaceholders()
-
+      PRT.StartTimers(PRT.currentEncounter.encounter.Timers)
+      PRT.CheckTimerTimings(PRT.currentEncounter.encounter.Timers)
       PRT.EncounterTimer:ScheduleRepeatingTimer(PRT.CheckTimerTimings, TIMING_INTERVAL, PRT.currentEncounter.encounter.Timers)
 
       if not received and PRT.GetProfileDB().overlay.sender.enabled then
         PRT.SenderOverlay.Start(PRT.currentEncounter.encounter)
       end
-    end
-
-    -- Pull and combat start are the same moment here: combat starts before
-    -- ENCOUNTER_START, and test mode starts on combat without an encounter.
-    EventHandler.DispatchEvent(event)
-    EventHandler.DispatchEvent(event == "ENCOUNTER_START" and "PLAYER_REGEN_DISABLED" or "ENCOUNTER_START")
-
-    PRT.CheckTimerTimings(PRT.currentEncounter.encounter.Timers)
-    if PRT.currentEncounter.running and PRT.IsReceiver() then
-      PRT.Upcoming.Start(PRT.currentEncounter.encounter)
+      if PRT.IsReceiver() then
+        PRT.Upcoming.Start(PRT.currentEncounter.encounter)
+      end
     end
   else
     PRT.Debug(PRT.HighlightString("PhenomRaidTools"), "is disabled. We won't start encounter.")
   end
 end
 
-function EventHandler.StopEncounter(event)
+function EventHandler.StopEncounter()
   if PRT.currentEncounter and PRT.currentEncounter.running then
     PRT.Debug("Combat stopped.")
-
-    EventHandler.DispatchEvent(event)
     PRT.currentEncounter = {}
   end
 
@@ -167,14 +160,14 @@ function PRT.UnregisterWorldEvents()
   end
 end
 
-function addon:ENCOUNTER_START(event, encounterID, encounterName)
+function addon:ENCOUNTER_START(_, encounterID, encounterName)
   -- We only start a real encounter if PRT is enabled (correct dungeon/raid difficulty) and we're not in test mode
   if PRT.enabled and not PRT.IsTestMode() then
-    EventHandler.StartEncounter(event, encounterID, encounterName)
+    EventHandler.StartEncounter(encounterID, encounterName)
   end
 end
 
-function addon:PLAYER_REGEN_DISABLED(event)
+function addon:PLAYER_REGEN_DISABLED()
   if PRT.IsTestMode() then
     PRT.Debug("You are currently in test mode.")
 
@@ -182,7 +175,7 @@ function addon:PLAYER_REGEN_DISABLED(event)
 
     if encounter then
       if encounter.enabled then
-        EventHandler.StartEncounter(event, encounter.id, encounter.name)
+        EventHandler.StartEncounter(encounter.id, encounter.name)
       else
         PRT.Warn("The selected encounter is disabled. Please enable it before testing.")
       end
@@ -196,33 +189,13 @@ function addon:READY_CHECK()
   PRT.PlanSync.OnReadyCheck()
 end
 
-function addon:ENCOUNTER_END(event)
-  EventHandler.StopEncounter(event)
+function addon:ENCOUNTER_END()
+  EventHandler.StopEncounter()
 end
 
-function addon:PLAYER_REGEN_ENABLED(event)
+function addon:PLAYER_REGEN_ENABLED()
   if not PRT.PlayerInParty() or PRT.IsTestMode() then
-    EventHandler.StopEncounter(event)
-  end
-end
-
--- Feeds encounter events (ENCOUNTER_START/END, combat start/stop) into the
--- trigger conditions. Nothing else reaches addons during encounters since 12.0.
-function EventHandler.DispatchEvent(event)
-  local currentEncounter = PRT.currentEncounter
-  if not (currentEncounter and currentEncounter.running and currentEncounter.inFight and currentEncounter.encounter) then
-    return
-  end
-
-  local encounter = currentEncounter.encounter
-  if encounter.Timers then
-    PRT.CheckTimerStopConditions(encounter.Timers, event)
-    PRT.CheckTimerStartConditions(encounter.Timers, event)
-  end
-  if encounter.Rotations then
-    PRT.CheckTriggersStopConditions(encounter.Rotations, event)
-    PRT.CheckTriggersStartConditions(encounter.Rotations, event)
-    PRT.CheckRotationTriggerCondition(encounter.Rotations, event)
+    EventHandler.StopEncounter()
   end
 end
 

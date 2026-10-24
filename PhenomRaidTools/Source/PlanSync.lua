@@ -26,13 +26,6 @@ PRT.PlanSync = PlanSync
 local PREFIX = "PRT_PLAN"
 local PROTOCOL = 1
 
-local TRIGGER_TYPES = {
-  Timers = "timer",
-  Rotations = "rotation",
-  HealthPercentages = "healthPercentage",
-  PowerPercentages = "powerPercentage"
-}
-
 -- encounterID -> { hash, sentAt, acks = { [name] = hash } }; this session only.
 local sent = {}
 
@@ -42,28 +35,17 @@ local function ReceivedPlans()
   return global.receivedPlans
 end
 
--- The selected version without triggers that can't run anyway; the lead's
--- global placeholders are added to the encounter's own (those win), and the
--- lead's raid roster goes along.
+-- The selected version with its enabled timers only.
 local function BuildPlan(encounterVersion)
   local plan = PRT.TableUtils.Clone(encounterVersion)
-  for key, triggerType in pairs(TRIGGER_TYPES) do
-    local kept = {}
-    for _, trigger in ipairs(plan[key] or {}) do
-      if trigger.enabled ~= false and not PRT.GetUnsupportedReason(triggerType, trigger) then
-        kept[#kept + 1] = trigger
-      end
-    end
-    plan[key] = kept
-  end
-  plan.CustomPlaceholders = plan.CustomPlaceholders or {}
-  for name, placeholder in pairs(PRT.GetProfileDB().customPlaceholders or {}) do
-    if plan.CustomPlaceholders[name] == nil then
-      plan.CustomPlaceholders[name] = PRT.TableUtils.Clone(placeholder)
+  PRT.CleanEncounterVersion(plan)
+  local timers = {}
+  for _, timer in ipairs(plan.Timers) do
+    if timer.enabled ~= false then
+      timers[#timers + 1] = timer
     end
   end
-  -- Players resolve $tank1 etc. with the lead's roster, not their own.
-  plan.RaidRoster = PRT.TableUtils.Clone(PRT.GetProfileDB().raidRoster or {})
+  plan.Timers = timers
   return plan
 end
 

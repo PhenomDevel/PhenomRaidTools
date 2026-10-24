@@ -6,15 +6,17 @@ local UI = PRT.UI
 local Widgets = PRT.Widgets
 
 --[[
-  Assignment editor: one message (what, for whom, when, how) as cards,
-  shared by the encounter timings, rotations and the templates. The first
-  card reads as a sentence and updates live; "Show on my overlay" sends the
-  message to this client only.
+  Assignment editor: one message (what, when, for whom, how) as cards,
+  shared by the encounter assignments and the templates. The first card
+  reads as a sentence and updates live; the window's preview panel shows
+  the message on its overlay.
 
   UI.Messages.Cards(message, context) -> cards
-    context = { at = seconds after the pull (optional), version = encounter
-                version (its placeholders become targets) }
-  UI.Messages.Summary(message) -> one line for lists and the timeline
+    context = { timing = the assignment's timing (encounters only),
+                groups, group, setGroup(index) = move it to another group,
+                onRemove(), isTemplate }
+  UI.Messages.Summary(message) -> one line for lists
+  UI.Messages.WhenText(timing) -> "1:30", "every 0:30 from 0:45 to 4:00"
 ]]
 
 local Messages = {}
@@ -22,9 +24,7 @@ UI.Messages = Messages
 
 local TYPES = {
   {value = "advanced", label = L["Message"]},
-  {value = "cooldown", label = L["Cooldown"]},
-  {value = "raidwarning", label = L["Raid warning"]},
-  {value = "raidtarget", label = L["Raid marker"]}
+  {value = "cooldown", label = L["Cooldown"]}
 }
 
 local ROLE_TARGETS = {
@@ -35,16 +35,29 @@ local ROLE_TARGETS = {
   {value = "$me", label = L["Me"]}
 }
 
+-- Chosen from the list, a cooldown goes on the overlay of its purpose
+-- (ReceiverOverlay.DefaultReceivers) if the profile has one.
 local COOLDOWNS = {
-  -- Raid
-  64843, 265202, 740, 108280, 115310, 31884, 33891, 197721, 62618, 98008, 31821, 196718, 51052, 97462, 359816, 363534, 370960,
-  -- Externals
-  33206, 47788, 102342, 6940, 1022, 204018, 116849,
-  -- Utility
-  192077, 106898, 16191, 64901, 108281, 15286, 374968,
-  -- Immunities
-  642, 45438, 186265, 196555, 31224
+  healing = {
+    -- Raid
+    64843, 265202, 740, 108280, 115310, 31884, 33891, 197721, 62618, 98008, 31821, 196718, 51052, 97462, 359816, 363534, 370960,
+    -- Externals
+    33206, 47788, 102342, 6940, 1022, 204018, 116849
+  },
+  utility = {
+    -- Movement and utility
+    192077, 106898, 16191, 64901, 108281, 15286, 374968,
+    -- Immunities
+    642, 45438, 186265, 196555, 31224
+  }
 }
+
+local COOLDOWN_PURPOSE = {}
+for purpose, spellIDs in pairs(COOLDOWNS) do
+  for _, spellID in ipairs(spellIDs) do
+    COOLDOWN_PURPOSE[spellID] = purpose
+  end
+end
 
 -- Spoken cooldown sounds that come with PRT (Media.lua).
 local COOLDOWN_SOUNDS = {
@@ -62,6 +75,15 @@ local COOLDOWN_SOUNDS = {
 }
 
 local RAID_TARGET_ICON = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:14|t"
+
+local WHEN_MODES = {
+  {value = "once", label = L["Once"]},
+  {value = "repeat", label = L["Repeating"]},
+  {value = "list", label = L["Several times"]}
+}
+
+-- A repeating assignment never shows more often than this.
+local MAX_REPEATS = 100
 
 -------------------------------------------------------------------------------
 -- Text
@@ -94,11 +116,6 @@ end
 
 -- What the player will see (names resolved in the current group).
 function Messages.DisplayText(message)
-  if message.type == "raidtarget" then
-    local marker = tonumber(message.raidtarget)
-    local icon = marker and marker ~= PRT.Static.TargetNoneNumber and RAID_TARGET_ICON:format(marker) or L["no marker"]
-    return L["Mark %s with %s"]:format(PRT.ReplacePlayerNameTokens((message.targets or {})[1] or "?"), icon)
-  end
   local text = PRT.PrepareMessageForDisplay(message.message or "")
   if message.type == "cooldown" then
     local name = SpellName(message.spellID)
@@ -122,36 +139,204 @@ end
 function Messages.Summary(message)
   PRT.NormalizeTargets(message)
   local text = Messages.DisplayText(message)
-  if message.type == "raidwarning" then
-    return L["Raid warning: %s"]:format(text)
-  elseif message.type == "raidtarget" then
-    return text
-  end
   local targets = table.concat(message.targets, ", ")
   return ("%s  |cff%s→ %s|r"):format(text ~= "" and text or L["(empty)"], Widgets.ACCENT_HEX, targets ~= "" and targets or L["nobody"])
 end
 
--- The first card as a sentence: "At 1:15 show ... to ... on overlay 2 for 5 s".
+-------------------------------------------------------------------------------
+-- When
+
+local function RepeatTimes(repeating)
+  local times = {}
+  local every = math.max(1, repeating.every or 30)
+  local last = math.max(repeating.from or 0, repeating.to or 0)
+  local at = repeating.from or 0
+  while at <= last and #times < MAX_REPEATS do
+    times[#times + 1] = at
+    at = at + every
+  end
+  return times
+end
+
+local function WhenMode(timing)
+  if timing.repeating then
+    return "repeat"
+  elseif #(timing.seconds or {}) > 1 then
+    return "list"
+  end
+  return "once"
+end
+
+function Messages.WhenText(timing)
+  local times = {}
+  for index, second in ipairs(timing.seconds or {}) do
+    times[index] = second + (timing.offset or 0)
+  end
+  table.sort(times)
+  if #times == 0 then
+    return L["no time"]
+  elseif timing.repeating and #times > 1 then
+    return L["every %s from %s to %s"]:format(Widgets.FormatTime(timing.repeating.every), Widgets.FormatTime(times[1]), Widgets.FormatTime(times[#times]))
+  end
+  return Widgets.FormatTimeList(times)
+end
+
+-- The first card as a sentence: "At 1:15 show ... to ... on Messages for 5 s".
 local function Sentence(message, context)
-  local parts = {}
-  if context.at then
-    parts[#parts + 1] = L["At %s"]:format(Widgets.FormatTime(context.at + (message.delay or 0)))
+  local overlay = PRT.GetProfileDB().overlay.receivers[message.targetOverlay or 1]
+  local what =
+    L["show %s to %s on %s for %s s"]:format(
+    Messages.DisplayText(message),
+    Messages.TargetsText(message) ~= "" and Messages.TargetsText(message) or L["nobody"],
+    overlay and overlay.label or "?",
+    message.duration or 5
+  )
+  if context.timing then
+    return L["At %s %s"]:format(Messages.WhenText(context.timing), what)
   end
-  if message.type == "raidwarning" then
-    parts[#parts + 1] = L["send the raid warning %s"]:format(Messages.DisplayText(message))
-  elseif message.type == "raidtarget" then
-    parts[#parts + 1] = Messages.DisplayText(message)
-  else
-    local overlay = PRT.GetProfileDB().overlay.receivers[message.targetOverlay or 1]
-    parts[#parts + 1] =
-      L["show %s to %s on %s for %s s"]:format(
-      Messages.DisplayText(message),
-      Messages.TargetsText(message) ~= "" and Messages.TargetsText(message) or L["nobody"],
-      overlay and overlay.label or "?",
-      message.duration or 5
+  return what
+end
+
+local function FirstSecond(timing)
+  local first
+  for _, second in ipairs(timing.seconds or {}) do
+    first = first and math.min(first, second) or second
+  end
+  return first or 0
+end
+
+local function TimeRow(label, note, get, set)
+  return {
+    type = "text",
+    label = label,
+    note = note,
+    placeholder = "1:30",
+    layout = true,
+    get = function()
+      return Widgets.FormatTime(get())
+    end,
+    set = function(text)
+      local times = Widgets.ParseTimeList(text)
+      if times[1] then
+        set(times[1])
+      end
+    end
+  }
+end
+
+local function WhenCard(context)
+  local timing = context.timing
+  timing.offset = nil
+  local mode = WhenMode(timing)
+  local rows = {
+    {
+      type = "chips",
+      values = WHEN_MODES,
+      get = function()
+        return WhenMode(timing)
+      end,
+      set = function(value)
+        local first = FirstSecond(timing)
+        if value == "repeat" then
+          timing.repeating = {from = first, every = 30, to = first + 120}
+          timing.seconds = RepeatTimes(timing.repeating)
+        else
+          timing.repeating = nil
+          if value == "once" then
+            timing.seconds = {first}
+          elseif #timing.seconds < 2 then
+            timing.seconds = {first, first + 60}
+          end
+        end
+      end
+    }
+  }
+  if mode == "once" then
+    rows[#rows + 1] =
+      TimeRow(
+      L["Time"],
+      L["After the pull, e.g. `1:30` or `90`."],
+      function()
+        return FirstSecond(timing)
+      end,
+      function(seconds)
+        timing.seconds = {seconds}
+      end
     )
+  elseif mode == "repeat" then
+    local repeating = timing.repeating
+    local function Update()
+      timing.seconds = RepeatTimes(repeating)
+    end
+    rows[#rows + 1] =
+      TimeRow(
+      L["First time"],
+      nil,
+      function()
+        return repeating.from or 0
+      end,
+      function(seconds)
+        repeating.from = seconds
+        repeating.to = math.max(repeating.to or seconds, seconds)
+        Update()
+      end
+    )
+    rows[#rows + 1] = {
+      type = "slider",
+      label = L["Every"],
+      note = L["Seconds between two times."],
+      min = 5,
+      max = 180,
+      step = 1,
+      layout = true,
+      get = function()
+        return repeating.every or 30
+      end,
+      set = function(value)
+        repeating.every = value
+        Update()
+      end
+    }
+    rows[#rows + 1] =
+      TimeRow(
+      L["Last time"],
+      L["Not after this time."],
+      function()
+        return repeating.to or repeating.from or 0
+      end,
+      function(seconds)
+        repeating.to = seconds
+        Update()
+      end
+    )
+  else
+    rows[#rows + 1] = {
+      type = "timelist",
+      key = tostring(timing),
+      label = L["Times"],
+      note = L["e.g. `0:30, 1:15, 90`."],
+      layout = true,
+      get = function()
+        return timing.seconds
+      end,
+      set = function(times)
+        timing.seconds = times
+      end
+    }
   end
-  return table.concat(parts, " ")
+  if context.groups then
+    rows[#rows + 1] = {
+      type = "dropdown",
+      label = L["Group"],
+      values = context.groups,
+      layout = true,
+      get = function()
+        return context.group
+      end,
+      set = context.setGroup
+    }
+  end
+  return {title = L["When"], note = L["Counted from the pull."], rows = rows}
 end
 
 -------------------------------------------------------------------------------
@@ -188,28 +373,6 @@ local function SortedKeys(t)
   return keys
 end
 
-local function RosterTargets()
-  local values = {}
-  for _, slot in ipairs(SortedKeys(PRT.GetProfileDB().raidRoster)) do
-    values[#values + 1] = {value = "$" .. slot, label = ("$%s %s"):format(slot, PRT.ClassColoredName(PRT.GetProfileDB().raidRoster[slot]))}
-  end
-  return values
-end
-
-local function PlaceholderTargets(version, onlyPlayers)
-  local values = {}
-  local function Add(placeholders)
-    for _, name in ipairs(SortedKeys(placeholders)) do
-      if not onlyPlayers or placeholders[name].type ~= "group" then
-        values[#values + 1] = {value = "$" .. name, label = "$" .. name}
-      end
-    end
-  end
-  Add(version and version.CustomPlaceholders)
-  Add(PRT.GetProfileDB().customPlaceholders)
-  return values
-end
-
 local function MemberTargets()
   local values = {}
   local names = PRT.PartyNames(false)
@@ -236,11 +399,9 @@ local function ClassTargets()
   return values
 end
 
-local function TargetGroups(version)
+local function TargetGroups()
   return {
     {label = L["Roles"], values = ROLE_TARGETS},
-    {label = L["Raid roster"], values = RosterTargets()},
-    {label = L["Placeholders"], values = PlaceholderTargets(version)},
     {label = L["Your group"], values = MemberTargets()},
     {label = L["Raid groups"], values = GroupTargets()},
     {label = L["Classes"], values = ClassTargets()}
@@ -264,8 +425,8 @@ local function OtherTargets(message, groups)
   return others, known
 end
 
-local function TargetRows(message, version)
-  local groups = TargetGroups(version)
+local function TargetRows(message)
+  local groups = TargetGroups()
   local rows = {}
   for _, group in ipairs(groups) do
     if #group.values > 0 then
@@ -286,8 +447,8 @@ local function TargetRows(message, version)
   rows[#rows + 1] = {
     type = "text",
     label = L["More targets"],
-    note = L["Names or placeholders, separated by commas."],
-    placeholder = "Name, $placeholder",
+    note = L["Players outside your group, separated by commas."],
+    placeholder = "Name, Name-Realm",
     layout = true,
     get = function()
       return table.concat((OtherTargets(message, groups)), ", ")
@@ -341,6 +502,10 @@ end
 
 local function SetCooldown(message, spellID)
   message.spellID = spellID
+  local overlay = COOLDOWN_PURPOSE[spellID] and PRT.ReceiverOverlay.IndexForPurpose(COOLDOWN_PURPOSE[spellID])
+  if overlay then
+    message.targetOverlay = overlay
+  end
   message.hasCustomSpellID = nil
   message.message = CooldownText(message)
   local sound = spellID and COOLDOWN_SOUNDS[spellID]
@@ -353,10 +518,12 @@ end
 
 local function CooldownValues()
   local values = {}
-  for _, spellID in ipairs(COOLDOWNS) do
-    local name = SpellName(spellID)
-    if name then
-      values[#values + 1] = {value = spellID, label = PRT.TextureStringBySpellID(spellID, 14) .. " " .. name}
+  for _, purpose in ipairs({"healing", "utility"}) do
+    for _, spellID in ipairs(COOLDOWNS[purpose]) do
+      local name = SpellName(spellID)
+      if name then
+        values[#values + 1] = {value = spellID, label = PRT.TextureStringBySpellID(spellID, 14) .. " " .. name}
+      end
     end
   end
   return values
@@ -367,7 +534,7 @@ local function TextRows(message)
     {
       type = "textarea",
       label = L["Text"],
-      note = L["`{rt1}` raid marker, `{spell:31821}` spell icon, `$tank1` names, `%.0f` remaining seconds."],
+      note = L["`{rt1}` raid marker, `{spell:31821}` spell icon, `%.0f` remaining seconds."],
       height = 44,
       layout = true,
       get = function()
@@ -406,8 +573,6 @@ local function TypeRows(message)
         if value == "cooldown" then
           message.withCountdown = message.withCountdown ~= false
           message.message = CooldownText(message)
-        elseif value == "raidtarget" then
-          message.raidtarget = message.raidtarget or 8
         end
       end
     }
@@ -460,54 +625,11 @@ local function TypeRows(message)
         end
       }
     )
-  elseif message.type == "raidtarget" then
-    local values = {}
-    for _, list in ipairs({RosterTargets(), PlaceholderTargets(nil, true), MemberTargets()}) do
-      for _, entry in ipairs(list) do
-        values[#values + 1] = entry
-      end
-    end
-    Add(
-      {
-        type = "dropdown",
-        label = L["Player"],
-        values = values,
-        placeholder = L["Choose"],
-        layout = true,
-        get = function()
-          return (message.targets or {})[1]
-        end,
-        set = function(value)
-          message.targets = {value}
-        end
-      }
-    )
-    local markers = {{value = PRT.Static.TargetNoneNumber, label = L["Remove marker"]}}
-    for marker = 1, 8 do
-      markers[#markers + 1] = {value = marker, label = RAID_TARGET_ICON:format(marker) .. " " .. PRT.Static.Tables.RaidTargets[marker].name:gsub(" |T.*", "")}
-    end
-    Add(
-      {
-        type = "dropdown",
-        label = L["Marker"],
-        values = markers,
-        layout = true,
-        get = function()
-          return tonumber(message.raidtarget)
-        end,
-        set = function(value)
-          message.raidtarget = value
-        end
-      }
-    )
-    Add({type = "notice", label = L["Only the lead's own plan sets markers. Setting markers during encounters may be blocked since Midnight."]})
   else
     for _, row in ipairs(TextRows(message)) do
       Add(row)
     end
-    if message.type == "raidwarning" then
-      Add({type = "notice", label = L["Raid warnings can't be sent during encounters since Midnight. They work before the pull and in test mode."]})
-    else
+    do
       Add(
         {
           type = "checkbox",
@@ -556,15 +678,6 @@ end
 
 local function ToolsCard(message, context)
   local rows = {
-    {
-      type = "button",
-      label = L["Try it"],
-      note = L["Shows the message on your overlay, only for you."],
-      buttonText = L["Show"],
-      onClick = function()
-        PRT.ShowTestMessage(message)
-      end
-    },
     {
       type = "button",
       label = L["Undo changes"],
@@ -631,6 +744,17 @@ local function ToolsCard(message, context)
       end
     }
   end
+  if context.onRemove then
+    rows[#rows + 1] = {
+      type = "button",
+      label = L["Delete assignment"],
+      buttonText = L["Delete"],
+      danger = true,
+      onClick = function()
+        UI.Confirm(L["Delete this assignment?"], L["Delete"], context.onRemove)
+      end
+    }
+  end
   return {title = L["Tools"], rows = rows}
 end
 
@@ -640,7 +764,10 @@ end
 function Messages.Cards(message, context)
   context = context or {}
   PRT.NormalizeTargets(message)
-  message.type = message.type or "advanced"
+  if not PRT.IsMessageSupported(message) or not message.type then
+    message.type = "advanced"
+  end
+  UI.SetPreview({kind = "message", message = message})
   if not snapshots[message] then
     snapshots[message] = PRT.TableUtils.Clone(message)
   end
@@ -657,10 +784,13 @@ function Messages.Cards(message, context)
     whatRows[#whatRows + 1] = row
   end
   local cards = {{title = L["Assignment"], rows = whatRows}}
+  if context.timing then
+    cards[#cards + 1] = WhenCard(context)
+  end
+  cards[#cards + 1] = {title = L["For whom"], note = L["Everyone selected sees the message."], rows = TargetRows(message)}
 
-  if message.type ~= "raidwarning" and message.type ~= "raidtarget" then
-    local whoRows = TargetRows(message, context.version)
-    whoRows[#whoRows + 1] = {
+  local displayRows = {
+    {
       type = "dropdown",
       label = L["Overlay"],
       values = OverlayValues,
@@ -671,29 +801,8 @@ function Messages.Cards(message, context)
       set = function(value)
         message.targetOverlay = value
       end
-    }
-    cards[#cards + 1] = {title = L["For whom"], note = L["Everyone selected sees the message. Placeholders resolve on the pull."], rows = whoRows}
-  end
-
-  local timingRows = {
+    },
     {
-      type = "slider",
-      label = L["Delay"],
-      note = L["Seconds after the timing."],
-      min = 0,
-      max = 60,
-      step = 0.5,
-      layout = context.at ~= nil,
-      get = function()
-        return message.delay or 0
-      end,
-      set = function(value)
-        message.delay = value
-      end
-    }
-  }
-  if message.type ~= "raidwarning" and message.type ~= "raidtarget" then
-    timingRows[#timingRows + 1] = {
       type = "slider",
       label = L["Duration"],
       note = L["Seconds on the overlay."],
@@ -706,8 +815,8 @@ function Messages.Cards(message, context)
       set = function(value)
         message.duration = value
       end
-    }
-    timingRows[#timingRows + 1] = {
+    },
+    {
       type = "checkbox",
       label = L["Own sound"],
       note = L["Otherwise the overlay's sound plays."],
@@ -719,22 +828,22 @@ function Messages.Cards(message, context)
         message.useCustomSound = value
       end
     }
-    if message.useCustomSound then
-      timingRows[#timingRows + 1] = {
-        type = "sound",
-        label = L["Sound"],
-        indent = 12,
-        get = function()
-          return message.soundFileName
-        end,
-        set = function(value)
-          message.soundFileName = value
-          message.soundFile = LSM:Fetch("sound", value, true)
-        end
-      }
-    end
+  }
+  if message.useCustomSound then
+    displayRows[#displayRows + 1] = {
+      type = "sound",
+      label = L["Sound"],
+      indent = 12,
+      get = function()
+        return message.soundFileName
+      end,
+      set = function(value)
+        message.soundFileName = value
+        message.soundFile = LSM:Fetch("sound", value, true)
+      end
+    }
   end
-  cards[#cards + 1] = {title = L["When and how"], rows = timingRows}
+  cards[#cards + 1] = {title = L["Display"], rows = displayRows}
   cards[#cards + 1] = ToolsCard(message, context)
   return cards
 end

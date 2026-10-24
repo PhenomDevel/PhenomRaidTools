@@ -40,35 +40,11 @@ function PRT.ForEachMessage(profile, fn)
           EachMessage(timing.messages, fn)
         end
       end
-      for _, rotation in ipairs(version.Rotations or {}) do
-        for _, entry in ipairs(rotation.entries or {}) do
-          EachMessage(entry.messages, fn)
-        end
-      end
-      for _, percentages in ipairs({version.HealthPercentages or {}, version.PowerPercentages or {}}) do
-        for _, percentage in ipairs(percentages) do
-          for _, value in ipairs(percentage.values or {}) do
-            EachMessage(value.messages, fn)
-          end
-        end
-      end
     end
   end
   for _, template in pairs(profile.templateStore and profile.templateStore.messages or {}) do
     fn(template)
   end
-end
-
--------------------------------------------------------------------------------
--- Condition
-
-function PRT.EmptyCondition()
-  return {
-    event = PRT.GetProfileDB().triggerDefaults.conditionDefaults.defaultEvent,
-    spellID = nil,
-    source = nil,
-    target = nil
-  }
 end
 
 -------------------------------------------------------------------------------
@@ -110,93 +86,83 @@ end
 function PRT.EmptyTimer()
   return {
     enabled = true,
-    startCondition = PRT.EmptyCondition(),
-    stopCondition = {},
-    hasStopCondition = false,
-    occurence = 0,
-    triggerAtOccurence = 1,
-    resetOccurenceOnStop = false,
-    name = "Timer Name" .. PRT.RandomNumber(),
+    startCondition = {event = "ENCOUNTER_START"},
+    name = "Timer",
     enabledDifficulties = {
       Normal = true,
       Heroic = true,
       Mythic = true
     },
     description = "",
-    timings = {
-      PRT.EmptyTiming()
-    }
-  }
-end
-
--------------------------------------------------------------------------------
--- Rotation
-
-function PRT.EmptyRotationEntry()
-  return {
-    messages = {
-      PRT.EmptyMessage()
-    }
-  }
-end
-
-function PRT.EmptyRotation()
-  return {
-    enabled = true,
-    triggerCondition = PRT.EmptyCondition(),
-    name = "Rotation Name" .. PRT.RandomNumber(),
-    counter = 0,
-    occurence = 0,
-    triggerAtOccurence = 1,
-    entries = {
-      PRT.EmptyRotationEntry()
-    },
-    enabledDifficulties = {
-      Normal = true,
-      Heroic = true,
-      Mythic = true
-    },
-    description = "",
-    shouldRestart = PRT.GetProfileDB().triggerDefaults.rotationDefaults.defaultShouldRestart,
-    ignoreAfterActivation = PRT.GetProfileDB().triggerDefaults.rotationDefaults.defaultIgnoreAfterActivation,
-    ignoreDuration = PRT.GetProfileDB().triggerDefaults.rotationDefaults.defaultIgnoreDuration
-  }
-end
-
--------------------------------------------------------------------------------
--- Percentage
-
-function PRT.EmptyPercentageEntry()
-  return {
-    value = 50,
-    operator = "equals",
-    messages = {
-      PRT.EmptyMessage()
-    }
-  }
-end
-
-function PRT.EmptyPercentage()
-  return {
-    enabled = true,
-    name = "Percentage Name" .. PRT.RandomNumber(),
-    unitID = PRT.GetProfileDB().triggerDefaults.percentageDefaults.defaultUnitID,
-    values = {
-      PRT.EmptyPercentageEntry()
-    },
-    enabledDifficulties = {
-      Normal = true,
-      Heroic = true,
-      Mythic = true
-    },
-    description = "",
-    checkAgain = PRT.GetProfileDB().triggerDefaults.percentageDefaults.defaultCheckAgain,
-    checkAgainAfter = PRT.GetProfileDB().triggerDefaults.percentageDefaults.defaultCheckAgainAfter
+    timings = {}
   }
 end
 
 -------------------------------------------------------------------------------
 -- Encounter
+
+-- Messages that act for the group (raid warnings, raid markers) can't run
+-- during encounters since Midnight.
+local REMOVED_MESSAGE_TYPES = {raidwarning = true, raidtarget = true}
+
+function PRT.IsMessageSupported(message)
+  return not REMOVED_MESSAGE_TYPES[message.type]
+end
+
+-- One message per timing (none: dropped), with its delay and the timing's offset folded into
+-- the times: a timing is one assignment in the editor.
+local function SplitTimings(timer)
+  local timings = {}
+  for _, timing in ipairs(timer.timings or {}) do
+    local messages = timing.messages or {}
+    if #messages == 1 and (timing.offset or 0) == 0 and (messages[1].delay or 0) == 0 then
+      timings[#timings + 1] = timing
+    else
+      for _, message in ipairs(messages) do
+        local seconds = {}
+        for index, second in ipairs(timing.seconds or {}) do
+          seconds[index] = math.max(0, second + (timing.offset or 0) + (message.delay or 0))
+        end
+        message.delay = 0
+        timings[#timings + 1] = {seconds = seconds, name = timing.name, messages = {message}}
+      end
+    end
+  end
+  timer.timings = timings
+end
+
+-- Strips what can't run since Midnight from an encounter version (also
+-- imports from older versions): rotations, health/power percentages, timers
+-- on combat log events, stop conditions, encounter placeholders, raid
+-- warnings and markers. Returns the number of removed triggers.
+function PRT.CleanEncounterVersion(version)
+  local removed = #(version.Rotations or {}) + #(version.HealthPercentages or {}) + #(version.PowerPercentages or {})
+  version.Rotations, version.HealthPercentages, version.PowerPercentages = nil, nil, nil
+  version.CustomPlaceholders, version.RaidRoster = nil, nil
+  local timers = {}
+  for _, timer in ipairs(version.Timers or {}) do
+    if PRT.IsTimerSupported(timer) then
+      timer.startCondition = {event = "ENCOUNTER_START"}
+      timer.stopCondition, timer.hasStopCondition = nil, nil
+      timer.occurence, timer.triggerAtOccurence, timer.resetOccurenceOnStop, timer.resetCounterOnStop = nil, nil, nil, nil
+      for _, timing in ipairs(timer.timings or {}) do
+        local messages = {}
+        for _, message in ipairs(timing.messages or {}) do
+          if PRT.IsMessageSupported(message) then
+            messages[#messages + 1] = message
+          end
+        end
+        timing.messages = messages
+      end
+      SplitTimings(timer)
+      timers[#timers + 1] = timer
+    else
+      removed = removed + 1
+    end
+  end
+  version.Timers = timers
+  return removed
+end
 
 function PRT.EmptyEncounterVersion(encounterId, encounterName)
   return {
@@ -204,11 +170,7 @@ function PRT.EmptyEncounterVersion(encounterId, encounterName)
     enabled = true,
     name = encounterName .. " Version 1",
     createdAt = PRT.Now(),
-    Timers = {},
-    Rotations = {},
-    HealthPercentages = {},
-    PowerPercentages = {},
-    CustomPlaceholders = {}
+    Timers = {}
   }
 end
 
@@ -268,9 +230,6 @@ function PRT.ExampleEncounter()
             enabled = true,
             name = "Pull",
             startCondition = {event = "ENCOUNTER_START"},
-            stopCondition = {},
-            hasStopCondition = false,
-            triggerAtOccurence = 1,
             enabledDifficulties = {Normal = true, Heroic = true, Mythic = true},
             timings = {
               Message("Message 1 and 7 seconds after the pull", {1, 7}, {"ALL"}),
@@ -279,10 +238,6 @@ function PRT.ExampleEncounter()
             }
           }
         },
-        Rotations = {},
-        HealthPercentages = {},
-        PowerPercentages = {},
-        CustomPlaceholders = {}
       }
     }
   }

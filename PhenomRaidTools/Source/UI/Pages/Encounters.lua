@@ -10,31 +10,17 @@ local Messages = UI.Messages
 --[[
   Encounters and their plans. Levels (UI.Navigate("encounters", ...)):
 
-    {}                                    all encounters
-    { id }                                one encounter: settings, version,
-                                          timeline, timers, rotations, ...
-    { id, "timer:3" }                     timer 3 of the selected version
-    { id, "timer:3", timing }             one timing: times and messages
-    { id, "timer:3", timing, message }    the assignment editor
-    { id, "rotation:2", entry, message }  same for rotations
-    { id, "placeholder:Name" }            an encounter placeholder
+    {}                  all encounters
+    { "new" }           a new encounter: the raid bosses of the current tier
+    { id }              one encounter: timeline, assignments, groups, ...
+    { id, "a:3:2" }     an assignment: timing 2 of timer 3
+    { id, "timer:3" }   a group (timer 3) of the selected version
 
-  Triggers that can't fire since Midnight (combat log, boss health/power)
-  are not edited here: they are listed once per encounter and can be
-  removed.
+  Since Midnight a plan is timers from the pull. Each timing holds exactly
+  one message (PRT.CleanEncounterVersion), so the editor shows them as
+  assignments; timers are groups of assignments that can be switched off or
+  limited to difficulties together.
 ]]
-
-local START_EVENTS = {
-  {value = "ENCOUNTER_START", label = L["Pull"]},
-  {value = "PLAYER_REGEN_DISABLED", label = L["Combat start"]}
-}
-
-local TRIGGER_EVENTS = {
-  {value = "ENCOUNTER_START", label = L["Pull"]},
-  {value = "PLAYER_REGEN_DISABLED", label = L["Combat start"]},
-  {value = "ENCOUNTER_END", label = L["Encounter end"]},
-  {value = "PLAYER_REGEN_ENABLED", label = L["Combat end"]}
-}
 
 local DIFFICULTIES = {
   {value = "Normal", label = L["Normal"]},
@@ -42,24 +28,8 @@ local DIFFICULTIES = {
   {value = "Mythic", label = L["Mythic"]}
 }
 
-local TRIGGER_TYPE_LABELS = {
-  timer = L["Timer"],
-  rotation = L["Rotation"],
-  healthPercentage = L["Health percentage"],
-  powerPercentage = L["Power percentage"]
-}
-
-local TRIGGER_TABLES = {
-  timer = "Timers",
-  rotation = "Rotations",
-  healthPercentage = "HealthPercentages",
-  powerPercentage = "PowerPercentages"
-}
-
-local REASONS = {
-  combatLog = L["needs the combat log"],
-  unitValues = L["needs boss health or power"]
-}
+-- The timeline shows at least this much, so there is room to click.
+local MIN_TIMELINE_LENGTH = 180
 
 -------------------------------------------------------------------------------
 -- Data
@@ -98,27 +68,6 @@ local function NewID()
   return id
 end
 
-local function CountMessages(version)
-  local count = 0
-  for _, timer in ipairs(version.Timers or {}) do
-    for _, timing in ipairs(timer.timings or {}) do
-      count = count + #(timing.messages or {}) * #(timing.seconds or {})
-    end
-  end
-  return count
-end
-
--- Index lists of the timers/rotations that still work.
-local function Supported(version, triggerType)
-  local indices = {}
-  for index, trigger in ipairs(version[TRIGGER_TABLES[triggerType]] or {}) do
-    if not PRT.GetUnsupportedReason(triggerType, trigger) then
-      indices[#indices + 1] = index
-    end
-  end
-  return indices
-end
-
 local function ParseKey(key)
   if type(key) ~= "string" then
     return
@@ -126,29 +75,92 @@ local function ParseKey(key)
   return key:match("^(%a+):(.+)$")
 end
 
-local function EventLabel(event)
-  for _, entry in ipairs(TRIGGER_EVENTS) do
-    if entry.value == event then
-      return entry.label
+local function FirstTime(timing)
+  local first
+  for _, second in ipairs(timing.seconds or {}) do
+    first = first and math.min(first, second) or second
+  end
+  return first
+end
+
+-- Every assignment of a version (or one timer), soonest first:
+-- { timerIndex, timingIndex, timer, timing, message, first }.
+local function Assignments(version, onlyTimer)
+  local list = {}
+  for timerIndex, timer in ipairs(version.Timers) do
+    if not onlyTimer or onlyTimer == timerIndex then
+      for timingIndex, timing in ipairs(timer.timings or {}) do
+        local message = timing.messages and timing.messages[1]
+        if message then
+          list[#list + 1] = {
+            timerIndex = timerIndex,
+            timingIndex = timingIndex,
+            timer = timer,
+            timing = timing,
+            message = message,
+            first = FirstTime(timing) or 0
+          }
+        end
+      end
     end
   end
-  return event or "?"
+  table.sort(
+    list,
+    function(a, b)
+      if a.first ~= b.first then
+        return a.first < b.first
+      elseif a.timerIndex ~= b.timerIndex then
+        return a.timerIndex < b.timerIndex
+      end
+      return a.timingIndex < b.timingIndex
+    end
+  )
+  return list
 end
 
-local function TimesText(timing)
-  local times = {}
-  for index, second in ipairs(timing.seconds or {}) do
-    times[index] = second + (timing.offset or 0)
-  end
-  table.sort(times)
-  return #times > 0 and Widgets.FormatTimeList(times) or L["no time"]
+local function AssignmentKey(timerIndex, timingIndex)
+  return ("a:%d:%d"):format(timerIndex, timingIndex)
 end
 
-local function MoveEntry(list, index, delta)
-  local target = index + delta
-  if list[target] then
-    list[index], list[target] = list[target], list[index]
+local function NewMessage()
+  local message = PRT.EmptyMessage()
+  if message.type == "cooldown" then
+    message.type = "advanced"
+    message.targets = PRT.TableUtils.Clone(PRT.GetProfileDB().triggerDefaults.messageDefaults.defaultTargets or {"ALL"})
   end
+  return message
+end
+
+local function NewGroup(version, name)
+  local timer = PRT.EmptyTimer()
+  timer.name = name
+  tinsert(version.Timers, timer)
+  return #version.Timers
+end
+
+-- A new assignment at `at` seconds after the pull, opened in the editor.
+local function AddAssignment(encounter, at, timerIndex)
+  local version = Version(encounter)
+  timerIndex = timerIndex or 1
+  if not version.Timers[timerIndex] then
+    timerIndex = NewGroup(version, L["Pull"])
+  end
+  local timer = version.Timers[timerIndex]
+  timer.timings = timer.timings or {}
+  tinsert(timer.timings, {seconds = {math.max(0, at)}, messages = {NewMessage()}})
+  UI.Navigate("encounters", encounter.id, AssignmentKey(timerIndex, #timer.timings))
+end
+
+local function NextFreeTime(version, onlyTimer)
+  local last
+  for _, assignment in ipairs(Assignments(version, onlyTimer)) do
+    last = assignment.first
+  end
+  return last and last + 10 or 10
+end
+
+local function CountAssignments(version)
+  return #Assignments(version)
 end
 
 -------------------------------------------------------------------------------
@@ -156,8 +168,9 @@ end
 
 local journal
 
--- Encounters of the current tier, raids first; nil without journal (WoW: Forever).
-local function JournalEncounters()
+-- Raid bosses of the current tier: { { name = instance, bosses = { { id, name } } } };
+-- nil without journal (WoW: Forever).
+local function JournalRaids()
   if journal ~= nil then
     return journal or nil
   end
@@ -165,35 +178,47 @@ local function JournalEncounters()
   if not (EJ_GetCurrentTier and EJ_SelectTier and EJ_GetInstanceByIndex and EJ_SelectInstance and EJ_GetEncounterInfoByIndex) then
     return nil
   end
-  local values = {}
+  local raids = {}
   local ok =
     pcall(
     function()
       EJ_SelectTier(EJ_GetCurrentTier())
-      for _, isRaid in ipairs({true, false}) do
-        local instanceIndex = 1
-        local instanceID, instanceName = EJ_GetInstanceByIndex(instanceIndex, isRaid)
-        while instanceID do
-          EJ_SelectInstance(instanceID)
-          local bossIndex = 1
-          local name, _, _, _, _, _, encounterID = EJ_GetEncounterInfoByIndex(bossIndex, instanceID)
-          while name do
-            if encounterID then
-              values[#values + 1] = {value = encounterID, label = ("%s · %s"):format(instanceName or "?", name), name = name}
-            end
-            bossIndex = bossIndex + 1
-            name, _, _, _, _, _, encounterID = EJ_GetEncounterInfoByIndex(bossIndex, instanceID)
+      local instanceIndex = 1
+      local instanceID, instanceName = EJ_GetInstanceByIndex(instanceIndex, true)
+      while instanceID do
+        EJ_SelectInstance(instanceID)
+        local raid = {name = instanceName or "?", bosses = {}}
+        local bossIndex = 1
+        local name, _, _, _, _, _, encounterID = EJ_GetEncounterInfoByIndex(bossIndex, instanceID)
+        while name do
+          if encounterID then
+            raid.bosses[#raid.bosses + 1] = {id = encounterID, name = name}
           end
-          instanceIndex = instanceIndex + 1
-          instanceID, instanceName = EJ_GetInstanceByIndex(instanceIndex, isRaid)
+          bossIndex = bossIndex + 1
+          name, _, _, _, _, _, encounterID = EJ_GetEncounterInfoByIndex(bossIndex, instanceID)
         end
+        if #raid.bosses > 0 then
+          raids[#raids + 1] = raid
+        end
+        instanceIndex = instanceIndex + 1
+        instanceID, instanceName = EJ_GetInstanceByIndex(instanceIndex, true)
       end
     end
   )
-  if ok and #values > 0 then
-    journal = values
+  if ok and #raids > 0 then
+    journal = raids
   end
   return journal or nil
+end
+
+local function CreateEncounter(id, name)
+  local encounter = PRT.EmptyEncounter()
+  encounter.id = id
+  encounter.name = name
+  encounter.versions[1].id = id
+  encounter.versions[1].name = L["Version %d"]:format(1)
+  tinsert(Encounters(), encounter)
+  UI.Navigate("encounters", encounter.id)
 end
 
 -------------------------------------------------------------------------------
@@ -209,7 +234,7 @@ local function CheckImport(text, expectVersion)
   local ok, data = PRT.Deserialize(pendingImport.text)
   if not ok or type(data) ~= "table" then
     pendingImport.error = L["This is no PRT import string."]
-  elseif not (data.Timers or data.Rotations or data.HealthPercentages or data.PowerPercentages) then
+  elseif not data.Timers then
     pendingImport.error = expectVersion and L["This string contains no encounter version."] or L["This string contains no encounter."]
   else
     pendingImport.data = data
@@ -219,10 +244,10 @@ end
 -- An exported version knows its encounter id: it becomes a new version of
 -- that encounter, or a new encounter if there is none.
 local function ImportVersion(data, encounter)
-  data.CustomPlaceholders = data.CustomPlaceholders or {}
+  PRT.ForEachMessage({encounters = {{versions = {data}}}}, PRT.NormalizeTargets)
+  PRT.CleanEncounterVersion(data)
   data.name = (data.name or L["Imported"]) .. " - " .. L["Import"] .. " " .. PRT.Now()
   data.createdAt = PRT.Now()
-  PRT.ForEachMessage({encounters = {{versions = {data}}}}, PRT.NormalizeTargets)
   encounter = encounter or (data.id and FindEncounter(data.id))
   if not encounter then
     encounter = {enabled = true, id = data.id or NewID(), name = data.name, selectedVersion = 1, versions = {}}
@@ -280,9 +305,7 @@ end
 local function EncounterItems()
   local items = {}
   for _, encounter in ipairs(Encounters()) do
-    local version = Version(encounter)
-    local timers = #Supported(version, "timer")
-    local note = L["%d timer(s) · %d message(s)"]:format(timers, CountMessages(version))
+    local note = L["%d assignment(s)"]:format(CountAssignments(Version(encounter)))
     if not encounter.enabled then
       note = note .. " · " .. L["off"]
     end
@@ -316,12 +339,7 @@ local function ListPage()
             return L["Delete %s with all versions?"]:format(Encounters()[index].name or "?")
           end,
           onAdd = function()
-            local encounter = PRT.EmptyEncounter()
-            encounter.id = NewID()
-            encounter.name = L["New encounter"]
-            encounter.versions[1].name = L["Version %d"]:format(1)
-            tinsert(Encounters(), encounter)
-            UI.Push(encounter.id)
+            UI.Push("new")
           end,
           addLabel = L["New encounter"]
         }
@@ -332,83 +350,100 @@ local function ListPage()
 end
 
 -------------------------------------------------------------------------------
+-- New encounter
+
+local function NewEncounterPage()
+  local cards = {}
+  for _, raid in ipairs(JournalRaids() or {}) do
+    local rows = {}
+    for _, boss in ipairs(raid.bosses) do
+      local existing = FindEncounter(boss.id)
+      rows[#rows + 1] = {
+        type = "nav",
+        label = boss.name,
+        value = existing and L["added"] or nil,
+        onClick = function()
+          if existing then
+            UI.Navigate("encounters", boss.id)
+          else
+            CreateEncounter(boss.id, boss.name)
+          end
+        end
+      }
+    end
+    cards[#cards + 1] = {title = raid.name, rows = rows}
+  end
+  cards[#cards + 1] = {
+    title = L["Other encounter"],
+    note = L["Any boss by its encounter ID, e.g. from a dungeon or an older raid."],
+    rows = {
+      {
+        type = "button",
+        label = L["Empty encounter"],
+        buttonText = L["Create"],
+        onClick = function()
+          CreateEncounter(NewID(), L["New encounter"])
+        end
+      }
+    }
+  }
+  local subtitle = JournalRaids() and L["Choose a boss of the current raids."] or L["The dungeon journal is not available: create the encounter by its ID."]
+  return L["New encounter"], subtitle, cards
+end
+
+-------------------------------------------------------------------------------
 -- Encounter
 
 local function SettingsCard(encounter)
-  local rows = {
-    {
-      type = "checkbox",
-      label = L["Enabled"],
-      note = L["Sent to the group and run on the pull."],
-      get = function()
-        return encounter.enabled
-      end,
-      set = function(value)
-        encounter.enabled = value
-      end
-    },
-    {
-      type = "text",
-      label = L["Name"],
-      layout = true,
-      get = function()
-        return encounter.name or ""
-      end,
-      set = function(value)
-        if value ~= "" then
-          encounter.name = value
+  return {
+    title = L["Encounter"],
+    rows = {
+      {
+        type = "checkbox",
+        label = L["Enabled"],
+        note = L["Sent to the group and run on the pull."],
+        get = function()
+          return encounter.enabled
+        end,
+        set = function(value)
+          encounter.enabled = value
         end
-      end
-    },
-    {
-      type = "text",
-      label = L["Encounter ID"],
-      note = L["The ID of ENCOUNTER_START. Must be unique."],
-      get = function()
-        return tostring(encounter.id)
-      end,
-      set = function(value)
-        local id = tonumber(value)
-        local existing = id and FindEncounter(id)
-        if not id then
-          PRT.Error(L["The encounter ID must be a number."])
-        elseif existing and existing ~= encounter then
-          PRT.Error(L["The encounter ID %s is taken by %s."]:format(PRT.HighlightString(id), PRT.HighlightString(existing.name)))
-        else
-          encounter.id = id
-          UI.Navigate("encounters", id)
-        end
-      end
-    }
-  }
-  local journalValues = JournalEncounters()
-  if journalValues then
-    rows[#rows + 1] = {
-      type = "dropdown",
-      label = L["From the dungeon journal"],
-      note = L["Sets ID and name."],
-      values = journalValues,
-      placeholder = L["Choose"],
-      get = function()
-        return encounter.id
-      end,
-      set = function(id)
-        local existing = FindEncounter(id)
-        if existing and existing ~= encounter then
-          PRT.Error(L["The encounter ID %s is taken by %s."]:format(PRT.HighlightString(id), PRT.HighlightString(existing.name)))
-          return
-        end
-        for _, entry in ipairs(journalValues) do
-          if entry.value == id then
-            encounter.name = entry.name
+      },
+      {
+        type = "text",
+        label = L["Name"],
+        layout = true,
+        get = function()
+          return encounter.name or ""
+        end,
+        set = function(value)
+          if value ~= "" then
+            encounter.name = value
           end
         end
-        encounter.id = id
-        UI.Navigate("encounters", id)
-      end
+      },
+      {
+        type = "text",
+        label = L["Encounter ID"],
+        note = L["The ID of ENCOUNTER_START. Must be unique."],
+        get = function()
+          return tostring(encounter.id)
+        end,
+        set = function(value)
+          local id = tonumber(value)
+          local existing = id and FindEncounter(id)
+          if not id then
+            PRT.Error(L["The encounter ID must be a number."])
+          elseif existing and existing ~= encounter then
+            PRT.Error(L["The encounter ID %s is taken by %s."]:format(PRT.HighlightString(id), PRT.HighlightString(existing.name)))
+          else
+            encounter.id = id
+            UI.Navigate("encounters", id)
+          end
+        end
+      }
     }
-  end
-  return {title = L["Encounter"], rows = rows}
+  }
 end
 
 local function VersionValues(encounter)
@@ -509,85 +544,129 @@ local function VersionCard(encounter)
   return {title = L["Version"], rows = rows}
 end
 
--- Lanes by target, a marker per message after the pull.
-local TYPE_COLORS = {
-  cooldown = Widgets.brand,
-  raidwarning = colors.notice,
-  raidtarget = colors.danger
-}
+local function LaneKey(message)
+  PRT.NormalizeTargets(message)
+  local key = table.concat(message.targets, ", ")
+  return key ~= "" and key or L["nobody"]
+end
 
-local MAX_LANES = 12
+local MAX_LANES = 10
 
+-- Lanes by target, a marker per time of each assignment.
 local function TimelineCard(encounter)
   local version = Version(encounter)
-  local lanes, laneByKey, length = {}, {}, 60
+  local lanes, laneByKey, length = {}, {}, MIN_TIMELINE_LENGTH
   local function Lane(key)
+    if not laneByKey[key] and #lanes >= MAX_LANES then
+      key = L["Others"]
+    end
     local lane = laneByKey[key]
     if not lane then
-      if #lanes >= MAX_LANES then
-        key = L["Others"]
-        lane = laneByKey[key]
-      end
-      if not lane then
-        lane = {label = key, markers = {}}
-        laneByKey[key] = lane
-        lanes[#lanes + 1] = lane
-      end
+      lane = {label = key, markers = {}}
+      laneByKey[key] = lane
+      lanes[#lanes + 1] = lane
     end
     return lane
   end
-  for _, timerIndex in ipairs(Supported(version, "timer")) do
-    local timer = version.Timers[timerIndex]
-    if timer.enabled ~= false then
-      for timingIndex, timing in ipairs(timer.timings or {}) do
-        for _, second in ipairs(timing.seconds or {}) do
-          for messageIndex, message in ipairs(timing.messages or {}) do
-            PRT.NormalizeTargets(message)
-            local at = second + (timing.offset or 0) + (message.delay or 0)
-            length = math.max(length, at + 10)
-            local key
-            if message.type == "raidwarning" then
-              key = L["Raid warning"]
-            elseif message.type == "raidtarget" then
-              key = L["Raid marker"]
-            else
-              key = table.concat(message.targets, ", ")
-              key = key ~= "" and key or L["nobody"]
-            end
-            local markers = Lane(key).markers
-            markers[#markers + 1] = {
-              time = math.max(0, at),
-              color = TYPE_COLORS[message.type] or colors.accent,
-              tooltipTitle = ("%s · %s"):format(Widgets.FormatTime(math.max(0, at)), timer.name or ""),
-              tooltip = Messages.DisplayText(message),
-              onClick = function()
-                UI.Navigate("encounters", encounter.id, "timer:" .. timerIndex, timingIndex, messageIndex)
-              end
-            }
-          end
+  for _, assignment in ipairs(Assignments(version)) do
+    local message, timer = assignment.message, assignment.timer
+    local off = timer.enabled == false
+    for _, second in ipairs(assignment.timing.seconds or {}) do
+      local at = math.max(0, second + (assignment.timing.offset or 0) + (message.delay or 0))
+      length = math.max(length, at + 30)
+      local markers = Lane(LaneKey(message)).markers
+      markers[#markers + 1] = {
+        time = at,
+        color = off and colors.control or message.type == "cooldown" and Widgets.brand or colors.accent,
+        tooltipTitle = ("%s · %s"):format(Widgets.FormatTime(at), timer.name or ""),
+        tooltip = Messages.DisplayText(message),
+        onClick = function()
+          UI.Navigate("encounters", encounter.id, AssignmentKey(assignment.timerIndex, assignment.timingIndex))
         end
-      end
+      }
     end
   end
   return {
     title = L["Timeline"],
-    note = L["Every message of the enabled timers after the pull. Click a marker to edit it."],
+    note = L["Click into the timeline to add an assignment at that time, click a marker to edit it."],
     fullWidth = true,
-    rows = {{type = "timeline", lanes = lanes, length = length, empty = L["No messages yet. Add a timer below."]}}
+    rows = {
+      {
+        type = "timeline",
+        lanes = lanes,
+        length = length,
+        empty = L["Nothing planned yet: click where the first assignment belongs."],
+        onClickTime = function(seconds)
+          AddAssignment(encounter, seconds)
+        end
+      }
+    }
   }
 end
 
-local function TimerItems(version)
+local function AssignmentItems(version, onlyTimer)
   local items = {}
-  for _, index in ipairs(Supported(version, "timer")) do
-    local timer = version.Timers[index]
-    local count = 0
-    for _, timing in ipairs(timer.timings or {}) do
-      count = count + #(timing.messages or {})
+  local showGroup = #version.Timers > 1 and not onlyTimer
+  for _, assignment in ipairs(Assignments(version, onlyTimer)) do
+    local message = assignment.message
+    local note = Messages.WhenText(assignment.timing)
+    if showGroup then
+      note = note .. " · " .. (assignment.timer.name or "")
+    end
+    items[#items + 1] = {
+      label = Messages.Summary(message),
+      note = note,
+      icon = message.type == "cooldown" and PRT.SpellIcon(message.spellID) or nil,
+      color = assignment.timer.enabled == false and colors.control or colors.accent,
+      dim = assignment.timer.enabled == false,
+      tooltip = Messages.DisplayText(message)
+    }
+  end
+  return items
+end
+
+local function AssignmentsRow(encounter, onlyTimer)
+  local version = Version(encounter)
+  return {
+    type = "list",
+    items = function()
+      return AssignmentItems(version, onlyTimer)
+    end,
+    empty = L["No assignment yet."],
+    onClick = function(index)
+      local assignment = Assignments(version, onlyTimer)[index]
+      UI.Navigate("encounters", encounter.id, AssignmentKey(assignment.timerIndex, assignment.timingIndex))
+    end,
+    onRemove = function(index)
+      local assignment = Assignments(version, onlyTimer)[index]
+      tremove(assignment.timer.timings, assignment.timingIndex)
+    end,
+    onAdd = function()
+      AddAssignment(encounter, NextFreeTime(version, onlyTimer), onlyTimer)
+    end,
+    addLabel = L["New assignment"]
+  }
+end
+
+local function AssignmentsCard(encounter)
+  return {
+    title = L["Assignments"],
+    note = L["What each player sees and when. Once or repeating, counted from the pull."],
+    fullWidth = true,
+    rows = {AssignmentsRow(encounter)}
+  }
+end
+
+local function GroupItems(version)
+  local items = {}
+  for _, timer in ipairs(version.Timers) do
+    local note = L["%d assignment(s)"]:format(#(timer.timings or {}))
+    if timer.enabled == false then
+      note = note .. " · " .. L["off"]
     end
     items[#items + 1] = {
       label = timer.name or "?",
-      note = L["%s · %d timing(s) · %d message(s)"]:format(EventLabel(timer.startCondition and timer.startCondition.event), #(timer.timings or {}), count),
+      note = note,
       color = timer.enabled ~= false and colors.ok or colors.control,
       dim = timer.enabled == false
     }
@@ -595,173 +674,31 @@ local function TimerItems(version)
   return items
 end
 
-local function TimersCard(encounter)
+local function GroupsCard(encounter)
   local version = Version(encounter)
   return {
-    title = L["Timers"],
-    note = L["Start on the pull; their timings say when which message shows."],
+    title = L["Groups"],
+    note = L["Optional: assignments of a group are switched off or limited to difficulties together."],
     rows = {
       {
         type = "list",
         items = function()
-          return TimerItems(version)
+          return GroupItems(version)
         end,
-        empty = L["No timer yet."],
+        empty = L["No group yet."],
         onClick = function(index)
-          UI.Push("timer:" .. Supported(version, "timer")[index])
+          UI.Push("timer:" .. index)
         end,
         onRemove = function(index)
-          tremove(version.Timers, Supported(version, "timer")[index])
+          tremove(version.Timers, index)
         end,
         confirmRemove = function(index)
-          return L["Delete %s?"]:format(version.Timers[Supported(version, "timer")[index]].name or "")
+          return L["Delete %s with its assignments?"]:format(version.Timers[index].name or "")
         end,
         onAdd = function()
-          local timer = PRT.EmptyTimer()
-          timer.name = L["Timer %d"]:format(#version.Timers + 1)
-          timer.startCondition = {event = "ENCOUNTER_START"}
-          timer.timings = {}
-          tinsert(version.Timers, timer)
-          UI.Push("timer:" .. #version.Timers)
+          UI.Push("timer:" .. NewGroup(version, L["Group %d"]:format(#version.Timers + 1)))
         end,
-        addLabel = L["New timer"]
-      }
-    }
-  }
-end
-
-local function RotationsCard(encounter)
-  local version = Version(encounter)
-  return {
-    title = L["Rotations"],
-    note = L["Show the next entry each time their event happens. Since Midnight only pull, combat and encounter start or end are left."],
-    rows = {
-      {
-        type = "list",
-        items = function()
-          local items = {}
-          for _, index in ipairs(Supported(version, "rotation")) do
-            local rotation = version.Rotations[index]
-            items[#items + 1] = {
-              label = rotation.name or "?",
-              note = L["%s · %d entries"]:format(EventLabel(rotation.triggerCondition and rotation.triggerCondition.event), #(rotation.entries or {})),
-              color = rotation.enabled ~= false and colors.ok or colors.control,
-              dim = rotation.enabled == false
-            }
-          end
-          return items
-        end,
-        empty = L["No rotation."],
-        onClick = function(index)
-          UI.Push("rotation:" .. Supported(version, "rotation")[index])
-        end,
-        onRemove = function(index)
-          tremove(version.Rotations, Supported(version, "rotation")[index])
-        end,
-        confirmRemove = function(index)
-          return L["Delete %s?"]:format(version.Rotations[Supported(version, "rotation")[index]].name or "")
-        end,
-        onAdd = function()
-          local rotation = PRT.EmptyRotation()
-          rotation.name = L["Rotation %d"]:format(#version.Rotations + 1)
-          rotation.triggerCondition = {event = "ENCOUNTER_START"}
-          tinsert(version.Rotations, rotation)
-          UI.Push("rotation:" .. #version.Rotations)
-        end,
-        addLabel = L["New rotation"]
-      }
-    }
-  }
-end
-
-local function UnsupportedCard(encounter)
-  local version = Version(encounter)
-  local unsupported = PRT.GetUnsupportedTriggers(version)
-  if #unsupported == 0 then
-    return
-  end
-  return {
-    title = L["Can't fire anymore"],
-    note = L["Since Midnight addons get no combat log and no boss health or power. These triggers are kept for reference; rebuild them as timers from the pull."],
-    rows = {
-      {
-        type = "list",
-        items = function()
-          local items = {}
-          for _, entry in ipairs(PRT.GetUnsupportedTriggers(version)) do
-            items[#items + 1] = {
-              label = entry.trigger.name or "?",
-              note = ("%s · %s"):format(TRIGGER_TYPE_LABELS[entry.type], REASONS[entry.reason] or entry.reason),
-              color = colors.danger,
-              dim = true
-            }
-          end
-          return items
-        end,
-        onRemove = function(index)
-          local entry = PRT.GetUnsupportedTriggers(version)[index]
-          local list = version[TRIGGER_TABLES[entry.type]]
-          for listIndex, trigger in ipairs(list) do
-            if trigger == entry.trigger then
-              tremove(list, listIndex)
-              break
-            end
-          end
-        end,
-        confirmRemove = function(index)
-          return L["Delete %s?"]:format(PRT.GetUnsupportedTriggers(version)[index].trigger.name or "")
-        end
-      }
-    }
-  }
-end
-
-local function SortedPlaceholderNames(version)
-  local names = {}
-  for name in pairs(version.CustomPlaceholders or {}) do
-    names[#names + 1] = name
-  end
-  table.sort(names)
-  return names
-end
-
-local function PlaceholdersCard(encounter)
-  local version = Version(encounter)
-  version.CustomPlaceholders = version.CustomPlaceholders or {}
-  return {
-    title = L["Encounter placeholders"],
-    note = L["Like the placeholders under {Players & groups}, but only for this encounter and sent with its plan."],
-    rows = {
-      {
-        type = "list",
-        items = function()
-          local items = {}
-          for _, name in ipairs(SortedPlaceholderNames(version)) do
-            local placeholder = version.CustomPlaceholders[name]
-            items[#items + 1] = {
-              label = "$" .. name,
-              note = table.concat(placeholder.characterNames or {}, ", ")
-            }
-          end
-          return items
-        end,
-        empty = L["No placeholders yet."],
-        onClick = function(index)
-          UI.Push("placeholder:" .. SortedPlaceholderNames(version)[index])
-        end,
-        onRemove = function(index)
-          version.CustomPlaceholders[SortedPlaceholderNames(version)[index]] = nil
-        end,
-        onAdd = function()
-          local index = 1
-          while version.CustomPlaceholders["Encounter" .. index] do
-            index = index + 1
-          end
-          local name = "Encounter" .. index
-          version.CustomPlaceholders[name] = {name = name, type = "player", characterNames = {}}
-          UI.Push("placeholder:" .. name)
-        end,
-        addLabel = L["New placeholder"]
+        addLabel = L["New group"]
       }
     }
   }
@@ -786,14 +723,14 @@ local function MRTCard(encounter)
   local options = PRT.GetProfileDB().mrtExportDefaults
   local rows = {
     MRTOption("withEncounterName", L["Encounter name"]),
-    MRTOption("withTriggerNames", L["Trigger names"]),
+    MRTOption("withTriggerNames", L["Group names"]),
     MRTOption("withLinePrefix", L["Time in front of each line"]),
     MRTOption("withEmptyLines", L["Empty lines"]),
     MRTOption("withPersonalization", L["Personalized"], L["Each player sees only their own lines."]),
     {
       type = "textarea",
       label = L["Note"],
-      note = L["Cooldown messages of all enabled timers and rotations."],
+      note = L["The cooldown assignments of all enabled groups."],
       readOnly = true,
       height = 90,
       get = function()
@@ -825,489 +762,144 @@ local function MRTCard(encounter)
 end
 
 local function EncounterPage(encounter)
+  local version = Version(encounter)
   local cards = {
     TimelineCard(encounter),
+    AssignmentsCard(encounter),
     SettingsCard(encounter),
-    TimersCard(encounter),
+    GroupsCard(encounter),
     VersionCard(encounter),
-    RotationsCard(encounter),
-    PlaceholdersCard(encounter)
+    MRTCard(encounter)
   }
-  local unsupported = UnsupportedCard(encounter)
-  if unsupported then
-    cards[#cards + 1] = unsupported
-  end
-  cards[#cards + 1] = MRTCard(encounter)
-  local version = Version(encounter)
   return encounter.name or "?", ("%s · %s"):format(version.name or "", encounter.enabled and L["enabled"] or L["off"]), cards
 end
 
 -------------------------------------------------------------------------------
--- Timer
+-- Group (timer)
 
-local function DifficultiesRow(trigger)
-  return {
-    type = "multiselect",
-    label = L["Difficulties"],
-    values = DIFFICULTIES,
-    get = function(value)
-      return trigger.enabledDifficulties == nil or trigger.enabledDifficulties[value]
-    end,
-    set = function(value, selected)
-      trigger.enabledDifficulties = trigger.enabledDifficulties or {Normal = true, Heroic = true, Mythic = true}
-      trigger.enabledDifficulties[value] = selected
-    end
-  }
-end
-
-local function TriggerSettingsRows(trigger)
-  return {
-    {
-      type = "checkbox",
-      label = L["Enabled"],
-      get = function()
-        return trigger.enabled ~= false
-      end,
-      set = function(value)
-        trigger.enabled = value
-      end
-    },
-    {
-      type = "text",
-      label = L["Name"],
-      layout = true,
-      get = function()
-        return trigger.name or ""
-      end,
-      set = function(value)
-        if value ~= "" then
-          trigger.name = value
-        end
-      end
-    },
-    DifficultiesRow(trigger),
-    {
-      type = "textarea",
-      label = L["Description"],
-      placeholder = L["Notes for yourself"],
-      height = 44,
-      get = function()
-        return trigger.description or ""
-      end,
-      set = function(value)
-        trigger.description = value
-      end
-    }
-  }
-end
-
-local function TimingItems(timer)
-  local items = {}
-  for _, timing in ipairs(timer.timings or {}) do
-    local summaries = {}
-    for _, message in ipairs(timing.messages or {}) do
-      summaries[#summaries + 1] = Messages.DisplayText(message)
-    end
-    items[#items + 1] = {
-      label = TimesText(timing) .. (timing.name and timing.name ~= "" and ("  " .. timing.name) or ""),
-      note = #summaries == 1 and summaries[1] or L["%d messages"]:format(#summaries),
-      tooltip = table.concat(summaries, "\n")
-    }
-  end
-  return items
-end
-
-local function TimerPage(encounter, timerIndex)
-  local version = Version(encounter)
-  local timer = version.Timers[timerIndex]
-  timer.timings = timer.timings or {}
-  timer.startCondition = timer.startCondition or {event = "ENCOUNTER_START"}
-  local settings = TriggerSettingsRows(timer)
-  table.insert(
-    settings,
-    3,
-    {
-      type = "dropdown",
-      label = L["Starts on"],
-      note = L["Pull and combat start are the same moment."],
-      values = START_EVENTS,
-      get = function()
-        return timer.startCondition.event
-      end,
-      set = function(event)
-        timer.startCondition = {event = event}
-      end
-    }
-  )
-  if timer.hasStopCondition then
-    settings[#settings + 1] = {
-      type = "button",
-      label = L["Stop condition"],
-      note = L["Stops on %s. Since Midnight that only happens at the end of the encounter."]:format(EventLabel(timer.stopCondition and timer.stopCondition.event)),
-      buttonText = L["Remove"],
-      layout = true,
-      onClick = function()
-        timer.hasStopCondition = false
-        timer.stopCondition = {}
-      end
-    }
-  end
-  return timer.name or "?", L["Timer of %s"]:format(encounter.name or "?"), {
-    {title = L["Timer"], rows = settings},
-    {
-      title = L["Timings"],
-      note = L["Times after the start. Each timing shows its messages."],
-      rows = {
-        {
-          type = "list",
-          items = function()
-            return TimingItems(timer)
-          end,
-          empty = L["No timing yet."],
-          onClick = function(index)
-            UI.Push(index)
-          end,
-          onMove = function(index, delta)
-            MoveEntry(timer.timings, index, delta)
-          end,
-          onRemove = function(index)
-            tremove(timer.timings, index)
-          end,
-          onAdd = function()
-            local timing = PRT.EmptyTiming()
-            local last = timer.timings[#timer.timings]
-            local lastTime = last and last.seconds and last.seconds[#last.seconds]
-            timing.seconds = {lastTime and lastTime + 30 or 10}
-            tinsert(timer.timings, timing)
-            UI.Push(#timer.timings)
-          end,
-          addLabel = L["New timing"]
-        }
-      }
-    }
-  }, {encounter.name}
-end
-
-local function MessagesListRow(messages, onAdd)
-  return {
-    type = "list",
-    items = function()
-      local items = {}
-      for _, message in ipairs(messages) do
-        items[#items + 1] = {label = Messages.Summary(message)}
-      end
-      return items
-    end,
-    empty = L["No message yet."],
-    onClick = function(index)
-      UI.Push(index)
-    end,
-    onMove = function(index, delta)
-      MoveEntry(messages, index, delta)
-    end,
-    onRemove = function(index)
-      tremove(messages, index)
-    end,
-    onAdd = onAdd,
-    addLabel = L["New message"]
-  }
-end
-
-local function NewMessage(messages)
-  local message = PRT.EmptyMessage()
-  if message.type == "cooldown" then
-    message.type = "advanced"
-    message.targets = PRT.TableUtils.Clone(PRT.GetProfileDB().triggerDefaults.messageDefaults.defaultTargets or {"ALL"})
-  end
-  tinsert(messages, message)
-  UI.Push(#messages)
-end
-
-local function TimingPage(encounter, timerIndex, timingIndex)
+local function GroupPage(encounter, timerIndex)
   local timer = Version(encounter).Timers[timerIndex]
-  local timing = timer.timings[timingIndex]
-  timing.messages = timing.messages or {}
-  return TimesText(timing), L["Timing of %s"]:format(timer.name or "?"), {
+  timer.timings = timer.timings or {}
+  return timer.name or "?", L["Group of %s"]:format(encounter.name or "?"), {
     {
-      title = L["When"],
+      title = L["Group"],
       rows = {
         {
-          type = "timelist",
-          key = tostring(timing),
-          label = L["Times after the start"],
-          note = L["e.g. `0:30, 1:15, 90`: each time shows the messages."],
+          type = "checkbox",
+          label = L["Enabled"],
           get = function()
-            return timing.seconds
-          end,
-          set = function(times)
-            timing.seconds = times
-          end
-        },
-        {
-          type = "slider",
-          label = L["Offset"],
-          note = L["Moves all times, e.g. to warn earlier."],
-          min = -30,
-          max = 30,
-          step = 0.5,
-          layout = true,
-          get = function()
-            return timing.offset or 0
+            return timer.enabled ~= false
           end,
           set = function(value)
-            timing.offset = value
+            timer.enabled = value
           end
         },
         {
           type = "text",
           label = L["Name"],
-          placeholder = L["e.g. Phase 2"],
           layout = true,
           get = function()
-            return timing.name or ""
+            return timer.name or ""
           end,
           set = function(value)
-            timing.name = value ~= "" and value or nil
-          end
-        }
-      }
-    },
-    {
-      title = L["Messages"],
-      rows = {
-        MessagesListRow(
-          timing.messages,
-          function()
-            NewMessage(timing.messages)
-          end
-        )
-      }
-    }
-  }, {encounter.name, timer.name}
-end
-
-local function TimingMessagePage(encounter, timerIndex, timingIndex, messageIndex)
-  local version = Version(encounter)
-  local timer = version.Timers[timerIndex]
-  local timing = timer.timings[timingIndex]
-  local message = timing.messages[messageIndex]
-  local first = timing.seconds and timing.seconds[1]
-  local context = {version = version, at = first and first + (timing.offset or 0)}
-  return L["Message %d"]:format(messageIndex), L["%s at %s"]:format(timer.name or "?", TimesText(timing)), Messages.Cards(message, context), {
-    encounter.name,
-    timer.name,
-    TimesText(timing)
-  }
-end
-
--------------------------------------------------------------------------------
--- Rotation
-
-local function RotationPage(encounter, rotationIndex)
-  local rotation = Version(encounter).Rotations[rotationIndex]
-  rotation.entries = rotation.entries or {}
-  rotation.triggerCondition = rotation.triggerCondition or {event = "ENCOUNTER_START"}
-  local settings = TriggerSettingsRows(rotation)
-  table.insert(
-    settings,
-    3,
-    {
-      type = "dropdown",
-      label = L["Next entry on"],
-      values = TRIGGER_EVENTS,
-      get = function()
-        return rotation.triggerCondition.event
-      end,
-      set = function(event)
-        rotation.triggerCondition = {event = event}
-      end
-    }
-  )
-  table.insert(
-    settings,
-    4,
-    {
-      type = "checkbox",
-      label = L["Start over"],
-      note = L["After the last entry the first one follows."],
-      get = function()
-        return rotation.shouldRestart
-      end,
-      set = function(value)
-        rotation.shouldRestart = value
-      end
-    }
-  )
-  return rotation.name or "?", L["Rotation of %s"]:format(encounter.name or "?"), {
-    {title = L["Rotation"], rows = settings},
-    {
-      title = L["Entries"],
-      rows = {
-        {
-          type = "list",
-          items = function()
-            local items = {}
-            for index, entry in ipairs(rotation.entries) do
-              items[index] = {label = L["Entry %d"]:format(index), note = L["%d messages"]:format(#(entry.messages or {}))}
+            if value ~= "" then
+              timer.name = value
             end
-            return items
-          end,
-          onClick = function(index)
-            UI.Push(index)
-          end,
-          onMove = function(index, delta)
-            MoveEntry(rotation.entries, index, delta)
-          end,
-          onRemove = function(index)
-            tremove(rotation.entries, index)
-          end,
-          onAdd = function()
-            tinsert(rotation.entries, {messages = {}})
-            UI.Push(#rotation.entries)
-          end,
-          addLabel = L["New entry"]
-        }
-      }
-    }
-  }, {encounter.name}
-end
-
-local function RotationEntryPage(encounter, rotationIndex, entryIndex)
-  local rotation = Version(encounter).Rotations[rotationIndex]
-  local entry = rotation.entries[entryIndex]
-  entry.messages = entry.messages or {}
-  return L["Entry %d"]:format(entryIndex), rotation.name, {
-    {
-      title = L["Messages"],
-      rows = {
-        MessagesListRow(
-          entry.messages,
-          function()
-            NewMessage(entry.messages)
-          end
-        )
-      }
-    }
-  }, {encounter.name, rotation.name}
-end
-
-local function RotationMessagePage(encounter, rotationIndex, entryIndex, messageIndex)
-  local version = Version(encounter)
-  local rotation = version.Rotations[rotationIndex]
-  local message = rotation.entries[entryIndex].messages[messageIndex]
-  return L["Message %d"]:format(messageIndex), rotation.name, Messages.Cards(message, {version = version}), {
-    encounter.name,
-    rotation.name,
-    L["Entry %d"]:format(entryIndex)
-  }
-end
-
--------------------------------------------------------------------------------
--- Encounter placeholder
-
-local PLACEHOLDER_TYPES = {
-  {value = "player", label = L["Player"]},
-  {value = "group", label = L["Group"]}
-}
-
-local function PlaceholderPage(encounter, name)
-  local version = Version(encounter)
-  local placeholder = version.CustomPlaceholders[name]
-  return "$" .. name, L["Placeholder of %s"]:format(encounter.name or "?"), {
-    {
-      title = L["Placeholder"],
-      rows = {
-        {
-          type = "text",
-          label = L["Name"],
-          note = L["Without `$` and spaces. Messages use `$Name`."],
-          get = function()
-            return name
-          end,
-          set = function(value)
-            value = (value or ""):gsub("[%s$]", "")
-            if value == "" or value == name or version.CustomPlaceholders[value] then
-              return
-            end
-            version.CustomPlaceholders[value], version.CustomPlaceholders[name] = placeholder, nil
-            placeholder.name = value
-            UI.Navigate("encounters", encounter.id, "placeholder:" .. value)
           end
         },
         {
-          type = "dropdown",
-          label = L["Type"],
-          note = L["{Player}: the first name that is in the group and alive. {Group}: everyone."],
-          values = PLACEHOLDER_TYPES,
-          get = function()
-            return placeholder.type or "player"
+          type = "multiselect",
+          label = L["Difficulties"],
+          values = DIFFICULTIES,
+          get = function(value)
+            return timer.enabledDifficulties == nil or timer.enabledDifficulties[value]
           end,
-          set = function(value)
-            placeholder.type = value
+          set = function(value, selected)
+            timer.enabledDifficulties = timer.enabledDifficulties or {Normal = true, Heroic = true, Mythic = true}
+            timer.enabledDifficulties[value] = selected
           end
         },
         {
           type = "textarea",
-          label = L["Names"],
-          note = L["Separated by commas, in order of priority."],
-          placeholder = "Name1, Name2-Realm",
+          label = L["Description"],
+          placeholder = L["Notes for yourself"],
+          height = 44,
           get = function()
-            return table.concat(placeholder.characterNames or {}, ", ")
+            return timer.description or ""
           end,
           set = function(value)
-            local names = {}
-            for entry in (value or ""):gmatch("[^,]+") do
-              entry = strtrim(entry)
-              if entry ~= "" then
-                names[#names + 1] = entry
-              end
-            end
-            placeholder.characterNames = names
+            timer.description = value
           end
         }
       }
-    }
+    },
+    {title = L["Assignments"], rows = {AssignmentsRow(encounter, timerIndex)}}
   }, {encounter.name}
+end
+
+-------------------------------------------------------------------------------
+-- Assignment
+
+local function GroupValues(version)
+  local values = {}
+  for index, timer in ipairs(version.Timers) do
+    values[index] = {value = index, label = timer.name or tostring(index)}
+  end
+  return values
+end
+
+local function AssignmentPage(encounter, timerIndex, timingIndex)
+  local version = Version(encounter)
+  local timer = version.Timers[timerIndex]
+  local timing = timer.timings[timingIndex]
+  local message = timing.messages[1]
+  local context = {
+    version = version,
+    timing = timing,
+    groups = #version.Timers > 1 and GroupValues(version) or nil,
+    group = timerIndex,
+    setGroup = function(index)
+      if index ~= timerIndex and version.Timers[index] then
+        tremove(timer.timings, timingIndex)
+        local target = version.Timers[index]
+        target.timings = target.timings or {}
+        tinsert(target.timings, timing)
+        UI.Navigate("encounters", encounter.id, AssignmentKey(index, #target.timings))
+      end
+    end,
+    onRemove = function()
+      tremove(timer.timings, timingIndex)
+      UI.Navigate("encounters", encounter.id)
+    end
+  }
+  return Messages.WhenText(timing), Messages.DisplayText(message), Messages.Cards(message, context), {encounter.name}
 end
 
 -------------------------------------------------------------------------------
 
 -- Resolves the path to the deepest level that still exists.
 local function Build(path)
+  if path[1] == "new" then
+    return NewEncounterPage()
+  end
   local encounter = path[1] and FindEncounter(path[1])
   if not encounter then
     return ListPage()
   end
   local version = Version(encounter)
   local kind, key = ParseKey(path[2])
-  if kind == "timer" then
-    local index = tonumber(key)
-    local timer = index and version.Timers[index]
-    if timer and not PRT.GetUnsupportedReason("timer", timer) then
-      local timing = path[3] and timer.timings and timer.timings[path[3]]
-      if timing then
-        if path[4] and timing.messages and timing.messages[path[4]] then
-          return TimingMessagePage(encounter, index, path[3], path[4])
-        end
-        return TimingPage(encounter, index, path[3])
-      end
-      return TimerPage(encounter, index)
+  if kind == "a" then
+    local timerIndex, timingIndex = key:match("^(%d+):(%d+)$")
+    local timer = version.Timers[tonumber(timerIndex) or 0]
+    local timing = timer and timer.timings and timer.timings[tonumber(timingIndex)]
+    if timing and timing.messages and timing.messages[1] then
+      return AssignmentPage(encounter, tonumber(timerIndex), tonumber(timingIndex))
     end
-  elseif kind == "rotation" then
+  elseif kind == "timer" then
     local index = tonumber(key)
-    local rotation = index and version.Rotations[index]
-    if rotation and not PRT.GetUnsupportedReason("rotation", rotation) then
-      local entry = path[3] and rotation.entries and rotation.entries[path[3]]
-      if entry then
-        if path[4] and entry.messages and entry.messages[path[4]] then
-          return RotationMessagePage(encounter, index, path[3], path[4])
-        end
-        return RotationEntryPage(encounter, index, path[3])
-      end
-      return RotationPage(encounter, index)
+    if index and version.Timers[index] then
+      return GroupPage(encounter, index)
     end
-  elseif kind == "placeholder" and version.CustomPlaceholders and version.CustomPlaceholders[key] then
-    return PlaceholderPage(encounter, key)
   end
   return EncounterPage(encounter)
 end
