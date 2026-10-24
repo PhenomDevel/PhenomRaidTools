@@ -1,8 +1,6 @@
 local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
-local GetNumSpecializations, GetSpecializationInfo = GetNumSpecializations, GetSpecializationInfo
-
 local Profiles = {}
 
 -------------------------------------------------------------------------------
@@ -176,8 +174,8 @@ function Profiles.AddSpecSpecificGroupWidget(options, container)
   specSpecificGroup:AddChild(descriptionLabel)
   specSpecificGroup:AddChild(enabledCheckBox)
 
-  for i = 1, GetNumSpecializations(), 1 do
-    local specName = select(2, GetSpecializationInfo(i))
+  for i = 1, PRT.GetNumSpecializations(), 1 do
+    local specName = select(2, PRT.GetSpecializationInfo(i))
     Profiles.AddSpecProfileSelect(options, specSpecificGroup, i, specName)
   end
 
@@ -212,7 +210,7 @@ function PRT.AddProfilesWidget(container, options)
   Profiles.DeleteProfileWidget(deleteGroup)
   container:AddChild(deleteGroup)
 
-  if PRT.IsRetail() then
+  if PRT.HasSpecializations() and PRT.GetNumSpecializations() > 0 then
     -- Spec Specific Profiles
     Profiles.AddSpecSpecificGroupWidget(options, container)
   end

@@ -3,9 +3,8 @@ local addon = LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools")
 local AceComm = LibStub("AceComm-3.0")
 
 local UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned = UnitName, GetUnitName, UnitExists, UnitGroupRolesAssigned
-local UnitIsGroupAssistant, SendChatMessage, UnitIsGroupLeader = UnitIsGroupAssistant, SendChatMessage, UnitIsGroupLeader
+local UnitIsGroupAssistant, UnitIsGroupLeader = UnitIsGroupAssistant, UnitIsGroupLeader
 local GetRealmName, GetRaidTargetIndex, SetRaidTarget = GetRealmName, GetRaidTargetIndex, SetRaidTarget
-local IsEncounterInProgress = IsEncounterInProgress
 
 local MessageHandler = {
   validTargets = {
@@ -61,10 +60,12 @@ local function ExecuteRaidWarning(message)
 
   PRT.Debug("Sending raid warning", PRT.HighlightString(msg))
 
-  if PRT.IsTestMode() then
-    SendChatMessage(msg, "WHISPER", nil, PRT.GetProfileDB().myName)
+  if PRT.IsBlizzardEncounterInProgress() then
+    PRT.Debug("Chat messages to other players are blocked during encounters. Skipping raid warning.")
+  elseif PRT.IsTestMode() then
+    PRT.SendChatMessage(msg, "WHISPER", nil, PRT.GetProfileDB().myName)
   elseif UnitInRaid("player") and (UnitIsGroupAssistant("player") or UnitIsGroupLeader("player")) then
-    SendChatMessage(msg, "RAID_WARNING")
+    PRT.SendChatMessage(msg, "RAID_WARNING")
   end
 end
 
@@ -120,15 +121,24 @@ local function ExecuteMessage(message)
     if UnitExists(targetMessage.target) or tContains(MessageHandler.validTargets, targetMessage.target) then
       targetMessage.sender = PRT.GetProfileDB().myName
 
-      local serializedMessage = PRT.Serialize(targetMessage)
-
-      -- If in test mode send the message through the whipser channel in case we are not in a group
-      if not PRT.PlayerInParty() then
-        AceComm:SendCommMessage(PRT.GetProfileDB().addonPrefixes.addonMessage, serializedMessage, "WHISPER", PRT.GetProfileDB().myName)
+      -- Our own messages never go through the addon channel: it is blocked during encounters.
+      if MessageHandler.IsMessageForMe(targetMessage) then
+        MessageHandler.ShowMessage(targetMessage)
       end
 
-      AceComm:SendCommMessage(PRT.GetProfileDB().addonPrefixes.addonMessage, serializedMessage, "RAID")
-      PRT.Debug("Send message to", PRT.ClassColoredName(targetMessage.target), "with content", PRT.HighlightString(targetMessage.message))
+      local onlyForMe = targetMessage.target ~= "ALL" and tContains(MessageHandler.validPlayerTargets, targetMessage.target)
+
+      if not onlyForMe and PRT.PlayerInParty() then
+        if PRT.IsBlizzardEncounterInProgress() then
+          if PRT.currentEncounter and not PRT.currentEncounter.loggedCommLockdown then
+            PRT.Debug("Addon messages are blocked during encounters. Messages for other players are skipped.")
+            PRT.currentEncounter.loggedCommLockdown = true
+          end
+        else
+          AceComm:SendCommMessage(PRT.GetProfileDB().addonPrefixes.addonMessage, PRT.Serialize(targetMessage), "RAID")
+          PRT.Debug("Send message to", PRT.ClassColoredName(targetMessage.target), "with content", PRT.HighlightString(targetMessage.message))
+        end
+      end
     else
       -- Don't spam chat if a configured user is not in the raid. We expect those to happen sometimes
       if targetMessage.target ~= "N/A" then
@@ -174,11 +184,22 @@ function MessageHandler.IsMessageForMe(message)
   end
 end
 
+function MessageHandler.ShowMessage(message)
+  if PRT.IsReceiver() then
+    PRT.ReceiverOverlay.AddMessage(message)
+  end
+end
+
 function addon:OnAddonMessage(message)
   if PRT.IsEnabled() then
-    if PRT.EncounterInProgress() or IsEncounterInProgress() or PRT.IsTestMode() or PRT.IsInFight() then
+    if PRT.EncounterInProgress() or PRT.IsBlizzardEncounterInProgress() or PRT.IsTestMode() or PRT.IsInFight() then
       if PRT.IsReceiver() then
         local _, messageTable = PRT.Deserialize(message)
+
+        -- Already shown locally when it was sent
+        if messageTable.sender == PRT.GetProfileDB().myName then
+          return
+        end
 
         if MessageHandler.IsValidSender(messageTable) then
           if MessageHandler.IsMessageForMe(messageTable) then

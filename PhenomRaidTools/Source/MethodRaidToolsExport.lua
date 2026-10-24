@@ -11,6 +11,19 @@ local MethodRaidToolsCombatEventTranslations = {
   ["SPELL_AURA_REMOVED"] = "SAR"
 }
 
+-- MRT was called ExRT before; support both addon and SavedVariables names.
+local function GetMethodRaidToolsNote()
+  local db
+
+  if C_AddOns.IsAddOnLoaded("MRT") then
+    db = _G.VMRT
+  elseif C_AddOns.IsAddOnLoaded("ExRT") then
+    db = _G.VExRT
+  end
+
+  return db and db.Note
+end
+
 local function IsValidMessage(message)
   return (message.type == "cooldown")
 end
@@ -443,7 +456,7 @@ local function AddMethodRaidToolsExportOptionsWidget(container, options)
   )
 
   -- Directly Update MethodRaidTools Note
-  forceMethodRaidToolsUpdate:SetDisabled(not C_AddOns.IsAddOnLoaded("ExRT"))
+  forceMethodRaidToolsUpdate:SetDisabled(not GetMethodRaidToolsNote())
   forceMethodRaidToolsUpdate:SetRelativeWidth(0.5)
   forceMethodRaidToolsUpdate:SetCallback(
     "OnValueChanged",
@@ -537,7 +550,7 @@ local function UpdateMethodRaidToolsNote()
 end
 
 local function injectPRTMethodRaidToolsNoteExportIntoNote(export)
-  local currentNote = _G.VExRT.Note.Text1
+  local currentNote = GetMethodRaidToolsNote().Text1
   if currentNote then
     local tagLength = string.len("{prtend}")
     local prtStart = string.find(currentNote, "{prtstart}")
@@ -549,7 +562,7 @@ local function injectPRTMethodRaidToolsNoteExportIntoNote(export)
       local noteEnd = string.sub(currentNote, (prtEnd + tagLength))
 
       newNote = string.format("%s{prtstart}%s{prtend}%s", noteStart, export, noteEnd)
-      _G.VExRT.Note.Text1 = newNote
+      GetMethodRaidToolsNote().Text1 = newNote
       UpdateMethodRaidToolsNote()
     else
       PRT.Error(
@@ -590,11 +603,11 @@ local function AddMethodRaidToolsExportResultWidget(container, encounter, option
   exportTextBox:DisableButton(true)
   exportTextBox:HighlightText()
 
-  if options.forceMethodRaidToolsUpdate and IsAddOnLoaded("ExRT") then
+  if options.forceMethodRaidToolsUpdate and GetMethodRaidToolsNote() then
     if options.updatePRTTag then
       injectPRTMethodRaidToolsNoteExportIntoNote(exportString)
     else
-      _G.VExRT.Note.Text1 = exportString
+      GetMethodRaidToolsNote().Text1 = exportString
       UpdateMethodRaidToolsNote()
     end
   end

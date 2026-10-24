@@ -14,13 +14,9 @@ local EventHandler = {
   retailWorldEvents = {
     "PLAYER_SPECIALIZATION_CHANGED"
   },
-  trackedInCombatEvents = {
-    "COMBAT_LOG_EVENT_UNFILTERED",
-    "UNIT_HEALTH",
-    "UNIT_POWER_FREQUENT",
-    "UNIT_COMBAT",
-    "INSTANCE_ENCOUNTER_ENGAGE_UNIT"
-  },
+  -- Combat log, unit health/power and boss unit tracking are not available to
+  -- addons during encounters since 12.0 (also on WoW: Forever).
+  trackedInCombatEvents = {},
   difficultyIDToNameMapping = {
     [1] = "Normal", -- Normal Dungeon
     [14] = "Normal", -- Normal Raid
@@ -34,14 +30,18 @@ local EventHandler = {
     [194] = "Heroic", -- Heroic Raid Wotlk 25man
     [8] = "Mythic", -- Mythic Keystone Dungeon
     [23] = "Mythic", -- Mythic Dungeon
-    [16] = "Mythic" -- Mythic Raid
+    [16] = "Mythic", -- Mythic Raid
+    [3] = "Normal", -- 10 Player (legacy)
+    [4] = "Normal", -- 25 Player (legacy)
+    [9] = "Normal", -- 40 Player (legacy)
+    [148] = "Normal", -- 20 Player (legacy)
+    [173] = "Normal", -- Normal Dungeon (legacy)
+    [174] = "Heroic" -- Heroic Dungeon (legacy)
   }
 }
 
 -- Create local copies of API functions which we use
-local GetTime, CombatLogGetCurrentEventInfo, UnitGUID, GetInstanceInfo, GetZoneText = GetTime, CombatLogGetCurrentEventInfo, UnitGUID, GetInstanceInfo, GetZoneText
-
-local GetSpecialization, GetSpecializationInfo = GetSpecialization, GetSpecializationInfo
+local GetTime, UnitGUID, GetInstanceInfo = GetTime, UnitGUID, GetInstanceInfo
 
 -------------------------------------------------------------------------------
 -- Local Helper
@@ -219,12 +219,12 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
       end
     end
 
-    addon:COMBAT_LOG_EVENT_UNFILTERED(event)
+    EventHandler.DispatchEvent(event)
 
     -- Simulate encounter start events when in test mode
     if PRT.IsTestMode() then
-      addon:COMBAT_LOG_EVENT_UNFILTERED("PLAYER_REGEN_DISABLED")
-      addon:COMBAT_LOG_EVENT_UNFILTERED("ENCOUNTER_START")
+      EventHandler.DispatchEvent("PLAYER_REGEN_DISABLED")
+      EventHandler.DispatchEvent("ENCOUNTER_START")
     end
   else
     PRT.Debug(PRT.HighlightString("PhenomRaidTools"), "is disabled. We won't start encounter.")
@@ -236,7 +236,7 @@ function EventHandler.StopEncounter(event)
     PRT.Debug("Combat stopped.")
 
     -- Send the last event before unregistering the event
-    addon:COMBAT_LOG_EVENT_UNFILTERED(event)
+    EventHandler.DispatchEvent(event)
     PRT.UnregisterEvents(EventHandler.trackedInCombatEvents)
 
     LogEncounterStatistics(PRT.currentEncounter)
@@ -337,49 +337,11 @@ function addon:PLAYER_REGEN_ENABLED(event)
   end
 end
 
-local function recordCombatEvent(...)
-  local ts, combatEvent, _, _, sourceName, _, _, _, targetName, _, _, eventSpellID, _, _ = ...
-
-  if tContains(PRT.GetProfileDB().combatEventRecorder.options.unitsToRecord, "RAID") then
-    if not PRT.UnitInParty(sourceName) then
-      return
-    end
-  elseif
-    (not tContains(PRT.GetProfileDB().combatEventRecorder.options.unitsToRecord, sourceName)) and
-      (not tContains(PRT.GetProfileDB().combatEventRecorder.options.unitsToRecord, "ALL"))
-   then
-    return
-  end
-
-  if
-    (not tContains(PRT.GetProfileDB().combatEventRecorder.options.eventsToRecord, combatEvent)) and
-      (not tContains(PRT.GetProfileDB().combatEventRecorder.options.eventsToRecord, "ALL"))
-   then
-    return
-  end
-
-  if PRT.GetProfileDB().combatEventRecorder.data and combatEvent and sourceName and eventSpellID then
-    local entry = {
-      ts = ts,
-      event = combatEvent,
-      spellID = eventSpellID,
-      dateTime = PRT.Now(),
-      sourceName = sourceName,
-      targetName = targetName,
-      zoneName = GetZoneText()
-    }
-    tinsert(PRT.GetProfileDB().combatEventRecorder.data, entry)
-  end
-end
-
-function addon:COMBAT_LOG_EVENT_UNFILTERED(event)
-  if PRT.GetProfileDB().combatEventRecorder.options.enabled then
-    recordCombatEvent(CombatLogGetCurrentEventInfo())
-  end
-
+-- Feeds encounter events (ENCOUNTER_START/END, combat start/stop) into the
+-- trigger conditions. The combat log arguments stay nil: CLEU is not available
+-- to addons anymore.
+function EventHandler.DispatchEvent(event, combatEvent, eventSpellID, targetGUID, targetName, sourceGUID, sourceName)
   if PRT.currentEncounter and PRT.IsSender() then
-    local _, combatEvent, _, sourceGUID, sourceName, _, _, targetGUID, targetName, _, _, eventSpellID, _, _ = CombatLogGetCurrentEventInfo()
-
     if PRT.currentEncounter.inFight then
       if PRT.currentEncounter.encounter then
         if PRT.currentEncounter.interestingEvents[combatEvent] or PRT.currentEncounter.interestingEvents[event] then
@@ -533,10 +495,14 @@ function addon:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
 end
 
 local function SetProfileBySpec()
-  if PRT.GetCharDB().profileSettings.specSpecificProfiles.enabled then
-    local specIndex = GetSpecialization()
+  if PRT.GetCharDB().profileSettings.specSpecificProfiles.enabled and PRT.HasSpecializations() then
+    local specIndex = PRT.GetSpecialization()
+    if not specIndex then
+      return
+    end
+
     local profile = PRT.GetCharDB().profileSettings.specSpecificProfiles.profileBySpec[specIndex]
-    local specName = select(2, GetSpecializationInfo(specIndex))
+    local specName = select(2, PRT.GetSpecializationInfo(specIndex))
 
     if profile then
       PRT.SetProfile(profile)
@@ -557,6 +523,11 @@ function addon:PLAYER_ENTERING_WORLD(_)
     function()
       local name, type, difficultyID, _ = GetInstanceInfo()
       local difficultyNameEN = EventHandler.difficultyIDToNameMapping[difficultyID]
+
+      if not difficultyNameEN and (type == "party" or type == "raid") then
+        PRT.Debug("Unknown difficulty", PRT.HighlightString(difficultyID), "- treating it as Normal")
+        difficultyNameEN = "Normal"
+      end
       PRT.currentDifficulty = difficultyNameEN
 
       if type == "party" then
