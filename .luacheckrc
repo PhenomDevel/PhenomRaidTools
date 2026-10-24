@@ -81,6 +81,9 @@ globals = {
   "EJ_GetEncounterInfoByIndex",
   "date",
   "C_AddOns",
+  "C_ChatInfo",
+  "C_InstanceEncounter",
+  "C_SpecializationInfo",
   -- Locals
   "L",
 }

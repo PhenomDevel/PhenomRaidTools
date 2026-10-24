@@ -558,14 +558,63 @@ function PRT.IsDevelopmentVersion()
   return (not tonumber(numericVersionString))
 end
 
-function PRT.IsClassic()
-  local wowVersion = GetBuildInfo()
-  local numericVersion = PRT.ParseVersionString(wowVersion)
-
-  -- If version is smaller than WoW: Shadowlands we assume it must be classic
-  return (numericVersion < 900)
+-- Version strings don't compare across clients (WoW: Forever reports 1.x), so
+-- go by interface number.
+function PRT.IsRetail()
+  return select(4, GetBuildInfo()) >= 120000
 end
 
-function PRT.IsRetail()
-  return (not PRT.IsClassic())
+function PRT.IsForever()
+  local interface = select(4, GetBuildInfo())
+  return interface >= 16000 and interface < 20000
+end
+
+function PRT.IsClassic()
+  return (not PRT.IsRetail())
+end
+
+-------------------------------------------------------------------------------
+-- API compatibility (12.0 moved several globals into C_ namespaces; WoW: Forever
+-- may not provide all of them)
+
+local function FirstFunction(namespace, name, global)
+  return (namespace and namespace[name]) or global
+end
+
+local getSpecialization = FirstFunction(C_SpecializationInfo, "GetSpecialization", _G.GetSpecialization)
+local getSpecializationInfo = FirstFunction(C_SpecializationInfo, "GetSpecializationInfo", _G.GetSpecializationInfo)
+local getNumSpecializations = FirstFunction(C_SpecializationInfo, "GetNumSpecializationsForClassID", nil)
+local isEncounterInProgress = FirstFunction(C_InstanceEncounter, "IsEncounterInProgress", _G.IsEncounterInProgress)
+local sendChatMessage = FirstFunction(C_ChatInfo, "SendChatMessage", _G.SendChatMessage)
+
+function PRT.HasSpecializations()
+  return getSpecialization ~= nil and getSpecializationInfo ~= nil
+end
+
+function PRT.GetSpecialization()
+  return getSpecialization and getSpecialization()
+end
+
+function PRT.GetSpecializationInfo(specIndex)
+  if getSpecializationInfo and specIndex then
+    return getSpecializationInfo(specIndex)
+  end
+end
+
+function PRT.GetNumSpecializations()
+  if getNumSpecializations then
+    return getNumSpecializations(select(3, UnitClass("player"))) or 0
+  end
+
+  return _G.GetNumSpecializations and _G.GetNumSpecializations() or 0
+end
+
+function PRT.IsBlizzardEncounterInProgress()
+  return isEncounterInProgress ~= nil and isEncounterInProgress() == true
+end
+
+function PRT.SendChatMessage(...)
+  if sendChatMessage then
+    sendChatMessage(...)
+  end
 end

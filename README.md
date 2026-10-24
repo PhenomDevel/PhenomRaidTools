@@ -7,6 +7,21 @@ If you want to access the addon just use `/prt` or the minimap icon in game and 
 ## About
 PhenomRaidTools is an addon to use next to the usual raid utility addons like [WeakAuras2](https://github.com/WeakAuras/WeakAuras2), [DeadlyBossMods](https://github.com/DeadlyBossMods/DeadlyBossMods), and [BigWigs](https://github.com/BigWigsMods/BigWigs). With PhenomRaidTools you'll be able to configure your own timers, rotations and other triggers to show messages on the screen. You can choose when and how the messages should be displayed as well as who in the raid team should see the messages.
 
+## Supported clients
+| Client | Interface |
+| --- | --- |
+| WoW: Forever | 16001 |
+| Retail | 120105 (12.1.5) and 120107 (12.1.7 PTR) |
+
+Classic Era, Wrath Classic and other clients are not supported anymore.
+
+### Midnight addon restrictions
+Since 12.0 (also on WoW: Forever) addons can't read the combat log, unit health or unit power during encounters, and addon messages are blocked while an encounter is in progress. Until PhenomRaidTools distributes plans before the pull, this means:
+
+- Timers started by `ENCOUNTER_START` work and are shown to yourself.
+- Rotations, health and power percentages and timers started or stopped by combat log events don't trigger.
+- Messages to other players are not delivered during an encounter.
+
 ## Guide
 For a brief introduction into the addon please read: [PhenomRaidTools Beginner Guide](https://github.com/PhenomDevel/PhenomRaidTools/blob/master/docs/PhenomRaidTools_Beginner_Guide.pdf)
 
@@ -52,7 +67,7 @@ Just install the addon through the Twitch desktop app or any other third party a
 ### Manual
 - Download the latest release of the addon: [Releases](https://github.com/PhenomDevel/PhenomRaidTools/releases)
 - Unpack the zip folder
-- Copy the folder `PhenomRaidTools` to your World of Warcraft addon folder `path\to\World of Warcraft\_retail_\Interface\AddOns`
+- Copy the folder `PhenomRaidTools` to your World of Warcraft addon folder `path\to\World of Warcraft\_retail_\Interface\AddOns` (or the AddOns folder of your WoW: Forever installation)
 
 ## Help
 I have set up a discord server up and running for every kind of question. Feel free to enter and ask what you have trouble with. [Discord](https://discord.gg/GAYDjBF)
