@@ -42,20 +42,12 @@ local function Cards()
   local planRows
   if lead then
     planRows = {
-      {type = "description", label = L["Build a plan per boss: timers from the pull with the messages for your players. On every ready check PRT sends the enabled plans to the group."]},
+      {type = "description", label = L["Build a plan per boss: click into its timeline where an assignment belongs. On every ready check PRT sends the enabled plans to the group."]},
       {
         type = "nav",
         label = L["Create your first encounter"],
         onClick = function()
           UI.Navigate("encounters")
-        end
-      },
-      {
-        type = "nav",
-        label = L["Name your raid roster"],
-        value = "$tank1, $heal1",
-        onClick = function()
-          UI.Navigate("players")
         end
       }
     }

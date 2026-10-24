@@ -37,28 +37,6 @@ local PhenomRaidToolsLDB =
 -------------------------------------------------------------------------------
 -- Ace standard functions
 
--- Positions (x, y) and the layout (style, grow, ...) have code defaults in
--- ReceiverOverlay, so receivers saved before 3.0 can be migrated.
-local function NewDefaultReceiverOverlay(id, name, fontSize, r, g, b)
-  return {
-    id = id,
-    label = name,
-    name = id,
-    locked = true,
-    fontSize = fontSize,
-    fontColor = {
-      hex = format("%02x%02x%02x%02x", 255, (r * 255), (g * 255), (b * 255)),
-      r = r,
-      g = g,
-      b = b,
-      a = 1
-    },
-    enableSound = true,
-    defaultSoundFile = "Interface\\AddOns\\PhenomRaidTools\\Media\\Sounds\\ReceiveMessage.ogg",
-    defaultSoundFileName = "PRT: Default"
-  }
-end
-
 do
   local defaults = {
     char = {
@@ -75,12 +53,6 @@ do
     profile = {
       myName = UnitName("player"),
       version = "@project-version@",
-      messageFilter = {
-        filterBy = "names",
-        requiredGuildRank = nil,
-        requiredNames = {},
-        alwaysIncludeMyself = true
-      },
       enabled = true,
       testMode = false,
       testEncounterID = 9999,
@@ -91,20 +63,10 @@ do
       runMode = "receiver",
       senderMode = false,
       receiverMode = true,
-      clipboard = {
-        timer = nil,
-        rotation = nil,
-        percentage = nil,
-        message = nil
-      },
-      customPlaceholders = {},
+      clipboard = {},
+      -- overlay.receivers has no AceDB defaults: a new profile gets
+      -- ReceiverOverlay.DefaultReceivers() (see PRT.MigrateProfileDB).
       overlay = {
-        receivers = {
-          [1] = NewDefaultReceiverOverlay(1, "Default", 16, 1, 1, 1),
-          [2] = NewDefaultReceiverOverlay(2, "Important", 84, 1, 0, 0),
-          [3] = NewDefaultReceiverOverlay(3, "Personals/Unimportant", 64, 0, 1, 0),
-          [4] = NewDefaultReceiverOverlay(4, "Healing/Special", 36, 0, 0, 1)
-        },
         sender = {
           anchor = "TOPLEFT",
           top = 50,
@@ -118,9 +80,9 @@ do
           },
           fontColor = {
             hex = "FFFFFF",
-            r = 0,
-            g = 0,
-            b = 0,
+            r = 1,
+            g = 1,
+            b = 1,
             a = 1
           },
           enabled = true,
@@ -153,19 +115,6 @@ do
         }
       },
       triggerDefaults = {
-        rotationDefaults = {
-          defaultShouldRestart = true,
-          defaultIgnoreAfterActivation = false,
-          defaultIgnoreDuration = 10
-        },
-        percentageDefaults = {
-          defaultUnitID = "boss1",
-          defaultCheckAgain = false,
-          defaultCheckAgainAfter = 5
-        },
-        conditionDefaults = {
-          defaultEvent = "SPELL_CAST_START"
-        },
         messageDefaults = {
           defaultMessage = "TODO",
           defaultDuration = 5,
@@ -178,7 +127,6 @@ do
       },
       mrtExportDefaults = {
         includeTimers = true,
-        includeRotations = true,
         withEmptyLines = false,
         withEncounterName = true,
         withTriggerNames = true,
@@ -192,9 +140,7 @@ do
         inFight = false
       },
       colors = {},
-      raidRoster = {},
       addonPrefixes = {
-        addonMessage = "PRT_ADDON_MSG",
         versionRequest = "PRT_VERSION_REQ",
         versionResponse = "PRT_VERSION_RESP"
       },
@@ -267,9 +213,6 @@ do
     PRT.MigrateProfileDB(PRT.GetProfileDB())
     PRT.ReceiverOverlay.Initialize()
 
-    -- Initially load global placeholders
-    PRT.SetupGlobalCustomPlaceholders()
-
     PRT.WhatsNew.Initialize(isNewInstall)
   end
 end
@@ -283,7 +226,6 @@ function addon:RefreshConfig()
   end
 
   PRT.MigrateProfileDB(PRT.GetProfileDB())
-  PRT.SetupGlobalCustomPlaceholders()
   PRT.ReceiverOverlay.Clear()
   PRT.ReceiverOverlay.Refresh()
   if PRT.SenderOverlay.IsShown() then
@@ -295,7 +237,6 @@ end
 function addon:OnEnable()
   PRT.RegisterWorldEvents()
 
-  AceComm:RegisterComm(PRT.GetProfileDB().addonPrefixes.addonMessage, self.OnAddonMessage)
   AceComm:RegisterComm(PRT.GetProfileDB().addonPrefixes.versionRequest, self.OnVersionRequest)
   AceComm:RegisterComm(PRT.GetProfileDB().addonPrefixes.versionResponse, self.OnVersionResponse)
   PRT.PlanSync.Initialize()
@@ -386,7 +327,6 @@ function addon:PrintHelp()
   PRT.Info("/prt sync - Sends your plans to the group (also done on ready check)")
   PRT.Info("/prt news - Shows what's new")
   PRT.Info("/prt minimap - Will enable the minimap icon")
-  PRT.Info("/prtm $message - Will let you send a message to *ALL* players on the fly")
 end
 
 function addon:ExecuteChatCommand(input)
@@ -411,27 +351,8 @@ function addon:ExecuteChatCommand(input)
   end
 end
 
-function addon:InvokeMessage(msg)
-  if PRT.GetProfileDB().senderMode and PRT.GetProfileDB().enabled and (PRT.IsTestMode() or true) then
-    if PRT.currentEncounter then
-      if PRT.currentEncounter.inFight then
-        PRT.Debug("Sending new message invoked by chat command")
-        local message = {
-          targets = {"ALL"},
-          message = msg,
-          withSound = true
-        }
-        PRT.ExecuteMessage(message)
-        return
-      end
-    end
-  end
-  PRT.Info("Message by chat command was not send. Either you are not in combat or not in sender mode.")
-end
-
 -------------------------------------------------------------------------------
 -- Chat Commands
 
 addon:RegisterChatCommand("prt", "ExecuteChatCommand")
 addon:RegisterChatCommand("prtv", "VersionCheck")
-addon:RegisterChatCommand("prtm", "InvokeMessage")

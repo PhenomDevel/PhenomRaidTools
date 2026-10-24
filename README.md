@@ -7,13 +7,12 @@ Open the addon with `/prt` or the minimap icon. On the first start a short guide
 Everything lives in one window with a search field:
 
 - **Overview:** lead/player mode, sending plans to the group with the confirmation of every member, the plans you received.
-- **Encounters:** one plan per boss with versions, a timeline of all messages after the pull, timers, rotations, encounter placeholders, import/export and the MethodRaidTools note.
-- **Players & groups:** raid roster (`$tank1`, `$heal1`, `$dd1`, ...), custom placeholders with a preview of who they resolve to in your group, import and export of placeholders.
+- **Encounters:** one plan per boss with versions, a timeline of all assignments after the pull, import/export and the MethodRaidTools note. *New encounter* lists the bosses of the current raids from the Encounter Journal; any other boss is created by its encounter ID.
 - **Templates:** messages you reuse; load them in any message.
 - **Overlays:** the message overlays, your next assignments during an encounter and the lead status.
 - **Settings** and **Profiles** (including a profile per specialization and profile export/import).
 
-Messages are edited as one sentence with a live preview: type (message, cooldown, raid warning, raid marker), targets (roles, roster, placeholders, groups, classes), delay, duration and sound. *Try it* shows the message on your own overlay.
+Click into an encounter's timeline to add an assignment at that time. An assignment is one message shown once, repeating (every *n* seconds from one time to another) or at several times. It is edited as one sentence: type (message or cooldown), targets (roles, players, raid groups, classes), overlay, duration and sound. While you edit an assignment or an overlay, a preview panel beside the window shows it as your players see it.
 
 ### Commands
 | Command | |
@@ -24,10 +23,9 @@ Messages are edited as one sentence with a live preview: type (message, cooldown
 | `/prt news` | Show what's new |
 | `/prt profile` | Open the profiles |
 | `/prt minimap` | Show the minimap icon again |
-| `/prtm <text>` | Show a message to everyone (during encounters only to you) |
 
 ## About
-PhenomRaidTools is an addon to use next to the usual raid utility addons like [WeakAuras2](https://github.com/WeakAuras/WeakAuras2), [DeadlyBossMods](https://github.com/DeadlyBossMods/DeadlyBossMods), and [BigWigs](https://github.com/BigWigsMods/BigWigs). With PhenomRaidTools you'll be able to configure your own timers, rotations and other triggers to show messages on the screen. You can choose when and how the messages should be displayed as well as who in the raid team should see the messages.
+PhenomRaidTools is an addon to use next to the usual raid utility addons like [WeakAuras2](https://github.com/WeakAuras/WeakAuras2), [DeadlyBossMods](https://github.com/DeadlyBossMods/DeadlyBossMods), and [BigWigs](https://github.com/BigWigsMods/BigWigs). With PhenomRaidTools you plan per boss which message shows when after the pull. You can choose when and how the messages should be displayed as well as who in the raid team should see the messages.
 
 ## Supported clients
 | Client | Interface |
@@ -41,33 +39,25 @@ Classic Era, Wrath Classic and other clients are not supported anymore.
 Since 12.0 (also on WoW: Forever) addons can't read the combat log, unit health or unit power during encounters, and addon messages are blocked while an encounter is in progress. PhenomRaidTools therefore distributes the plans before the pull and every player runs them locally:
 
 - In sender mode, the group leader or an assistant sends the plans of all enabled encounters on ready check (only what changed or isn't confirmed yet) or with `/prt sync`.
-- Players in receiver mode keep the last plan per encounter (only from the leader or an assistant) and run it on `ENCOUNTER_START`, showing the messages meant for them. Raid warnings and raid markers stay with the lead. Placeholders and the raid roster (`$tank1`, ...) resolve with the lead's data, which is sent along.
-- Triggers can only react to encounter start/end and combat start/end. Health and power percentages and timers or rotations using combat log events (or a spell, source or target in a condition) don't trigger. They are kept, listed per encounter under *Can't fire anymore*, counted in the What's new window after updating, and not sent with the plan.
-- The combat event recorder and the `$target`/`$source` message placeholders are gone; both depended on the combat log.
+- Players in receiver mode keep the last plan per encounter (only from the leader or an assistant) and run it on `ENCOUNTER_START`, showing the messages meant for them.
+- Assignments count from the pull. Everything that can't run anymore was removed, and the update deletes it from existing profiles: rotations, health and power percentages, timers on combat log events, stop conditions, raid warnings, raid markers, placeholders (`$tank1`, custom and encounter placeholders), the combat event recorder and `/prtm`.
 
 ## Guide
 For a brief introduction into the addon please read: [PhenomRaidTools Beginner Guide](https://github.com/PhenomDevel/PhenomRaidTools/blob/master/docs/PhenomRaidTools_Beginner_Guide.pdf)
 
 ## Lead & player
-The raid lead (sender mode) builds the plans and sends them to the group before the pull. Players (receiver mode) run the received plans on the pull and see only the messages meant for them. The message filter decides whose direct messages (e.g. `/prtm`) you accept; plans are always accepted from the group leader and assistants.
+The raid lead (sender mode) builds the plans and sends them to the group before the pull. Players (receiver mode) run the received plans on the pull and see only the messages meant for them. Plans are accepted from the group leader and assistants only.
 
-## Triggers
-### Timer
-Starts on the pull (or combat start) and shows the messages of each timing, e.g. `0:30, 1:15, 90` seconds after the start. Timings can have an offset to warn earlier. Use them for healing cooldowns, soaks or positioning.
-
-### Rotation
-Shows the next entry each time its event happens and can start over after the last entry. Since Midnight only pull, combat and encounter start or end are left as events.
-
-### Health and power percentage
-Need boss health or power, which addons don't get anymore since Midnight. Existing ones are kept for reference.
+## Assignments and groups
+Every assignment shows one message: once (e.g. at `1:30`), repeating (e.g. every `0:30` from `0:15` to `3:00`) or at several times (`0:30, 1:15, 90`). Assignments belong to a group; a group switches its assignments off or limits them to difficulties together. A new encounter starts with one group, *Pull*.
 
 ## Overlays
-Each message shows on one of your overlays. Every overlay has its own style (text, icons or bars), grows up, down, left or right from its anchor or centered on it, and has its own font, sound and number of messages at once. Unlock an overlay to drag it, *Test* shows sample messages.
+New profiles start with three overlays: *Messages* at the top, *Healing cooldowns* on the left and *Utility cooldowns* on the right. A cooldown chosen from the list goes on the overlay for its kind. *Default overlays → Restore* brings them back. Each message shows on one of your overlays. Every overlay has its own style (text, icons or bars), grows up, down, left or right from its anchor or centered on it, and has its own font, sound and number of messages at once. Unlock an overlay to drag it; *Show on screen* shows sample messages where it is.
 
-*Your next assignments* lists what's next for you during an encounter with a countdown, read from the plan. The *lead status* shows the lead's timers and rotations.
+*Your next assignments* lists what's next for you during an encounter with a countdown, read from the plan. The *lead status* shows the lead's groups with the time to their next assignment.
 
 ## MethodRaidTools note
-The encounter page writes the cooldown messages of all enabled timers and rotations into your MethodRaidTools note, either the whole note or only between `{prtstart}` and `{prtend}`. Send it with MRT as usual.
+The encounter page writes the cooldown messages of all enabled groups into your MethodRaidTools note, either the whole note or only between `{prtstart}` and `{prtend}`. Send it with MRT as usual.
 
 ## API
 > WORK IN PROGRESS

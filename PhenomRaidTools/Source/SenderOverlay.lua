@@ -3,8 +3,8 @@ local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 local LSM = LibStub("LibSharedMedia-3.0")
 
 --[[
-  Lead status during an encounter (overlay.sender): elapsed time, every
-  timer with the time to its next timing, every rotation with its counter.
+  Lead status during an encounter (overlay.sender): elapsed time and every
+  timer with the time to its next timing.
   Updated once a second while the lead's own plan runs; movable out of combat.
 ]]
 
@@ -95,7 +95,7 @@ local function TimerLine(timer, options, now)
     return not options.hideDisabledTriggers and Colored(timer.name .. " - " .. L["disabled"], colors.Disabled) or nil
   end
   if not timer.started then
-    return Colored(("%s - %s (%s/%s)"):format(timer.name, L["inactive"], timer.occurence or 0, timer.triggerAtOccurence or 1), colors.Inactive)
+    return Colored(timer.name .. " - " .. L["inactive"], colors.Inactive)
   end
   local elapsed = now - timer.startedAt
   local line = Colored(timer.name, colors.Tertiary) .. " (" .. Colored(PRT.SecondsToClock(elapsed), colors.Secondary) .. ")"
@@ -106,17 +106,6 @@ local function TimerLine(timer, options, now)
   return line
 end
 
-local function RotationLine(rotation, options)
-  local colors = PRT.Static.Colors
-  if rotation.enabled == false then
-    return not options.hideDisabledTriggers and Colored(rotation.name .. " - " .. L["disabled"], colors.Disabled) or nil
-  end
-  if not PRT.IsTriggerActive(rotation) then
-    return Colored(("%s - %s (%s/%s)"):format(rotation.name, L["inactive"], rotation.occurence or 0, rotation.triggerAtOccurence or 1), colors.Inactive)
-  end
-  return rotation.name .. " - " .. Colored(rotation.counter or 0, colors.Secondary)
-end
-
 local function Update(encounter)
   local options, colors, now = Options(), PRT.Static.Colors, GetTime()
   local lines = {Colored(encounter.name or "", colors.Primary) .. " (" .. Colored(PRT.SecondsToClock(now - encounter.startedAt), colors.Secondary) .. ")"}
@@ -124,12 +113,6 @@ local function Update(encounter)
     lines[#lines + 1] = Colored(L["Timers"], colors.Secondary)
     for _, timer in ipairs(encounter.Timers) do
       lines[#lines + 1] = TimerLine(timer, options, now)
-    end
-  end
-  if encounter.Rotations and #encounter.Rotations > 0 then
-    lines[#lines + 1] = Colored(L["Rotations"], colors.Secondary)
-    for _, rotation in ipairs(encounter.Rotations) do
-      lines[#lines + 1] = RotationLine(rotation, options)
     end
   end
   SetText(table.concat(lines, "|n"))

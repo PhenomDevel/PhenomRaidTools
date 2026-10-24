@@ -1,3 +1,4 @@
+-- luacheck: read globals C_Timer
 local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 local LSM = LibStub("LibSharedMedia-3.0")
@@ -36,6 +37,8 @@ local DEFAULTS = {
 }
 
 local DEFAULT_BAR_COLOR = {r = 0.18, g = 0.6, b = 0.84, a = 0.9}
+local DEFAULT_SOUND_FILE = "Interface\\AddOns\\PhenomRaidTools\\Media\\Sounds\\ReceiveMessage.ogg"
+local DEFAULT_SOUND_NAME = "PRT: Default"
 local DEFAULT_FONT_COLOR = {r = 1, g = 1, b = 1, a = 1}
 local DEFAULT_ICON = "Interface\\AddOns\\PhenomRaidTools\\Media\\Icons\\PRT.blp"
 local RAID_TARGET_ICON = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_%s"
@@ -298,6 +301,9 @@ local function OnUpdate(frame, elapsed)
   end
   if #entries == 0 then
     frame:SetScript("OnUpdate", nil)
+    if display.onEmpty then
+      display.onEmpty(display)
+    end
   end
 end
 
@@ -427,12 +433,7 @@ end
 -------------------------------------------------------------------------------
 -- Public API
 
--- message: { message, duration, targetOverlay, spellID, useCustomSound, soundFile(Name) }
-function ReceiverOverlay.AddMessage(message, silent)
-  local display = GetDisplay(message.targetOverlay or 1)
-  if not display then
-    return
-  end
+local function AddToDisplay(display, message, silent)
   local config = display.config
   if not silent then
     PlayMessageSound(message, config)
@@ -478,6 +479,14 @@ function ReceiverOverlay.AddMessage(message, silent)
   display.frame:SetScript("OnUpdate", OnUpdate)
 end
 
+-- message: { message, duration, targetOverlay, spellID, useCustomSound, soundFile(Name) }
+function ReceiverOverlay.AddMessage(message, silent)
+  local display = GetDisplay(message.targetOverlay or 1)
+  if display then
+    AddToDisplay(display, message, silent)
+  end
+end
+
 function ReceiverOverlay.Clear()
   for _, display in pairs(displays) do
     for index = #display.entries, 1, -1 do
@@ -513,10 +522,10 @@ function ReceiverOverlay.Test(index)
   local receivers = PRT.GetProfileDB().overlay.receivers
   for receiverIndex, config in ipairs(receivers) do
     if index == nil or index == receiverIndex then
-      local label = config.label or tostring(receiverIndex)
-      ReceiverOverlay.AddMessage({message = label .. " %.0f", duration = 6, targetOverlay = receiverIndex})
-      ReceiverOverlay.AddMessage({message = "{spell:31821} " .. L["Aura Mastery"], duration = 9, spellID = 31821, targetOverlay = receiverIndex}, true)
-      ReceiverOverlay.AddMessage({message = "{rt1} " .. L["Soak"], duration = 4, targetOverlay = receiverIndex}, true)
+      for sampleIndex, message in ipairs(ReceiverOverlay.SampleMessages(config)) do
+        message.targetOverlay = receiverIndex
+        ReceiverOverlay.AddMessage(message, sampleIndex > 1)
+      end
     end
   end
 end
@@ -534,6 +543,152 @@ function ReceiverOverlay.ResetPosition(index)
     config.x, config.y = 0, 200 - (index - 1) * 80
     ReceiverOverlay.Refresh()
   end
+end
+
+-- The receivers of a new profile: general messages at the top, healing
+-- cooldowns on the left, utility cooldowns on the right. `purpose` lets the
+-- editor put a chosen cooldown on the matching overlay.
+function ReceiverOverlay.DefaultReceivers()
+  local function Receiver(id, label, settings)
+    local receiver = {
+      id = id,
+      name = id,
+      label = label,
+      locked = true,
+      enableSound = true,
+      fontColor = {r = 1, g = 1, b = 1, a = 1},
+      defaultSoundFile = DEFAULT_SOUND_FILE,
+      defaultSoundFileName = DEFAULT_SOUND_NAME
+    }
+    for key, value in pairs(settings) do
+      receiver[key] = value
+    end
+    return receiver
+  end
+  return {
+    Receiver(1, L["Messages"], {x = 0, y = 260, style = "text", grow = "DOWN", fontSize = 28}),
+    Receiver(
+      2,
+      L["Healing cooldowns"],
+      {purpose = "healing", x = -470, y = 100, style = "bars", grow = "DOWN", fontSize = 15, barWidth = 200, barColor = {r = 0.24, g = 0.66, b = 0.4, a = 0.9}}
+    ),
+    Receiver(
+      3,
+      L["Utility cooldowns"],
+      {purpose = "utility", x = 470, y = 100, style = "bars", grow = "DOWN", fontSize = 15, barWidth = 200, barColor = {r = 0.2, g = 0.52, b = 0.82, a = 0.9}}
+    )
+  }
+end
+
+-- The receiver for a purpose ("healing", "utility"), nil if there is none.
+function ReceiverOverlay.IndexForPurpose(purpose)
+  for index, config in ipairs(PRT.GetProfileDB().overlay.receivers) do
+    if config.purpose == purpose then
+      return index
+    end
+  end
+end
+
+-------------------------------------------------------------------------------
+-- Preview: a display inside another frame (the window's preview panel),
+-- repeating sample messages while it is shown.
+
+local PREVIEW_PAUSE = 0.6
+
+-- Where the stack starts inside the panel, so it grows into the panel.
+local PREVIEW_ANCHOR = {UP = "BOTTOM", DOWN = "TOP", LEFT = "RIGHT", RIGHT = "LEFT"}
+local PREVIEW_INSET = 16
+
+local Preview = {}
+Preview.__index = Preview
+
+function ReceiverOverlay.CreatePreview(parent)
+  local frame = CreateFrame("Frame", nil, parent)
+  frame:SetSize(1, 1)
+  local preview = setmetatable({parent = parent, display = {frame = frame, entries = {}, pool = {}, sinceUpdate = 0}}, Preview)
+  frame.display = preview.display
+  preview.display.onEmpty = function()
+    preview.timer = C_Timer.NewTimer(PREVIEW_PAUSE, function()
+      preview:Play()
+    end)
+  end
+  return preview
+end
+
+function Preview:Clear()
+  local display = self.display
+  if self.timer then
+    self.timer:Cancel()
+    self.timer = nil
+  end
+  for index = #display.entries, 1, -1 do
+    ReleaseEntry(display, tremove(display.entries, index))
+  end
+  display.frame:SetScript("OnUpdate", nil)
+end
+
+function Preview:Play()
+  self:Clear()
+  if not self.config then
+    return
+  end
+  for _, message in ipairs(self.messages) do
+    AddToDisplay(self.display, message, true)
+  end
+  self:Fit()
+end
+
+-- The real overlay never wraps, so samples wider than the screen are scaled
+-- down instead (anchor offsets are in the scaled space).
+function Preview:Fit()
+  local display = self.display
+  local horizontal = not (display.grow == "UP" or display.grow == "DOWN")
+  local width = 1
+  for _, entry in ipairs(display.entries) do
+    local entryWidth = entry:GetWidth() or 0
+    width = horizontal and width + entryWidth + Get(self.config, "spacing") or math.max(width, entryWidth)
+  end
+  local scale = math.min(1, math.max(0.2, ((self.parent:GetWidth() or 0) - 2 * PREVIEW_INSET) / width))
+  local anchor = self.anchor
+  display.frame:SetScale(scale)
+  display.frame:ClearAllPoints()
+  display.frame:SetPoint("CENTER", self.parent, anchor.point, anchor.x / scale, anchor.y / scale)
+end
+
+-- config: a receiver (or the same fields); messages: sample messages.
+function Preview:Show(config, messages)
+  local display = self.display
+  self.config, self.messages = config, messages
+  display.config = config
+  local frame = display.frame
+  frame:ClearAllPoints()
+  local grow = Get(config, "grow")
+  local vertical = grow == "UP" or grow == "DOWN"
+  local align = vertical and ALIGN_SUFFIX[Get(config, "align")] or ""
+  local point = Get(config, "from") == "center" and "" or PREVIEW_ANCHOR[grow] or "TOP"
+  point = (point .. align) ~= "" and point .. align or "CENTER"
+  local x = point:find("LEFT") and PREVIEW_INSET or point:find("RIGHT") and -PREVIEW_INSET or 0
+  local y = point:find("TOP") and -PREVIEW_INSET or point:find("BOTTOM") and PREVIEW_INSET or 0
+  display.grow = grow
+  self.anchor = {point = point, x = x, y = y}
+  frame:SetPoint("CENTER", self.parent, point, x, y)
+  frame:Show()
+  self:Play()
+end
+
+function Preview:Hide()
+  self:Clear()
+  self.config = nil
+  self.display.frame:Hide()
+end
+
+-- Sample messages of a receiver: a text with countdown, a spell, a marker.
+function ReceiverOverlay.SampleMessages(config)
+  return {
+    {message = (config.label or "") .. " %.0f", duration = 6},
+    {message = "{spell:31821} " .. L["Aura Mastery"], duration = 9, spellID = 31821},
+    {message = "{rt1} " .. L["Soak"], duration = 4}
+  }
 end
 
 function ReceiverOverlay.Initialize()

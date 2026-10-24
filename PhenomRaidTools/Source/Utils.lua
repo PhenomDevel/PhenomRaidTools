@@ -28,7 +28,7 @@ local classColors = {
 }
 
 -- Create local copies of API functions which we use
-local UnitClass, UnitExists, UnitName, UnitIsConnected, UnitIsDeadOrGhost = UnitClass, UnitExists, UnitName, UnitIsConnected, UnitIsDeadOrGhost
+local UnitClass, UnitName = UnitClass, UnitName
 local GetRaidRosterInfo, GetUnitName, GetNumGroupMembers, UnitInParty, UnitInRaid = GetRaidRosterInfo, GetUnitName, GetNumGroupMembers, UnitInParty, UnitInRaid
 
 -------------------------------------------------------------------------------
@@ -65,22 +65,8 @@ end
 -- Encounter Helper
 
 function PRT.EnsureEncounterTrigger(encounter)
-  if encounter then
-    if not encounter.Rotations then
-      encounter.Rotations = {}
-    end
-
-    if not encounter.Timers then
-      encounter.Timers = {}
-    end
-
-    if not encounter.HealthPercentages then
-      encounter.HealthPercentages = {}
-    end
-
-    if not encounter.PowerPercentages then
-      encounter.PowerPercentages = {}
-    end
+  if encounter and not encounter.Timers then
+    encounter.Timers = {}
   end
 end
 
@@ -163,85 +149,12 @@ function PRT.ExchangeSpellIcons(s)
   )
 end
 
-do
-  local placeholders = {
-    global = {},
-    encounterSpecific = {}
-  }
-
-  function PRT.SetupGlobalCustomPlaceholders()
-    wipe(placeholders.global)
-
-    if PRT.GetProfileDB().customPlaceholders then
-      for placeholderName, _ in pairs(PRT.GetProfileDB().customPlaceholders) do
-        if not placeholders.global[placeholderName] then
-          placeholders.global[placeholderName] = true
-        end
-      end
-    end
-  end
-
-  function PRT.SetupEncounterSpecificCustomPlaceholders()
-    wipe(placeholders.encounterSpecific)
-
-    if PRT.currentEncounter.encounter.CustomPlaceholders then
-      for placeholderName, _ in pairs(PRT.currentEncounter.encounter.CustomPlaceholders) do
-        if not placeholders.encounterSpecific[placeholderName] then
-          placeholders.encounterSpecific[placeholderName] = true
-        end
-      end
-    end
-  end
-
-  function PRT.AddCustomPlaceholdersToPlayerNames(token, t, global)
-    if not ((global and placeholders.global[token]) or (not global and placeholders.encounterSpecific[token])) then
-      return
-    end
-
-    if (global and placeholders.global[token]) or placeholders.encounterSpecific[token] then
-      local temp = global and PRT.GetProfileDB().customPlaceholders[token] or PRT.currentEncounter.encounter.CustomPlaceholders[token]
-
-      if temp.type == "group" then
-        for i = #temp.characterNames, 1, -1 do
-          tinsert(t, strtrim(temp.characterNames[i], " "))
-        end
-      else
-        local found = false
-        local lastInPartyButDead
-        for _, name in ipairs(temp.characterNames) do
-          if UnitExists(name) and UnitIsConnected(name) then
-            if not UnitIsDeadOrGhost(name) then
-              tinsert(t, strtrim(name, " "))
-              found = true
-              break
-            else -- so you can call for backup if needed
-              lastInPartyButDead = name
-            end
-          end
-        end
-        if not found and lastInPartyButDead then
-          tinsert(t, strtrim(lastInPartyButDead, " "))
-        end
-      end
-    end
-  end
-end
-
--- A received plan carries the lead's raid roster (PlanSync).
-local function RaidRoster()
-  local encounter = PRT.currentEncounter and PRT.currentEncounter.encounter
-  return encounter and encounter.RaidRoster or PRT.GetProfileDB().raidRoster
-end
-
 function PRT.PlayerNamesByToken(token)
   local playerNames = {}
 
   if token == "me" then
     tinsert(playerNames, strtrim(UnitName("player"), " "))
-  elseif RaidRoster()[token] then
-    local name = RaidRoster()[token]
-    tinsert(playerNames, strtrim(name, " "))
-  elseif string.find(token, "group") then
+  elseif token:match("^group%d$") then
     local groupNumber = tonumber(string.match(token, "%d+"))
 
     for i = 1, 40, 1 do
@@ -261,15 +174,6 @@ function PRT.PlayerNamesByToken(token)
         tinsert(playerNames, strtrim(unitName, " "))
       end
     end
-  elseif PRT.GetProfileDB().customPlaceholders then
-    PRT.AddCustomPlaceholdersToPlayerNames(token, playerNames, true)
-    if PRT.currentEncounter and PRT.currentEncounter.encounter then
-      if PRT.currentEncounter.encounter.CustomPlaceholders then
-        PRT.AddCustomPlaceholdersToPlayerNames(token, playerNames, false)
-      end
-    end
-  else
-    tinsert(playerNames, PRT.ColoredString(token, PRT.Static.Colors.Inactive))
   end
 
   if PRT.TableUtils.IsEmpty(playerNames) then

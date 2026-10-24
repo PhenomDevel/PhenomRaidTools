@@ -250,80 +250,6 @@ local function noteFromTimers(options, timers)
   return string.gsub(contentString, "\n\n\n", "\n\n")
 end
 
-local function noteFromRotation(options, rotation)
-  local rotationNote
-  local rotationNoteEntries = {}
-
-  if not PRT.TableUtils.IsEmpty(rotation.entries) then
-    if options.withTriggerNames then
-      local rotationTitle = PRT.ColoredString(string.format("== %s ==", rotation.name), PRT.Static.Colors.Secondary)
-      rotationNote = rotationTitle .. "\n"
-    end
-
-    for entryIndex, entry in ipairs(rotation.entries) do
-      local validMessages = {}
-
-      for _, message in ipairs(entry.messages) do
-        if IsValidMessage(message) then
-          tinsert(validMessages, message)
-        end
-      end
-
-      if (options.withEmptyLines and PRT.TableUtils.IsEmpty(validMessages)) or (not PRT.TableUtils.IsEmpty(validMessages)) then
-        local entryNote = ""
-
-        for _, message in ipairs(validMessages) do
-          local distinctTargets = GetDistinctTargets(message.targets)
-          entryNote = string.format("%s {spell:%s} %s", entryNote, message.spellID, strjoin(" ", unpack(distinctTargets)))
-        end
-
-        if options.withPersonalization then
-          local entryTargets = getTriggerEntryTargets(entry)
-          local targetString = strjoin(",", unpack(entryTargets))
-          entryNote = WrapPersonalization(entryNote, targetString, options)
-        end
-
-        if not PRT.StringUtils.IsEmpty(entryNote) then
-          rotationNoteEntries[entryIndex] = entryNote
-        end
-      end
-    end
-  else
-    return nil
-  end
-
-  if not PRT.TableUtils.IsEmpty(rotationNoteEntries) then
-    for idx, entryNote in pairs(rotationNoteEntries) do
-      rotationNote = rotationNote .. string.format("<%s> %s\n", idx, entryNote)
-    end
-
-    if rotation.shouldRestart then
-      rotationNote = rotationNote .. "Repeat\n"
-    end
-  else
-    return nil
-  end
-
-  return rotationNote
-end
-
-local function noteFromRotations(options, rotations)
-  local noteParts = {}
-
-  if rotations then
-    for _, rotation in ipairs(rotations) do
-      if rotation.enabled and options.selectedRotations[rotation.name] then
-        local part = noteFromRotation(options, rotation)
-
-        if not PRT.StringUtils.IsEmpty(part) then
-          tinsert(noteParts, part)
-        end
-      end
-    end
-  end
-  return strjoin("\n", unpack(noteParts))
-end
-
 local function noteFromEncounter(options, encounter)
   local encounterVersion = encounter.versions[encounter.selectedVersion]
 
@@ -332,15 +258,6 @@ local function noteFromEncounter(options, encounter)
   -- Maybe add encounter name
   if options.withEncounterName and encounter.name then
     note = PRT.ColoredString(encounter.name, PRT.Static.Colors.Primary)
-  end
-
-  -- Maybe add rotations
-  if options.includeRotations then
-    local rotationsNote = noteFromRotations(options, encounterVersion.Rotations)
-
-    if not PRT.StringUtils.IsEmpty(rotationsNote) then
-      note = note .. "\n" .. rotationsNote
-    end
   end
 
   -- Maybe add timers
@@ -379,19 +296,16 @@ end
 -- Public API
 
 -- Note for the selected version of an encounter: cooldown messages of all
--- enabled timers and rotations. options: see profile.mrtExportDefaults.
+-- enabled timers. options: see profile.mrtExportDefaults.
 function PRT.MethodRaidToolsNote(encounter, options)
   local version = encounter.versions[encounter.selectedVersion]
   if not version then
     return ""
   end
   local noteOptions = PRT.TableUtils.Clone(options)
-  noteOptions.selectedTimers, noteOptions.selectedRotations = {}, {}
+  noteOptions.selectedTimers = {}
   for _, timer in ipairs(version.Timers or {}) do
     noteOptions.selectedTimers[timer.name] = true
-  end
-  for _, rotation in ipairs(version.Rotations or {}) do
-    noteOptions.selectedRotations[rotation.name] = true
   end
   return (noteFromEncounter(noteOptions, encounter):gsub("|", "||"))
 end

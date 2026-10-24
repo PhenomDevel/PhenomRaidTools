@@ -76,6 +76,9 @@ end
 
 local Render, RefreshValues
 
+-- Set by a page while it builds (UI.SetPreview), applied after the build.
+local previewSpec
+
 -- After a control changed a value: rebuild the page or refresh the controls.
 local function Commit(spec, value)
   Widgets.SafeCall(spec.set, value)
@@ -179,6 +182,9 @@ local function OnLiveUpdate(row, elapsed)
   if row.sinceUpdate >= LIVE_INTERVAL then
     row.sinceUpdate = 0
     row:Update()
+    if row.Outgrown and row:Outgrown() then
+      Render()
+    end
   end
 end
 
@@ -673,18 +679,27 @@ rowTypes.live = {
     row.Dot:SetColorTexture(unpack(colors.ok))
     row.Label = Widgets.Text(row, fonts.small)
     row.Label:SetPoint("LEFT", row.Dot, "RIGHT", 8, 0)
-    row.Label:SetPoint("RIGHT", -10, 0)
-    row.Label:SetJustifyV("MIDDLE")
+    row.Label:SetJustifyH("LEFT")
+    row.Label:SetWordWrap(true)
     row:SetScript("OnUpdate", OnLiveUpdate)
     row.Update = function(self)
       self.Label:SetText(Markup(self.spec.get() or ""))
     end
+    -- Wrapped into another line since the layout: lay the page out again.
+    row.Outgrown = function(self)
+      return self.Label:GetStringHeight() + 12 > self:GetHeight() + 1
+    end
     return row
   end,
-  setup = function(row)
-    row:SetSize(rowWidth, 26)
+  setup = function(row, spec)
+    row:SetWidth(rowWidth)
+    -- Explicit width: the row has no position yet to measure the text against.
+    row.Label:SetWidth(rowWidth - 34)
+    row.Label:SetText(Markup(spec.get() or ""))
+    local height = math.max(26, row.Label:GetStringHeight() + 12)
+    row:SetHeight(height)
     -- Gap above and below inside the card.
-    return 34
+    return height + 8
   end
 }
 
@@ -1089,9 +1104,10 @@ rowTypes.sound = {
   end
 }
 
--- Assignments over time ({ lanes, length, empty }): one lane per target
--- group, a marker per message at its time after the pull. lanes() ->
+-- Assignments over time ({ lanes, length, empty, onClickTime }): one lane per
+-- target group, a marker per message at its time after the pull. lanes() ->
 -- { { label, markers = { { time, color, tooltipTitle, tooltip, onClick } } } }.
+-- With onClickTime(seconds) a click into the plot adds something there.
 local TIMELINE_LABEL_WIDTH = 96
 local TIMELINE_LANE_HEIGHT = 20
 local TIMELINE_AXIS_HEIGHT = 18
@@ -1100,6 +1116,7 @@ local TIMELINE_MARKER_WIDTH = 6
 local function CreateTimelineMarker(row)
   local marker = CreateFrame("Button", nil, row)
   marker:SetSize(TIMELINE_MARKER_WIDTH, TIMELINE_LANE_HEIGHT - 6)
+  marker:SetFrameLevel(row:GetFrameLevel() + 3)
   marker.Texture = marker:CreateTexture(nil, "ARTWORK")
   marker.Texture:SetAllPoints()
   marker:SetScript("OnEnter", Widgets.ShowTooltip)
@@ -1115,6 +1132,71 @@ local function CreateTimelineMarker(row)
     end
   )
   return marker
+end
+
+-- Whole seconds under the cursor, nil outside the plot.
+local function TimelineCursorTime(row)
+  local left = row.Plot:GetLeft()
+  if not left or not row.plotWidth or row.plotWidth <= 0 then
+    return
+  end
+  local x = GetCursorPosition() / row.Plot:GetEffectiveScale() - left
+  local seconds = math.floor(math.max(0, math.min(1, x / row.plotWidth)) * row.length + 0.5)
+  return seconds, seconds / row.length * row.plotWidth
+end
+
+local function OnTimelinePlotUpdate(plot)
+  local row = plot.row
+  local seconds, x = TimelineCursorTime(row)
+  if not seconds then
+    return
+  end
+  row.Guide:ClearAllPoints()
+  row.Guide:SetPoint("TOPLEFT", plot, "TOPLEFT", x, 0)
+  row.Guide:SetPoint("BOTTOMLEFT", plot, "BOTTOMLEFT", x, 0)
+  row.GuideLabel:ClearAllPoints()
+  row.GuideLabel:SetPoint("BOTTOM", plot, "TOPLEFT", x, 2)
+  row.GuideLabel:SetText("+ " .. Widgets.FormatTime(seconds))
+end
+
+local function CreateTimelinePlot(row)
+  local plot = CreateFrame("Button", nil, row)
+  plot.row = row
+  plot:SetFrameLevel(row:GetFrameLevel() + 1)
+  row.Guide = plot:CreateTexture(nil, "OVERLAY")
+  row.Guide:SetColorTexture(unpack(colors.accent))
+  row.Guide:SetWidth(1)
+  row.Guide:Hide()
+  row.GuideLabel = Widgets.Text(plot, fonts.small, "CENTER")
+  row.GuideLabel:SetTextColor(unpack(Widgets.brand))
+  row.GuideLabel:Hide()
+  plot:SetScript(
+    "OnEnter",
+    function(self)
+      row.Guide:Show()
+      row.GuideLabel:Show()
+      self:SetScript("OnUpdate", OnTimelinePlotUpdate)
+    end
+  )
+  plot:SetScript(
+    "OnLeave",
+    function(self)
+      row.Guide:Hide()
+      row.GuideLabel:Hide()
+      self:SetScript("OnUpdate", nil)
+    end
+  )
+  plot:SetScript(
+    "OnClick",
+    function()
+      local seconds = TimelineCursorTime(row)
+      if seconds and row.onClickTime then
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+        row.onClickTime(seconds)
+      end
+    end
+  )
+  return plot
 end
 
 local function TimelineStep(length)
@@ -1137,6 +1219,7 @@ rowTypes.timeline = {
     row.Axis:SetHeight(1)
     row.Empty = Widgets.Text(row, fonts.dim)
     row.Empty:SetPoint("TOPLEFT", 0, -6)
+    row.Plot = CreateTimelinePlot(row)
     row.Update = function()
     end
     return row
@@ -1146,6 +1229,12 @@ rowTypes.timeline = {
     local length = math.max(30, spec.length or 0)
     local plotLeft = TIMELINE_LABEL_WIDTH
     local plotWidth = rowWidth - plotLeft - TIMELINE_MARKER_WIDTH
+    row.onClickTime, row.length, row.plotWidth = spec.onClickTime, length, plotWidth
+    -- Clickable without messages: one empty lane with the hint in it.
+    local hint
+    if #lanes == 0 and spec.onClickTime then
+      lanes, hint = {{label = "", markers = {}}}, spec.empty
+    end
     for _, part in ipairs(row.Ticks) do
       part:Hide()
     end
@@ -1157,8 +1246,9 @@ rowTypes.timeline = {
       lane.Stripe:Hide()
     end
 
-    row.Empty:SetShown(#lanes == 0)
+    row.Empty:SetShown(#lanes == 0 or hint ~= nil)
     row.Axis:SetShown(#lanes > 0)
+    row.Plot:SetShown(#lanes > 0 and spec.onClickTime ~= nil)
     if #lanes == 0 then
       row.Empty:SetText(spec.empty or L["Nothing here yet."])
       row:SetSize(rowWidth, 26)
@@ -1217,6 +1307,17 @@ rowTypes.timeline = {
       end
     end
     local height = TIMELINE_AXIS_HEIGHT + #lanes * TIMELINE_LANE_HEIGHT + 4
+    row.Plot:ClearAllPoints()
+    row.Plot:SetPoint("TOPLEFT", plotLeft, -TIMELINE_AXIS_HEIGHT)
+    row.Plot:SetPoint("BOTTOMRIGHT", row, "TOPRIGHT", 0, -(height - 4))
+    if hint then
+      row.Empty:ClearAllPoints()
+      row.Empty:SetPoint("LEFT", row.Plot, "LEFT", 8, 0)
+      row.Empty:SetText(hint)
+    else
+      row.Empty:ClearAllPoints()
+      row.Empty:SetPoint("TOPLEFT", 0, -6)
+    end
     row:SetSize(rowWidth, height)
     return height
   end
@@ -1994,8 +2095,10 @@ Render = function()
   wipe(activeRows)
   wipe(activeCards)
 
+  previewSpec = nil
   local title, subtitle, cards, trail = GetPage()
   UpdateTitle(title, subtitle, trail)
+  UI.Preview.Apply(frame, state.search == "" and previewSpec or nil)
 
   -- Cards with { fullWidth } (e.g. filters) span all columns above the others.
   local top = 0
@@ -2034,6 +2137,7 @@ end
 
 RefreshValues = function()
   UpdateSidebar()
+  UI.Preview.Update()
   for _, row in ipairs(activeRows) do
     row:Update()
     UpdateReset(row)
@@ -2168,6 +2272,7 @@ local function CreateWindow()
     function()
       PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE)
       Widgets.HideTooltip()
+      UI.Preview.Hide()
       searchBox:ClearFocus()
     end
   )
@@ -2189,6 +2294,12 @@ end
 -- encounter): build falls back to the nearest level that still exists.
 function UI.RegisterPage(page)
   pages[page.id] = page
+end
+
+-- A page that edits something shown on an overlay asks for the live
+-- preview beside the window while it builds (see UI/Preview.lua).
+function UI.SetPreview(spec)
+  previewSpec = spec
 end
 
 -- UI.Open() reopens the last page; UI.Open(page, id, id, ...) opens a level.

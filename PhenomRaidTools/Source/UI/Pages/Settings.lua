@@ -5,8 +5,8 @@ local UI = PRT.UI
 local LibDBIcon = LibStub("LibDBIcon-1.0")
 
 --[[
-  Addon wide settings of the profile: on/off, where PRT runs, whose messages
-  count, test and debug mode, and the defaults for new messages.
+  Addon wide settings of the profile: on/off, where PRT runs, test and debug
+  mode, and the defaults for new messages.
 ]]
 
 local DIFFICULTIES = {
@@ -17,8 +17,7 @@ local DIFFICULTIES = {
 
 local MESSAGE_TYPES = {
   {value = "advanced", label = L["Message"]},
-  {value = "cooldown", label = L["Cooldown"]},
-  {value = "raidwarning", label = L["Raid warning"]}
+  {value = "cooldown", label = L["Cooldown"]}
 }
 
 local function Profile()
@@ -124,51 +123,6 @@ local function DifficultiesCard()
   }
 end
 
-local function FilterCard()
-  local filter = Profile().messageFilter
-  local function Filter()
-    return Profile().messageFilter
-  end
-  local rows = {
-    Bind(
-      Filter,
-      "filterBy",
-      {
-        type = "dropdown",
-        label = L["Accept messages from"],
-        values = {{value = "names", label = L["These players"]}, {value = "guildRank", label = L["A guild rank"]}},
-        layout = true
-      }
-    )
-  }
-  if filter.filterBy == "guildRank" then
-    local ranks = {}
-    for index, name in ipairs(PRT.GuildUtils.GetGuildRanksTable("player")) do
-      ranks[#ranks + 1] = {value = index, label = name}
-    end
-    rows[#rows + 1] = Bind(Filter, "requiredGuildRank", {type = "dropdown", label = L["Guild rank or higher"], values = ranks, placeholder = L["Choose"]})
-  else
-    rows[#rows + 1] = {
-      type = "textarea",
-      label = L["Players"],
-      note = L["Separated by commas. Empty: everyone."],
-      placeholder = "Name1, Name2-Realm",
-      get = function()
-        return table.concat(filter.requiredNames or {}, ", ")
-      end,
-      set = function(value)
-        filter.requiredNames = SplitNames(value)
-      end
-    }
-  end
-  rows[#rows + 1] = Bind(Filter, "alwaysIncludeMyself", {type = "checkbox", label = L["Always accept my own"]})
-  return {
-    title = L["Message filter"],
-    note = L["For messages other players send directly (e.g. `/prtm`). Plans are always accepted from the group leader and assistants."],
-    rows = rows
-  }
-end
-
 local function EncounterValues()
   local values = {}
   for _, encounter in ipairs(Profile().encounters) do
@@ -180,7 +134,7 @@ end
 local function TestCard()
   return {
     title = L["Test mode"],
-    note = L["Runs an encounter's plan on your next combat, e.g. on a target dummy. Raid warnings go to you as whisper."],
+    note = L["Runs an encounter's plan on your next combat, e.g. on a target dummy."],
     toggle = {
       get = function()
         return Profile().testMode
@@ -305,7 +259,6 @@ UI.RegisterPage(
         GeneralCard(),
         DifficultiesCard(),
         TestCard(),
-        FilterCard(),
         DefaultsCard(),
         DebugCard()
       }

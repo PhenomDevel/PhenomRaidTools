@@ -30,6 +30,8 @@ local colors = {
   window = {0.07, 0.07, 0.08, 1},
   sidebar = {0.09, 0.09, 0.10, 1},
   card = {0.12, 0.12, 0.13, 1},
+  -- The preview's stand-in for the game world.
+  screen = {0.035, 0.035, 0.04, 1},
   control = {0.22, 0.22, 0.24, 1},
   controlHover = {0.28, 0.28, 0.30, 1},
   knobOff = {0.75, 0.75, 0.77, 1},
@@ -322,7 +324,7 @@ function Widgets.CreateSlider(parent)
   slider:SetHitRectInsets(0, 0, -4, -4)
 
   local track = slider:CreateTexture(nil, "BACKGROUND")
-  track:SetColorTexture(unpack(colors.control))
+  track:SetColorTexture(unpack(colors.controlHover))
   track:SetHeight(4)
   track:SetPoint("LEFT")
   track:SetPoint("RIGHT")
