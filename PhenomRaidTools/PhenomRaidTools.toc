@@ -58,6 +58,7 @@ Source/API.lua
 # UI
 Source/UI/Widgets.lua
 Source/UI/Window.lua
+Source/UI/Pages/Players.lua
 Source/UI/Pages/About.lua
 Source/UI/Pages/Components.lua
 
