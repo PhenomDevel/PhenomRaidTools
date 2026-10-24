@@ -185,6 +185,7 @@ function PRT.AddPowerPercentageWidget(container, profile, encounterID, percentag
   local _, encounter = PRT.GetSelectedVersionEncounterByID(profile.encounters, encounterID)
   local percentages = encounter.PowerPercentages
 
+  PRT.AddUnsupportedNotice(container, "powerPercentage", percentages, percentageName)
   Percentage.PercentageWidget(percentageName, percentages, container)
 end
 
@@ -235,5 +236,6 @@ function PRT.AddHealthPercentageWidget(container, profile, encounterID, percenta
   local _, encounter = PRT.GetSelectedVersionEncounterByID(profile.encounters, encounterID)
   local percentages = encounter.HealthPercentages
 
+  PRT.AddUnsupportedNotice(container, "healthPercentage", percentages, percentageName)
   Percentage.PercentageWidget(percentageName, percentages, container)
 end

@@ -286,6 +286,56 @@ end
 -------------------------------------------------------------------------------
 -- Public API
 
+-- Since 12.0 (also on WoW: Forever) only these events reach the trigger
+-- conditions: no combat log, no boss health/power during encounters.
+local SUPPORTED_CONDITION_EVENTS = {
+  ENCOUNTER_START = true,
+  ENCOUNTER_END = true,
+  PLAYER_REGEN_DISABLED = true,
+  PLAYER_REGEN_ENABLED = true
+}
+
+local function UsesUnsupportedEvent(condition)
+  return condition ~= nil and condition.event ~= nil and not SUPPORTED_CONDITION_EVENTS[condition.event]
+end
+
+-- Why a trigger can't fire anymore ("unitValues" or "combatLog"), nil if it can.
+-- triggerType: "timer", "rotation", "healthPercentage" or "powerPercentage".
+function PRT.GetUnsupportedReason(triggerType, trigger)
+  if triggerType == "healthPercentage" or triggerType == "powerPercentage" then
+    return "unitValues"
+  end
+  if triggerType == "rotation" and UsesUnsupportedEvent(trigger.triggerCondition) then
+    return "combatLog"
+  end
+  -- Timers always have a start condition, rotations only with hasStartCondition.
+  if (triggerType == "timer" or trigger.hasStartCondition) and UsesUnsupportedEvent(trigger.startCondition) then
+    return "combatLog"
+  end
+  -- A stop condition that never fires would let a timer run on (e.g. into the next phase).
+  if trigger.hasStopCondition and UsesUnsupportedEvent(trigger.stopCondition) then
+    return "combatLog"
+  end
+end
+
+-- encounterVersion -> { { type, trigger, reason } } for all triggers that can't fire.
+function PRT.GetUnsupportedTriggers(encounterVersion)
+  local unsupported = {}
+  local function Collect(triggerType, triggers)
+    for _, trigger in ipairs(triggers or {}) do
+      local reason = PRT.GetUnsupportedReason(triggerType, trigger)
+      if reason then
+        unsupported[#unsupported + 1] = {type = triggerType, trigger = trigger, reason = reason}
+      end
+    end
+  end
+  Collect("timer", encounterVersion.Timers)
+  Collect("rotation", encounterVersion.Rotations)
+  Collect("healthPercentage", encounterVersion.HealthPercentages)
+  Collect("powerPercentage", encounterVersion.PowerPercentages)
+  return unsupported
+end
+
 function PRT.IsTriggerActive(trigger)
   local isEnabled = trigger.enabled == true or trigger.enabled == nil
   local isEnabledForDifficulty = TriggerHandler.CheckCurrentDifficulty(trigger) or PRT.IsTestMode()

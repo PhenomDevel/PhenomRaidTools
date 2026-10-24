@@ -19,7 +19,7 @@ Classic Era, Wrath Classic and other clients are not supported anymore.
 Since 12.0 (also on WoW: Forever) addons can't read the combat log, unit health or unit power during encounters, and addon messages are blocked while an encounter is in progress. Until PhenomRaidTools distributes plans before the pull, this means:
 
 - Timers started by `ENCOUNTER_START` work and are shown to yourself.
-- Rotations, health and power percentages and timers started or stopped by combat log events don't trigger.
+- Rotations, health and power percentages and timers started or stopped by combat log events don't trigger. They are kept, marked as *Unsupported* in the configuration, and listed once in chat after updating.
 - Messages to other players are not delivered during an encounter.
 
 ## Guide

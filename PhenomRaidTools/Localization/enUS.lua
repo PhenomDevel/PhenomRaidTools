@@ -347,3 +347,9 @@ L["You currently filter messages by %s. Therefore only message from players with
 L["You currently filter messages by %s. Therefore only messages from those players will be displayed."] = true
 L["You want to force update ExRT note without replacing PRT tag content. This will overwrite the whole note. Are you sure about that?"] = "You want to force update MethodRaidTools note without replacing PRT tag content. This will overwrite the whole note. Are you sure about that?"
 L["yourself"] = true
+
+-- Midnight restrictions
+L["%s trigger(s) can't fire anymore since Midnight (combat log, boss health/power). They are kept and marked in the configuration: %s"] = true
+L["Unsupported"] = true
+L["Since Midnight addons can't read boss health or power during encounters. This trigger is kept, but it won't fire."] = true
+L["Since Midnight addons can't read the combat log. A condition of this trigger uses a combat log event, so it won't fire. Only encounter start/end and combat start/end are available."] = true

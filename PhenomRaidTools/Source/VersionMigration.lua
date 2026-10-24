@@ -1,4 +1,5 @@
 local _, PRT = ...
+local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 -------------------------------------------------------------------------------
 -- Private Helper
@@ -176,6 +177,31 @@ local migrationFunctions = {
             profile.templateStore.messages[template.name] = template
           end
         end
+      end
+
+      return true
+    end
+  },
+  [7] = {
+    version = "3.0.0",
+    migrationFunction = function(profile)
+      -- Nothing is changed or removed: the triggers stay for reference and the
+      -- old window marks them. This only tells once which ones are affected.
+      local count, encounterNames = 0, {}
+      for _, encounter in ipairs(profile.encounters) do
+        local encounterCount = 0
+        for _, encounterVersion in ipairs(encounter.versions or {}) do
+          encounterCount = encounterCount + #PRT.GetUnsupportedTriggers(encounterVersion)
+        end
+        if encounterCount > 0 then
+          count = count + encounterCount
+          tinsert(encounterNames, PRT.HighlightString(encounter.name))
+        end
+      end
+
+      if count > 0 then
+        local text = L["%s trigger(s) can't fire anymore since Midnight (combat log, boss health/power). They are kept and marked in the configuration: %s"]
+        PRT.Warn(text:format(count, strjoin(", ", unpack(encounterNames))))
       end
 
       return true

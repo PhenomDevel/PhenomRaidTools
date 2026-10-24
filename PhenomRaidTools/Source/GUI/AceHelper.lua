@@ -381,6 +381,20 @@ function PRT.UpdateLabelWidth(widget)
   widget:SetWidth(widget.label:GetStringWidth())
 end
 
+-- Explains on a trigger's page why it can't fire since Midnight.
+function PRT.AddUnsupportedNotice(container, triggerType, triggers, triggerName)
+  local _, trigger = PRT.TableUtils.GetBy(triggers, "name", triggerName)
+  local reason = trigger and PRT.GetUnsupportedReason(triggerType, trigger)
+  if reason then
+    local text =
+      reason == "unitValues" and L["Since Midnight addons can't read boss health or power during encounters. This trigger is kept, but it won't fire."] or
+      L["Since Midnight addons can't read the combat log. A condition of this trigger uses a combat log event, so it won't fire. Only encounter start/end and combat start/end are available."]
+    local widget = PRT.Label(PRT.ColoredString(text, PRT.Static.Colors.Warn), 12)
+    widget:SetFullWidth(true)
+    container:AddChild(widget)
+  end
+end
+
 function PRT.Label(label, fontSize)
   local widget = AceGUI:Create("Label")
   widget:SetText(label)

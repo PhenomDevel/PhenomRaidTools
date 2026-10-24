@@ -380,3 +380,9 @@ L["You currently filter messages by %s. Therefore only message from players with
 L["You currently filter messages by %s. Therefore only messages from those players will be displayed."] = "Du filterst aktuell alle Nachrichten nach %s. Daher werden Dir nur Nachrichten von den spezifizierten Spielern angezeigt."
 L["You want to force update ExRT note without replacing PRT tag content. This will overwrite the whole note. Are you sure about that?"] = "Du willst gerade MethodRaidTools dazu zwingen die Notiz zu aktualisieren ohne den Inhalt der PRT Tags auszutauschen. Das sorgt dafür, dass die gesamte Notiz überschrieben wird. Willst Du das wirklich?"
 L["yourself"] = "Du"
+
+-- Midnight restrictions
+L["%s trigger(s) can't fire anymore since Midnight (combat log, boss health/power). They are kept and marked in the configuration: %s"] = "%s Trigger können seit Midnight nicht mehr auslösen (Kampflog, Boss-Leben/-Ressource). Sie bleiben erhalten und sind in der Konfiguration markiert: %s"
+L["Unsupported"] = "Nicht unterstützt"
+L["Since Midnight addons can't read boss health or power during encounters. This trigger is kept, but it won't fire."] = "Seit Midnight können Addons im Bosskampf weder Leben noch Ressourcen des Bosses lesen. Dieser Trigger bleibt erhalten, löst aber nicht aus."
+L["Since Midnight addons can't read the combat log. A condition of this trigger uses a combat log event, so it won't fire. Only encounter start/end and combat start/end are available."] = "Seit Midnight können Addons das Kampflog nicht mehr lesen. Eine Bedingung dieses Triggers nutzt ein Kampflog-Ereignis, daher löst er nicht aus. Verfügbar sind nur Boss-Start/-Ende und Kampfbeginn/-ende."
