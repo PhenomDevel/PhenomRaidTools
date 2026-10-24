@@ -1,55 +1,55 @@
 #!/usr/bin/env bash
-# Fetches the libraries from .pkgmeta into PhenomRaidTools/Libs (gitignored)
-# with the same packager the release workflow uses, so a git checkout runs in
-# game. Optionally links the addon into the game's AddOns folder.
+# Puts the libraries into PhenomRaidTools/Libs (gitignored) so a git checkout
+# runs in game, without svn:
+#   - Ace3 incl. LibStub and CallbackHandler from GitHub (pinned tag below)
+#   - LibSharedMedia, LibDBIcon, LibDataBroker, SharedMediaWidgets from the
+#     latest GitHub release zip (built by the packager from .pkgmeta)
+# LibDeflate is tracked in git and left alone.
 #
 #   scripts/setup-dev.sh                    fetch libraries only
 #   scripts/setup-dev.sh <AddOns folder>    also link PhenomRaidTools there
 #
-# Needs git, svn (most externals are CurseForge svn repos) and curl.
-# Run it again to update the libraries.
+# Needs git, curl and unzip. Run it again to update the libraries.
 set -euo pipefail
 
-root="$(cd "$(dirname "$0")/.." && pwd)"
-addons_dir="${1:-}"
-packager_url="https://raw.githubusercontent.com/BigWigsMods/packager/v2/release.sh"
+ACE3_TAG="Release-r1403"
+ACE3_LIBS="LibStub CallbackHandler-1.0 AceAddon-3.0 AceComm-3.0 AceConsole-3.0 AceDB-3.0 AceEvent-3.0 AceGUI-3.0 AceLocale-3.0 AceSerializer-3.0 AceTimer-3.0"
+RELEASE_LIBS="LibSharedMedia-3.0 LibDBIcon-1.0 LibDataBroker-1.1 AceGUI-3.0-SharedMediaWidgets"
+REPO="PhenomDevel/PhenomRaidTools"
 
-for tool in git svn curl; do
-  if ! command -v "$tool" >/dev/null 2>&1; then
-    echo "Missing '$tool'. macOS: brew install subversion; Debian/Ubuntu: apt install subversion; Windows: Git Bash + TortoiseSVN with command line tools." >&2
-    exit 1
-  fi
+root="$(cd "$(dirname "$0")/.." && pwd)"
+libs="$root/PhenomRaidTools/Libs"
+addons_dir="${1:-}"
+
+for tool in git curl unzip; do
+  command -v "$tool" >/dev/null 2>&1 || { echo "Missing '$tool'." >&2; exit 1; }
 done
 
-work="$(mktemp -d)"
-trap 'rm -rf "$work"' EXIT
+tmp="$(mktemp -d)"
+trap 'rm -rf "$tmp"' EXIT
 
-echo "Downloading packager..."
-curl -fsSL "$packager_url" -o "$work/release.sh"
-
-# -d no upload, -z no zip, -l no localization replacement; the package lands
-# in $work/release/PhenomRaidTools (move-folders in .pkgmeta).
-echo "Fetching libraries (this takes a moment)..."
-bash "$work/release.sh" -t "$root" -r "$work/release" -d -z -l >"$work/packager.log" 2>&1 || {
-  cat "$work/packager.log" >&2
-  echo "Packager failed, see the log above." >&2
-  exit 1
+copy_lib() {
+  rm -rf "$libs/$2"
+  cp -R "$1/$2" "$libs/$2"
+  echo "  $2"
 }
 
-package_libs="$work/release/PhenomRaidTools/Libs"
-if [ ! -d "$package_libs" ]; then
-  cat "$work/packager.log" >&2
-  echo "No Libs folder in the package." >&2
+echo "Ace3 $ACE3_TAG"
+git -c advice.detachedHead=false clone -q --depth 1 --branch "$ACE3_TAG" https://github.com/WoWUIDev/Ace3.git "$tmp/Ace3"
+for lib in $ACE3_LIBS; do
+  copy_lib "$tmp/Ace3" "$lib"
+done
+
+zip_url="$(curl -fsSL "https://api.github.com/repos/$REPO/releases/latest" | grep -o '"browser_download_url": *"[^"]*\.zip"' | head -1 | sed 's/.*"\(https[^"]*\)"/\1/')"
+if [ -z "$zip_url" ]; then
+  echo "No release zip found for $REPO." >&2
   exit 1
 fi
-
-# LibDeflate is tracked in git; everything else under Libs is ignored.
-for lib in "$package_libs"/*; do
-  name="$(basename "$lib")"
-  [ "$name" = "LibDeflate" ] && continue
-  rm -rf "$root/PhenomRaidTools/Libs/$name"
-  cp -R "$lib" "$root/PhenomRaidTools/Libs/$name"
-  echo "  $name"
+echo "Release $(basename "$zip_url")"
+curl -fsSL "$zip_url" -o "$tmp/release.zip"
+unzip -q "$tmp/release.zip" -d "$tmp/release"
+for lib in $RELEASE_LIBS; do
+  copy_lib "$tmp/release/PhenomRaidTools/Libs" "$lib"
 done
 echo "Libraries are in PhenomRaidTools/Libs."
 
