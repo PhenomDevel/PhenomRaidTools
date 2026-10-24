@@ -59,6 +59,7 @@ Source/API.lua
 # UI
 Source/UI/Widgets.lua
 Source/UI/Window.lua
+Source/UI/Pages/Overview.lua
 Source/UI/Pages/Players.lua
 Source/UI/Pages/About.lua
 Source/UI/Pages/Components.lua
@@ -77,7 +78,6 @@ Source/GUI/Template.lua
 Source/GUI/Core.lua
 Source/GUI/Profiles.lua
 Source/GUI/Changelog.lua
-Source/GUI/CombatEventRecorder.lua
 Source/GUI/Options/DefaultsWidget.lua
 Source/GUI/Options/DifficultiesWidget.lua
 Source/GUI/Options/GeneralWidget.lua

@@ -30,14 +30,8 @@ function MessageHandler.ExpandMessageTargets(message)
   local splittetTargets = {}
 
   for _, v in pairs(message.targets) do
-    if v == "$target" then
-      -- Set event target as message target
-      tinsert(splittetTargets, {message.eventTarget})
-    else
-      local names = PRT.ReplacePlayerNameTokens(v)
-      -- Try to replace placeholder tokens otherwise
-      tinsert(splittetTargets, {strsplit(",", names)})
-    end
+    local names = PRT.ReplacePlayerNameTokens(v)
+    tinsert(splittetTargets, {strsplit(",", names)})
   end
 
   local targets = PRT.TableUtils.MergeMany(unpack(splittetTargets))
@@ -72,10 +66,6 @@ end
 local function ExecuteRaidTarget(message)
   if message.targets and message.targets[1] then
     local target = PRT.ReplacePlayerNameTokens(message.targets[1])
-
-    if target == "$target" then
-      target = message.eventTarget
-    end
 
     if PRT.IsTestMode() then
       target = "player"

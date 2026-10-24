@@ -15,9 +15,6 @@ local EventHandler = {
   retailWorldEvents = {
     "PLAYER_SPECIALIZATION_CHANGED"
   },
-  -- Combat log, unit health/power and boss unit tracking are not available to
-  -- addons during encounters since 12.0 (also on WoW: Forever).
-  trackedInCombatEvents = {},
   difficultyIDToNameMapping = {
     [1] = "Normal", -- Normal Dungeon
     [14] = "Normal", -- Normal Raid
@@ -42,7 +39,7 @@ local EventHandler = {
 }
 
 -- Create local copies of API functions which we use
-local GetTime, UnitGUID, GetInstanceInfo = GetTime, UnitGUID, GetInstanceInfo
+local GetTime, GetInstanceInfo = GetTime, GetInstanceInfo
 
 -------------------------------------------------------------------------------
 -- Local Helper
@@ -62,112 +59,9 @@ end
 
 local function NewEncounter()
   return {
-    trackedUnits = {},
     inFight = true,
-    encounter = {},
-    interestingUnits = {},
-    interestingEvents = {},
-    statistics = {}
+    encounter = {}
   }
-end
-
-local function CompileInterestingUnitsByTriggerCondition(interestingUnits, condition)
-  if condition.target and not interestingUnits[condition.target] then
-    interestingUnits[condition.target] = condition.target
-  end
-
-  if condition.source and not interestingUnits[condition.source] then
-    interestingUnits[condition.source] = condition.source
-  end
-end
-
-local function CompileInterestingUnitsByTriggers(interestingUnits, triggers)
-  for _, trigger in pairs(triggers) do
-    if trigger.enabled and trigger.stopCondition then
-      CompileInterestingUnitsByTriggerCondition(interestingUnits, trigger.stopCondition)
-    end
-    if trigger.enabled and trigger.startCondition then
-      CompileInterestingUnitsByTriggerCondition(interestingUnits, trigger.startCondition)
-    end
-    if trigger.enabled and trigger.triggerCondition then
-      CompileInterestingUnitsByTriggerCondition(interestingUnits, trigger.triggerCondition)
-    end
-  end
-end
-
-local function CompileInterestingUnits(currentEncounter)
-  local interestingUnits = {}
-
-  for _, percentage in pairs(currentEncounter.encounter.HealthPercentages) do
-    if percentage.enabled and not interestingUnits[percentage.unitID] then
-      interestingUnits[percentage.unitID] = percentage.unitID
-    end
-  end
-
-  for _, percentage in pairs(currentEncounter.encounter.PowerPercentages) do
-    if percentage.enabled and not interestingUnits[percentage.unitID] then
-      interestingUnits[percentage.unitID] = percentage.unitID
-    end
-  end
-
-  CompileInterestingUnitsByTriggers(interestingUnits, currentEncounter.encounter.Timers)
-  CompileInterestingUnitsByTriggers(interestingUnits, currentEncounter.encounter.Rotations)
-  CompileInterestingUnitsByTriggers(interestingUnits, currentEncounter.encounter.HealthPercentages)
-  CompileInterestingUnitsByTriggers(interestingUnits, currentEncounter.encounter.PowerPercentages)
-
-  currentEncounter.interestingUnits = interestingUnits
-end
-
-local function CompileInterestingEventsByTriggers(interestingEvents, triggers)
-  for _, trigger in pairs(triggers) do
-    if trigger.enabled and trigger.stopCondition then
-      if trigger.stopCondition.event and not interestingEvents[trigger.stopCondition.event] then
-        interestingEvents[trigger.stopCondition.event] = trigger.stopCondition.event
-      end
-    end
-    if trigger.enabled and trigger.startCondition then
-      if trigger.startCondition.event and not interestingEvents[trigger.startCondition.event] then
-        interestingEvents[trigger.startCondition.event] = trigger.startCondition.event
-      end
-    end
-    if trigger.enabled and trigger.triggerCondition then
-      if trigger.triggerCondition.event and not interestingEvents[trigger.triggerCondition.event] then
-        interestingEvents[trigger.triggerCondition.event] = trigger.triggerCondition.event
-      end
-    end
-  end
-end
-
-local function CompileInterestingEvents(currentEncounter)
-  local interestingEvents = {}
-
-  CompileInterestingEventsByTriggers(interestingEvents, currentEncounter.encounter.Timers)
-  CompileInterestingEventsByTriggers(interestingEvents, currentEncounter.encounter.Rotations)
-  CompileInterestingEventsByTriggers(interestingEvents, currentEncounter.encounter.HealthPercentages)
-  CompileInterestingEventsByTriggers(interestingEvents, currentEncounter.encounter.PowerPercentages)
-
-  currentEncounter.interestingEvents = interestingEvents
-end
-
-local function LogInterestingUnitsAndEvents(currentEncounter)
-  PRT.Debug("Tracked Units:")
-  for _, unit in pairs(currentEncounter.interestingUnits) do
-    PRT.Debug("-", PRT.HighlightString(unit))
-  end
-
-  PRT.Debug("Tracked Events:")
-  for _, event in pairs(currentEncounter.interestingEvents) do
-    PRT.Debug("-", PRT.HighlightString(event))
-  end
-end
-
-local function LogEncounterStatistics(currentEncounter)
-  if currentEncounter.statistics then
-    PRT.Debug("Handled event statistics:")
-    for k, value in pairs(currentEncounter.statistics) do
-      PRT.Debug("Handled", PRT.HighlightString(value), "events for", PRT.HighlightString(k))
-    end
-  end
 end
 
 -- The plan to run: the own one in sender mode, otherwise the one received
@@ -195,10 +89,6 @@ function EventHandler.GetPlan(encounterID)
 end
 
 function EventHandler.StartEncounter(event, encounterID, encounterName)
-  if PRT.GetProfileDB().combatEventRecorder.options.resetOnEncounterStart then
-    PRT.GetProfileDB().combatEventRecorder.data = {}
-  end
-
   if PRT.IsEnabled() then
     wipe(PRT.GetProfileDB().debugLog)
 
@@ -213,16 +103,9 @@ function EventHandler.StartEncounter(event, encounterID, encounterName)
       PRT.currentEncounter.received = received
       PRT.currentEncounter.encounter = PRT.TableUtils.Clone(plan)
       PRT.EnsureEncounterTrigger(PRT.currentEncounter.encounter)
-      PRT.RegisterEvents(EventHandler.trackedInCombatEvents)
       PRT.currentEncounter.encounter.startedAt = GetTime()
 
-      CompileInterestingUnits(PRT.currentEncounter)
-      CompileInterestingEvents(PRT.currentEncounter)
-      LogInterestingUnitsAndEvents(PRT.currentEncounter)
-
       PRT.SetupEncounterSpecificCustomPlaceholders()
-
-      AceTimer:ScheduleRepeatingTimer(PRT.ProcessMessageQueue, 0.5)
 
       -- Make sure timings are once queried at the start so timing with < 0.5s will trigger
       AceTimer:ScheduleTimer(PRT.CheckTimerTimings, 0.1, PRT.currentEncounter.encounter.Timers)
@@ -255,11 +138,7 @@ function EventHandler.StopEncounter(event)
   if PRT.currentEncounter and PRT.currentEncounter.running then
     PRT.Debug("Combat stopped.")
 
-    -- Send the last event before unregistering the event
     EventHandler.DispatchEvent(event)
-    PRT.UnregisterEvents(EventHandler.trackedInCombatEvents)
-
-    LogEncounterStatistics(PRT.currentEncounter)
     PRT.currentEncounter = {}
   end
 
@@ -362,159 +241,22 @@ function addon:PLAYER_REGEN_ENABLED(event)
 end
 
 -- Feeds encounter events (ENCOUNTER_START/END, combat start/stop) into the
--- trigger conditions. The combat log arguments stay nil: CLEU is not available
--- to addons anymore.
-function EventHandler.DispatchEvent(event, combatEvent, eventSpellID, targetGUID, targetName, sourceGUID, sourceName)
-  if PRT.currentEncounter and PRT.currentEncounter.running then
-    if PRT.currentEncounter.inFight then
-      if PRT.currentEncounter.encounter then
-        if PRT.currentEncounter.interestingEvents[combatEvent] or PRT.currentEncounter.interestingEvents[event] then
-          PRT.currentEncounter.statistics[combatEvent or event] = (PRT.currentEncounter.statistics[combatEvent or event] or 0) + 1
-
-          local timers = PRT.currentEncounter.encounter.Timers
-          local rotations = PRT.currentEncounter.encounter.Rotations
-          local healthPercentages = PRT.currentEncounter.encounter.HealthPercentages
-          local powerPercentages = PRT.currentEncounter.encounter.PowerPercentages
-
-          -- Checking Timer activation
-          if timers then
-            PRT.CheckTimerStopConditions(timers, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
-            PRT.CheckTimerStartConditions(timers, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
-          end
-
-          -- Checking Rotation activation
-          if rotations then
-            PRT.CheckTriggersStopConditions(rotations, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
-            PRT.CheckTriggersStartConditions(rotations, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
-            PRT.CheckRotationTriggerCondition(rotations, event, combatEvent, eventSpellID, targetGUID, targetName, sourceGUID, sourceName)
-          end
-
-          -- Checking Health Percentage activation
-          if healthPercentages then
-            PRT.CheckTriggersStartConditions(healthPercentages, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
-            PRT.CheckTriggersStopConditions(healthPercentages, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
-          end
-
-          -- Checking Resource Percentage activation
-          if powerPercentages then
-            PRT.CheckTriggersStartConditions(powerPercentages, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
-            PRT.CheckTriggersStopConditions(powerPercentages, event, combatEvent, eventSpellID, targetGUID, sourceGUID)
-          end
-        end
-      end
-    end
+-- trigger conditions. Nothing else reaches addons during encounters since 12.0.
+function EventHandler.DispatchEvent(event)
+  local currentEncounter = PRT.currentEncounter
+  if not (currentEncounter and currentEncounter.running and currentEncounter.inFight and currentEncounter.encounter) then
+    return
   end
-end
 
-local function IsInterestingUnit(currentEncounter, unitID)
-  local unitName = GetUnitName(unitID)
-  local guid = UnitGUID(unitID)
-  local npcID = PRT.GUIDToNPCID(guid)
-
-  return currentEncounter.interestingUnits and
-    (currentEncounter.interestingUnits[unitID] or currentEncounter.interestingUnits[unitName] or currentEncounter.interestingUnits[npcID])
-end
-
-local function IsTrackedUnit(currentEncounter, guid)
-  return currentEncounter.trackedUnits and currentEncounter.trackedUnits[guid]
-end
-
-function addon:UNIT_POWER_FREQUENT(event, unitID)
-  if PRT.currentEncounter and PRT.currentEncounter.running then
-    if PRT.currentEncounter.inFight then
-      if PRT.currentEncounter.encounter then
-        local unitGUID = UnitGUID(unitID)
-        if IsInterestingUnit(PRT.currentEncounter, unitID) and IsTrackedUnit(PRT.currentEncounter, unitGUID) then
-          PRT.currentEncounter.statistics[event] = (PRT.currentEncounter.statistics[event] or 0) + 1
-          local powerPercentages = PRT.currentEncounter.encounter.PowerPercentages
-
-          if powerPercentages then
-            PRT.CheckUnitPowerPercentages(powerPercentages)
-          end
-        end
-      end
-    end
+  local encounter = currentEncounter.encounter
+  if encounter.Timers then
+    PRT.CheckTimerStopConditions(encounter.Timers, event)
+    PRT.CheckTimerStartConditions(encounter.Timers, event)
   end
-end
-
-function addon:UNIT_HEALTH(event, unitID)
-  if PRT.currentEncounter and PRT.currentEncounter.running then
-    if PRT.currentEncounter.inFight then
-      if PRT.currentEncounter.encounter then
-        local unitGUID = UnitGUID(unitID)
-        if IsInterestingUnit(PRT.currentEncounter, unitID) and IsTrackedUnit(PRT.currentEncounter, unitGUID) then
-          PRT.currentEncounter.statistics[event] = (PRT.currentEncounter.statistics[event] or 0) + 1
-          local healthPercentages = PRT.currentEncounter.encounter.HealthPercentages
-
-          if healthPercentages then
-            PRT.CheckUnitHealthPercentages(healthPercentages)
-          end
-        end
-      end
-    end
-  end
-end
-
-local function EnsureTrackedUnit(guid)
-  if PRT.currentEncounter then
-    if PRT.currentEncounter.trackedUnits then
-      if not PRT.currentEncounter.trackedUnits[guid] then
-        PRT.currentEncounter.trackedUnits[guid] = {}
-      end
-    end
-  end
-end
-
-local function UpdateTrackedUnit(unitID, name, guid)
-  if PRT.currentEncounter.trackedUnits then
-    EnsureTrackedUnit(guid)
-
-    if unitID ~= PRT.currentEncounter.trackedUnits[guid].unitID then
-      PRT.currentEncounter.trackedUnits[guid].unitID = unitID
-      PRT.currentEncounter.trackedUnits[guid].guid = guid
-      PRT.currentEncounter.trackedUnits[guid].name = name
-    end
-  end
-end
-
-local untrackedUnitIDs = {
-  "target"
-}
-
-function PRT.AddUnitToTrackedUnits(unitID)
-  if PRT.currentEncounter then
-    if not tContains(untrackedUnitIDs, unitID) then
-      local unitName = GetUnitName(unitID)
-      local guid = UnitGUID(unitID)
-
-      if IsInterestingUnit(PRT.currentEncounter, unitID) then
-        if IsTrackedUnit(PRT.currentEncounter, guid) then
-          if PRT.currentEncounter.trackedUnits[guid].unitID ~= unitID then
-            -- PRT.Debug("Updating tracked unit ", PRT.HighlightString(unitName.." ("..unitID..")"))
-            UpdateTrackedUnit(unitID, unitName, guid)
-          end
-        else
-          PRT.Debug("Adding ", PRT.HighlightString(unitName .. " (" .. unitID .. ")"), "to tracked units.")
-          UpdateTrackedUnit(unitID, unitName, guid)
-        end
-      end
-    end
-  end
-end
-
-function addon:UNIT_COMBAT(_, unitID)
-  PRT.AddUnitToTrackedUnits(unitID)
-end
-
-function addon:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
-  for i = 1, 5 do
-    local unitID = "boss" .. i
-
-    if IsInterestingUnit(PRT.currentEncounter, unitID) then
-      if UnitExists(unitID) then
-        PRT.AddUnitToTrackedUnits(unitID)
-      end
-    end
+  if encounter.Rotations then
+    PRT.CheckTriggersStopConditions(encounter.Rotations, event)
+    PRT.CheckTriggersStartConditions(encounter.Rotations, event)
+    PRT.CheckRotationTriggerCondition(encounter.Rotations, event)
   end
 end
 

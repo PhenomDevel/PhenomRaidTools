@@ -287,8 +287,6 @@ function Core.GenerateTreeByProfile()
     tinsert(t, {value = "customPlaceholder", text = L["Custom Placeholder"]})
   end
 
-  tinsert(t, {value = "combatEventRecorder", text = L["Combat Event Recorder"]})
-
   if PRT.IsSender() then
     tinsert(t, Core.GenerateTemplatesTree())
     tinsert(t, Core.GenerateEncountersTree(PRT.GetProfileDB().encounters))
@@ -324,8 +322,6 @@ function Core.OnGroupSelected(container, key)
     PRT.AddSpellCacheWidget(contentScrollFrame)
   elseif mainKey == "templates" then
     PRT.AddTemplateWidgets(contentScrollFrame, PRT.GetProfileDB())
-  elseif mainKey == "combatEventRecorder" then
-    PRT.AddCombatEventRecorderWidgets(container, PRT.GetProfileDB())
   elseif mainKey == "encounters" and not triggerType and not triggerName and not encounterID then
     PRT.AddEncountersWidgets(contentScrollFrame, PRT.GetProfileDB())
   elseif encounterID and not triggerType and not triggerName then
@@ -355,11 +351,9 @@ function Core.OnGroupSelected(container, key)
     PRT.AddPowerPercentageWidget(contentScrollFrame, PRT.GetProfileDB(), tonumber(encounterID), triggerName)
   end
 
-  if mainKey ~= "combatEventRecorder" then
-    container:AddChild(contentScrollFrame)
-    if PRT.mainWindowContent then
-      PRT.mainWindowContent.scrollFrame = contentScrollFrame
-    end
+  container:AddChild(contentScrollFrame)
+  if PRT.mainWindowContent then
+    PRT.mainWindowContent.scrollFrame = contentScrollFrame
   end
 
   container:DoLayout()

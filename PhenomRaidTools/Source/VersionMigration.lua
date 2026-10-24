@@ -185,7 +185,10 @@ local migrationFunctions = {
   [7] = {
     version = "3.0.0",
     migrationFunction = function(profile)
-      -- Nothing is changed or removed: the triggers stay for reference and the
+      -- Recorded combat log events; the recorder is gone with the combat log.
+      profile.combatEventRecorder = nil
+
+      -- Triggers are not changed or removed: they stay for reference and the
       -- old window marks them. This only tells once which ones are affected.
       local count, encounterNames = 0, {}
       for _, encounter in ipairs(profile.encounters) do

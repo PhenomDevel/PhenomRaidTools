@@ -67,6 +67,10 @@ local function BuildPlan(encounterVersion)
   return plan
 end
 
+local function PlanHash(plan)
+  return LibDeflate:Adler32(AceSerializer:Serialize(plan))
+end
+
 local function GroupChannel()
   if IsInRaid() then
     return "RAID"
@@ -83,14 +87,32 @@ local function Send(message, channel, target)
   AceComm:SendCommMessage(PREFIX, PRT.Serialize(message), channel, target, "BULK")
 end
 
+-- The other group members, with realm.
+local function Members()
+  local members = {}
+  for _, name in ipairs(PRT.PartyNames(true)) do
+    if name ~= PRT.UnitFullName("player") then
+      members[#members + 1] = name
+    end
+  end
+  return members
+end
+
 -- Everyone in the group (except us) confirmed this hash.
 local function AllConfirmed(state)
-  for _, name in ipairs(PRT.PartyNames(true)) do
-    if name ~= PRT.UnitFullName("player") and state.acks[name] ~= state.hash then
+  for _, name in ipairs(Members()) do
+    if state.acks[name] ~= state.hash then
       return false
     end
   end
   return true
+end
+
+-- The overview page reflects new plans and confirmations right away.
+local function RefreshOverview()
+  if PRT.UI then
+    PRT.UI.RefreshPage("overview")
+  end
 end
 
 -------------------------------------------------------------------------------
@@ -98,6 +120,20 @@ end
 
 -- Sends the plans of all enabled encounters; without `force` only those that
 -- changed or aren't confirmed by everyone. Returns the number sent.
+-- Whether plans can be sent now; otherwise false and why.
+function PlanSync.CanSend()
+  if not PRT.IsEnabled() or not PRT.IsSender() then
+    return false, L["Sending plans needs sender mode."]
+  elseif not GroupChannel() then
+    return false, L["You are not in a group."]
+  elseif not IsGroupLead("player") then
+    return false, L["Only the group leader or an assistant can send plans."]
+  elseif PRT.IsBlizzardEncounterInProgress() then
+    return false, L["Plans can't be sent during an encounter."]
+  end
+  return true
+end
+
 function PlanSync.SendPlans(force)
   local channel = GroupChannel()
   if not channel or not PRT.IsEnabled() or not PRT.IsSender() then
@@ -113,7 +149,7 @@ function PlanSync.SendPlans(force)
     local encounterVersion = encounter.enabled and encounter.versions and encounter.versions[encounter.selectedVersion]
     if encounterVersion then
       local plan = BuildPlan(encounterVersion)
-      local hash = LibDeflate:Adler32(AceSerializer:Serialize(plan))
+      local hash = PlanHash(plan)
       local state = sent[encounter.id]
       if force or not state or state.hash ~= hash or not AllConfirmed(state) then
         sent[encounter.id] = {hash = hash, sentAt = time(), acks = state and state.hash == hash and state.acks or {}}
@@ -124,6 +160,7 @@ function PlanSync.SendPlans(force)
   end
   if count > 0 then
     PRT.Info(L["Sending %d plan(s) to your group."]:format(count))
+    RefreshOverview()
   end
   return count
 end
@@ -142,6 +179,27 @@ function PlanSync.GetConfirmations(encounterID)
     end
   end
   return state.hash, confirmed
+end
+
+-- For the overview: the sync state of an encounter's selected version.
+-- Returns status ("unsent" | "changed" | "sent"), { { name, confirmed } } for
+-- the other group members, confirmed count.
+function PlanSync.GetStatus(encounter)
+  local encounterVersion = encounter.versions and encounter.versions[encounter.selectedVersion]
+  local state = sent[encounter.id]
+  local status = "unsent"
+  if state and encounterVersion then
+    status = state.hash == PlanHash(BuildPlan(encounterVersion)) and "sent" or "changed"
+  end
+  local members, confirmedCount = {}, 0
+  for _, name in ipairs(Members()) do
+    local confirmed = state ~= nil and state.acks[name] == state.hash
+    members[#members + 1] = {name = name, confirmed = confirmed}
+    if confirmed then
+      confirmedCount = confirmedCount + 1
+    end
+  end
+  return status, members, confirmedCount
 end
 
 -------------------------------------------------------------------------------
@@ -173,12 +231,14 @@ local function OnPlan(message, sender)
     PRT.Info(L["Received plan for %s from %s."]:format(PRT.HighlightString(message.name), PRT.ClassColoredName(sender)))
   end
   Send({protocol = PROTOCOL, type = "ack", encounterID = message.encounterID, hash = message.hash}, "WHISPER", sender)
+  RefreshOverview()
 end
 
 local function OnAck(message, sender)
   local state = sent[message.encounterID]
   if state then
     state.acks[sender] = message.hash
+    RefreshOverview()
   end
 end
 
