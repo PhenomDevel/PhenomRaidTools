@@ -409,6 +409,7 @@ end
 function addon:PrintHelp()
   PRT.Info("You can use following commands:")
   PRT.Info("/prt - Opens the config")
+  PRT.Info("/prt ui - Opens the new window (preview)")
   PRT.Info("/prt versions - Will perform a version check on the current group")
   PRT.Info("/prt profile - Opens the profile page for PRT")
   PRT.Info("/prt minimap - Will enable the minimap icon")
@@ -418,14 +419,16 @@ end
 function addon:ExecuteChatCommand(input)
   if input == "" or input == nil then
     addon:Open()
+  elseif input == "ui" and PRT.UI then
+    PRT.UI.Toggle()
   elseif input == "help" then
-    PRT.PrintHelp()
+    addon:PrintHelp()
   elseif input == "version" or input == "versions" then
     addon:VersionCheck()
   elseif input == "minimap" then
     addon:ToggleMinimapIcon()
   else
-    PRT.PrintHelp()
+    addon:PrintHelp()
   end
 end
 

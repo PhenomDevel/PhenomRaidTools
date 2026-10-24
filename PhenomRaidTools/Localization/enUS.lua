@@ -348,6 +348,35 @@ L["You currently filter messages by %s. Therefore only messages from those playe
 L["You want to force update ExRT note without replacing PRT tag content. This will overwrite the whole note. Are you sure about that?"] = "You want to force update MethodRaidTools note without replacing PRT tag content. This will overwrite the whole note. Are you sure about that?"
 L["yourself"] = true
 
+-- New window (Source/UI)
+L["Matches: %d · Pages: %d"] = true
+L["About"] = true
+L["Add"] = true
+L["Back to the default value."] = true
+L["Commands"] = true
+L["Development version"] = true
+L["Interface"] = true
+L["Move down"] = true
+L["Move up"] = true
+L["New window"] = true
+L["Not a time, ignored:"] = true
+L["Nothing here yet."] = true
+L["No match for %s."] = true
+L["Off"] = true
+L["Open"] = true
+L["Opens with `/prt`."] = true
+L["PRT is moving to this window page by page. Until a page exists here, use the previous window."] = true
+L["Play sound"] = true
+L["Previous window"] = true
+L["Profile"] = true
+L["Reset"] = true
+L["Search results"] = true
+L["Spell ID or name"] = true
+L["Version"] = true
+L["`/prt ui` opens this window."] = true
+L["`/prt versions` checks the versions in your group."] = true
+L["`/prt` opens the previous window."] = true
+
 -- Midnight restrictions
 L["%s trigger(s) can't fire anymore since Midnight (combat log, boss health/power). They are kept and marked in the configuration: %s"] = true
 L["Unsupported"] = true

@@ -55,6 +55,12 @@ Source/VersionMigration.lua
 Source/MethodRaidToolsExport.lua
 Source/API.lua
 
+# UI
+Source/UI/Widgets.lua
+Source/UI/Window.lua
+Source/UI/Pages/About.lua
+Source/UI/Pages/Components.lua
+
 # GUI Source
 Source/GUI/AceHelper.lua
 Source/GUI/Condition.lua
