@@ -8,6 +8,7 @@ A new configuration window is being built page by page. Preview it with `/prt ui
 
 Pages available in the new window so far:
 
+- **Overview:** lead/player mode, sending plans to the group with the confirmation of every member, the plans you received.
 - **Players & groups:** raid roster (`$tank1`, `$heal1`, `$dd1`, ...), custom placeholders with a preview of who they resolve to in your group, import and export of placeholders.
 
 ## About

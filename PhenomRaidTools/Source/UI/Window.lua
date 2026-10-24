@@ -1,4 +1,4 @@
--- luacheck: read globals GetCursorPosition PlaySound SOUNDKIT C_Timer
+-- luacheck: read globals GetCursorPosition PlaySound SOUNDKIT C_Timer GetCurrentKeyBoardFocus
 local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
@@ -2111,6 +2111,14 @@ end
 -- Profile or layout changed elsewhere: rebuild the visible page.
 function UI.Refresh()
   if frame and frame:IsShown() then
+    Render()
+  end
+end
+
+-- Data shown by one page changed elsewhere (e.g. a message from the group):
+-- rebuild it if it is the visible one. Never while the user is typing.
+function UI.RefreshPage(page)
+  if frame and frame:IsShown() and state.page == page and state.search == "" and not GetCurrentKeyBoardFocus() then
     Render()
   end
 end
