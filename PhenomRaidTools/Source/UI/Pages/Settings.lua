@@ -197,13 +197,7 @@ local function DefaultsCard()
         set = function(value)
           MessageDefaults().defaultTargetOverlay = value
         end
-      },
-      Bind(
-        MessageDefaults,
-        "defaultCooldownWithCountdownPattern",
-        {type = "text", label = L["Cooldown text with countdown"], note = L["`%s` is the spell, `%%.0f` the seconds."]}
-      ),
-      Bind(MessageDefaults, "defaultCooldownWithoutCountdownPattern", {type = "text", label = L["Cooldown text"]})
+      }
     }
   }
 end

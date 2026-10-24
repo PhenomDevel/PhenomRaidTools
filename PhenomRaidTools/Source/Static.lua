@@ -16,7 +16,8 @@ PRT.Static = {
     ["warlock"] = 9,
     ["monk"] = 10,
     ["druid"] = 11,
-    ["dh"] = 12
+    ["dh"] = 12,
+    ["evoker"] = 13
   },
   TargetNone = "999",
   TargetNoneNumber = 999,

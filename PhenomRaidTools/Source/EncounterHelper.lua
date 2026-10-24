@@ -87,13 +87,7 @@ function PRT.EmptyTimer()
   return {
     enabled = true,
     startCondition = {event = "ENCOUNTER_START"},
-    name = "Timer",
-    enabledDifficulties = {
-      Normal = true,
-      Heroic = true,
-      Mythic = true
-    },
-    description = "",
+    name = "Pull",
     timings = {}
   }
 end
@@ -107,6 +101,24 @@ local REMOVED_MESSAGE_TYPES = {raidwarning = true, raidtarget = true}
 
 function PRT.IsMessageSupported(message)
   return not REMOVED_MESSAGE_TYPES[message.type]
+end
+
+function PRT.SpellName(spellID)
+  local info = spellID and C_Spell.GetSpellInfo(tonumber(spellID) or spellID)
+  return info and info.name
+end
+
+-- Text of a cooldown message: its icon and its custom text, or else the spell's name.
+function PRT.CooldownMessageText(message)
+  local label = message.cooldownText
+  if not label or strtrim(label) == "" then
+    label = PRT.SpellName(message.spellID) or ""
+  end
+  local text = ("{spell:%s} %s"):format(message.spellID or "", label)
+  if message.withCountdown then
+    text = text .. " %.0f"
+  end
+  return strtrim(text)
 end
 
 -- One message per timing (none: dropped), with its delay and the timing's offset folded into
@@ -129,6 +141,41 @@ local function SplitTimings(timer)
     end
   end
   timer.timings = timings
+end
+
+local ALL_DIFFICULTIES = {"Normal", "Heroic", "Mythic"}
+
+-- The difficulties of a timer as an assignment's: nil for all, {} when off.
+local function TimerDifficulties(timer)
+  if timer.enabled == false then
+    return {}
+  end
+  local enabled = timer.enabledDifficulties
+  if not enabled then
+    return nil
+  end
+  local difficulties, all = {}, true
+  for _, difficulty in ipairs(ALL_DIFFICULTIES) do
+    difficulties[difficulty] = enabled[difficulty] or nil
+    all = all and enabled[difficulty] == true
+  end
+  return not all and difficulties or nil
+end
+
+-- Groups are gone: one timer holds every assignment, each with the
+-- difficulties its group had.
+local function MergeTimers(timers)
+  local merged = {enabled = true, name = "Pull", startCondition = {event = "ENCOUNTER_START"}, timings = {}}
+  for _, timer in ipairs(timers) do
+    local difficulties = TimerDifficulties(timer)
+    for _, timing in ipairs(timer.timings or {}) do
+      if difficulties and timing.difficulties == nil then
+        timing.difficulties = PRT.TableUtils.Clone(difficulties)
+      end
+      merged.timings[#merged.timings + 1] = timing
+    end
+  end
+  return {merged}
 end
 
 -- Strips what can't run since Midnight from an encounter version (also
@@ -160,7 +207,7 @@ function PRT.CleanEncounterVersion(version)
       removed = removed + 1
     end
   end
-  version.Timers = timers
+  version.Timers = MergeTimers(timers)
   return removed
 end
 
@@ -172,14 +219,6 @@ function PRT.EmptyEncounterVersion(encounterId, encounterName)
     createdAt = PRT.Now(),
     Timers = {}
   }
-end
-
-function PRT.NewEncounterVersion(encounter)
-  local encounterVersion = PRT.EmptyEncounterVersion(encounter.id, "")
-  encounterVersion.name = encounter.name .. " Version " .. (PRT.TableUtils.Count(encounter.versions) + 1)
-  encounterVersion.enabled = true
-
-  return encounterVersion
 end
 
 function PRT.EmptyEncounter()

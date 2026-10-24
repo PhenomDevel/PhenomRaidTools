@@ -53,7 +53,7 @@ local function Collect(now)
     if timer.started and timer.startedAt then
       for _, timing in ipairs(timer.timings or {}) do
         local offset = timing.offset or 0
-        for _, second in ipairs(timing.seconds or {}) do
+        for _, second in ipairs(PRT.IsTimingForDifficulty(timing) and timing.seconds or {}) do
           for _, message in ipairs(timing.messages or {}) do
             local fireAt = timer.startedAt + second + offset + (message.delay or 0)
             local remaining = fireAt - now
