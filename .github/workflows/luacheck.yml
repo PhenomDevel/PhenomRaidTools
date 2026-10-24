@@ -18,6 +18,5 @@ jobs:
         uses: nebularg/actions-luacheck@v1
         with:
           files: 'PhenomRaidTools/Source'
-          config: '.luacheckrc'
           args: "--no-color -q"
           annotate: warning
