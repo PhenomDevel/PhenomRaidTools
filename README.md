@@ -71,6 +71,15 @@ Just install the addon through the Twitch desktop app or any other third party a
 - Unpack the zip folder
 - Copy the folder `PhenomRaidTools` to your World of Warcraft addon folder `path\to\World of Warcraft\_retail_\Interface\AddOns` (or the AddOns folder of your WoW: Forever installation)
 
+### Development
+The libraries are not part of the repository; the packager fetches them from `.pkgmeta` on release. To run a git checkout in game:
+
+```sh
+scripts/setup-dev.sh "/path/to/World of Warcraft/_retail_/Interface/AddOns"
+```
+
+This fetches the libraries into `PhenomRaidTools/Libs` (gitignored) with the same packager as the release workflow and links the addon folder into `AddOns`. Without an argument it only fetches the libraries. Needs `git`, `svn` and `curl`. On Windows run it in Git Bash with `MSYS=winsymlinks:nativestrict` (developer mode or admin), otherwise create the link with `mklink /D`. Run it again to update the libraries.
+
 ## Help
 I have set up a discord server up and running for every kind of question. Feel free to enter and ask what you have trouble with. [Discord](https://discord.gg/GAYDjBF)
 
