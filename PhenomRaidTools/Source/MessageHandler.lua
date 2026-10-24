@@ -106,6 +106,12 @@ local function ExecuteRaidTarget(message)
   end
 end
 
+-- A plan received from the raid lead runs on every player: only the lead's
+-- own run may act for the group (raid warnings, markers, messages to others).
+local function IsRunningReceivedPlan()
+  return PRT.currentEncounter ~= nil and PRT.currentEncounter.received == true
+end
+
 local function ExecuteMessage(message)
   local messageTargets = MessageHandler.ExpandMessageTargets(message)
 
@@ -128,7 +134,7 @@ local function ExecuteMessage(message)
 
       local onlyForMe = targetMessage.target ~= "ALL" and tContains(MessageHandler.validPlayerTargets, targetMessage.target)
 
-      if not onlyForMe and PRT.PlayerInParty() then
+      if not onlyForMe and PRT.PlayerInParty() and not IsRunningReceivedPlan() then
         if PRT.IsBlizzardEncounterInProgress() then
           if PRT.currentEncounter and not PRT.currentEncounter.loggedCommLockdown then
             PRT.Debug("Addon messages are blocked during encounters. Messages for other players are skipped.")
@@ -149,6 +155,9 @@ local function ExecuteMessage(message)
 end
 
 function MessageHandler.ExecuteMessageAction(message)
+  if IsRunningReceivedPlan() and (message.type == "raidwarning" or message.type == "raidtarget") then
+    return
+  end
   if message.type == "raidwarning" then
     ExecuteRaidWarning(message)
   elseif message.type == "raidtarget" then
