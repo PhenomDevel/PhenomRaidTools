@@ -26,7 +26,8 @@ Since 12.0 (also on WoW: Forever) addons can't read the combat log, unit health 
 
 - In sender mode, the group leader or an assistant sends the plans of all enabled encounters on ready check (only what changed or isn't confirmed yet) or with `/prt sync`.
 - Players in receiver mode keep the last plan per encounter (only from the leader or an assistant) and run it on `ENCOUNTER_START`, showing the messages meant for them. Raid warnings and raid markers stay with the lead.
-- Timers started by `ENCOUNTER_START` work. Rotations, health and power percentages and timers started or stopped by combat log events don't trigger. They are kept, marked as *Unsupported* in the configuration, listed once in chat after updating, and not sent with the plan.
+- Triggers can only react to encounter start/end and combat start/end. Health and power percentages and timers or rotations using combat log events (or a spell, source or target in a condition) don't trigger. They are kept, marked as *Unsupported* in the configuration, listed once in chat after updating, and not sent with the plan.
+- The combat event recorder and the `$target`/`$source` message placeholders are gone; both depended on the combat log.
 
 ## Guide
 For a brief introduction into the addon please read: [PhenomRaidTools Beginner Guide](https://github.com/PhenomDevel/PhenomRaidTools/blob/master/docs/PhenomRaidTools_Beginner_Guide.pdf)
