@@ -80,7 +80,13 @@ local function ExecuteRaidTarget(message)
         end
       end
 
-      if GetRaidTargetIndex(target) ~= message.raidtarget then
+      -- Raid markers may be secret during encounters; comparing one errors.
+      local current = GetRaidTargetIndex(target)
+      if issecretvalue and issecretvalue(current) then
+        current = nil
+      end
+
+      if current == nil or current ~= message.raidtarget then
         -- If no raid target is selected we unselect the existing one
         local targetIndex = message.raidtarget
         if message.raidtarget == PRT.Static.TargetNoneNumber then
@@ -167,8 +173,11 @@ function MessageHandler.IsValidSender(message)
       (PRT.GetProfileDB().messageFilter.alwaysIncludeMyself and message.sender == select(1, UnitName("player"))))
   elseif PRT.GetProfileDB().messageFilter.filterBy == "guildRank" then
     local senderGuildRankIndex = select(3, GetGuildInfo(message.sender))
+    local requiredGuildRank = PRT.GetProfileDB().messageFilter.requiredGuildRank
 
-    return (senderGuildRankIndex <= PRT.GetProfileDB().messageFilter.requiredGuildRank)
+    -- GetGuildInfo counts ranks from 0, the chosen rank (rank names) from 1.
+    -- Not in the guild or no rank chosen yet: nothing to compare.
+    return senderGuildRankIndex ~= nil and requiredGuildRank ~= nil and senderGuildRankIndex + 1 <= requiredGuildRank
   end
 
   return false
@@ -193,7 +202,10 @@ function addon:OnAddonMessage(message)
   if PRT.IsEnabled() then
     if PRT.EncounterInProgress() or PRT.IsBlizzardEncounterInProgress() or PRT.IsTestMode() or PRT.IsInFight() then
       if PRT.IsReceiver() then
-        local _, messageTable = PRT.Deserialize(message)
+        local ok, messageTable = PRT.Deserialize(message)
+        if not ok or type(messageTable) ~= "table" then
+          return
+        end
 
         -- Already shown locally when it was sent
         if messageTable.sender == PRT.GetProfileDB().myName then
@@ -215,9 +227,9 @@ end
 
 function addon:OnVersionRequest(message)
   if PRT.IsEnabled() then
-    local _, messageTable = PRT.Deserialize(message)
+    local ok, messageTable = PRT.Deserialize(message)
 
-    if messageTable.requestor then
+    if ok and type(messageTable) == "table" and messageTable.requestor then
       PRT.Debug("Version request from:", messageTable.requestor)
 
       local response = {
@@ -234,7 +246,10 @@ end
 
 function addon:OnVersionResponse(message)
   if PRT.IsEnabled() then
-    local _, messageTable = PRT.Deserialize(message)
+    local ok, messageTable = PRT.Deserialize(message)
+    if not ok or type(messageTable) ~= "table" then
+      return
+    end
     PRT.Debug(
       string.format(
         "Version response from %s with version %s (Addon Status: %s)",
@@ -247,16 +262,6 @@ function addon:OnVersionResponse(message)
   end
 end
 
-function addon:OnSyncRequest(_)
-  -- daten auspacken
-  -- abfrage, ob benutzer syncen will
-  -- encounter, placeholder, overlays, raid roster
-end
-
-function addon:OnSyncResponse(_)
-  -- Rückmeldung an den Benutzer
-end
-
 -------------------------------------------------------------------------------
 -- Public API
 
@@ -264,4 +269,27 @@ function PRT.ExecuteMessage(message)
   if message then
     MessageHandler.ExecuteMessageAction(message)
   end
+end
+
+-- Whether a message (one of its targets) is meant for this player; used to
+-- preview the own assignments.
+function PRT.IsMessageForMe(message)
+  if message.type == "raidwarning" or message.type == "raidtarget" or not message.targets then
+    return false
+  end
+  for _, target in ipairs(MessageHandler.ExpandMessageTargets(message)) do
+    if target == "ALL" or MessageHandler.IsMessageForMe({target = target}) then
+      return true
+    end
+  end
+  return false
+end
+
+-- Shows a message on this client only (editor preview, overlay test).
+function PRT.ShowTestMessage(message)
+  local preview = PRT.TableUtils.Clone(message)
+  preview.target = PRT.GetProfileDB().myName
+  preview.targets = nil
+  preview.message = PRT.ReplacePlayerNameTokens(preview.message or "")
+  PRT.ReceiverOverlay.AddMessage(preview)
 end

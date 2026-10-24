@@ -20,16 +20,14 @@ UI.RegisterPage(
       local _, _, _, interface = GetBuildInfo()
       return L["About"], ("%s %s · %s %d"):format(L["Version"], Version(), L["Interface"], interface), {
         {
-          title = L["New window"],
-          note = L["PRT is moving to this window page by page. Until a page exists here, use the previous window."],
+          title = L["What's new"],
           rows = {
             {
               type = "button",
-              label = L["Previous window"],
-              note = L["Opens with `/prt`."],
+              label = L["Notes of this version"],
               buttonText = L["Open"],
               onClick = function()
-                LibStub("AceAddon-3.0"):GetAddon("PhenomRaidTools"):Open()
+                PRT.WhatsNew.Show()
               end
             }
           }
@@ -37,9 +35,12 @@ UI.RegisterPage(
         {
           title = L["Commands"],
           rows = {
-            {type = "description", label = L["`/prt ui` opens this window."]},
-            {type = "description", label = L["`/prt` opens the previous window."]},
-            {type = "description", label = L["`/prt versions` checks the versions in your group."]}
+            {type = "description", label = L["`/prt` opens this window."]},
+            {type = "description", label = L["`/prt sync` sends your plans to the group (also on every ready check)."]},
+            {type = "description", label = L["`/prt versions` checks the versions in your group."]},
+            {type = "description", label = L["`/prt news` shows what's new."]},
+            {type = "description", label = L["`/prt minimap` shows the minimap icon again."]},
+            {type = "description", label = L["`/prtm text` shows a message to everyone in combat; during boss encounters only to you, the game blocks addon messages there."]}
           }
         }
       }

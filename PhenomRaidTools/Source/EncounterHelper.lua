@@ -1,6 +1,65 @@
 local _, PRT = ...
 
 -------------------------------------------------------------------------------
+-- Messages
+
+-- Targets as a list; cooldown messages of older versions stored them as
+-- { [name] = name }.
+function PRT.NormalizeTargets(message)
+  local targets = message.targets
+  if type(targets) ~= "table" then
+    message.targets = {}
+    return
+  end
+  if #targets == PRT.TableUtils.Count(targets) then
+    return
+  end
+  local list = {}
+  for _, target in pairs(targets) do
+    if type(target) == "string" and target ~= "" and not tContains(list, target) then
+      list[#list + 1] = target
+    end
+  end
+  table.sort(list)
+  message.targets = list
+end
+
+local function EachMessage(messages, fn)
+  for _, message in ipairs(messages or {}) do
+    fn(message)
+  end
+end
+
+-- Calls fn(message) for every message of a profile: all encounter versions and
+-- the message templates.
+function PRT.ForEachMessage(profile, fn)
+  for _, encounter in ipairs(profile.encounters or {}) do
+    for _, version in ipairs(encounter.versions or {}) do
+      for _, timer in ipairs(version.Timers or {}) do
+        for _, timing in ipairs(timer.timings or {}) do
+          EachMessage(timing.messages, fn)
+        end
+      end
+      for _, rotation in ipairs(version.Rotations or {}) do
+        for _, entry in ipairs(rotation.entries or {}) do
+          EachMessage(entry.messages, fn)
+        end
+      end
+      for _, percentages in ipairs({version.HealthPercentages or {}, version.PowerPercentages or {}}) do
+        for _, percentage in ipairs(percentages) do
+          for _, value in ipairs(percentage.values or {}) do
+            EachMessage(value.messages, fn)
+          end
+        end
+      end
+    end
+  end
+  for _, template in pairs(profile.templateStore and profile.templateStore.messages or {}) do
+    fn(template)
+  end
+end
+
+-------------------------------------------------------------------------------
 -- Condition
 
 function PRT.EmptyCondition()
@@ -176,7 +235,24 @@ function PRT.EmptyEncounter()
   }
 end
 
+-- Only what still works since Midnight: a timer from the pull.
 function PRT.ExampleEncounter()
+  local function Message(text, seconds, targets)
+    return {
+      seconds = seconds,
+      messages = {
+        {
+          type = "advanced",
+          message = text,
+          duration = 5,
+          targets = targets,
+          targetOverlay = 1,
+          delay = 0
+        }
+      }
+    }
+  end
+
   return {
     enabled = true,
     id = 9999,
@@ -186,150 +262,26 @@ function PRT.ExampleEncounter()
       {
         enabled = true,
         name = "Example Version 1",
+        createdAt = PRT.Now(),
         Timers = {
           {
             enabled = true,
-            startCondition = {
-              event = "PLAYER_REGEN_DISABLED",
-              spellID = nil,
-              source = nil,
-              target = nil
-            },
-            stopCondition = {
-              event = nil,
-              spellID = nil,
-              source = nil,
-              target = nil
-            },
-            name = "Phase 1 Timer",
+            name = "Pull",
+            startCondition = {event = "ENCOUNTER_START"},
+            stopCondition = {},
+            hasStopCondition = false,
+            triggerAtOccurence = 1,
+            enabledDifficulties = {Normal = true, Heroic = true, Mythic = true},
             timings = {
-              {
-                seconds = {1, 7},
-                messages = {
-                  {
-                    message = "Message 1 and 7 seconds into Encounter",
-                    duration = 5,
-                    targets = {
-                      "ALL"
-                    },
-                    delay = 0
-                  }
-                }
-              },
-              {
-                seconds = {5},
-                messages = {
-                  {
-                    message = "Message with raid marker {rt1}",
-                    duration = 5,
-                    targets = {
-                      "ALL"
-                    },
-                    delay = 0
-                  }
-                }
-              }
+              Message("Message 1 and 7 seconds after the pull", {1, 7}, {"ALL"}),
+              Message("Message with raid marker {rt1}, ends in %.0f", {3}, {"$me"}),
+              Message("{spell:31821} for the healers", {12}, {"HEALER"})
             }
           }
         },
-        Rotations = {
-          {
-            enabled = true,
-            triggerCondition = {
-              event = "SPELL_CAST_START",
-              spellID = 188196,
-              spellIcon = 136048,
-              spellName = "Lightning Bolt",
-              source = nil,
-              target = nil
-            },
-            name = "Lightning Bolt Cast started",
-            entries = {
-              {
-                messages = {
-                  {
-                    message = "You cast {spell:188196}",
-                    duration = 5,
-                    targets = {
-                      "ALL"
-                    },
-                    delay = 0
-                  }
-                }
-              }
-            },
-            shouldRestart = true,
-            ignoreAfterActivation = false,
-            ignoreDuration = 0
-          },
-          {
-            enabled = false,
-            triggerCondition = {
-              event = "SPELL_CAST_SUCCESS",
-              source = nil,
-              target = nil
-            },
-            name = "Disabled Rotation",
-            entries = {
-              {
-                messages = {}
-              }
-            },
-            shouldRestart = true,
-            ignoreAfterActivation = false,
-            ignoreDuration = 0
-          }
-        },
-        HealthPercentages = {
-          {
-            enabled = true,
-            name = "Above 60 %",
-            unitID = "player",
-            values = {
-              {
-                value = 60,
-                operator = "greater",
-                messages = {
-                  {
-                    message = "You are above 60%% HP",
-                    duration = 5,
-                    targets = {
-                      "ALL"
-                    },
-                    delay = 0
-                  }
-                }
-              }
-            },
-            ignoreAfterActivation = false,
-            ignoreDuration = nil
-          }
-        },
-        PowerPercentages = {
-          {
-            enabled = true,
-            name = "Above 90% Power",
-            unitID = "player",
-            values = {
-              {
-                value = 90,
-                operator = "greater",
-                messages = {
-                  {
-                    message = "You are above 90%% Power",
-                    duration = 5,
-                    targets = {
-                      "ALL"
-                    },
-                    delay = 0
-                  }
-                }
-              }
-            },
-            ignoreAfterActivation = false,
-            ignoreDuration = nil
-          }
-        },
+        Rotations = {},
+        HealthPercentages = {},
+        PowerPercentages = {},
         CustomPlaceholders = {}
       }
     }

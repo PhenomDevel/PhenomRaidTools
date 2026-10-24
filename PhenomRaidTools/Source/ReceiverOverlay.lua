@@ -1,198 +1,541 @@
 local _, PRT = ...
+local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
+local LSM = LibStub("LibSharedMedia-3.0")
 
-local AceTimer = LibStub("AceTimer-3.0")
+--[[
+  Message overlays. Every receiver of the profile (overlay.receivers) is one
+  display: an anchor on the screen and the messages meant for this player,
+  stacked from it. The message that ends first is next to the anchor.
 
-local ReceiverOverlay = {
-  messageStack = {}
+  style       text | icons | bars
+  grow        UP | DOWN | LEFT | RIGHT   direction of the stack
+  from        anchor | center            stack starts at the anchor or is centered on it
+  align       LEFT | CENTER | RIGHT      text alignment of vertical stacks
+  spacing, maxEntries, iconSize, barWidth, barColor, fontSize, fontName, fontColor
+  x, y        anchor offset from the screen center
+
+  Frames are pooled and reused across encounters and profile changes. A
+  display runs an OnUpdate only while it shows messages.
+]]
+
+local ReceiverOverlay = {}
+PRT.ReceiverOverlay = ReceiverOverlay
+
+local DEFAULTS = {
+  style = "text",
+  grow = "DOWN",
+  from = "anchor",
+  align = "CENTER",
+  spacing = 4,
+  maxEntries = 5,
+  iconSize = 32,
+  barWidth = 240,
+  fontSize = 24,
+  locked = true,
+  enableSound = true
 }
 
--- Create local copies of API functions which we use
-local GameFontHighlightSmall = GameFontHighlightSmall
+local DEFAULT_BAR_COLOR = {r = 0.18, g = 0.6, b = 0.84, a = 0.9}
+local DEFAULT_FONT_COLOR = {r = 1, g = 1, b = 1, a = 1}
+local DEFAULT_ICON = "Interface\\AddOns\\PhenomRaidTools\\Media\\Icons\\PRT.blp"
+local RAID_TARGET_ICON = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_%s"
+local BAR_TEXTURE = "Interface\\Buttons\\WHITE8X8"
+local UPDATE_INTERVAL = 0.05
+local MOVER_WIDTH, MOVER_HEIGHT = 180, 44
+
+local displays = {}
 
 -------------------------------------------------------------------------------
--- Local Helper
+-- Config
 
-function ReceiverOverlay.ClearMessageStack()
-  ReceiverOverlay.messageStack = {}
+function ReceiverOverlay.Get(config, key)
+  local value = config[key]
+  if value == nil then
+    return DEFAULTS[key]
+  end
+  return value
 end
 
-function ReceiverOverlay.AddMessage(messageTable)
-  local receiverOverlayOptions = PRT.GetProfileDB().overlay.receivers[(messageTable.targetOverlay or 1)]
+local Get = ReceiverOverlay.Get
 
-  messageTable.expirationTime = GetTime() + (messageTable.duration or 5)
-  if receiverOverlayOptions.enableSound then
-    local soundFile = messageTable.soundFile
-    local customWillPlay
+-- Receivers from before 3.0 store a TOPLEFT based position (left/top) of a
+-- frame anchored at its own `anchor` point; the anchor itself was there.
+local function EnsurePosition(config)
+  if config.x == nil or config.y == nil then
+    local width, height = UIParent:GetWidth(), UIParent:GetHeight()
+    config.x = math.floor((config.left or width / 2) - width / 2 + 0.5)
+    config.y = math.floor(height / 2 - (config.top or height / 2) + 0.5)
+  end
+end
 
-    if soundFile and messageTable.useCustomSound then
-      customWillPlay = PlaySoundFile(soundFile, "Master")
-    end
+local function Font(config)
+  local font = config.fontName and LSM:Fetch("font", config.fontName, true)
+  return font or config.font or STANDARD_TEXT_FONT, Get(config, "fontSize")
+end
 
-    if not customWillPlay then
-      if receiverOverlayOptions.defaultSoundFile then
-        -- Play default soundfile if configured sound does not exist
-        PlaySoundFile(receiverOverlayOptions.defaultSoundFile, "Master")
-      else
-        PRT.Warn("Tried to play default sound but there was a problem. Try selecting another sound as default sound.")
-      end
+local function Color(color, fallback)
+  color = color or fallback
+  return color.r or 1, color.g or 1, color.b or 1, color.a or 1
+end
+
+-------------------------------------------------------------------------------
+-- Text
+
+local FORMAT_SPEC = "%%[-+ #0]*%d*%.?%d*[dfgs]"
+
+-- Messages may contain one format spec ("%.0f") for the remaining time;
+-- "%%" is a literal percent sign. Never errors on other percent signs.
+local function HasFormat(text)
+  return text:gsub("%%%%", ""):find(FORMAT_SPEC) ~= nil
+end
+
+local function WithTime(text, remaining)
+  local ok, result = pcall(string.format, text, remaining)
+  if ok then
+    return result
+  end
+  return (text:gsub("%%%%", "%%"))
+end
+
+-- For icons and bars, which show the time on their own.
+local function WithoutTime(text)
+  return (text:gsub("%%%%", "\001"):gsub("%s*" .. FORMAT_SPEC, ""):gsub("\001", "%%"))
+end
+
+local function FormatRemaining(remaining)
+  if remaining >= 60 then
+    return ("%d:%02d"):format(math.floor(remaining / 60), math.floor(remaining % 60))
+  elseif remaining >= 10 then
+    return ("%d"):format(math.floor(remaining + 0.5))
+  end
+  return ("%.1f"):format(remaining)
+end
+
+ReceiverOverlay.FormatRemaining = FormatRemaining
+ReceiverOverlay.WithoutTime = WithoutTime
+
+-- Icon of the message: its spell, a spell or raid marker in the text, or the logo.
+function ReceiverOverlay.MessageIcon(message, raw)
+  local icon = PRT.SpellIcon(message.spellID)
+  if not icon and raw then
+    icon = PRT.SpellIcon(raw:match("{spell:(%d+)}"))
+    if not icon then
+      local marker = raw:match("{rt(%d)}")
+      icon = marker and RAID_TARGET_ICON:format(marker)
     end
   end
-  messageTable.message = PRT.PrepareMessageForDisplay(messageTable.message)
-  local index = #ReceiverOverlay.messageStack + 1
-  ReceiverOverlay.messageStack[index] = messageTable
-  AceTimer:ScheduleTimer(
+  return icon or DEFAULT_ICON
+end
+
+-------------------------------------------------------------------------------
+-- Entries
+
+local function CreateEntry(display)
+  local entry = CreateFrame("Frame", nil, display.frame)
+  entry.Icon = entry:CreateTexture(nil, "ARTWORK")
+  entry.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+  entry.Bar = CreateFrame("StatusBar", nil, entry)
+  entry.Bar:SetStatusBarTexture(BAR_TEXTURE)
+  entry.Bar.Background = entry.Bar:CreateTexture(nil, "BACKGROUND")
+  entry.Bar.Background:SetAllPoints()
+  entry.Bar.Background:SetColorTexture(0, 0, 0, 0.5)
+  -- Texts above the bar.
+  entry.Content = CreateFrame("Frame", nil, entry)
+  entry.Content:SetAllPoints()
+  entry.Content:SetFrameLevel(entry.Bar:GetFrameLevel() + 2)
+  entry.Text = entry.Content:CreateFontString(nil, "OVERLAY")
+  entry.Text:SetWordWrap(false)
+  entry.Time = entry.Content:CreateFontString(nil, "OVERLAY")
+  entry.Time:SetWordWrap(false)
+  return entry
+end
+
+local function AcquireEntry(display)
+  local entry = tremove(display.pool) or CreateEntry(display)
+  entry:Show()
+  return entry
+end
+
+local function ReleaseEntry(display, entry)
+  entry:Hide()
+  entry:ClearAllPoints()
+  display.pool[#display.pool + 1] = entry
+end
+
+-- Sizes and arranges an entry's parts for the display's style.
+local function SetupEntry(display, entry)
+  local config = display.config
+  local style = Get(config, "style")
+  local font, size = Font(config)
+  local r, g, b, a = Color(config.fontColor, DEFAULT_FONT_COLOR)
+  entry.Text:SetFont(font, size, "OUTLINE")
+  entry.Text:SetTextColor(r, g, b, a)
+  entry.Text:ClearAllPoints()
+  entry.Time:ClearAllPoints()
+  entry.Icon:ClearAllPoints()
+  entry.Bar:ClearAllPoints()
+
+  entry.dynamic = style ~= "text" or entry.hasFormat
+  entry.Icon:SetShown(style ~= "text")
+  entry.Bar:SetShown(style == "bars")
+  entry.Time:SetShown(style ~= "text")
+  entry.lastShown = nil
+
+  if style == "text" then
+    entry.Text:SetJustifyH(Get(config, "align"))
+    entry.Text:SetText(entry.hasFormat and WithTime(entry.text, entry.duration) or entry.text)
+    entry.Text:SetPoint("CENTER")
+    entry:SetSize(math.max(1, entry.Text:GetUnboundedStringWidth()), size * 1.25)
+  elseif style == "icons" then
+    local iconSize = Get(config, "iconSize")
+    entry.Icon:SetTexture(entry.icon)
+    entry.Icon:SetSize(iconSize, iconSize)
+    entry.Icon:SetPoint("LEFT")
+    entry.Time:SetFont(font, math.max(10, math.floor(iconSize * 0.45)), "OUTLINE")
+    entry.Time:SetTextColor(1, 1, 1, 1)
+    entry.Time:SetPoint("CENTER", entry.Icon)
+    entry.Text:SetJustifyH("LEFT")
+    entry.Text:SetText(entry.text)
+    entry.Text:SetPoint("LEFT", entry.Icon, "RIGHT", 6, 0)
+    entry:SetSize(iconSize + 6 + entry.Text:GetUnboundedStringWidth(), math.max(iconSize, size * 1.25))
+  else
+    local height = math.max(Get(config, "iconSize") * 0.75, size + 8)
+    local width = Get(config, "barWidth")
+    entry.Icon:SetTexture(entry.icon)
+    entry.Icon:SetSize(height, height)
+    entry.Icon:SetPoint("LEFT")
+    entry.Bar:SetPoint("TOPLEFT", entry.Icon, "TOPRIGHT", 2, 0)
+    entry.Bar:SetPoint("BOTTOMRIGHT")
+    entry.Bar:SetStatusBarColor(Color(config.barColor, DEFAULT_BAR_COLOR))
+    entry.Bar:SetMinMaxValues(0, math.max(0.01, entry.duration))
+    entry.Time:SetFont(font, math.max(10, size - 4), "OUTLINE")
+    entry.Time:SetTextColor(r, g, b, a)
+    entry.Time:SetPoint("RIGHT", entry.Bar, "RIGHT", -6, 0)
+    entry.Text:SetJustifyH("LEFT")
+    entry.Text:SetText(entry.text)
+    entry.Text:SetPoint("LEFT", entry.Bar, "LEFT", 6, 0)
+    entry.Text:SetPoint("RIGHT", entry.Time, "LEFT", -6, 0)
+    entry:SetSize(height + 2 + width, height)
+  end
+end
+
+local function UpdateEntry(display, entry, now)
+  local remaining = math.max(0, entry.expires - now)
+  local shown = math.floor(remaining * 10 + 0.5) / 10
+  if shown == entry.lastShown then
+    if entry.Bar:IsShown() then
+      entry.Bar:SetValue(remaining)
+    end
+    return
+  end
+  entry.lastShown = shown
+  if Get(display.config, "style") == "text" then
+    entry.Text:SetText(WithTime(entry.text, shown))
+  else
+    entry.Time:SetText(FormatRemaining(remaining))
+    if entry.Bar:IsShown() then
+      entry.Bar:SetValue(remaining)
+    end
+  end
+end
+
+-------------------------------------------------------------------------------
+-- Layout
+
+local VERTICAL_POINT = {UP = "BOTTOM", DOWN = "TOP"}
+local HORIZONTAL_POINT = {RIGHT = "LEFT", LEFT = "RIGHT"}
+local ALIGN_SUFFIX = {LEFT = "LEFT", CENTER = "", RIGHT = "RIGHT"}
+
+local function Layout(display)
+  local config, entries = display.config, display.entries
+  local grow = Get(config, "grow")
+  local spacing = Get(config, "spacing")
+  local vertical = VERTICAL_POINT[grow] ~= nil
+
+  local total = 0
+  for index, entry in ipairs(entries) do
+    total = total + (vertical and entry:GetHeight() or entry:GetWidth()) + (index > 1 and spacing or 0)
+  end
+  local offset = Get(config, "from") == "center" and -total / 2 or 0
+
+  local sign = (grow == "UP" or grow == "RIGHT") and 1 or -1
+  for _, entry in ipairs(entries) do
+    entry:ClearAllPoints()
+    if vertical then
+      local suffix = ALIGN_SUFFIX[Get(config, "align")] or ""
+      entry:SetPoint(VERTICAL_POINT[grow] .. suffix, display.frame, "CENTER", 0, sign * offset)
+      offset = offset + entry:GetHeight() + spacing
+    else
+      entry:SetPoint(HORIZONTAL_POINT[grow], display.frame, "CENTER", sign * offset, 0)
+      offset = offset + entry:GetWidth() + spacing
+    end
+  end
+end
+
+local function OnUpdate(frame, elapsed)
+  local display = frame.display
+  display.sinceUpdate = display.sinceUpdate + elapsed
+  if display.sinceUpdate < UPDATE_INTERVAL then
+    return
+  end
+  display.sinceUpdate = 0
+
+  local now = GetTime()
+  local entries, removed = display.entries, false
+  for index = #entries, 1, -1 do
+    if entries[index].expires <= now then
+      ReleaseEntry(display, tremove(entries, index))
+      removed = true
+    end
+  end
+  if removed then
+    Layout(display)
+  end
+  for _, entry in ipairs(entries) do
+    if entry.dynamic then
+      UpdateEntry(display, entry, now)
+    end
+  end
+  if #entries == 0 then
+    frame:SetScript("OnUpdate", nil)
+  end
+end
+
+-------------------------------------------------------------------------------
+-- Displays
+
+local function SavePosition(display)
+  local frame = display.frame
+  frame:StopMovingOrSizing()
+  local x, y = frame:GetCenter()
+  local centerX, centerY = UIParent:GetCenter()
+  display.config.x = math.floor(x - centerX + 0.5)
+  display.config.y = math.floor(y - centerY + 0.5)
+  frame:ClearAllPoints()
+  frame:SetPoint("CENTER", UIParent, "CENTER", display.config.x, display.config.y)
+  if PRT.UI then
+    PRT.UI.RefreshValues()
+  end
+end
+
+local function CreateMover(display)
+  local mover = CreateFrame("Frame", nil, display.frame)
+  mover:SetSize(MOVER_WIDTH, MOVER_HEIGHT)
+  mover:SetPoint("CENTER")
+  mover:SetFrameLevel(display.frame:GetFrameLevel() + 20)
+  mover:EnableMouse(true)
+  mover:RegisterForDrag("LeftButton")
+  mover:SetScript(
+    "OnDragStart",
     function()
-      ReceiverOverlay.messageStack[index] = ""
-      ReceiverOverlay.UpdateFrameText()
-    end,
-    (messageTable.duration or 5)
+      display.frame:StartMoving()
+    end
   )
-
-  ReceiverOverlay.UpdateFrameText()
-end
-
-function ReceiverOverlay.ShowPlaceholder(frame, options, _)
-  local text = ""
-
-  if options then
-    text = options.name .. ": " .. (options.label or "LABEL")
-  else
-    text = (text or "Placeholder")
-  end
-
-  if not options.locked then
-    text = text .. "\nDrag to move"
-  end
-
-  local color = PRT.RGBAToHex(options.fontColor.r, options.fontColor.g, options.fontColor.b, options.fontColor.a)
-
-  frame.text:SetText(PRT.ColoredString(text, color, true))
-  PRT.Overlay.UpdateSize(frame)
-end
-
-function ReceiverOverlay.ShowPlaceholders(receiverOptions)
-  for i, receiverOverlay in ipairs(receiverOptions) do
-    local frame = PRT.ReceiverOverlay.overlayFrames[i]
-    ReceiverOverlay.ShowPlaceholder(frame, receiverOverlay)
-  end
-end
-
-function ReceiverOverlay.UpdateFrameText()
-  for frameIndex, frame in ipairs(ReceiverOverlay.overlayFrames) do
-    local receiverOverlayOptions = PRT.GetProfileDB().overlay.receivers[frameIndex]
-    local text = ""
-
-    local startIndex = 1
-    local step = 1
-    local endIndex = #ReceiverOverlay.messageStack
-
-    if (receiverOverlayOptions.growDirection or "UP") == "UP" then
-      startIndex = #ReceiverOverlay.messageStack
-      endIndex = 1
-      step = -1
+  mover:SetScript(
+    "OnDragStop",
+    function()
+      SavePosition(display)
     end
+  )
+  local background = mover:CreateTexture(nil, "BACKGROUND")
+  background:SetAllPoints()
+  background:SetColorTexture(0.05, 0.09, 0.13, 0.75)
+  -- Anchor cross: where the first message starts.
+  local horizontal = mover:CreateTexture(nil, "ARTWORK")
+  horizontal:SetColorTexture(0.41, 0.8, 0.94, 0.9)
+  horizontal:SetSize(MOVER_WIDTH, 1)
+  horizontal:SetPoint("CENTER")
+  local verticalLine = mover:CreateTexture(nil, "ARTWORK")
+  verticalLine:SetColorTexture(0.41, 0.8, 0.94, 0.9)
+  verticalLine:SetSize(1, MOVER_HEIGHT)
+  verticalLine:SetPoint("CENTER")
+  mover.Label = mover:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+  mover.Label:SetPoint("TOP", 0, -4)
+  mover.Hint = mover:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
+  mover.Hint:SetPoint("BOTTOM", 0, 4)
+  mover.Hint:SetText(L["Drag to move"])
+  return mover
+end
 
-    for i = startIndex, endIndex, step do
-      local message = ReceiverOverlay.messageStack[i]
-      if message ~= "" then
-        -- Add text only to corresponding frame
-        if (message.targetOverlay or 1) == frameIndex then
-          if message.expirationTime > GetTime() then
-            local timeLeftRaw = message.expirationTime - GetTime()
-            local timeLeft = PRT.Round(timeLeftRaw, 2)
-            local color = (PRT.GetProfileDB().overlay.receivers[frameIndex].fontColor.hex or "FFFFFFFF")
+local function CreateDisplay(index)
+  local frame = CreateFrame("Frame", nil, UIParent)
+  frame:SetSize(1, 1)
+  frame:SetFrameStrata("HIGH")
+  frame:SetMovable(true)
+  frame:SetClampedToScreen(true)
+  local display = {index = index, frame = frame, entries = {}, pool = {}, sinceUpdate = 0}
+  frame.display = display
+  display.mover = CreateMover(display)
+  return display
+end
 
-            if text == "" then
-              text = PRT.ColoredString(string.format(message.message, timeLeft), color, true)
-            else
-              text = text .. "|n" .. PRT.ColoredString(string.format(message.message, timeLeft), color, true)
-            end
-          end
-        end
-      end
-    end
-
-    frame.text:SetText(text)
+local function ApplyConfig(display, config)
+  display.config = config
+  EnsurePosition(config)
+  local frame = display.frame
+  frame:ClearAllPoints()
+  frame:SetPoint("CENTER", UIParent, "CENTER", config.x, config.y)
+  frame:Show()
+  local unlocked = not Get(config, "locked")
+  display.mover:SetShown(unlocked)
+  if unlocked then
+    display.mover.Label:SetText(("%d: %s"):format(display.index, config.label or ""))
   end
-end
-
-function ReceiverOverlay.UpdateFrame(frame, options)
-  PRT.Overlay.UpdateSize(frame, options)
-  PRT.Overlay.UpdateBackdrop(frame, options)
-  PRT.Overlay.UpdateFont(frame, options)
-  PRT.Overlay.UpdatePosition(frame, options)
-end
-
-function ReceiverOverlay.CreateOverlay(options)
-  local overlayFrame = PRT.Overlay.CreateOverlay(options, true)
-
-  if options.growDirection == "UP" then
-    overlayFrame.text:SetPoint("BOTTOM", 0, 15)
-  else
-    overlayFrame.text:SetPoint("TOP", 0, -15)
+  for _, entry in ipairs(display.entries) do
+    SetupEntry(display, entry)
   end
-
-  overlayFrame.text:SetJustifyH("CENTER")
-  overlayFrame.text:SetFont((options.font or GameFontHighlightSmall:GetFont()), options.fontSize, "OUTLINE")
-
-  PRT.Overlay.SetMoveable(overlayFrame, false)
-
-  return overlayFrame
+  Layout(display)
 end
 
-function ReceiverOverlay.Hide(frame)
-  PRT.Overlay.Hide(frame)
+local function GetDisplay(index)
+  local receivers = PRT.GetProfileDB().overlay.receivers
+  local config = receivers[index] or receivers[1]
+  if not config then
+    return
+  end
+  index = receivers[index] and index or 1
+  local display = displays[index]
+  if not display then
+    display = CreateDisplay(index)
+    displays[index] = display
+    ApplyConfig(display, config)
+  elseif display.config ~= config then
+    ApplyConfig(display, config)
+  end
+  return display
 end
 
-function ReceiverOverlay.Show(frame)
-  PRT.Overlay.Show(frame)
-end
+-------------------------------------------------------------------------------
+-- Sound
 
-function ReceiverOverlay.HideAll()
-  if ReceiverOverlay.overlayFrames then
-    for _, overlayFrame in ipairs(ReceiverOverlay.overlayFrames) do
-      PRT.Overlay.Hide(overlayFrame)
+local function PlayMessageSound(message, config)
+  if not Get(config, "enableSound") then
+    return
+  end
+  if message.useCustomSound then
+    local file = (message.soundFileName and LSM:Fetch("sound", message.soundFileName, true)) or message.soundFile
+    if file and PlaySoundFile(file, "Master") then
+      return
     end
   end
-end
-
-function ReceiverOverlay.ShowAll()
-  if ReceiverOverlay.overlayFrames then
-    for _, overlayFrame in ipairs(ReceiverOverlay.overlayFrames) do
-      PRT.Overlay.Show(overlayFrame)
-    end
+  local file = (config.defaultSoundFileName and LSM:Fetch("sound", config.defaultSoundFileName, true)) or config.defaultSoundFile
+  if file then
+    PlaySoundFile(file, "Master")
   end
-end
-
-function ReceiverOverlay.Initialize(receiverOptions)
-  if PRT.TableUtils.IsEmpty(ReceiverOverlay.overlayFrames) then
-    ReceiverOverlay.overlayFrames = {}
-
-    for i, receiver in ipairs(receiverOptions) do
-      PRT.Debug("Initializing receiver overlay", i)
-      local receiverOverlay = ReceiverOverlay.CreateOverlay(receiver)
-
-      if not receiver.locked then
-        PRT.Overlay.UpdateBackdrop(receiverOverlay, receiver)
-        PRT.Overlay.SetMoveable(receiverOverlay, true)
-        receiverOverlay.text:SetText("Placeholder")
-      end
-
-      PRT.Overlay.UpdateSize(receiverOverlay, receiver)
-
-      tinsert(ReceiverOverlay.overlayFrames, receiverOverlay)
-    end
-  end
-end
-
-function ReceiverOverlay.ReInitialize(receiverOptions)
-  ReceiverOverlay.HideAll()
-  ReceiverOverlay.overlayFrames = nil
-  ReceiverOverlay.Initialize(receiverOptions)
-  ReceiverOverlay.ShowAll()
 end
 
 -------------------------------------------------------------------------------
 -- Public API
 
-PRT.ReceiverOverlay = ReceiverOverlay
+-- message: { message, duration, targetOverlay, spellID, useCustomSound, soundFile(Name) }
+function ReceiverOverlay.AddMessage(message, silent)
+  local display = GetDisplay(message.targetOverlay or 1)
+  if not display then
+    return
+  end
+  local config = display.config
+  if not silent then
+    PlayMessageSound(message, config)
+  end
+
+  local raw = message.message or ""
+  local entries = display.entries
+  local maxEntries = Get(config, "maxEntries")
+  while #entries >= maxEntries do
+    -- The oldest message makes room.
+    local oldest = 1
+    for index, entry in ipairs(entries) do
+      if entry.added < entries[oldest].added then
+        oldest = index
+      end
+    end
+    ReleaseEntry(display, tremove(entries, oldest))
+  end
+
+  local entry = AcquireEntry(display)
+  local now = GetTime()
+  entry.duration = message.duration or 5
+  entry.expires = now + entry.duration
+  entry.added = now
+  local text = PRT.PrepareMessageForDisplay(raw)
+  entry.hasFormat = HasFormat(text)
+  entry.text = Get(config, "style") == "text" and text or WithoutTime(text)
+  entry.icon = ReceiverOverlay.MessageIcon(message, raw)
+  SetupEntry(display, entry)
+
+  local position = #entries + 1
+  for index, other in ipairs(entries) do
+    if entry.expires < other.expires then
+      position = index
+      break
+    end
+  end
+  tinsert(entries, position, entry)
+  Layout(display)
+  UpdateEntry(display, entry, now)
+
+  display.sinceUpdate = 0
+  display.frame:SetScript("OnUpdate", OnUpdate)
+end
+
+function ReceiverOverlay.Clear()
+  for _, display in pairs(displays) do
+    for index = #display.entries, 1, -1 do
+      ReleaseEntry(display, tremove(display.entries, index))
+    end
+    display.frame:SetScript("OnUpdate", nil)
+  end
+end
+
+-- After a setting or the profile changed: re-applies every receiver and
+-- hides displays of removed ones.
+function ReceiverOverlay.Refresh()
+  local receivers = PRT.GetProfileDB().overlay.receivers
+  for index, display in pairs(displays) do
+    if receivers[index] then
+      ApplyConfig(display, receivers[index])
+    else
+      for entryIndex = #display.entries, 1, -1 do
+        ReleaseEntry(display, tremove(display.entries, entryIndex))
+      end
+      display.frame:SetScript("OnUpdate", nil)
+      display.mover:Hide()
+      display.config = nil
+    end
+  end
+  for index in ipairs(receivers) do
+    GetDisplay(index)
+  end
+end
+
+-- Sample messages to see style, position and sound.
+function ReceiverOverlay.Test(index)
+  local receivers = PRT.GetProfileDB().overlay.receivers
+  for receiverIndex, config in ipairs(receivers) do
+    if index == nil or index == receiverIndex then
+      local label = config.label or tostring(receiverIndex)
+      ReceiverOverlay.AddMessage({message = label .. " %.0f", duration = 6, targetOverlay = receiverIndex})
+      ReceiverOverlay.AddMessage({message = "{spell:31821} " .. L["Aura Mastery"], duration = 9, spellID = 31821, targetOverlay = receiverIndex}, true)
+      ReceiverOverlay.AddMessage({message = "{rt1} " .. L["Soak"], duration = 4, targetOverlay = receiverIndex}, true)
+    end
+  end
+end
+
+function ReceiverOverlay.SetLocked(locked)
+  for _, config in ipairs(PRT.GetProfileDB().overlay.receivers) do
+    config.locked = locked
+  end
+  ReceiverOverlay.Refresh()
+end
+
+function ReceiverOverlay.ResetPosition(index)
+  local config = PRT.GetProfileDB().overlay.receivers[index]
+  if config then
+    config.x, config.y = 0, 200 - (index - 1) * 80
+    ReceiverOverlay.Refresh()
+  end
+end
+
+function ReceiverOverlay.Initialize()
+  ReceiverOverlay.Refresh()
+end

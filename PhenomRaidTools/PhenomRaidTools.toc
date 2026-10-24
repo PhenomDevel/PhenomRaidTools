@@ -4,12 +4,11 @@
 ## Author: @project-author@
 ## Notes: Easy to use encounter configuration to send messages to your raid team on certain events.
 ## Notes-deDE: Einfach zu konfigurierender Boss Helfer. Nutze Countdowns, Rotationen und andere Auslöser, um Nachrichten anzuzeigen während eines Bosses.
-## OptionalDeps: Ace3
 ## SavedVariables: PhenomRaidToolsDB
 ## X-Category: Raid
 ## X-Wago-ID: nQN57KBw
 ## X-Curse-Project-ID: 381654
-## OptionalDeps: Ace3, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, LibDBIcon-1.0
+## OptionalDeps: Ace3, LibSharedMedia-3.0, LibDBIcon-1.0
 ## Category: Combat
 ## Category-deDE: Kampf
 ## Category-esES: Combate
@@ -49,40 +48,26 @@ Source/MessageHandler.lua
 Source/PlanSync.lua
 Source/TriggerHandler.lua
 Source/ImportExport.lua
-Source/Overlay.lua
 Source/SenderOverlay.lua
 Source/ReceiverOverlay.lua
+Source/Upcoming.lua
 Source/VersionMigration.lua
 Source/MethodRaidToolsExport.lua
 Source/API.lua
+Source/WhatsNewNotes.lua
 
 # UI
 Source/UI/Widgets.lua
 Source/UI/Window.lua
+Source/UI/MessageEditor.lua
 Source/UI/Pages/Overview.lua
+Source/UI/Pages/Encounters.lua
 Source/UI/Pages/Players.lua
+Source/UI/Pages/Templates.lua
+Source/UI/Pages/Overlays.lua
+Source/UI/Pages/Settings.lua
+Source/UI/Pages/Profiles.lua
+Source/UI/Pages/Welcome.lua
 Source/UI/Pages/About.lua
 Source/UI/Pages/Components.lua
-
-# GUI Source
-Source/GUI/AceHelper.lua
-Source/GUI/Condition.lua
-Source/GUI/Message.lua
-Source/GUI/Trigger.lua
-Source/GUI/Timer.lua
-Source/GUI/CustomPlaceholders.lua
-Source/GUI/Rotation.lua
-Source/GUI/Percentage.lua
-Source/GUI/Encounter.lua
-Source/GUI/Template.lua
-Source/GUI/Core.lua
-Source/GUI/Profiles.lua
-Source/GUI/Changelog.lua
-Source/GUI/Options/DefaultsWidget.lua
-Source/GUI/Options/DifficultiesWidget.lua
-Source/GUI/Options/GeneralWidget.lua
-Source/GUI/Options/OverlayWidget.lua
-Source/GUI/Options/RaidRosterWidget.lua
-Source/GUI/Options/InformationWidget.lua
-Source/GUI/Options.lua
-Source/GUI/ModalFrame.lua
+Source/WhatsNew.lua

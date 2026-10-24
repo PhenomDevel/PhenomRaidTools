@@ -355,328 +355,70 @@ local function noteFromEncounter(options, encounter)
   return note
 end
 
-local function AddMethodRaidToolsExportOptionsWidget(container, options)
-  local optionsGroup = PRT.InlineGroup(L["Options"])
-  optionsGroup:SetLayout("Flow")
-
-  local includeTimers = PRT.CheckBox(L["Include timers"], nil, options.includeTimers)
-  local includeRotations = PRT.CheckBox(L["Include rotations"], nil, options.includeRotations)
-  local withEncounterName = PRT.CheckBox(L["Include encounter title"], L["Shows the encounter name on top of the note."], options.withEncounterName)
-  local withTriggerNames = PRT.CheckBox(L["Include trigger names"], L["Shows the trigger name for each trigger."], options.withTriggerNames)
-  local withLinePrefix = PRT.CheckBox(L["Include trigger entry prefix"], L["Shows the trigger entry name before each line."], options.withLinePrefix)
-  local withEmptyLines = PRT.CheckBox(L["Include empty lines"], L["Includes lines even if there are no messages attached."], options.withEmptyLines)
-  local withPersonalization = PRT.CheckBox(L["Personalize note"], L["This will hide all entries which are not interesting for the given player."], options.withPersonalization)
-  local forceMethodRaidToolsUpdate =
-    PRT.CheckBox(L["Force MethodRaidTools note update"], L["This will try and force MethodRaidTools to directly update the note."], options.forceMethodRaidToolsUpdate)
-  local updatePRTTag =
-    PRT.CheckBox(
-    L["Replace PRT tag content"],
-    L["This will update the existing MethodRaidTools note and just replace the content between %s and %s tag with the generated content."]:format(
-      PRT.HighlightString("{prtstart}"),
-      PRT.HighlightString("{prtend}")
-    ),
-    options.updatePRTTag
-  )
-
-  -- Include Timers
-  includeTimers:SetRelativeWidth(0.5)
-  includeTimers:SetCallback(
-    "OnValueChanged",
-    function(widget)
-      local value = widget:GetValue()
-      options.includeTimers = value
-      PRT.GetProfileDB().mrtExportDefaults.includeTimers = value
-    end
-  )
-
-  -- Include Rotations
-  includeRotations:SetRelativeWidth(0.5)
-  includeRotations:SetCallback(
-    "OnValueChanged",
-    function(widget)
-      local value = widget:GetValue()
-      options.includeRotations = value
-      PRT.GetProfileDB().mrtExportDefaults.includeRotations = value
-    end
-  )
-
-  -- Include Encounter name
-  withEncounterName:SetRelativeWidth(0.5)
-  withEncounterName:SetCallback(
-    "OnValueChanged",
-    function(widget)
-      local value = widget:GetValue()
-      options.withEncounterName = value
-      PRT.GetProfileDB().mrtExportDefaults.withEncounterName = value
-    end
-  )
-
-  -- Include timer names
-  withTriggerNames:SetRelativeWidth(0.5)
-  withTriggerNames:SetCallback(
-    "OnValueChanged",
-    function(widget)
-      local value = widget:GetValue()
-      options.withTriggerNames = value
-      PRT.GetProfileDB().mrtExportDefaults.withTriggerNames = value
-    end
-  )
-
-  -- Include timing names
-  withLinePrefix:SetRelativeWidth(0.5)
-  withLinePrefix:SetCallback(
-    "OnValueChanged",
-    function(widget)
-      local value = widget:GetValue()
-      options.withLinePrefix = value
-      PRT.GetProfileDB().mrtExportDefaults.withLinePrefix = value
-    end
-  )
-
-  -- Include empty lines
-  withEmptyLines:SetRelativeWidth(0.5)
-  withEmptyLines:SetCallback(
-    "OnValueChanged",
-    function(widget)
-      local value = widget:GetValue()
-      options.withEmptyLines = value
-      PRT.GetProfileDB().mrtExportDefaults.withEmptyLines = value
-    end
-  )
-
-  -- Personalize Note
-  withPersonalization:SetRelativeWidth(0.5)
-  withPersonalization:SetCallback(
-    "OnValueChanged",
-    function(widget)
-      local value = widget:GetValue()
-      options.withPersonalization = value
-      PRT.GetProfileDB().mrtExportDefaults.withPersonalization = value
-    end
-  )
-
-  -- Directly Update MethodRaidTools Note
-  forceMethodRaidToolsUpdate:SetDisabled(not GetMethodRaidToolsNote())
-  forceMethodRaidToolsUpdate:SetRelativeWidth(0.5)
-  forceMethodRaidToolsUpdate:SetCallback(
-    "OnValueChanged",
-    function(widget)
-      local value = widget:GetValue()
-      options.forceMethodRaidToolsUpdate = value
-      PRT.GetProfileDB().mrtExportDefaults.forceMethodRaidToolsUpdate = value
-      updatePRTTag:SetDisabled(not value)
-    end
-  )
-
-  -- Update MethodRaidTools and replace tag content
-  updatePRTTag:SetDisabled(not options.forceMethodRaidToolsUpdate)
-  updatePRTTag:SetRelativeWidth(0.5)
-  updatePRTTag:SetCallback(
-    "OnValueChanged",
-    function(widget)
-      local value = widget:GetValue()
-      options.updatePRTTag = value
-      PRT.GetProfileDB().mrtExportDefaults.updatePRTTag = value
-    end
-  )
-
-  optionsGroup:AddChild(includeTimers)
-  optionsGroup:AddChild(includeRotations)
-  optionsGroup:AddChild(withEncounterName)
-  optionsGroup:AddChild(withTriggerNames)
-  optionsGroup:AddChild(withLinePrefix)
-  optionsGroup:AddChild(withEmptyLines)
-  optionsGroup:AddChild(withPersonalization)
-  optionsGroup:AddChild(forceMethodRaidToolsUpdate)
-  optionsGroup:AddChild(updatePRTTag)
-
-  container:AddChild(optionsGroup)
-end
-
-local function AddMRTExportTriggerSelectorWidget(container, title, selectedTriggers, triggers)
-  local triggerGroup = PRT.InlineGroup(title)
-  triggerGroup:SetLayout("Flow")
-
-  local checkboxes = {}
-
-  for _, timer in ipairs(triggers) do
-    local timerCheckbox = PRT.CheckBox(timer.name, nil, true)
-    timerCheckbox:SetRelativeWidth(0.25)
-    timerCheckbox:SetCallback(
-      "OnValueChanged",
-      function(widget)
-        local value = widget:GetValue()
-        if value then
-          selectedTriggers[timer.name] = timer
-        elseif selectedTriggers[timer.name] then
-          selectedTriggers[timer.name] = nil
-        end
-      end
-    )
-
-    -- Initially all timers are selected
-    selectedTriggers[timer.name] = timer
-    tinsert(checkboxes, timerCheckbox)
-    triggerGroup:AddChild(timerCheckbox)
+-- MRT reads the note from its saved variables; refresh its note frame if
+-- the running version offers it. No slash command through the chat box: that
+-- runs addon code as the player's chat input and taints the chat frame.
+local function RefreshMethodRaidToolsNote()
+  local mrt = _G.GMRT
+  local note = mrt and mrt.A and mrt.A.Note
+  if note and note.frame and type(note.frame.UpdateText) == "function" then
+    pcall(note.frame.UpdateText, note.frame)
   end
-
-  local actionsGroup = PRT.SimpleGroup()
-  actionsGroup:SetRelativeWidth(1)
-
-  local unselectAllButton = PRT.Button(L["Unselect all"])
-  unselectAllButton:SetCallback(
-    "OnClick",
-    function()
-      for _, cb in ipairs(checkboxes) do
-        cb:SetValue(false)
-        wipe(selectedTriggers)
-      end
-    end
-  )
-
-  actionsGroup:AddChild(unselectAllButton)
-  triggerGroup:AddChild(actionsGroup)
-  container:AddChild(triggerGroup)
 end
 
-local function UpdateMethodRaidToolsNote()
-  -- We use this function to FORCE exrt to update the note.
-  PRT.Debug("Forcing MethodRaidTools Note to update.")
-  DEFAULT_CHAT_FRAME.editBox:SetText("/exrt note timer")
-  ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
-
-  DEFAULT_CHAT_FRAME.editBox:SetText("/exrt note timer")
-  ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)
+local function InjectIntoTags(currentNote, export)
+  local prtStart = currentNote and currentNote:find("{prtstart}", 1, true)
+  local prtEnd = currentNote and currentNote:find("{prtend}", 1, true)
+  if not (prtStart and prtEnd and prtStart < prtEnd) then
+    return nil
+  end
+  return currentNote:sub(1, prtStart - 1) .. "{prtstart}" .. export .. "{prtend}" .. currentNote:sub(prtEnd + #"{prtend}")
 end
 
-local function injectPRTMethodRaidToolsNoteExportIntoNote(export)
-  local currentNote = GetMethodRaidToolsNote().Text1
-  if currentNote then
-    local tagLength = string.len("{prtend}")
-    local prtStart = string.find(currentNote, "{prtstart}")
-    local prtEnd = string.find(currentNote, "{prtend}")
-    local newNote
+-------------------------------------------------------------------------------
+-- Public API
 
-    if prtStart and prtEnd then
-      local noteStart = string.sub(currentNote, 0, prtStart - 1)
-      local noteEnd = string.sub(currentNote, (prtEnd + tagLength))
+-- Note for the selected version of an encounter: cooldown messages of all
+-- enabled timers and rotations. options: see profile.mrtExportDefaults.
+function PRT.MethodRaidToolsNote(encounter, options)
+  local version = encounter.versions[encounter.selectedVersion]
+  if not version then
+    return ""
+  end
+  local noteOptions = PRT.TableUtils.Clone(options)
+  noteOptions.selectedTimers, noteOptions.selectedRotations = {}, {}
+  for _, timer in ipairs(version.Timers or {}) do
+    noteOptions.selectedTimers[timer.name] = true
+  end
+  for _, rotation in ipairs(version.Rotations or {}) do
+    noteOptions.selectedRotations[rotation.name] = true
+  end
+  return (noteFromEncounter(noteOptions, encounter):gsub("|", "||"))
+end
 
-      newNote = string.format("%s{prtstart}%s{prtend}%s", noteStart, export, noteEnd)
-      GetMethodRaidToolsNote().Text1 = newNote
-      UpdateMethodRaidToolsNote()
-    else
+function PRT.HasMethodRaidTools()
+  return GetMethodRaidToolsNote() ~= nil
+end
+
+-- Writes the note into MRT: between {prtstart} and {prtend} if onlyTagged,
+-- otherwise replacing the whole note. Returns false if the tags are missing.
+function PRT.WriteMethodRaidToolsNote(text, onlyTagged)
+  local note = GetMethodRaidToolsNote()
+  if not note then
+    return false
+  end
+  if onlyTagged then
+    local updated = InjectIntoTags(note.Text1, text)
+    if not updated then
       PRT.Error(
-        string.format(
-          "Couldn't find either %s or %s. Aborting MethodRaidTools force update. Please make sure you have put both tag into your current note.",
-          PRT.HighlightString("{prtstart}"),
-          PRT.HighlightString("{prtend}")
-        )
+        L["Couldn't find %s and %s in your MethodRaidTools note. Put both into the note first."]:format(PRT.HighlightString("{prtstart}"), PRT.HighlightString("{prtend}"))
       )
+      return false
     end
+    note.Text1 = updated
   else
-    PRT.Error(
-      string.format(
-        "Couldn't find either %s or %s. Aborting MethodRaidTools force update. Please make sure you have put both tag into your current note.",
-        PRT.HighlightString("{prtstart}"),
-        PRT.HighlightString("{prtend}")
-      )
-    )
+    note.Text1 = text
   end
+  RefreshMethodRaidToolsNote()
+  return true
 end
-
-local function AddMethodRaidToolsExportResultWidget(container, encounter, options)
-  local timers = {}
-
-  for _, timer in pairs(options.selectedTimers) do
-    tinsert(timers, timer)
-  end
-
-  PRT.TableUtils.SortByKey(timers, "name")
-
-  local exportString = noteFromEncounter(options, encounter)
-  exportString = string.gsub(exportString, "|", "||")
-  container:ReleaseChildren()
-  container:SetLayout("Fill")
-
-  local exportTextBox = PRT.MultiLineEditBox(L["MethodRaidTools Note"], exportString)
-  exportTextBox:SetFocus()
-  exportTextBox:DisableButton(true)
-  exportTextBox:HighlightText()
-
-  if options.forceMethodRaidToolsUpdate and GetMethodRaidToolsNote() then
-    if options.updatePRTTag then
-      injectPRTMethodRaidToolsNoteExportIntoNote(exportString)
-    else
-      GetMethodRaidToolsNote().Text1 = exportString
-      UpdateMethodRaidToolsNote()
-    end
-  end
-
-  container:AddChild(exportTextBox)
-end
-
-function PRT.AddMethodRaidToolsExportWidget(container, encounter)
-  local encounterVersion = encounter.versions[encounter.selectedVersion]
-  local mrtExportButton = PRT.Button(L["Generate MethodRaidTools Note"])
-  mrtExportButton:SetWidth(400)
-  mrtExportButton:SetCallback(
-    "OnClick",
-    function()
-      local mrtExportOptions = PRT.TableUtils.Clone(PRT.GetProfileDB().mrtExportDefaults)
-      mrtExportOptions.selectedTimers = {}
-
-      local modalContainer = PRT.SimpleGroup()
-      local description =
-        PRT.Label(
-        L[
-          "This feature will export your selected timers to a MethodRaidTools note. This will only work for message of type %s.\n\nIf you want" ..
-            " to keep your current note you can use %s and %s. The prt generated note will be put inbetween those tags."
-        ]:format(PRT.HighlightString("cooldown"), PRT.HighlightString("{prtstart}"), PRT.HighlightString("{prtend}"))
-      )
-      local exportButton = PRT.Button(L["Export"])
-
-      description:SetRelativeWidth(1)
-      exportButton:SetCallback(
-        "OnClick",
-        function()
-          if mrtExportOptions.forceMethodRaidToolsUpdate and not mrtExportOptions.updatePRTTag then
-            PRT.ConfirmationDialog(
-              L["You want to force update MethodRaidTools note without replacing PRT tag content. This will overwrite the whole note. Are you sure about that?"],
-              function()
-                AddMethodRaidToolsExportResultWidget(modalContainer, encounter, mrtExportOptions)
-              end
-            )
-          else
-            AddMethodRaidToolsExportResultWidget(modalContainer, encounter, mrtExportOptions)
-          end
-        end
-      )
-
-      -- Add widgets to modal container
-      modalContainer:AddChild(description)
-      AddMethodRaidToolsExportOptionsWidget(modalContainer, mrtExportOptions)
-
-      mrtExportOptions.selectedTimers = {}
-      mrtExportOptions.selectedRotations = {}
-
-      AddMRTExportTriggerSelectorWidget(modalContainer, L["Select timers"], mrtExportOptions.selectedTimers, encounterVersion.Timers)
-      AddMRTExportTriggerSelectorWidget(modalContainer, L["Select rotations"], mrtExportOptions.selectedRotations, encounterVersion.Rotations)
-      modalContainer:AddChild(exportButton)
-
-      local modal = PRT.CreateModal(modalContainer, L["MethodRaidTools Note Generator"])
-      modal:EnableResize(false)
-    end
-  )
-
-  container:AddChild(mrtExportButton)
-end
-
--- EncounterName
--- Rotation Name
--- Rotation Entry
--- ...
--- Space
--- Timer Name
--- Timer Entry
--- Timing
--- ...

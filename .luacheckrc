@@ -16,7 +16,6 @@ globals = {
   "tContains",
   "GetScreenWidth",
   "GetScreenHeight",
-  "AceGUIWidgetLSMlists",
   "PlaySoundFile",
   "wipe",
   "UnitGroupRolesAssigned",
@@ -58,8 +57,6 @@ globals = {
   "GetNumSpecializations",
   "GetSpecializationInfo",
   "IsAddOnLoaded",
-  "DEFAULT_CHAT_FRAME",
-  "ChatEdit_SendText",
   "SetRaidTarget",
   "GetSpecialization",
   "UnitAffectingCombat",
@@ -84,10 +81,13 @@ globals = {
   "C_ChatInfo",
   "C_InstanceEncounter",
   "C_SpecializationInfo",
+  "STANDARD_TEXT_FONT",
+  "issecretvalue",
   -- Locals
   "L",
 }
 max_line_length = 200
+files["PhenomRaidTools/Localization"] = {max_line_length = false}
 max_code_line_length = 200
 max_string_line_length = 200
 max_comment_line_length = 200

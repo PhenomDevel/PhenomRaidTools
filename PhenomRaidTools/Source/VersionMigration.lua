@@ -209,6 +209,23 @@ local migrationFunctions = {
 
       return true
     end
+  },
+  [8] = {
+    version = "3.0.0-2",
+    migrationFunction = function(profile)
+      -- Overlays: the new layout keeps the old look (text) and grow direction.
+      for _, receiver in ipairs(profile.overlay.receivers) do
+        if receiver.grow == nil then
+          receiver.grow = receiver.growDirection == "UP" and "UP" or "DOWN"
+        end
+        receiver.growDirection = nil
+      end
+
+      -- Cooldown messages stored their targets as { [name] = name }.
+      PRT.ForEachMessage(profile, PRT.NormalizeTargets)
+
+      return true
+    end
   }
 }
 

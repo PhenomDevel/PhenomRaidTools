@@ -2,14 +2,29 @@
 # PhenomRaidTools
 
 ## Quickstart
-If you want to access the addon just use `/prt` or the minimap icon in game and the addon will open. If you seek help visit the discord server and feel free to ask for help :)
+Open the addon with `/prt` or the minimap icon. On the first start a short guide asks for your role (raid lead, player or both) and lets you place the message overlays. If you seek help visit the discord server and feel free to ask :)
 
-A new configuration window is being built page by page. Preview it with `/prt ui`; until it is complete, `/prt` keeps opening the current window.
-
-Pages available in the new window so far:
+Everything lives in one window with a search field:
 
 - **Overview:** lead/player mode, sending plans to the group with the confirmation of every member, the plans you received.
+- **Encounters:** one plan per boss with versions, a timeline of all messages after the pull, timers, rotations, encounter placeholders, import/export and the MethodRaidTools note.
 - **Players & groups:** raid roster (`$tank1`, `$heal1`, `$dd1`, ...), custom placeholders with a preview of who they resolve to in your group, import and export of placeholders.
+- **Templates:** messages you reuse; load them in any message.
+- **Overlays:** the message overlays, your next assignments during an encounter and the lead status.
+- **Settings** and **Profiles** (including a profile per specialization and profile export/import).
+
+Messages are edited as one sentence with a live preview: type (message, cooldown, raid warning, raid marker), targets (roles, roster, placeholders, groups, classes), delay, duration and sound. *Try it* shows the message on your own overlay.
+
+### Commands
+| Command | |
+| --- | --- |
+| `/prt` | Open the window |
+| `/prt sync` | Send your plans to the group (also happens on every ready check) |
+| `/prt versions` | Print the PRT versions in your group |
+| `/prt news` | Show what's new |
+| `/prt profile` | Open the profiles |
+| `/prt minimap` | Show the minimap icon again |
+| `/prtm <text>` | Show a message to everyone (during encounters only to you) |
 
 ## About
 PhenomRaidTools is an addon to use next to the usual raid utility addons like [WeakAuras2](https://github.com/WeakAuras/WeakAuras2), [DeadlyBossMods](https://github.com/DeadlyBossMods/DeadlyBossMods), and [BigWigs](https://github.com/BigWigsMods/BigWigs). With PhenomRaidTools you'll be able to configure your own timers, rotations and other triggers to show messages on the screen. You can choose when and how the messages should be displayed as well as who in the raid team should see the messages.
@@ -27,40 +42,32 @@ Since 12.0 (also on WoW: Forever) addons can't read the combat log, unit health 
 
 - In sender mode, the group leader or an assistant sends the plans of all enabled encounters on ready check (only what changed or isn't confirmed yet) or with `/prt sync`.
 - Players in receiver mode keep the last plan per encounter (only from the leader or an assistant) and run it on `ENCOUNTER_START`, showing the messages meant for them. Raid warnings and raid markers stay with the lead. Placeholders and the raid roster (`$tank1`, ...) resolve with the lead's data, which is sent along.
-- Triggers can only react to encounter start/end and combat start/end. Health and power percentages and timers or rotations using combat log events (or a spell, source or target in a condition) don't trigger. They are kept, marked as *Unsupported* in the configuration, listed once in chat after updating, and not sent with the plan.
+- Triggers can only react to encounter start/end and combat start/end. Health and power percentages and timers or rotations using combat log events (or a spell, source or target in a condition) don't trigger. They are kept, listed per encounter under *Can't fire anymore*, counted in the What's new window after updating, and not sent with the plan.
 - The combat event recorder and the `$target`/`$source` message placeholders are gone; both depended on the combat log.
 
 ## Guide
 For a brief introduction into the addon please read: [PhenomRaidTools Beginner Guide](https://github.com/PhenomDevel/PhenomRaidTools/blob/master/docs/PhenomRaidTools_Beginner_Guide.pdf)
 
-## Sender & Receiver
-PhenomRaidTools supports two run modes. Sender mode and receiver mode. As sender all your configured triggers which send messages which will be executed and send messages through an addon channel. Every player who matches your configured targets within messages will get a message displayed.
-As receiver you'll only get messages displayed when you are a valid message target of the received messages. You can alos filter messages so you won't get spammed.
+## Lead & player
+The raid lead (sender mode) builds the plans and sends them to the group before the pull. Players (receiver mode) run the received plans on the pull and see only the messages meant for them. The message filter decides whose direct messages (e.g. `/prtm`) you accept; plans are always accepted from the group leader and assistants.
 
-## Trigger
-There are four different types of triggers which will send the configured messages based on different condition which all can be configured.
-
+## Triggers
 ### Timer
-You can configure your own timers for a fight. Those can be used for e.g. healing cooldowns or strategic positioning.
-You can setup a start condition for when the timer should start counting and a stop condition which can be used for restarting timers. This can be useful if you have a timer for an encounter phase which repeats itself.
+Starts on the pull (or combat start) and shows the messages of each timing, e.g. `0:30, 1:15, 90` seconds after the start. Timings can have an offset to warn earlier. Use them for healing cooldowns, soaks or positioning.
 
 ### Rotation
-Rotations have a trigger condition for when to count up. Everytime the trigger condition is met a certain action will be executed if there is one for the given index.
-Like for timers you can configure start and stop conditions. This can be helpful if you only want a rotation to count in a certain phase or to restart it on certain events.
+Shows the next entry each time its event happens and can start over after the last entry. Since Midnight only pull, combat and encounter start or end are left as events.
 
-### Health Percentage
-With health percentages you can query specific units for their health value and check if it less, equal or greater than a configured value and send messages based on this condition.
+### Health and power percentage
+Need boss health or power, which addons don't get anymore since Midnight. Existing ones are kept for reference.
 
-### Power Percentage
-Same as health percentage but with power values.
+## Overlays
+Each message shows on one of your overlays. Every overlay has its own style (text, icons or bars), grows up, down, left or right from its anchor or centered on it, and has its own font, sound and number of messages at once. Unlock an overlay to drag it, *Test* shows sample messages.
 
-## Spell Database
-The spell database is an easy way to search for a specific spell in game by its name without having to browse the web. You have to explicitly activate the spell database since it will build up in the background and might take a while.
-It is processed in a very CPU saving way and will stop once you start combat. So you shouldn't be able to notice any performance issues with the spell database activated.
+*Your next assignments* lists what's next for you during an encounter with a countdown, read from the plan. The *lead status* shows the lead's timers and rotations.
 
-## ExRT Note Export
-You can export `Timers` into a ExRT note. This will generate a nicely formatted note based on your `Timers`.
-Please note that this will only work for messages with type `cooldown` since the note is presented in a certain way and can be used for e.g. heal cooldown assignments.
+## MethodRaidTools note
+The encounter page writes the cooldown messages of all enabled timers and rotations into your MethodRaidTools note, either the whole note or only between `{prtstart}` and `{prtend}`. Send it with MRT as usual.
 
 ## API
 > WORK IN PROGRESS
