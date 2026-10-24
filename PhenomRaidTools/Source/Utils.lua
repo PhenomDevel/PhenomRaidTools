@@ -365,13 +365,19 @@ do
   end
 end
 
+-- A received plan carries the lead's raid roster (PlanSync).
+local function RaidRoster()
+  local encounter = PRT.currentEncounter and PRT.currentEncounter.encounter
+  return encounter and encounter.RaidRoster or PRT.GetProfileDB().raidRoster
+end
+
 function PRT.PlayerNamesByToken(token)
   local playerNames = {}
 
   if token == "me" then
     tinsert(playerNames, strtrim(UnitName("player"), " "))
-  elseif PRT.GetProfileDB().raidRoster[token] then
-    local name = PRT.GetProfileDB().raidRoster[token]
+  elseif RaidRoster()[token] then
+    local name = RaidRoster()[token]
     tinsert(playerNames, strtrim(name, " "))
   elseif string.find(token, "group") then
     local groupNumber = tonumber(string.match(token, "%d+"))

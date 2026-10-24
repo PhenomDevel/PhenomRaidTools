@@ -43,7 +43,8 @@ local function ReceivedPlans()
 end
 
 -- The selected version without triggers that can't run anyway; the lead's
--- global placeholders are added to the encounter's own (those win).
+-- global placeholders are added to the encounter's own (those win), and the
+-- lead's raid roster goes along.
 local function BuildPlan(encounterVersion)
   local plan = PRT.TableUtils.Clone(encounterVersion)
   for key, triggerType in pairs(TRIGGER_TYPES) do
@@ -61,6 +62,8 @@ local function BuildPlan(encounterVersion)
       plan.CustomPlaceholders[name] = PRT.TableUtils.Clone(placeholder)
     end
   end
+  -- Players resolve $tank1 etc. with the lead's roster, not their own.
+  plan.RaidRoster = PRT.TableUtils.Clone(PRT.GetProfileDB().raidRoster or {})
   return plan
 end
 
