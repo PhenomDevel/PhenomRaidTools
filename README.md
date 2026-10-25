@@ -105,7 +105,7 @@ New-Item -ItemType Junction `
 ```
 
 ### Release
-Pushing a tag packages the addon and uploads it to CurseForge, Wago and GitHub (`.github/workflows/release.yml`); tags containing `beta` become beta releases, `alpha` tags are skipped. If the first line of `CHANGELOG.md` is `# Release <tag>`, that hand-written changelog is used; otherwise `changelog.sh` generates one from the commits since the previous tag.
+Add a `## vX.Y.Z (YYYY-MM-DD)` section to `CHANGELOG.md`, merge it, then run *Actions → Release → Run workflow* on `master` with the version (`v3.1.0`, or `v3.1.0-beta1` / `-alpha1` for test releases). The workflow tags the commit and uploads to CurseForge, Wago and GitHub. Details: [docs/RELEASE.md](docs/RELEASE.md) (same process in all PhenomDevel addons).
 
 ## Help
 I have set up a discord server up and running for every kind of question. Feel free to enter and ask what you have trouble with. [Discord](https://discord.gg/GAYDjBF)
