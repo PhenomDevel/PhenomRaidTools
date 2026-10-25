@@ -8,12 +8,10 @@ PhenomRaidTools/             addon folder (the only thing that gets installed)
   Libs/                      libraries (git-ignored except LibDeflate, see below)
   Locales/                   enUS (base), deDE
   Media/                     Logo.blp (addon icon), Sounds/
-  Core/                      addon setup (Init.lua), plan sync, triggers, overlays, API
+  Core/                      addon setup (Init.lua), plan sync, triggers, overlays
   UI/                        window, widgets, pages, What's new
-docs/                        developer docs, release process, API docs (GitHub Pages),
-                             logo/ (README logo)
-tools/                       fetch-libs.sh (libraries for local development),
-                             ldoc/ (API doc generator config)
+docs/                        developer docs, release process, logo/ (README logo)
+tools/                       fetch-libs.sh (libraries for local development)
 .pkgmeta                     packaging config (BigWigs packager)
 ```
 
@@ -47,11 +45,6 @@ New-Item -ItemType Junction `
 ```
 
 New files or `.toc` changes require a client restart instead of `/reload`.
-
-## API
-
-Public API for other addons (work in progress), generated with `ldoc`:
-[phenomdevel.github.io/PhenomRaidTools](https://phenomdevel.github.io/PhenomRaidTools/api/index.html)
 
 ## Checks
 
