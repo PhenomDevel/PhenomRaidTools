@@ -27,6 +27,7 @@ ignore:
   - generate-doc.bat
   - ldoc
   - scripts
+  - CLAUDE.md
 
 manual-changelog:
     filename: CHANGELOG.md
