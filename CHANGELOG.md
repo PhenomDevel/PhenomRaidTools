@@ -1,8 +1,8 @@
 # Changelog
 
-## Unreleased
+## v3.1.0 (2026-10-25)
 
-PhenomRaidTools 3.0 for Midnight (12.x) and WoW: Forever. Since Midnight, addons get no combat log and no boss health or power, and they can't message the group during encounters. PRT therefore sends the plans to the group before the pull, and every player runs them locally.
+PhenomRaidTools 3.1 for Midnight (12.x) and WoW: Forever. Since Midnight, addons get no combat log and no boss health or power, and they can't message the group during encounters. PRT therefore sends the plans to the group before the pull, and every player runs them locally.
 
 **Back up your SavedVariables first** (`WTF/Account/<account>/SavedVariables/PhenomRaidTools.lua`). The update removes everything that can't run anymore, and this can't be undone.
 
