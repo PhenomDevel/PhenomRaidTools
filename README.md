@@ -4,7 +4,7 @@
 
 [![Version](https://img.shields.io/github/v/release/PhenomDevel/PhenomRaidTools?label=version)](https://github.com/PhenomDevel/PhenomRaidTools/releases/latest)
 [![CurseForge](https://img.shields.io/curseforge/dt/381654?label=CurseForge)](https://www.curseforge.com/projects/381654)
-[![License](https://img.shields.io/github/license/PhenomDevel/PhenomRaidTools)](LICENSE)
+[![License](https://img.shields.io/github/license/PhenomDevel/PhenomRaidTools)](https://github.com/PhenomDevel/PhenomRaidTools/blob/master/LICENSE)
 
 **Plan per boss which player sees which message when; the raid lead syncs the plan before the pull.**
 
@@ -39,7 +39,7 @@ removes what Midnight no longer allows: rotations, health and power
 percentages, timers on combat log events, raid warnings and markers,
 placeholders and `/prtm`.
 
-What changed: [CHANGELOG.md](CHANGELOG.md)
+What changed: [CHANGELOG.md](https://github.com/PhenomDevel/PhenomRaidTools/blob/master/CHANGELOG.md)
 
 ## Features
 
