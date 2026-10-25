@@ -1,13 +1,18 @@
+# Packager output
+.release/
+*.zip
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+
+# Libraries come from .pkgmeta externals (tools/fetch-libs.sh for local dev);
+# LibDeflate is committed.
+PhenomRaidTools/Libs/*
+!PhenomRaidTools/Libs/LibDeflate/
+
+# Local notes and Markdown previews
 NOTES.md
-PhenomRaidTools/Source/NEW
-CHANGELOG.html
-README.html
-NOTES.html
-./ldoc
-PhenomRaidTools/Libs/Ace*
-PhenomRaidTools/Libs/LibStub
-PhenomRaidTools/Libs/LibShared*
-PhenomRaidTools/Libs/LibDBIcon*
-PhenomRaidTools/Libs/LibData*
-PhenomRaidTools/Libs/Callback*
-*/SpellCache.lua
+/*.html

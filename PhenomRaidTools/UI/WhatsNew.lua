@@ -19,7 +19,7 @@ local Markup = Widgets.Markup
 local WhatsNew = {}
 PRT.WhatsNew = WhatsNew
 
-local LOGO = "Interface\\AddOns\\PhenomRaidTools\\Media\\Icons\\PRT.blp"
+local LOGO = "Interface\\AddOns\\PhenomRaidTools\\Media\\Logo.blp"
 local WIDTH, MAX_HEIGHT = 500, 480
 local PADDING = 16
 local HEADER_HEIGHT = 48

@@ -6,8 +6,8 @@
 #     latest GitHub release zip (built by the packager from .pkgmeta)
 # LibDeflate is tracked in git and left alone.
 #
-#   scripts/setup-dev.sh                    fetch libraries only
-#   scripts/setup-dev.sh <AddOns folder>    also link PhenomRaidTools there
+#   tools/fetch-libs.sh                   fetch libraries only
+#   tools/fetch-libs.sh <AddOns folder>   also link PhenomRaidTools there
 #
 # Needs git, curl and unzip. Run it again to update the libraries.
 set -euo pipefail

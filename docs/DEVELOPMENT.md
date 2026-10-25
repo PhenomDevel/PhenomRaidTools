@@ -6,12 +6,14 @@
 PhenomRaidTools/             addon folder (the only thing that gets installed)
   PhenomRaidTools.toc        load order, interface version, SavedVariables
   Libs/                      libraries (git-ignored except LibDeflate, see below)
-  Localization/              enUS (base), deDE
-  Media/                     icons, sounds
-  Source/                    addon code, UI in Source/UI
-docs/                        beginner guide, generated API docs, release process
-scripts/setup-dev.sh         fetches the libraries for local development
-ldoc/                        API doc generator config
+  Locales/                   enUS (base), deDE
+  Media/                     Logo.blp (addon icon), Sounds/
+  Core/                      addon setup (Init.lua), plan sync, triggers, overlays, API
+  UI/                        window, widgets, pages, What's new
+docs/                        developer docs, release process, API docs (GitHub Pages),
+                             logo/ (README logo)
+tools/                       fetch-libs.sh (libraries for local development),
+                             ldoc/ (API doc generator config)
 .pkgmeta                     packaging config (BigWigs packager)
 ```
 
@@ -23,7 +25,7 @@ Release builds get Ace3, LibSharedMedia, LibDBIcon and LibDataBroker from the
 `.pkgmeta` externals; LibDeflate is committed. To run a git checkout in game:
 
 ```sh
-scripts/setup-dev.sh "/path/to/World of Warcraft/_retail_/Interface/AddOns"
+tools/fetch-libs.sh "/path/to/World of Warcraft/_retail_/Interface/AddOns"
 ```
 
 This puts the libraries into `PhenomRaidTools/Libs` (git-ignored): Ace3 from
@@ -34,7 +36,7 @@ AddOns folder as argument it also links the addon folder there. Needs `git`,
 ## Local setup
 
 Link the addon folder into the client so `git pull` + `/reload` is enough. The
-folder name must match the `.toc` name. On Windows run `setup-dev.sh` in Git
+folder name must match the `.toc` name. On Windows run `fetch-libs.sh` in Git
 Bash without argument and create the link as a directory junction (no admin
 rights required):
 

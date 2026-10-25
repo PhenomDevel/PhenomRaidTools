@@ -56,7 +56,7 @@ local INPUT_WIDTH = 170
 local TEXTAREA_HEIGHT = 64
 local SCROLL_STEP = 48
 
-local LOGO = "Interface\\AddOns\\PhenomRaidTools\\Media\\Icons\\PRT.blp"
+local LOGO = "Interface\\AddOns\\PhenomRaidTools\\Media\\Logo.blp"
 local TITLE = ("Phenom|cff%sRaidTools|r"):format(Widgets.BRAND_HEX)
 local BREADCRUMB_HEIGHT = 16
 

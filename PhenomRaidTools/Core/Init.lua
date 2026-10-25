@@ -10,7 +10,7 @@ local PhenomRaidToolsLDB =
   {
     type = "data source",
     text = "PhenomRaidTools",
-    icon = "Interface\\AddOns\\PhenomRaidTools\\Media\\Icons\\PRT.blp",
+    icon = "Interface\\AddOns\\PhenomRaidTools\\Media\\Logo.blp",
     OnClick = function(self, button)
       if button == "LeftButton" then
         addon:Open()

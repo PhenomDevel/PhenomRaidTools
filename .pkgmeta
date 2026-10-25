@@ -19,15 +19,9 @@ enable-nolib-creation: no
 
 ignore:
   - README.md
-  - .luacheckrc
-  - doc
-  - LICENSE
-  - .gitignore
-  - .pkgmeta
-  - generate-doc.bat
-  - ldoc
-  - scripts
   - CLAUDE.md
+  - docs
+  - tools
 
 manual-changelog:
     filename: CHANGELOG.md

@@ -1,7 +1,7 @@
 std = "luajit"
 exclude_files = {
   ".release/",
-  -- Third-party libraries (.pkgmeta externals, scripts/setup-dev.sh).
+  -- Third-party libraries (.pkgmeta externals, tools/fetch-libs.sh).
   "PhenomRaidTools/Libs/",
 }
 globals = {
@@ -92,7 +92,7 @@ globals = {
   "L",
 }
 max_line_length = 200
-files["PhenomRaidTools/Localization"] = {max_line_length = false}
+files["PhenomRaidTools/Locales"] = {max_line_length = false}
 max_code_line_length = 200
 max_string_line_length = 200
 max_comment_line_length = 200

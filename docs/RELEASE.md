@@ -64,7 +64,7 @@ curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh
 - Default branch: `master`. No prerelease branches.
 - [CurseForge](https://www.curseforge.com/projects/381654) 381654,
   [Wago](https://addons.wago.io/addons/nQN57KBw) `nQN57KBw`.
-- What's new: `PhenomRaidTools/Source/WhatsNewNotes.lua`, newest first,
+- What's new: `PhenomRaidTools/UI/WhatsNewNotes.lua`, newest first,
   `version = "X.Y.Z"`; strings go through the locale. The window shows every
   entry newer than the last version the player saw; test releases show
   nothing.
