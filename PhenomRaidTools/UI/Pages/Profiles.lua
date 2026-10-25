@@ -35,19 +35,13 @@ local function ExportString()
   return PRT.Serialize(profile)
 end
 
+local function IsValidImport(data)
+  return data.encounters and data.overlay
+end
+
 local function CheckImport(text)
-  pendingImport.text, pendingImport.data, pendingImport.error = text or "", nil, nil
-  if pendingImport.text == "" then
-    return
-  end
-  local ok, data = PRT.Deserialize(pendingImport.text)
-  if not ok or type(data) ~= "table" then
-    pendingImport.error = L["This is no PRT import string."]
-  elseif not (data.encounters and data.overlay) then
-    pendingImport.error = L["This string contains no profile."]
-  else
-    pendingImport.data = data
-  end
+  pendingImport.text = text or ""
+  pendingImport.data, pendingImport.error = PRT.ParseImport(pendingImport.text, IsValidImport, L["This string contains no profile."])
 end
 
 local function ImportProfile(data)
