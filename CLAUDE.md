@@ -35,9 +35,29 @@ four (one PR per repository).
 - Every user-facing PR adds a line under `## Unreleased` in `CHANGELOG.md`
   (written for players). A release PR renames it to `## vX.Y.Z (YYYY-MM-DD)`
   and adds the "What's new" entry where the addon has one.
+- Repository layout, the same in all four (only the folders an addon needs):
+  - `<Addon>/<Addon>.toc` lists everything (libraries too, no `embeds.xml`),
+    paths with backslashes, sections `Libs`, `Locales`, `Core`, `UI`,
+    `Modules`.
+  - `<Addon>/Libs/`, `Locales/` (enUS first), `Media/` (addon icon
+    `Logo.tga`/`Logo.blp`, other assets in subfolders), `Core/` (setup in
+    `Core/Init.lua`, logic, data, events), `UI/` (windows, widgets, option
+    pages, minimap button, toasts, What's new), `Modules/` (self-contained
+    features).
+  - `docs/` (`DEVELOPMENT.md` with the layout tree, `RELEASE.md`,
+    `logo/logo.svg` + `logo/logo.png`), `tools/` (dev scripts),
+    `.github/workflows/` (`ci.yml`, `release.yml`) and
+    `.github/ISSUE_TEMPLATE/` (`bug-report.md`, `feature-request.md`,
+    identical in all four).
+  - Root: `.editorconfig`, `.gitignore` (same base, repo-specific part
+    below it), `.luacheckrc`, `.pkgmeta` (ignore `README.md`, `CLAUDE.md`,
+    `docs`, `tools`), `CHANGELOG.md`, `CLAUDE.md`, `LICENSE` (MIT),
+    `README.md`.
 - READMEs are for players only, outline in this order:
-  1. `# Name`, logo (`<img … width="96" align="right">`), badges: Version,
-     CurseForge, License (same set in all four)
+  1. `# Name`, logo (`<img … width="96" align="right">` with an absolute
+     `https://raw.githubusercontent.com/…` URL, so it also renders on
+     CurseForge/Wago), badges: Version, CurseForge, License (same set in all
+     four)
   2. summary: bold one-line tagline and a short abstract
   3. `## Supported versions`: table `Client | Interface`, matching the `.toc`
   4. `## Installation`: CurseForge/Wago app or GitHub releases, manual

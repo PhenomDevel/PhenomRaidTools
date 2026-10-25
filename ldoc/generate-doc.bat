@@ -1,1 +1,0 @@
-ldoc ../PhenomRaidTools/Source -v -c "./config.ld"

@@ -20,54 +20,63 @@
 ## Category-ruRU: Бой
 ## Category-zhCN: 战斗
 ## Category-zhTW: 戰鬥
-## IconTexture: Interface/Addons/PhenomRaidTools/Media/Icons/PRT.blp
+## IconTexture: Interface/Addons/PhenomRaidTools/Media/Logo.blp
 
-# Init
-embeds.xml
-PhenomRaidTools.lua
+# Libraries (.pkgmeta externals; tools/fetch-libs.sh for local dev)
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\LibSharedMedia-3.0\lib.xml
+Libs\AceAddon-3.0\AceAddon-3.0.xml
+Libs\AceConsole-3.0\AceConsole-3.0.xml
+Libs\AceEvent-3.0\AceEvent-3.0.xml
+Libs\AceDB-3.0\AceDB-3.0.xml
+Libs\AceLocale-3.0\AceLocale-3.0.xml
+Libs\AceSerializer-3.0\AceSerializer-3.0.xml
+Libs\AceTimer-3.0\AceTimer-3.0.xml
+Libs\AceComm-3.0\AceComm-3.0.xml
+Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
+Libs\LibDBIcon-1.0\LibDBIcon-1.0.lua
+Libs\LibDeflate\LibDeflate.lua
 
-# Localization
-Localization/enUS.lua
-Localization/deDE.lua
+# Locales (enUS must be loaded first, it defines the fallback table)
+Locales\enUS.lua
+Locales\deDE.lua
 
-# Media
-Source/Media.lua
-
-# Utils
-Source/Utils/GuildUtils.lua
-Source/Utils/TableUtils.lua
-Source/Utils/StringUtils.lua
-Source/Utils/Log.lua
-
-# Source
-Source/Utils.lua
-Source/Static.lua
-Source/EncounterHelper.lua
-Source/EventHandler.lua
-Source/MessageHandler.lua
-Source/PlanSync.lua
-Source/TriggerHandler.lua
-Source/ImportExport.lua
-Source/SenderOverlay.lua
-Source/ReceiverOverlay.lua
-Source/Upcoming.lua
-Source/VersionMigration.lua
-Source/MethodRaidToolsExport.lua
-Source/API.lua
-Source/WhatsNewNotes.lua
+# Core
+Core\Init.lua
+Core\Media.lua
+Core\Utils\GuildUtils.lua
+Core\Utils\TableUtils.lua
+Core\Utils\StringUtils.lua
+Core\Utils\Log.lua
+Core\Utils.lua
+Core\Static.lua
+Core\EncounterHelper.lua
+Core\EventHandler.lua
+Core\MessageHandler.lua
+Core\PlanSync.lua
+Core\TriggerHandler.lua
+Core\ImportExport.lua
+Core\SenderOverlay.lua
+Core\ReceiverOverlay.lua
+Core\Upcoming.lua
+Core\VersionMigration.lua
+Core\MethodRaidToolsExport.lua
+Core\API.lua
 
 # UI
-Source/UI/Widgets.lua
-Source/UI/Window.lua
-Source/UI/MessageEditor.lua
-Source/UI/Preview.lua
-Source/UI/Pages/Overview.lua
-Source/UI/Pages/Encounters.lua
-Source/UI/Pages/Templates.lua
-Source/UI/Pages/Overlays.lua
-Source/UI/Pages/Settings.lua
-Source/UI/Pages/Profiles.lua
-Source/UI/Pages/Welcome.lua
-Source/UI/Pages/About.lua
-Source/UI/Pages/Components.lua
-Source/WhatsNew.lua
+UI\Widgets.lua
+UI\Window.lua
+UI\MessageEditor.lua
+UI\Preview.lua
+UI\Pages\Overview.lua
+UI\Pages\Encounters.lua
+UI\Pages\Templates.lua
+UI\Pages\Overlays.lua
+UI\Pages\Settings.lua
+UI\Pages\Profiles.lua
+UI\Pages\Welcome.lua
+UI\Pages\About.lua
+UI\Pages\Components.lua
+UI\WhatsNewNotes.lua
+UI\WhatsNew.lua

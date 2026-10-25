@@ -40,7 +40,7 @@ local DEFAULT_BAR_COLOR = {r = 0.18, g = 0.6, b = 0.84, a = 0.9}
 local DEFAULT_SOUND_FILE = "Interface\\AddOns\\PhenomRaidTools\\Media\\Sounds\\ReceiveMessage.ogg"
 local DEFAULT_SOUND_NAME = "PRT: Default"
 local DEFAULT_FONT_COLOR = {r = 1, g = 1, b = 1, a = 1}
-local DEFAULT_ICON = "Interface\\AddOns\\PhenomRaidTools\\Media\\Icons\\PRT.blp"
+local DEFAULT_ICON = "Interface\\AddOns\\PhenomRaidTools\\Media\\Logo.blp"
 local RAID_TARGET_ICON = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_%s"
 local BAR_TEXTURE = "Interface\\Buttons\\WHITE8X8"
 local UPDATE_INTERVAL = 0.05

@@ -1,6 +1,6 @@
 # PhenomRaidTools
 
-<img src="docs/logo.png" alt="PhenomRaidTools logo" width="96" align="right">
+<img src="https://raw.githubusercontent.com/PhenomDevel/PhenomRaidTools/master/docs/logo/logo.png" alt="PhenomRaidTools logo" width="96" align="right">
 
 [![Version](https://img.shields.io/github/v/release/PhenomDevel/PhenomRaidTools?label=version)](https://github.com/PhenomDevel/PhenomRaidTools/releases/latest)
 [![CurseForge](https://img.shields.io/curseforge/dt/381654?label=CurseForge)](https://www.curseforge.com/projects/381654)
