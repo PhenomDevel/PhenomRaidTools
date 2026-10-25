@@ -1,4 +1,4 @@
-# PhenomRaidTools
+# PhenomRaidTools – Raid Assignments & Reminders
 
 <img src="https://raw.githubusercontent.com/PhenomDevel/PhenomRaidTools/master/docs/logo/logo.png" alt="PhenomRaidTools logo" width="96" align="right">
 
