@@ -9,6 +9,12 @@ COMMITS=$(git log $PREVIOUS_TAG..$LATEST_TAG --pretty=format:"%h")
 
 echo "Processing all commits between tags $LATEST_TAG and $PREVIOUS_TAG"
 
+# A hand-written changelog for this tag wins over the generated one.
+if [ "$(head -n 1 CHANGELOG.md 2>/dev/null | awk '{print $3}')" = "$LATEST_TAG" ]; then
+    echo "CHANGELOG.md already describes $LATEST_TAG, keeping it"
+    exit 0
+fi
+
 NOW=$(date +'%d.%m.%Y - %H:%M:%S')
 
 # Store our changelog in a variable to be saved to a file at the end

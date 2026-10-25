@@ -23,7 +23,8 @@ jobs:
       - name: Install luacheck
         run: |
           sudo apt-get update
-          sudo apt-get install -y lua5.1 luarocks
+          # subversion: the packager fetches the CurseForge externals (Ace3, ...) with svn.
+          sudo apt-get install -y lua5.1 luarocks subversion
           sudo luarocks install luacheck
 
       - name: Lint
