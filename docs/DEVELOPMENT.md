@@ -46,6 +46,11 @@ New-Item -ItemType Junction `
 
 New files or `.toc` changes require a client restart instead of `/reload`.
 
+## API
+
+Public API for other addons (work in progress), generated with `ldoc`:
+[phenomdevel.github.io/PhenomRaidTools](https://phenomdevel.github.io/PhenomRaidTools/api/index.html)
+
 ## Checks
 
 Lint: `luacheck .` (also runs in CI on every push). Functionality is verified
