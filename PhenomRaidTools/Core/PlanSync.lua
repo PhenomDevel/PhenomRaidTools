@@ -159,22 +159,6 @@ function PlanSync.SendPlans(force)
   return count
 end
 
--- For the overview: who confirmed the current plan of an encounter.
--- Returns hash, { [name] = true } or nil if it wasn't sent this session.
-function PlanSync.GetConfirmations(encounterID)
-  local state = sent[encounterID]
-  if not state then
-    return
-  end
-  local confirmed = {}
-  for name, hash in pairs(state.acks) do
-    if hash == state.hash then
-      confirmed[name] = true
-    end
-  end
-  return state.hash, confirmed
-end
-
 -- For the overview: the sync state of an encounter's selected version.
 -- Returns status ("unsent" | "changed" | "sent"), { { name, confirmed } } for
 -- the other group members, confirmed count.

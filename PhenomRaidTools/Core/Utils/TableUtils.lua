@@ -6,14 +6,6 @@ PRT.TableUtils = TableUtils
 -------------------------------------------------------------------------------
 -- String Utils
 
-function TableUtils.Tableify(x)
-  if type(x) == "string" then
-    return {x}
-  elseif type(x) == "table" then
-    return x
-  end
-end
-
 function TableUtils.Remove(t, pred)
   for i = #t, 1, -1 do
     if pred(t[i], i) then
@@ -77,22 +69,6 @@ function TableUtils.Clone(orig, copies)
   return copy
 end
 
-function TableUtils.OverwriteValues(t1, t2)
-  if t1 and t2 then
-    for k, _ in pairs(t1) do
-      if t2[k] then
-        t1[k] = t2[k]
-      end
-    end
-
-    for k, _ in pairs(t2) do
-      if not t1[k] then
-        t1[k] = t2[k]
-      end
-    end
-  end
-end
-
 function TableUtils.SortByKey(t, k)
   table.sort(
     t,
@@ -137,12 +113,6 @@ function TableUtils.MergeMany(...)
   return tNew
 end
 
-function TableUtils.SwapKey(t, old, new)
-  local value = t[old]
-  t[old] = nil
-  t[new] = value
-end
-
 function TableUtils.Keys(t)
   local keyset = {}
   local n = 0
@@ -155,77 +125,8 @@ function TableUtils.Keys(t)
   return keyset
 end
 
-function TableUtils.Vals(t)
-  local keyset = {}
-  local n = 0
-
-  for _, v in pairs(t) do
-    n = n + 1
-    keyset[n] = v
-  end
-
-  return keyset
-end
-
-function TableUtils.EveryKey(t, pred)
-  for k, _ in pairs(t) do
-    if not pred(k) then
-      return false
-    end
-  end
-
-  return true
-end
-
-function TableUtils.EveryValue(t, pred)
-  for _, v in pairs(t) do
-    if not pred(v) then
-      return false
-    end
-  end
-
-  return true
-end
-
-function TableUtils.GroupByField(t, field)
-  local groupedTable = {}
-
-  for _, v in pairs(t) do
-    if v[field] then
-      local fieldName = v[field]
-      if not groupedTable[fieldName] then
-        groupedTable[fieldName] = {}
-      end
-
-      tinsert(groupedTable[fieldName], v)
-    end
-  end
-
-  return groupedTable
-end
-
-function TableUtils.FilterByKey(t, key, value)
-  local filteredTable = {}
-
-  for k, v in pairs(t) do
-    if v[key] == value then
-      filteredTable[k] = v
-    end
-  end
-
-  return filteredTable
-end
-
 function TableUtils.First(t)
   for _, v in pairs(t) do
     return v
-  end
-end
-
-function TableUtils.Map(t, f)
-  for k, v in pairs(t) do
-    if v and f then
-      t[k] = f(v)
-    end
   end
 end

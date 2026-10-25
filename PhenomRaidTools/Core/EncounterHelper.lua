@@ -72,17 +72,6 @@ end
 -------------------------------------------------------------------------------
 -- Timer
 
-function PRT.EmptyTiming()
-  return {
-    seconds = {1},
-    offset = 0,
-    name = nil,
-    messages = {
-      PRT.EmptyMessage()
-    }
-  }
-end
-
 function PRT.EmptyTimer()
   return {
     enabled = true,

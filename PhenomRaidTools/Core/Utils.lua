@@ -57,10 +57,6 @@ end
 -------------------------------------------------------------------------------
 -- Table Helper
 
-function PRT.CompareByName(a, b)
-  return a.name < b.name
-end
-
 -------------------------------------------------------------------------------
 -- Encounter Helper
 
@@ -211,10 +207,6 @@ function PRT.RandomNumber()
   return (PRT.Time() + random(100000))
 end
 
-function PRT.NewCloneName()
-  return "Clone " .. PRT.RandomNumber()
-end
-
 -------------------------------------------------------------------------------
 -- Date Helper
 
@@ -228,13 +220,6 @@ end
 
 -------------------------------------------------------------------------------
 -- Unit Helper
-
-function PRT.GUIDToNPCID(guid)
-  if not guid then
-    return nil
-  end
-  return select(6, strsplit("-", guid))
-end
 
 function PRT.UnitFullName(unitID)
   return GetUnitName(unitID, true)
@@ -298,51 +283,14 @@ function PRT.IsReceiver()
   return PRT.GetProfileDB().receiverMode
 end
 
-function PRT.IsInFight()
-  return UnitAffectingCombat("player")
-end
-
-function PRT.EncounterInProgress()
-  if PRT.currentEncounter then
-    return PRT.currentEncounter.inFight
-  end
-end
-
 function PRT.IsTestMode()
   return PRT.GetProfileDB().testMode
-end
-
-function PRT.HasEncounter()
-  return not PRT.TableUtils.IsEmpty(PRT.currentEncounter.encounter)
-end
-
-function PRT.ParseVersionString(s)
-  local numericVersionString = string.gsub(s, "[.]", "")
-  local numericVersion = tonumber(numericVersionString)
-
-  return numericVersion
-end
-
-function PRT.IsDevelopmentVersion()
-  local versionString = PRT.GetProfileDB().version
-  local numericVersionString = string.gsub(versionString, "[.]", "")
-
-  return (not tonumber(numericVersionString))
 end
 
 -- Version strings don't compare across clients (WoW: Forever reports 1.x), so
 -- go by interface number.
 function PRT.IsRetail()
   return select(4, GetBuildInfo()) >= 120000
-end
-
-function PRT.IsForever()
-  local interface = select(4, GetBuildInfo())
-  return interface >= 16000 and interface < 20000
-end
-
-function PRT.IsClassic()
-  return (not PRT.IsRetail())
 end
 
 -------------------------------------------------------------------------------
