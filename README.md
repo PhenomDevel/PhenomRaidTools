@@ -1,6 +1,17 @@
 [![CI](https://github.com/PhenomDevel/PhenomRaidTools/actions/workflows/ci.yml/badge.svg)](https://github.com/PhenomDevel/PhenomRaidTools/actions/workflows/ci.yml) [![Release](https://github.com/PhenomDevel/PhenomRaidTools/actions/workflows/release.yml/badge.svg)](https://github.com/PhenomDevel/PhenomRaidTools/actions/workflows/release.yml) [![Discord General](https://img.shields.io/discord/596662921753526275?label=discord)](https://discord.com/invite/GAYDjBF)
 # PhenomRaidTools
 
+## 3.0: rebuilt for Midnight
+Midnight (12.0, also WoW: Forever) took the combat log, boss health and power and in-encounter addon messages away from addons. PhenomRaidTools 3.0 is rebuilt around that: the raid lead plans each boss ahead, the plan goes to the group before the pull, and every player runs it locally.
+
+- **Plan on a timeline.** Click where something should happen. An assignment shows once, repeating or at several times, for the players, roles, groups or classes you pick, on the difficulties you pick.
+- **Cooldowns made easy.** Pick a raid or utility cooldown and it shows with icon and spell name (or your text) on the matching overlay. Text to speech can read any message aloud.
+- **See it before the pull.** A preview beside the window plays the assignment or overlay you are editing.
+- **Overlays your way.** Text, icons or bars, growing in any direction. New profiles start with messages at the top, healing cooldowns on the left and utility cooldowns on the right.
+- **One window.** Overview with the sync status of every player, encounters grouped by instance with boss portraits, templates, overlays, settings and profiles, all searchable.
+
+**Before updating, back up** `WTF/Account/<account>/SavedVariables/PhenomRaidTools.lua`. The update removes what can't run anymore: rotations, health and power percentages, timers on combat log events, raid warnings and markers, placeholders, `/prtm`, encounter versions (the active one stays) and timer groups (their difficulties move to the assignments). Details in [Midnight addon restrictions](#midnight-addon-restrictions) and the [changelog](CHANGELOG.md).
+
 ## Quickstart
 Open the addon with `/prt` or the minimap icon. On the first start a short guide asks for your role (raid lead, player or both) and lets you place the message overlays. If you seek help visit the discord server and feel free to ask :)
 
