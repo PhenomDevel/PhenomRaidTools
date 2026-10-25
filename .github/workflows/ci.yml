@@ -1,5 +1,6 @@
 name: CI
 
+# Same file in all PhenomDevel addon repositories.
 on:
   push:
   pull_request:
@@ -17,4 +18,4 @@ jobs:
           sudo luarocks install luacheck
 
       - name: Lint
-        run: luacheck PhenomRaidTools/Source
+        run: luacheck .
