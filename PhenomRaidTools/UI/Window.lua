@@ -2290,11 +2290,6 @@ end
 -- API
 --------------------------------------------------------------------------------
 
--- While searching, pages build every row (e.g. values that are folded away).
-function UI.IsSearching()
-  return state.search ~= ""
-end
-
 -- page = { id, label, order, section, searchable, status, badge,
 --          build = function(path) return title, subtitle, cards, trail end }
 -- path = ids of the levels below the page ({} on the page itself); trail =

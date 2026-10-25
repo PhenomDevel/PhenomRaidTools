@@ -45,7 +45,6 @@ Locales\deDE.lua
 # Core
 Core\Init.lua
 Core\Media.lua
-Core\Utils\GuildUtils.lua
 Core\Utils\TableUtils.lua
 Core\Utils\StringUtils.lua
 Core\Utils\Log.lua
