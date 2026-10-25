@@ -8,7 +8,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 PRT.whatsNew = {
   {
-    version = "3.0.0",
+    version = "3.1.0",
     notes = {
       "# " .. L["Midnight and WoW: Forever"],
       L["Since Midnight addons get no combat log, no boss health or power and can't message the group during encounters. Plans now go to the group before the pull and run on every player."],
