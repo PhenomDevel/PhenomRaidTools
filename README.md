@@ -12,7 +12,7 @@ The raid lead plans each boss on a timeline. Before the pull the plan goes to
 the group, and every player runs it locally and sees only the messages meant
 for them. Since Midnight (also WoW: Forever) addons get no combat log, no boss
 health or power and can't message the group during encounters, so everything
-counts from the pull. Use it next to your boss mod (DBM, BigWigs) and WeakAuras.
+counts from the pull. Use it next to your boss mod (DBM, BigWigs).
 
 ## Supported versions
 
