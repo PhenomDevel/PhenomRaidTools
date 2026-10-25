@@ -23,3 +23,4 @@ PhenomRaidTools 3.1 for Midnight (12.x) and WoW: Forever. Since Midnight, addons
 - Rotations, health and power percentages, timers on combat log events, stop conditions, raid warnings, raid markers, placeholders (raid roster, custom and encounter placeholders), `/prtm` and the message filter.
 - Encounter versions (the active version is kept) and timer groups. Each assignment takes over its group's difficulties.
 - The old AceGUI options and Classic Era / Wrath Classic support.
+- The unfinished global `PRT` API for other addons; its functions did nothing.

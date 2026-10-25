@@ -61,7 +61,6 @@ Core\ReceiverOverlay.lua
 Core\Upcoming.lua
 Core\VersionMigration.lua
 Core\MethodRaidToolsExport.lua
-Core\API.lua
 
 # UI
 UI\Widgets.lua
