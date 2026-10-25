@@ -120,17 +120,13 @@ do
           defaultDuration = 5,
           defaultTargets = {
             "$me"
-          },
-          defaultCooldownWithCountdownPattern = "{spell:%s} %%.0f {spell:%s}",
-          defaultCooldownWithoutCountdownPattern = "{spell:%s}"
+          }
         }
       },
       mrtExportDefaults = {
         includeTimers = true,
         withEmptyLines = false,
         withEncounterName = true,
-        withTriggerNames = true,
-        withLinePrefix = true,
         forceMethodRaidToolsUpdate = false,
         updatePRTTag = true,
         withPersonalization = false

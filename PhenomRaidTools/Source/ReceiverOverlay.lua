@@ -1,4 +1,4 @@
--- luacheck: read globals C_Timer
+-- luacheck: read globals C_Timer C_VoiceChat C_TTSSettings Enum GetBuildInfo
 local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 local LSM = LibStub("LibSharedMedia-3.0")
@@ -414,7 +414,48 @@ end
 -------------------------------------------------------------------------------
 -- Sound
 
+-- What text to speech reads: the text without icons, markers, colors and countdown.
+function ReceiverOverlay.SpokenText(message)
+  local text = message.message or ""
+  if message.type == "cooldown" then
+    text = message.cooldownText or PRT.SpellName(message.spellID) or ""
+  end
+  text =
+    text:gsub(
+    "{spell:(%d+)}",
+    function(spellID)
+      return PRT.SpellName(spellID) or ""
+    end
+  )
+  text = text:gsub("{rt%d}", ""):gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", ""):gsub("|T.-|t", ""):gsub("%%[-+ #0]*%d*%.?%d*[dfgs]", "")
+  return strtrim((text:gsub("%s+", " ")))
+end
+
+-- 12.0 dropped SpeakText's destination argument.
+local SPEAK_WITHOUT_DESTINATION = select(4, GetBuildInfo()) >= 120000
+
+local function Speak(text)
+  if text == "" or not (C_VoiceChat and C_VoiceChat.SpeakText and C_TTSSettings) then
+    return false
+  end
+  return pcall(
+    function()
+      local voiceID = C_TTSSettings.GetVoiceOptionID(Enum.TtsVoiceType.Standard)
+      local rate, volume = C_TTSSettings.GetSpeechRate(), C_TTSSettings.GetSpeechVolume()
+      if SPEAK_WITHOUT_DESTINATION then
+        C_VoiceChat.SpeakText(voiceID, text, rate, volume, true)
+      else
+        C_VoiceChat.SpeakText(voiceID, text, Enum.VoiceTtsDestination.LocalPlayback, rate, volume)
+      end
+    end
+  )
+end
+
+-- Text to speech replaces the sound; it plays even with the overlay's sound off.
 local function PlayMessageSound(message, config)
+  if message.useTTS and Speak(ReceiverOverlay.SpokenText(message)) then
+    return
+  end
   if not Get(config, "enableSound") then
     return
   end
@@ -479,7 +520,7 @@ local function AddToDisplay(display, message, silent)
   display.frame:SetScript("OnUpdate", OnUpdate)
 end
 
--- message: { message, duration, targetOverlay, spellID, useCustomSound, soundFile(Name) }
+-- message: { message, duration, targetOverlay, spellID, useCustomSound, soundFile(Name), useTTS }
 function ReceiverOverlay.AddMessage(message, silent)
   local display = GetDisplay(message.targetOverlay or 1)
   if display then

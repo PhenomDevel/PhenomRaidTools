@@ -1106,19 +1106,24 @@ rowTypes.sound = {
 
 -- Assignments over time ({ lanes, length, empty, onClickTime }): one lane per
 -- target group, a marker per message at its time after the pull. lanes() ->
--- { { label, markers = { { time, color, tooltipTitle, tooltip, onClick } } } }.
--- With onClickTime(seconds) a click into the plot adds something there.
+-- { { label, markers = { { time, color, icon, dim, tooltipTitle, tooltip, onClick } } } }.
+-- A marker is its icon framed in its color, centered on its time. With
+-- onClickTime(seconds) a click into the plot adds something there.
 local TIMELINE_LABEL_WIDTH = 96
-local TIMELINE_LANE_HEIGHT = 20
+local TIMELINE_LANE_HEIGHT = 24
 local TIMELINE_AXIS_HEIGHT = 18
-local TIMELINE_MARKER_WIDTH = 6
+local TIMELINE_MARKER_SIZE = 20
 
 local function CreateTimelineMarker(row)
   local marker = CreateFrame("Button", nil, row)
-  marker:SetSize(TIMELINE_MARKER_WIDTH, TIMELINE_LANE_HEIGHT - 6)
+  marker:SetSize(TIMELINE_MARKER_SIZE, TIMELINE_MARKER_SIZE)
   marker:SetFrameLevel(row:GetFrameLevel() + 3)
-  marker.Texture = marker:CreateTexture(nil, "ARTWORK")
+  marker.Texture = marker:CreateTexture(nil, "BACKGROUND")
   marker.Texture:SetAllPoints()
+  marker.Icon = marker:CreateTexture(nil, "ARTWORK")
+  marker.Icon:SetPoint("TOPLEFT", 1, -1)
+  marker.Icon:SetPoint("BOTTOMRIGHT", -1, 1)
+  marker.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
   marker:SetScript("OnEnter", Widgets.ShowTooltip)
   marker:SetScript("OnLeave", Widgets.HideTooltip)
   marker:SetScript(
@@ -1227,8 +1232,8 @@ rowTypes.timeline = {
   setup = function(row, spec)
     local lanes = Resolve(spec.lanes) or {}
     local length = math.max(30, spec.length or 0)
-    local plotLeft = TIMELINE_LABEL_WIDTH
-    local plotWidth = rowWidth - plotLeft - TIMELINE_MARKER_WIDTH
+    local plotLeft = TIMELINE_LABEL_WIDTH + TIMELINE_MARKER_SIZE / 2
+    local plotWidth = rowWidth - plotLeft - TIMELINE_MARKER_SIZE / 2
     row.onClickTime, row.length, row.plotWidth = spec.onClickTime, length, plotWidth
     -- Clickable without messages: one empty lane with the hint in it.
     local hint
@@ -1299,8 +1304,11 @@ rowTypes.timeline = {
         row.Markers[markerIndex] = marker
         marker:ClearAllPoints()
         local x = plotLeft + math.min(markerSpec.time, length) / length * plotWidth
-        marker:SetPoint("TOPLEFT", x, -top - 3)
+        marker:SetPoint("TOP", row, "TOPLEFT", x, -top - (TIMELINE_LANE_HEIGHT - TIMELINE_MARKER_SIZE) / 2)
         marker.Texture:SetColorTexture(unpack(markerSpec.color or Widgets.brand))
+        marker.Icon:SetTexture(markerSpec.icon)
+        marker.Icon:SetDesaturated(markerSpec.dim or false)
+        marker.Icon:SetAlpha(markerSpec.dim and 0.5 or 1)
         marker.tooltipTitle, marker.tooltipText = markerSpec.tooltipTitle, markerSpec.tooltip
         marker.onClick = markerSpec.onClick
         marker:Show()

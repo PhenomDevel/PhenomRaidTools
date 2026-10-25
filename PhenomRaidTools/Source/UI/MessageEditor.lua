@@ -1,3 +1,4 @@
+-- luacheck: read globals GetClassInfo RAID_CLASS_COLORS
 local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 local LSM = LibStub("LibSharedMedia-3.0")
@@ -13,7 +14,6 @@ local Widgets = PRT.Widgets
 
   UI.Messages.Cards(message, context) -> cards
     context = { timing = the assignment's timing (encounters only),
-                groups, group, setGroup(index) = move it to another group,
                 onRemove(), isTemplate }
   UI.Messages.Summary(message) -> one line for lists
   UI.Messages.WhenText(timing) -> "1:30", "every 0:30 from 0:45 to 4:00"
@@ -82,48 +82,54 @@ local WHEN_MODES = {
   {value = "list", label = L["Several times"]}
 }
 
+local DIFFICULTIES = {
+  {value = "Normal", label = L["Normal"]},
+  {value = "Heroic", label = L["Heroic"]},
+  {value = "Mythic", label = L["Mythic"]}
+}
+
 -- A repeating assignment never shows more often than this.
 local MAX_REPEATS = 100
 
 -------------------------------------------------------------------------------
 -- Text
 
-local function MessageDefaults()
-  return PRT.GetProfileDB().triggerDefaults.messageDefaults
-end
 
 local function HasCountdown(text)
   return text and text:gsub("%%%%", ""):find("%%[-+ #0]*%d*%.?%d*[dfgs]") ~= nil
 end
 
--- Text of a cooldown message from the patterns of the defaults.
-local function CooldownText(message)
-  local defaults = MessageDefaults()
-  local pattern
-  if message.withCountdown then
-    pattern = defaults.defaultCooldownWithCountdownPattern or "{spell:%s} %%.0f {spell:%s}"
-  else
-    pattern = defaults.defaultCooldownWithoutCountdownPattern or "{spell:%s}"
-  end
-  local ok, text = pcall(string.format, pattern, message.spellID or "", message.spellID or "")
-  return ok and text or ("{spell:%s}"):format(message.spellID or "")
-end
-
-local function SpellName(spellID)
-  local info = spellID and C_Spell.GetSpellInfo(tonumber(spellID) or spellID)
-  return info and info.name
-end
+local CooldownText = PRT.CooldownMessageText
+local SpellName = PRT.SpellName
 
 -- What the player will see (names resolved in the current group).
 function Messages.DisplayText(message)
-  local text = PRT.PrepareMessageForDisplay(message.message or "")
-  if message.type == "cooldown" then
-    local name = SpellName(message.spellID)
-    if name then
-      text = PRT.ReceiverOverlay.WithoutTime(text) .. " " .. name
+  return PRT.ReceiverOverlay.WithoutTime(PRT.PrepareMessageForDisplay(message.message or ""))
+end
+
+-- Stands for a message without a spell.
+Messages.TEXT_ICON = "Interface\\Icons\\INV_Misc_Note_01"
+
+-- The spell's icon of a message: its cooldown, or the first spell in its
+-- text; a note for plain text.
+function Messages.Icon(message)
+  local spellID = message.type == "cooldown" and message.spellID or (message.message or ""):match("{spell:(%d+)}")
+  return spellID and PRT.SpellIcon(tonumber(spellID) or spellID) or Messages.TEXT_ICON
+end
+
+-- Nil on all difficulties, else e.g. "Heroic, Mythic" or "off".
+function Messages.DifficultyText(timing)
+  local difficulties = timing.difficulties
+  if not difficulties then
+    return nil
+  end
+  local names = {}
+  for _, difficulty in ipairs(DIFFICULTIES) do
+    if difficulties[difficulty.value] then
+      names[#names + 1] = difficulty.label
     end
   end
-  return PRT.ReceiverOverlay.WithoutTime(text)
+  return #names > 0 and table.concat(names, ", ") or L["off"]
 end
 
 function Messages.TargetsText(message)
@@ -136,10 +142,41 @@ function Messages.TargetsText(message)
   return table.concat(names, ", ")
 end
 
-function Messages.Summary(message)
+-- A target as the chips name it: roles, "Me", "Group 3", class names; players as they are.
+function Messages.TargetLabel(token)
+  for _, role in ipairs(ROLE_TARGETS) do
+    if role.value == token then
+      return role.label
+    end
+  end
+  local group = token:match("^%$group(%d)$")
+  if group then
+    return L["Group %d"]:format(tonumber(group))
+  end
+  local classID = token:sub(1, 1) == "$" and PRT.Static.ClassTokens[token:sub(2)]
+  local name, classFile
+  if classID then
+    name, classFile = GetClassInfo(classID)
+  end
+  if name then
+    local color = RAID_CLASS_COLORS[classFile]
+    return color and color:WrapTextInColorCode(name) or name
+  end
+  return token
+end
+
+function Messages.TargetLabels(message)
   PRT.NormalizeTargets(message)
+  local labels = {}
+  for index, token in ipairs(message.targets) do
+    labels[index] = Messages.TargetLabel(token)
+  end
+  return table.concat(labels, ", ")
+end
+
+function Messages.Summary(message)
   local text = Messages.DisplayText(message)
-  local targets = table.concat(message.targets, ", ")
+  local targets = Messages.TargetLabels(message)
   return ("%s  |cff%s→ %s|r"):format(text ~= "" and text or L["(empty)"], Widgets.ACCENT_HEX, targets ~= "" and targets or L["nobody"])
 end
 
@@ -324,17 +361,26 @@ local function WhenCard(context)
       end
     }
   end
-  if context.groups then
-    rows[#rows + 1] = {
-      type = "dropdown",
-      label = L["Group"],
-      values = context.groups,
-      layout = true,
-      get = function()
-        return context.group
-      end,
-      set = context.setGroup
-    }
+  rows[#rows + 1] = {
+    type = "multiselect",
+    label = L["Difficulties"],
+    values = DIFFICULTIES,
+    layout = true,
+    get = function(value)
+      return timing.difficulties == nil or timing.difficulties[value]
+    end,
+    set = function(value, selected)
+      local difficulties = timing.difficulties or {Normal = true, Heroic = true, Mythic = true}
+      difficulties[value] = selected or nil
+      local all = true
+      for _, difficulty in ipairs(DIFFICULTIES) do
+        all = all and difficulties[difficulty.value]
+      end
+      timing.difficulties = not all and difficulties or nil
+    end
+  }
+  if timing.difficulties and next(timing.difficulties) == nil then
+    rows[#rows + 1] = {type = "notice", label = L["No difficulty: this assignment is off."]}
   end
   return {title = L["When"], note = L["Counted from the pull."], rows = rows}
 end
@@ -391,11 +437,22 @@ local function GroupTargets()
   return values
 end
 
+-- Class colored names; classes this client doesn't have are left out.
 local function ClassTargets()
   local values = {}
-  for _, token in ipairs(SortedKeys(PRT.Static.ClassTokens)) do
-    values[#values + 1] = {value = "$" .. token, label = "$" .. token}
+  for token, classID in pairs(PRT.Static.ClassTokens) do
+    local name, classFile = GetClassInfo(classID)
+    if name then
+      local color = RAID_CLASS_COLORS[classFile]
+      values[#values + 1] = {value = "$" .. token, label = color and color:WrapTextInColorCode(name) or name, name = name}
+    end
   end
+  table.sort(
+    values,
+    function(a, b)
+      return a.name < b.name
+    end
+  )
   return values
 end
 
@@ -612,9 +669,25 @@ local function TypeRows(message)
     )
     Add(
       {
+        type = "text",
+        label = L["Text"],
+        note = L["Empty: the spell's name."],
+        placeholder = SpellName(message.spellID),
+        get = function()
+          return message.cooldownText or ""
+        end,
+        set = function(value)
+          value = strtrim(value or "")
+          message.cooldownText = value ~= "" and value or nil
+          message.message = CooldownText(message)
+        end
+      }
+    )
+    Add(
+      {
         type = "checkbox",
         label = L["Countdown"],
-        note = L["Shows the remaining seconds next to the icon."],
+        note = L["Shows the remaining seconds after the text."],
         layout = true,
         get = function()
           return message.withCountdown
@@ -820,6 +893,7 @@ function Messages.Cards(message, context)
       type = "checkbox",
       label = L["Own sound"],
       note = L["Otherwise the overlay's sound plays."],
+      disabled = message.useTTS,
       layout = true,
       get = function()
         return message.useCustomSound
@@ -829,7 +903,19 @@ function Messages.Cards(message, context)
       end
     }
   }
-  if message.useCustomSound then
+  displayRows[#displayRows + 1] = {
+    type = "checkbox",
+    label = L["Text to speech"],
+    note = L["Reads the text aloud instead of the sound, with the voice of the game's text to speech settings."],
+    layout = true,
+    get = function()
+      return message.useTTS
+    end,
+    set = function(value)
+      message.useTTS = value or nil
+    end
+  }
+  if message.useCustomSound and not message.useTTS then
     displayRows[#displayRows + 1] = {
       type = "sound",
       label = L["Sound"],

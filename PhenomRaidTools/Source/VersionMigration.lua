@@ -278,6 +278,42 @@ local migrationFunctions = {
 
       return true
     end
+  },
+  [10] = {
+    version = "3.0.0-4",
+    migrationFunction = function(profile)
+      -- Cooldown messages were only icons (and the countdown): they now show
+      -- the spell's name. Texts someone wrote stay as they are.
+      PRT.ForEachMessage(
+        profile,
+        function(message)
+          local text = message.message or ""
+          if message.type == "cooldown" and message.spellID and strtrim((text:gsub("{spell:%d+}", ""):gsub("%%%.0f", ""))) == "" then
+            message.withCountdown = text:find("%.0f", 1, true) ~= nil
+            message.message = PRT.CooldownMessageText(message)
+          end
+        end
+      )
+      -- Versions are gone: an encounter keeps the one that was active. Groups
+      -- too: their assignments take over the groups' difficulties.
+      for _, encounter in ipairs(profile.encounters or {}) do
+        local versions = encounter.versions or {}
+        local version = versions[encounter.selectedVersion or 1] or versions[1]
+        encounter.versions, encounter.selectedVersion = {version}, 1
+        if version then
+          PRT.CleanEncounterVersion(version)
+        end
+      end
+      local messageDefaults = profile.triggerDefaults and profile.triggerDefaults.messageDefaults
+      if messageDefaults then
+        messageDefaults.defaultCooldownWithCountdownPattern, messageDefaults.defaultCooldownWithoutCountdownPattern = nil, nil
+      end
+      -- The MRT line prefix was the timing's name, which assignments don't have.
+      if profile.mrtExportDefaults then
+        profile.mrtExportDefaults.withLinePrefix, profile.mrtExportDefaults.withTriggerNames = nil, nil
+      end
+      return true
+    end
   }
 }
 

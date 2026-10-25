@@ -238,11 +238,9 @@ local function ReceiverItems()
         growLabel = entry.label
       end
     end
-    local color = config.fontColor or {}
     items[#items + 1] = {
       label = ("%d: %s"):format(index, config.label or ""),
-      note = ("%s · %s%s"):format(styleLabel, growLabel, Overlay.Get(config, "locked") and "" or (" · " .. L["unlocked"])),
-      color = {color.r or 1, color.g or 1, color.b or 1, 1}
+      note = ("%s · %s%s"):format(styleLabel, growLabel, Overlay.Get(config, "locked") and "" or (" · " .. L["unlocked"]))
     }
   end
   return items

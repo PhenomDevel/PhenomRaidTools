@@ -31,6 +31,18 @@ local function IsEnabledForDifficulty(timer)
   return PRT.currentDifficulty ~= nil and (timer.enabledDifficulties == nil or timer.enabledDifficulties[PRT.currentDifficulty])
 end
 
+-- Assignments: without difficulties on all, with an empty set on none.
+function PRT.IsTimingForDifficulty(timing)
+  local difficulties = timing.difficulties
+  if difficulties == nil then
+    return true
+  end
+  if PRT.IsTestMode() then
+    return next(difficulties) ~= nil
+  end
+  return PRT.currentDifficulty ~= nil and difficulties[PRT.currentDifficulty] == true
+end
+
 local function SendMessages(messages)
   for _, message in ipairs(messages) do
     if (message.delay or 0) > 0 then
@@ -68,7 +80,7 @@ function PRT.CheckTimerTimings(timers)
       local elapsed = now - timer.startedAt
       for _, timing in ipairs(timer.timings) do
         local messages = timing.messages
-        if messages then
+        if messages and PRT.IsTimingForDifficulty(timing) then
           local offset = timing.offset or 0
           for _, second in ipairs(timing.seconds or {}) do
             local at = second + offset

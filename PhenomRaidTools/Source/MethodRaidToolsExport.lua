@@ -77,7 +77,7 @@ local function WrapPersonalization(contentString, targetString, options)
   return personalizedString
 end
 
-local function SecondsToTimePrefix(entry, options)
+local function SecondsToTimePrefix(entry)
   local timePrefixString
 
   timePrefixString = string.format("{time:%s", PRT.SecondsToClock(entry.time))
@@ -97,13 +97,7 @@ local function SecondsToTimePrefix(entry, options)
     end
   end
 
-  timePrefixString = timePrefixString .. "}"
-
-  if options.withLinePrefix then
-    timePrefixString = timePrefixString .. string.format(" %s -> ", PRT.ColoredString((entry.name or "N/A"), PRT.Static.Colors.Tertiary))
-  end
-
-  return timePrefixString
+  return timePrefixString .. "}"
 end
 
 local function GenerateTimingContent(messages, options)
@@ -137,10 +131,11 @@ local function CollectMessagesPerTiming(timer)
   local messagesPerTiming = {}
 
   for _, timing in pairs(timer.timings) do
-    for _, timeInSeconds in pairs(timing.seconds) do
+    -- Switched off: no difficulty selected.
+    local seconds = (timing.difficulties == nil or next(timing.difficulties)) and timing.seconds or {}
+    for _, timeInSeconds in pairs(seconds) do
       if not messagesPerTiming[timeInSeconds] then
         messagesPerTiming[timeInSeconds] = {
-          name = timing.name,
           triggerAtOccurence = timer.triggerAtOccurence,
           startCondition = timer.startCondition,
           messages = {}
@@ -173,7 +168,7 @@ end
 
 local function GenerateTimingString(entry, options)
   local contents = GenerateTimingContent(entry.messages, options)
-  local timingString = SecondsToTimePrefix(entry, options)
+  local timingString = SecondsToTimePrefix(entry)
 
   local contentsString = strjoin(" ", unpack(contents))
 

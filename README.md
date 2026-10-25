@@ -7,12 +7,12 @@ Open the addon with `/prt` or the minimap icon. On the first start a short guide
 Everything lives in one window with a search field:
 
 - **Overview:** lead/player mode, sending plans to the group with the confirmation of every member, the plans you received.
-- **Encounters:** one plan per boss with versions, a timeline of all assignments after the pull, import/export and the MethodRaidTools note. *New encounter* lists the bosses of the current raids from the Encounter Journal; any other boss is created by its encounter ID.
+- **Encounters:** one plan per boss, listed by instance, with a timeline of all assignments after the pull, import/export and the MethodRaidTools note. *New encounter* lists the bosses of the current raids from the Encounter Journal; any other boss is created by its encounter ID. An import replaces the plan of its encounter.
 - **Templates:** messages you reuse; load them in any message.
 - **Overlays:** the message overlays, your next assignments during an encounter and the lead status.
 - **Settings** and **Profiles** (including a profile per specialization and profile export/import).
 
-Click into an encounter's timeline to add an assignment at that time. An assignment is one message shown once, repeating (every *n* seconds from one time to another) or at several times. It is edited as one sentence: type (message or cooldown), targets (roles, players, raid groups, classes), overlay, duration and sound. While you edit an assignment or an overlay, a preview panel beside the window shows it as your players see it.
+Click into an encounter's timeline to add an assignment at that time; the timeline shows each assignment's spell icon (a note for plain text) and on hover its text and who sees it. An assignment is one message shown once, repeating (every *n* seconds from one time to another) or at several times, on all or only some difficulties. It is edited as one sentence: type (message or cooldown), targets (roles, players, raid groups, classes), overlay, duration and sound or text to speech. A cooldown shows the spell's name unless you give it your own text. While you edit an assignment or an overlay, a preview panel beside the window shows it as your players see it.
 
 ### Commands
 | Command | |
@@ -48,16 +48,18 @@ For a brief introduction into the addon please read: [PhenomRaidTools Beginner G
 ## Lead & player
 The raid lead (sender mode) builds the plans and sends them to the group before the pull. Players (receiver mode) run the received plans on the pull and see only the messages meant for them. Plans are accepted from the group leader and assistants only.
 
-## Assignments and groups
-Every assignment shows one message: once (e.g. at `1:30`), repeating (e.g. every `0:30` from `0:15` to `3:00`) or at several times (`0:30, 1:15, 90`). Assignments belong to a group; a group switches its assignments off or limits them to difficulties together. A new encounter starts with one group, *Pull*.
+## Assignments
+Every assignment shows one message: once (e.g. at `1:30`), repeating (e.g. every `0:30` from `0:15` to `3:00`) or at several times (`0:30, 1:15, 90`). It runs on the difficulties selected for it (Normal, Heroic, Mythic); with none selected it is off. *Text to speech* reads the text aloud with the voice of the game's text to speech settings instead of playing a sound.
+
+Encounter versions and groups were removed: updating keeps the version that was active and moves each group's difficulties (or its off state) to its assignments.
 
 ## Overlays
 New profiles start with three overlays: *Messages* at the top, *Healing cooldowns* on the left and *Utility cooldowns* on the right. A cooldown chosen from the list goes on the overlay for its kind. *Default overlays → Restore* brings them back. Each message shows on one of your overlays. Every overlay has its own style (text, icons or bars), grows up, down, left or right from its anchor or centered on it, and has its own font, sound and number of messages at once. Unlock an overlay to drag it; *Show on screen* shows sample messages where it is.
 
-*Your next assignments* lists what's next for you during an encounter with a countdown, read from the plan. The *lead status* shows the lead's groups with the time to their next assignment.
+*Your next assignments* lists what's next for you during an encounter with a countdown, read from the plan. The *lead status* shows the time to the lead's next assignment.
 
 ## MethodRaidTools note
-The encounter page writes the cooldown messages of all enabled groups into your MethodRaidTools note, either the whole note or only between `{prtstart}` and `{prtend}`. Send it with MRT as usual.
+The encounter page writes the cooldown assignments of the encounter (a line per time: icon and players) into your MethodRaidTools note, either the whole note or only between `{prtstart}` and `{prtend}`. Send it with MRT as usual.
 
 ## API
 > WORK IN PROGRESS

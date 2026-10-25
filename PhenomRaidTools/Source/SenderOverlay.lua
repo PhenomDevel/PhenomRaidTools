@@ -75,7 +75,7 @@ end
 local function NextTiming(timer, elapsed)
   local nextAt
   for _, timing in ipairs(timer.timings or {}) do
-    for _, second in ipairs(timing.seconds or {}) do
+    for _, second in ipairs(PRT.IsTimingForDifficulty(timing) and timing.seconds or {}) do
       local at = second + (timing.offset or 0)
       if at > elapsed and (not nextAt or at < nextAt) then
         nextAt = at
