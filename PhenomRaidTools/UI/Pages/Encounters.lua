@@ -290,19 +290,13 @@ end
 
 local pendingImport = {text = "", data = nil, error = nil}
 
+local function IsValidImport(data)
+  return data.Timers
+end
+
 local function CheckImport(text)
-  pendingImport.text, pendingImport.data, pendingImport.error = text or "", nil, nil
-  if pendingImport.text == "" then
-    return
-  end
-  local ok, data = PRT.Deserialize(pendingImport.text)
-  if not ok or type(data) ~= "table" then
-    pendingImport.error = L["This is no PRT import string."]
-  elseif not data.Timers then
-    pendingImport.error = L["This string contains no encounter."]
-  else
-    pendingImport.data = data
-  end
+  pendingImport.text = text or ""
+  pendingImport.data, pendingImport.error = PRT.ParseImport(pendingImport.text, IsValidImport, L["This string contains no encounter."])
 end
 
 -- An export knows its encounter id: it replaces that encounter's plan, or

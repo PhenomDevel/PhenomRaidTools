@@ -1,4 +1,5 @@
 local _, PRT = ...
+local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 local AceSerializer = LibStub("AceSerializer-3.0")
 local LibDeflate = LibStub("LibDeflate")
 
@@ -31,4 +32,19 @@ function PRT.Deserialize(s)
   end
 
   return nil
+end
+
+-- Decodes an import string and checks its content with `isValid(data)`.
+-- Returns the data, or nil and the reason (no reason for an empty string).
+function PRT.ParseImport(text, isValid, invalidMessage)
+  if not text or text == "" then
+    return nil
+  end
+  local ok, data = PRT.Deserialize(text)
+  if not ok or type(data) ~= "table" then
+    return nil, L["This is no PRT import string."]
+  elseif not isValid(data) then
+    return nil, invalidMessage
+  end
+  return data
 end
