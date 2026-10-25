@@ -1,8 +1,8 @@
 [![CI](https://github.com/PhenomDevel/PhenomRaidTools/actions/workflows/ci.yml/badge.svg)](https://github.com/PhenomDevel/PhenomRaidTools/actions/workflows/ci.yml) [![Release](https://github.com/PhenomDevel/PhenomRaidTools/actions/workflows/release.yml/badge.svg)](https://github.com/PhenomDevel/PhenomRaidTools/actions/workflows/release.yml) [![Discord General](https://img.shields.io/discord/596662921753526275?label=discord)](https://discord.com/invite/GAYDjBF)
 # PhenomRaidTools
 
-## 3.0: rebuilt for Midnight
-Midnight (12.0, also WoW: Forever) took the combat log, boss health and power and in-encounter addon messages away from addons. PhenomRaidTools 3.0 is rebuilt around that: the raid lead plans each boss ahead, the plan goes to the group before the pull, and every player runs it locally.
+## 3.1: rebuilt for Midnight
+Midnight (12.0, also WoW: Forever) took the combat log, boss health and power and in-encounter addon messages away from addons. PhenomRaidTools 3.1 is rebuilt around that: the raid lead plans each boss ahead, the plan goes to the group before the pull, and every player runs it locally.
 
 - **Plan on a timeline.** Click where something should happen. An assignment shows once, repeating or at several times, for the players, roles, groups or classes you pick, on the difficulties you pick.
 - **Cooldowns made easy.** Pick a raid or utility cooldown and it shows with icon and spell name (or your text) on the matching overlay. Text to speech can read any message aloud.
