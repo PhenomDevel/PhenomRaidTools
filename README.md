@@ -93,6 +93,9 @@ New-Item -ItemType Junction `
   -Target "D:\Dev\PhenomRaidTools\PhenomRaidTools"
 ```
 
+### Release
+Pushing a tag packages the addon and uploads it to CurseForge, Wago and GitHub (`.github/workflows/release.yml`); tags containing `beta` become beta releases, `alpha` tags are skipped. If the first line of `CHANGELOG.md` is `# Release <tag>`, that hand-written changelog is used; otherwise `changelog.sh` generates one from the commits since the previous tag.
+
 ## Help
 I have set up a discord server up and running for every kind of question. Feel free to enter and ask what you have trouble with. [Discord](https://discord.gg/GAYDjBF)
 
