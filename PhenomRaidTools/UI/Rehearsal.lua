@@ -9,7 +9,7 @@ local UI = PRT.UI
   overlays, as during the encounter, without an encounter. The page passes
   the assignments to play, already filtered (view, difficulty):
 
-    Rehearsal.Play(events, length)   events() -> { { at = seconds, message } }
+    Rehearsal.Play(events, length)   events() -> { { at = seconds, message, pressIn } }
     Rehearsal.Pause()
     Rehearsal.Seek(seconds)          also while playing; clears the overlays
     Rehearsal.Position() -> seconds
@@ -35,10 +35,11 @@ function Rehearsal.IsPlaying()
 end
 
 -- As ExecuteMessage shows it to its target; faster than real time it stays silent.
-local function Show(message)
+local function Show(message, pressIn)
   local shown = PRT.TableUtils.Clone(message)
   shown.message = PRT.ReplacePlayerNameTokens(shown.message)
   shown.targets = nil
+  shown.pressIn = pressIn and pressIn / Rehearsal.speed
   PRT.ReceiverOverlay.AddMessage(shown, Rehearsal.speed > 1)
 end
 
@@ -46,7 +47,7 @@ local function Tick()
   local now = Rehearsal.Position()
   for _, event in ipairs(events()) do
     if event.at > played and event.at <= now then
-      Show(event.message)
+      Show(event.message, event.pressIn)
     end
   end
   played = now

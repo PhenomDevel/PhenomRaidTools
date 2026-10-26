@@ -14,7 +14,7 @@ local Widgets = PRT.Widgets
 
   UI.Messages.Cards(message, context) -> cards
     context = { timing = the assignment's timing (encounters only),
-                onRemove(), isTemplate }
+                onRemove(), isTemplate, isDefaults }
   UI.Messages.Summary(message) -> one line for lists
   UI.Messages.WhenText(timing) -> "1:30", "every 0:30 from 0:45 to 4:00"
 ]]
@@ -248,12 +248,13 @@ end
 -- The first card as a sentence: "At 1:15 show ... to ... on Messages for 5 s".
 local function Sentence(message, context)
   local overlay = PRT.GetProfileDB().overlay.receivers[message.targetOverlay or 1]
+  local lead = PRT.MessageLeadTime(message)
   local what =
-    L["show %s to %s on %s for %s s"]:format(
+    (lead > 0 and L["show %s to %s on %s %s s before"] or L["show %s to %s on %s for %s s"]):format(
     Messages.DisplayText(message),
     Messages.TargetsText(message) ~= "" and Messages.TargetsText(message) or L["nobody"],
     overlay and overlay.label or "?",
-    message.duration or 5
+    lead > 0 and lead or message.duration or 5
   )
   if context.timing then
     return L["At %s %s"]:format(Messages.WhenText(context.timing), what)
@@ -768,10 +769,7 @@ local function TypeRows(message)
 end
 
 -------------------------------------------------------------------------------
--- Undo and templates
-
--- State of each message when its editor was first opened in this session.
-local snapshots = setmetatable({}, {__mode = "k"})
+-- Templates and delete
 
 local function Overwrite(message, source)
   wipe(message)
@@ -788,21 +786,9 @@ local function TemplateValues()
   return values
 end
 
-local function ToolsCard(message, context)
-  local rows = {
-    {
-      type = "button",
-      label = L["Undo changes"],
-      note = L["Back to how it was when you opened it."],
-      buttonText = L["Undo"],
-      layout = true,
-      onClick = function()
-        if snapshots[message] then
-          Overwrite(message, snapshots[message])
-        end
-      end
-    }
-  }
+-- Rows at the end of the last card: load or save a template, delete.
+local function ActionRows(message, context)
+  local rows = {}
   if not context.isTemplate then
     if next(PRT.GetProfileDB().templateStore.messages) then
       rows[#rows + 1] = {
@@ -858,7 +844,44 @@ local function ToolsCard(message, context)
       end
     }
   end
-  return {title = L["Tools"], rows = rows}
+  return rows
+end
+
+-- On the defaults page it sets the lead time of cooldowns without their own.
+local function LeadTimeRow(message, context)
+  local row = {
+    type = "slider",
+    label = L["Warn earlier"],
+    note = L["Shows the message this many seconds before its time and counts down to it, then \"Now\"."],
+    min = 0,
+    max = 30,
+    step = 0.5,
+    get = function()
+      return PRT.MessageLeadTime(message)
+    end,
+    set = function(value)
+      message.leadTime = value
+    end,
+    -- Cooldowns without their own lead time follow the default.
+    reset = message.type == "cooldown" and {
+      changed = function()
+        return message.leadTime ~= nil
+      end,
+      reset = function()
+        message.leadTime = nil
+      end
+    } or nil
+  }
+  if context.isDefaults then
+    row.label = L["Warn cooldowns earlier"]
+    row.note = L["Seconds before their time, for cooldowns without their own setting."]
+    row.reset = nil
+    row.get = PRT.CooldownLeadTime
+    row.set = function(value)
+      PRT.MessageDefaults().cooldownLeadTime = value
+    end
+  end
+  return row
 end
 
 -------------------------------------------------------------------------------
@@ -871,9 +894,6 @@ function Messages.Cards(message, context)
     message.type = "advanced"
   end
   UI.SetPreview({kind = "message", message = message})
-  if not snapshots[message] then
-    snapshots[message] = PRT.TableUtils.Clone(message)
-  end
 
   local whatRows = {
     {
@@ -905,6 +925,7 @@ function Messages.Cards(message, context)
         message.targetOverlay = value
       end
     },
+    LeadTimeRow(message, context),
     {
       type = "slider",
       label = L["Duration"],
@@ -947,8 +968,10 @@ function Messages.Cards(message, context)
     }
   end
   displayRows[#displayRows + 1] = {type = "hint", label = SOUND_NOTES[soundMode]}
+  for _, row in ipairs(ActionRows(message, context)) do
+    displayRows[#displayRows + 1] = row
+  end
   cards[#cards + 1] = {title = L["Display"], rows = displayRows}
-  cards[#cards + 1] = ToolsCard(message, context)
   return cards
 end
 

@@ -44,12 +44,33 @@ function PRT.IsTimingForDifficulty(timing)
   return PRT.currentDifficulty ~= nil and difficulties[PRT.currentDifficulty] == true
 end
 
-local function SendMessages(messages)
+-- The longest lead time of a timing's messages: the timing fires that much earlier.
+local function LeadTime(messages)
+  local lead = 0
   for _, message in ipairs(messages) do
-    if (message.delay or 0) > 0 then
-      PRT.EncounterTimer:ScheduleTimer(PRT.ExecuteMessage, message.delay, message)
+    lead = math.max(lead, PRT.MessageLeadTime(message) - (message.delay or 0))
+  end
+  return lead
+end
+
+-- at: when the timing is due. A message with a lead time shows that much
+-- before its time and counts down to it.
+local function SendMessages(messages, at)
+  local now = GetTime()
+  for _, message in ipairs(messages) do
+    local lead = PRT.MessageLeadTime(message)
+    local dueAt = at + (message.delay or 0)
+    local pressAt = lead > 0 and dueAt or nil
+    local wait = dueAt - lead - now
+    if wait > 0 then
+      PRT.EncounterTimer:ScheduleTimer(
+        function()
+          PRT.ExecuteMessage(message, pressAt)
+        end,
+        wait
+      )
     else
-      PRT.ExecuteMessage(message)
+      PRT.ExecuteMessage(message, pressAt)
     end
   end
 end
@@ -69,8 +90,9 @@ function PRT.StartTimers(timers)
   end
 end
 
--- Fires every timing whose time has passed and that didn't fire yet, so a
--- late tick sends late instead of never and fractional times work.
+-- Fires every timing whose time (minus its lead time) has passed and that
+-- didn't fire yet, so a late tick sends late instead of never and fractional
+-- times work.
 function PRT.CheckTimerTimings(timers)
   if not timers then
     return
@@ -83,13 +105,14 @@ function PRT.CheckTimerTimings(timers)
         local messages = timing.messages
         if messages and PRT.IsTimingForDifficulty(timing) then
           local offset = timing.offset or 0
+          local lead = LeadTime(messages)
           for _, second in ipairs(timing.seconds or {}) do
             local at = second + offset
-            if elapsed >= at then
+            if elapsed >= at - lead then
               messages.executionTimes = messages.executionTimes or {}
               if not messages.executionTimes[at] then
                 messages.executionTimes[at] = true
-                SendMessages(messages)
+                SendMessages(messages, timer.startedAt + at)
               end
             end
           end
