@@ -5,8 +5,9 @@ local UI = PRT.UI
 local LibDBIcon = LibStub("LibDBIcon-1.0")
 
 --[[
-  Addon wide settings of the profile: on/off, where PRT runs, test and debug
-  mode, and the defaults for new messages.
+  Addon wide settings of the profile: where PRT runs, test and debug mode,
+  the defaults for new messages and the version. They have no page of their
+  own: the overview shows them below the status (UI.SettingsCards).
 ]]
 
 local DIFFICULTIES = {
@@ -76,7 +77,6 @@ local function GeneralCard()
   return {
     title = L["General"],
     rows = {
-      Bind(Profile, "enabled", {type = "checkbox", label = L["Enabled"], note = L["Off: no plans run, no messages show."]}),
       {
         type = "checkbox",
         label = L["Minimap icon"],
@@ -270,24 +270,14 @@ local function DebugCard()
   }
 end
 
-UI.RegisterPage(
-  {
-    id = "settings",
-    label = L["Settings"],
-    order = 60,
-    searchable = true,
-    status = function()
-      return PRT.IsEnabled()
-    end,
-    build = function()
-      return L["Settings"], L["For the active profile"], {
-        GeneralCard(),
-        DifficultiesCard(),
-        TestCard(),
-        DefaultsCard(),
-        DebugCard(),
-        AboutCard()
-      }
-    end
+-- Shown below the status and plans on the overview page.
+function UI.SettingsCards()
+  return {
+    GeneralCard(),
+    DifficultiesCard(),
+    TestCard(),
+    DefaultsCard(),
+    DebugCard(),
+    AboutCard()
   }
-)
+end

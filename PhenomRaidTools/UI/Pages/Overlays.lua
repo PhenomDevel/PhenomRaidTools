@@ -148,7 +148,7 @@ local function ReceiverPage(index)
         },
         {
           type = "checkbox",
-          label = L["Move"],
+          label = L["Unlock"],
           note = L["Shows the anchor to drag it."],
           get = function()
             return not Overlay.Get(config, "locked")
@@ -297,7 +297,7 @@ local function ReceiversCard()
       },
       {
         type = "checkbox",
-        label = L["Move overlays"],
+        label = L["Unlock"],
         note = L["Shows every anchor to drag it."],
         get = function()
           for _, config in ipairs(Receivers()) do
@@ -361,7 +361,7 @@ local function UpcomingCard()
     rows = {
       {
         type = "checkbox",
-        label = L["Move"],
+        label = L["Unlock"],
         note = L["Shows it to drag it."],
         get = function()
           return options.locked == false
