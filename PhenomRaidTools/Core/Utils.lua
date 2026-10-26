@@ -209,7 +209,12 @@ end
 function PRT.SetOverlayFont(fontString, options, size)
   local font = (options.fontName and LSM:Fetch("font", options.fontName, true)) or options.font or STANDARD_TEXT_FONT
   local outline = options.fontOutline or "OUTLINE"
-  fontString:SetFont(font, size, outline == "NONE" and "" or outline)
+  local flags = outline == "NONE" and "" or outline
+  -- SetFont fails for a font file the client doesn't have and would keep the
+  -- previous font.
+  if not fontString:SetFont(font, size, flags) then
+    fontString:SetFont(STANDARD_TEXT_FONT, size, flags)
+  end
   fontString:SetShadowColor(0, 0, 0, 0.8)
   if options.fontShadow then
     fontString:SetShadowOffset(1, -1)

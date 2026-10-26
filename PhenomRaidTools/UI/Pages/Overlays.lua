@@ -1,3 +1,4 @@
+-- luacheck: read globals C_UIFileAsset
 local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 local LSM = LibStub("LibSharedMedia-3.0")
@@ -51,10 +52,15 @@ local function Receivers()
   return PRT.GetProfileDB().overlay.receivers
 end
 
+-- LibSharedMedia lists its built-in fonts without checking them; leave out
+-- those the client doesn't ship.
 local function FontValues()
   local values = {}
+  local isKnownFile = C_UIFileAsset and C_UIFileAsset.IsKnownFile
   for _, name in ipairs(LSM:List("font")) do
-    values[#values + 1] = {value = name, label = name}
+    if not isKnownFile or isKnownFile(LSM:Fetch("font", name, true)) then
+      values[#values + 1] = {value = name, label = name}
+    end
   end
   return values
 end
