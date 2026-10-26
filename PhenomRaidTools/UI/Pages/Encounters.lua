@@ -139,21 +139,19 @@ local function AssignmentKey(timerIndex, timingIndex)
   return ("a:%d:%d"):format(timerIndex, timingIndex)
 end
 
-local function NewMessage()
-  local message = PRT.EmptyMessage()
-  if message.type == "cooldown" then
-    message.type = "advanced"
-    message.targets = PRT.TableUtils.Clone(PRT.GetProfileDB().triggerDefaults.messageDefaults.defaultTargets or {"ALL"})
-  end
-  return message
-end
-
 -- A new assignment at `at` seconds after the pull, opened in the editor.
 local function AddAssignment(encounter, at)
   local version = Version(encounter)
   local timer = version.Timers[1]
   timer.timings = timer.timings or {}
-  tinsert(timer.timings, {seconds = {math.max(0, at)}, messages = {NewMessage()}})
+  tinsert(
+    timer.timings,
+    {
+      seconds = {math.max(0, at)},
+      difficulties = PRT.TableUtils.Clone(PRT.MessageDefaults().timing.difficulties),
+      messages = {PRT.EmptyMessage()}
+    }
+  )
   UI.Navigate("encounters", encounter.id, AssignmentKey(1, #timer.timings))
 end
 

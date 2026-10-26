@@ -2851,6 +2851,10 @@ local function CreateWindow()
       Widgets.HideTooltip()
       UI.Preview.Hide()
       searchBox:ClearFocus()
+      -- Nothing stays movable once the options are closed.
+      PRT.ReceiverOverlay.SetLocked(true)
+      PRT.Upcoming.Lock()
+      PRT.SenderOverlay.HidePreview()
     end
   )
 end

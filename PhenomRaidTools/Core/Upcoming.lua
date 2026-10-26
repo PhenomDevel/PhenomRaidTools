@@ -1,10 +1,9 @@
 local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
-local LSM = LibStub("LibSharedMedia-3.0")
 
 --[[
   Combat view (overlay.upcoming): this player's next assignments during an
-  encounter, the next one large with a countdown, the following ones below.
+  encounter with a countdown, soonest first, all lines the same size.
   Read from the running plan's started timers; whether a message is meant
   for this player is decided once per message and encounter.
 ]]
@@ -38,7 +37,8 @@ end
 local function Text(message)
   local text = texts[message]
   if not text then
-    text = PRT.ReceiverOverlay.WithoutTime(PRT.PrepareMessageForDisplay(message.message or ""))
+    local _, rest = PRT.ReceiverOverlay.MessageIcon(message, message.message)
+    text = PRT.ReceiverOverlay.WithoutTime(PRT.PrepareMessageForDisplay(rest))
     texts[message] = text
   end
   return text
@@ -112,7 +112,6 @@ local function CreateOverlay()
   frame:Hide()
 end
 
--- The first line is larger: it is the one coming up.
 function Upcoming.Refresh()
   if not frame then
     CreateOverlay()
@@ -120,13 +119,12 @@ function Upcoming.Refresh()
   local options = Options()
   frame:ClearAllPoints()
   frame:SetPoint("CENTER", UIParent, "CENTER", options.x or 0, options.y or -150)
-  local font = (options.fontName and LSM:Fetch("font", options.fontName, true)) or STANDARD_TEXT_FONT
   local size = options.fontSize or 18
   local y = 0
-  for index, line in ipairs(frame.Lines) do
-    local lineSize = index == 1 and math.floor(size * 1.4) or size
-    line.Time:SetFont(font, lineSize, "OUTLINE")
-    line.Text:SetFont(font, lineSize, "OUTLINE")
+  local lineSize = size
+  for _, line in ipairs(frame.Lines) do
+    PRT.SetOverlayFont(line.Time, options, lineSize)
+    PRT.SetOverlayFont(line.Text, options, lineSize)
     line.Time:SetTextColor(1, 0.82, 0.3)
     line.Icon:SetSize(lineSize + 4, lineSize + 4)
     line:SetSize(MOVER_WIDTH, lineSize + 6)
@@ -194,6 +192,12 @@ function Upcoming.Stop()
       frame:Hide()
     end
   end
+end
+
+-- Locks it (the options window closed): the placeholder goes away.
+function Upcoming.Lock()
+  Options().locked = true
+  Upcoming.ShowPreview()
 end
 
 -- Placeholder lines to place it (unlocked) or hide it again (locked).

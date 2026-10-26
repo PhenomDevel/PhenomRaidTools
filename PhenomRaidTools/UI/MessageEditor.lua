@@ -288,6 +288,34 @@ local function TimeRow(label, note, get, set)
   }
 end
 
+-- Difficulties of a timing (nil = all, {} = off); also the default of new
+-- assignments on the "New messages" page.
+function Messages.DifficultyRows(timing)
+  local rows = {}
+  rows[#rows + 1] = {
+    type = "multiselect",
+    label = L["Difficulties"],
+    values = DIFFICULTIES,
+    layout = true,
+    get = function(value)
+      return timing.difficulties == nil or timing.difficulties[value]
+    end,
+    set = function(value, selected)
+      local difficulties = timing.difficulties or {Normal = true, Heroic = true, Mythic = true}
+      difficulties[value] = selected or nil
+      local all = true
+      for _, difficulty in ipairs(DIFFICULTIES) do
+        all = all and difficulties[difficulty.value]
+      end
+      timing.difficulties = not all and difficulties or nil
+    end
+  }
+  if timing.difficulties and next(timing.difficulties) == nil then
+    rows[#rows + 1] = {type = "notice", label = L["No difficulty: this assignment is off."]}
+  end
+  return rows
+end
+
 local function WhenCard(context)
   local timing = context.timing
   timing.offset = nil
@@ -388,26 +416,8 @@ local function WhenCard(context)
       end
     }
   end
-  rows[#rows + 1] = {
-    type = "multiselect",
-    label = L["Difficulties"],
-    values = DIFFICULTIES,
-    layout = true,
-    get = function(value)
-      return timing.difficulties == nil or timing.difficulties[value]
-    end,
-    set = function(value, selected)
-      local difficulties = timing.difficulties or {Normal = true, Heroic = true, Mythic = true}
-      difficulties[value] = selected or nil
-      local all = true
-      for _, difficulty in ipairs(DIFFICULTIES) do
-        all = all and difficulties[difficulty.value]
-      end
-      timing.difficulties = not all and difficulties or nil
-    end
-  }
-  if timing.difficulties and next(timing.difficulties) == nil then
-    rows[#rows + 1] = {type = "notice", label = L["No difficulty: this assignment is off."]}
+  for _, row in ipairs(Messages.DifficultyRows(timing)) do
+    rows[#rows + 1] = row
   end
   return {title = L["When"], note = L["Counted from the pull."], rows = rows}
 end
