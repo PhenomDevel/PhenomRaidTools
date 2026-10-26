@@ -769,10 +769,7 @@ local function TypeRows(message)
 end
 
 -------------------------------------------------------------------------------
--- Undo and templates
-
--- State of each message when its editor was first opened in this session.
-local snapshots = setmetatable({}, {__mode = "k"})
+-- Templates and delete
 
 local function Overwrite(message, source)
   wipe(message)
@@ -789,21 +786,9 @@ local function TemplateValues()
   return values
 end
 
-local function ToolsCard(message, context)
-  local rows = {
-    {
-      type = "button",
-      label = L["Undo changes"],
-      note = L["Back to how it was when you opened it."],
-      buttonText = L["Undo"],
-      layout = true,
-      onClick = function()
-        if snapshots[message] then
-          Overwrite(message, snapshots[message])
-        end
-      end
-    }
-  }
+-- Rows at the end of the last card: load or save a template, delete.
+local function ActionRows(message, context)
+  local rows = {}
   if not context.isTemplate then
     if next(PRT.GetProfileDB().templateStore.messages) then
       rows[#rows + 1] = {
@@ -859,7 +844,7 @@ local function ToolsCard(message, context)
       end
     }
   end
-  return {title = L["Tools"], rows = rows}
+  return rows
 end
 
 -- On the defaults page it sets the lead time of cooldowns without their own.
@@ -909,9 +894,6 @@ function Messages.Cards(message, context)
     message.type = "advanced"
   end
   UI.SetPreview({kind = "message", message = message})
-  if not snapshots[message] then
-    snapshots[message] = PRT.TableUtils.Clone(message)
-  end
 
   local whatRows = {
     {
@@ -986,8 +968,10 @@ function Messages.Cards(message, context)
     }
   end
   displayRows[#displayRows + 1] = {type = "hint", label = SOUND_NOTES[soundMode]}
+  for _, row in ipairs(ActionRows(message, context)) do
+    displayRows[#displayRows + 1] = row
+  end
   cards[#cards + 1] = {title = L["Display"], rows = displayRows}
-  cards[#cards + 1] = ToolsCard(message, context)
   return cards
 end
 
