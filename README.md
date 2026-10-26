@@ -54,12 +54,13 @@ What changed: [CHANGELOG.md](https://github.com/PhenomDevel/PhenomRaidTools/blob
   the group leader and assistants only.
 - **Overlays:** messages at the top, healing cooldowns on the left, utility
   cooldowns on the right. Each overlay shows text, icons or bars and grows in
-  any direction. A preview beside the window shows what you are editing.
+  any direction, with its own font, size, outline and shadow. A preview
+  beside the window shows what you are editing.
 - **Your next assignments** during an encounter with a countdown.
 - **Demo:** *Overlays → Demo* or `/prt demo` plays a short sample fight with
   every kind of message for you, so you see your overlays in action.
-- **One window with search:** overview, encounters grouped by instance with
-  boss portraits and import/export, templates, overlays, settings and
+- **One window with search:** overview with the settings, encounters grouped
+  by instance with boss portraits and import/export, templates, overlays and
   profiles (also per specialization).
 - **MethodRaidTools note:** writes the cooldown assignments of a boss into
   your MRT note.

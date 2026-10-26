@@ -1,3 +1,4 @@
+-- luacheck: read globals C_UIFileAsset
 local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 local LSM = LibStub("LibSharedMedia-3.0")
@@ -41,14 +42,25 @@ local ALIGN = {
   {value = "RIGHT", label = L["Right"]}
 }
 
+local OUTLINES = {
+  {value = "NONE", label = L["Off"]},
+  {value = "OUTLINE", label = L["Thin"]},
+  {value = "THICKOUTLINE", label = L["Thick"]}
+}
+
 local function Receivers()
   return PRT.GetProfileDB().overlay.receivers
 end
 
+-- LibSharedMedia lists its built-in fonts without checking them; leave out
+-- those the client doesn't ship.
 local function FontValues()
   local values = {}
+  local isKnownFile = C_UIFileAsset and C_UIFileAsset.IsKnownFile
   for _, name in ipairs(LSM:List("font")) do
-    values[#values + 1] = {value = name, label = name}
+    if not isKnownFile or isKnownFile(LSM:Fetch("font", name, true)) then
+      values[#values + 1] = {value = name, label = name}
+    end
   end
   return values
 end
@@ -58,6 +70,25 @@ local function ColorGet(color, default)
     local value = color() or default
     return {r = value.r or 1, g = value.g or 1, b = value.b or 1, a = value.a or 1}
   end
+end
+
+-- Font, size, outline and shadow of an overlay's texts; get(key) and
+-- set(key) return the row's getter and setter.
+local function TextRows(get, set, minSize, maxSize)
+  return {
+    {type = "dropdown", label = L["Font"], values = FontValues, placeholder = L["Default"], get = get("fontName"), set = set("fontName")},
+    {type = "slider", label = L["Size"], min = minSize, max = maxSize, get = get("fontSize"), set = set("fontSize")},
+    {
+      type = "chips",
+      label = L["Outline"],
+      values = OUTLINES,
+      get = function()
+        return get("fontOutline")() or "OUTLINE"
+      end,
+      set = set("fontOutline")
+    },
+    {type = "checkbox", label = L["Shadow"], get = get("fontShadow"), set = set("fontShadow")}
+  }
 end
 
 -- Binds a row to a field of a receiver and applies it to the overlays.
@@ -113,6 +144,38 @@ local function ReceiverPage(index)
     }
   end
 
+  local fontRows =
+    TextRows(
+    function(key)
+      return function()
+        return Overlay.Get(config, key)
+      end
+    end,
+    function(key)
+      return function(value)
+        config[key] = value
+        Overlay.Refresh()
+      end
+    end,
+    8,
+    96
+  )
+  fontRows[#fontRows + 1] = {
+    type = "color",
+    label = L["Color"],
+    hasAlpha = true,
+    get = ColorGet(
+      function()
+        return config.fontColor
+      end,
+      {r = 1, g = 1, b = 1, a = 1}
+    ),
+    set = function(r, g, b, a)
+      config.fontColor = {r = r, g = g, b = b, a = a, hex = PRT.RGBAToHex(r, g, b, a)}
+      Overlay.Refresh()
+    end
+  }
+
   return ("%d: %s"):format(index, config.label or ""), L["Message overlay"], {
     {
       title = L["Overlay"],
@@ -148,7 +211,7 @@ local function ReceiverPage(index)
         },
         {
           type = "checkbox",
-          label = L["Move"],
+          label = L["Unlock"],
           note = L["Shows the anchor to drag it."],
           get = function()
             return not Overlay.Get(config, "locked")
@@ -180,28 +243,7 @@ local function ReceiverPage(index)
       }
     },
     {title = L["Layout"], note = L["The message that ends first is next to the anchor."], rows = layoutRows},
-    {
-      title = L["Font"],
-      rows = {
-        Field(config, "fontName", {type = "dropdown", label = L["Font"], values = FontValues, placeholder = L["Default"]}),
-        Field(config, "fontSize", {type = "slider", label = L["Size"], min = 8, max = 96}),
-        {
-          type = "color",
-          label = L["Color"],
-          hasAlpha = true,
-          get = ColorGet(
-            function()
-              return config.fontColor
-            end,
-            {r = 1, g = 1, b = 1, a = 1}
-          ),
-          set = function(r, g, b, a)
-            config.fontColor = {r = r, g = g, b = b, a = a, hex = PRT.RGBAToHex(r, g, b, a)}
-            Overlay.Refresh()
-          end
-        }
-      }
-    },
+    {title = L["Font"], rows = fontRows},
     {
       title = L["Sound"],
       toggle = {
@@ -297,8 +339,8 @@ local function ReceiversCard()
       },
       {
         type = "checkbox",
-        label = L["Move overlays"],
-        note = L["Shows every anchor to drag it."],
+        label = L["Unlock"],
+        note = L["Shows every anchor to drag it. Locks again when you close this window."],
         get = function()
           for _, config in ipairs(Receivers()) do
             if not Overlay.Get(config, "locked") then
@@ -361,7 +403,7 @@ local function UpcomingCard()
     rows = {
       {
         type = "checkbox",
-        label = L["Move"],
+        label = L["Unlock"],
         note = L["Shows it to drag it."],
         get = function()
           return options.locked == false
@@ -381,8 +423,8 @@ local function UpcomingCard()
         get = Get("leadTime"),
         set = Set("leadTime")
       },
-      {type = "slider", label = L["Size"], min = 10, max = 48, get = Get("fontSize"), set = Set("fontSize")},
-      {type = "dropdown", label = L["Font"], values = FontValues, placeholder = L["Default"], get = Get("fontName"), set = Set("fontName")}
+      {type = "header", label = L["Font"]},
+      unpack(TextRows(Get, Set, 10, 48))
     }
   }
 end
@@ -403,8 +445,8 @@ local function SenderCard()
     end
   end
   return {
-    title = L["Lead status"],
-    note = L["For the lead during the own plan: every group with the time to its next assignment."],
+    title = L["Raid plan in combat"],
+    note = L["For the lead while your plan runs: the fight time and what's next in the plan."],
     toggle = {get = Get("enabled"), set = Set("enabled")},
     rows = {
       {
@@ -422,7 +464,6 @@ local function SenderCard()
       },
       {type = "checkbox", label = L["Hide after combat"], get = Get("hideAfterCombat"), set = Set("hideAfterCombat")},
       {type = "checkbox", label = L["Hide disabled groups"], get = Get("hideDisabledTriggers"), set = Set("hideDisabledTriggers")},
-      {type = "slider", label = L["Size"], min = 8, max = 32, get = Get("fontSize"), set = Set("fontSize")},
       {
         type = "color",
         label = L["Background"],
@@ -432,7 +473,9 @@ local function SenderCard()
           options.backdropColor = {r = r, g = g, b = b, a = a}
           Set("backdropColor")(options.backdropColor)
         end
-      }
+      },
+      {type = "header", label = L["Font"]},
+      unpack(TextRows(Get, Set, 8, 32))
     }
   }
 end
@@ -441,7 +484,7 @@ end
 local function DemoCard()
   return {
     title = L["Demo"],
-    note = L["A sample fight of about 40 seconds: every kind of message for you on your overlays, your next assignments and the lead's overlay. Also `/prt demo`."],
+    note = L["A sample fight of about 40 seconds: every kind of message for you on your overlays, your next assignments and the raid plan in combat. Also `/prt demo`."],
     rows = {
       {
         type = "button",

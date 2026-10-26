@@ -115,13 +115,8 @@ do
         }
       },
       triggerDefaults = {
-        messageDefaults = {
-          defaultMessage = "TODO",
-          defaultDuration = 5,
-          defaultTargets = {
-            "$me"
-          }
-        }
+        -- Filled by PRT.MessageDefaults().
+        messageDefaults = {}
       },
       mrtExportDefaults = {
         includeTimers = true,

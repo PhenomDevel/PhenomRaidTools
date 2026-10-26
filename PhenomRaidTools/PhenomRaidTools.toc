@@ -71,6 +71,7 @@ UI\Preview.lua
 UI\Pages\Overview.lua
 UI\Pages\Encounters.lua
 UI\Pages\Templates.lua
+UI\Pages\Defaults.lua
 UI\Pages\Overlays.lua
 UI\Pages\Settings.lua
 UI\Pages\Profiles.lua

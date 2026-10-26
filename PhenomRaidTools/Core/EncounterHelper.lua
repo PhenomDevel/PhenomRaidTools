@@ -50,22 +50,32 @@ end
 -------------------------------------------------------------------------------
 -- Message
 
-function PRT.EmptyMessage()
-  local message = {
-    message = PRT.GetProfileDB().triggerDefaults.messageDefaults.defaultMessage or "TODO",
-    useCustomSound = false,
-    duration = PRT.GetProfileDB().triggerDefaults.messageDefaults.defaultDuration or 5,
-    targets = PRT.TableUtils.Clone(PRT.GetProfileDB().triggerDefaults.messageDefaults.defaultTargets) or {"ALL"},
-    targetOverlay = PRT.GetProfileDB().triggerDefaults.messageDefaults.defaultTargetOverlay or 1,
-    delay = 0,
-    type = PRT.GetProfileDB().triggerDefaults.messageDefaults.defaultMessageType or "cooldown",
-    withCountdown = true
-  }
-
-  if message.type == "cooldown" then
-    message.targets = {}
+-- What every new assignment and template starts as, edited on the "New
+-- messages" page: { message = message, timing = { difficulties } }. Built
+-- once from the single defaults of older versions.
+function PRT.MessageDefaults()
+  local defaults = PRT.GetProfileDB().triggerDefaults.messageDefaults
+  if not defaults.message then
+    defaults.message = {
+      message = defaults.defaultMessage or "TODO",
+      useCustomSound = false,
+      duration = defaults.defaultDuration or 5,
+      targets = PRT.TableUtils.Clone(defaults.defaultTargets or {"$me"}),
+      targetOverlay = defaults.defaultTargetOverlay or 1,
+      delay = 0,
+      type = "advanced",
+      withCountdown = true
+    }
+    defaults.defaultMessage, defaults.defaultDuration, defaults.defaultTargets = nil, nil, nil
+    defaults.defaultTargetOverlay, defaults.defaultMessageType = nil, nil
   end
+  defaults.timing = defaults.timing or {}
+  return defaults
+end
 
+function PRT.EmptyMessage()
+  local message = PRT.TableUtils.Clone(PRT.MessageDefaults().message)
+  message.name = nil
   return message
 end
 
