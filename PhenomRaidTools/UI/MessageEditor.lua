@@ -110,6 +110,11 @@ local function SoundMode(message)
   return "overlay"
 end
 
+local function SetSound(message, value)
+  message.useTTS = value == "tts" or nil
+  message.useCustomSound = value == "own"
+end
+
 -- A repeating assignment never shows more often than this.
 local MAX_REPEATS = 100
 
@@ -650,6 +655,14 @@ local function TextRows(message)
   }
 end
 
+local function SetType(message, value)
+  message.type = value
+  if value == "cooldown" then
+    message.withCountdown = message.withCountdown ~= false
+    message.message = CooldownText(message)
+  end
+end
+
 local function TypeRows(message)
   local rows = {
     {
@@ -659,11 +672,7 @@ local function TypeRows(message)
         return message.type or "advanced"
       end,
       set = function(value)
-        message.type = value
-        if value == "cooldown" then
-          message.withCountdown = message.withCountdown ~= false
-          message.message = CooldownText(message)
-        end
+        SetType(message, value)
       end
     }
   }
@@ -957,8 +966,7 @@ function Messages.Cards(message, context)
         return SoundMode(message)
       end,
       set = function(value)
-        message.useTTS = value == "tts" or nil
-        message.useCustomSound = value == "own"
+        SetSound(message, value)
       end
     }
   }
@@ -983,3 +991,149 @@ function Messages.Cards(message, context)
   return cards
 end
 
+-------------------------------------------------------------------------------
+-- Sentence
+
+-- Stands for several targets in the single choice of the sentence.
+local SEVERAL_TARGETS = "\001several"
+
+local function SentenceTargets(message)
+  local values = {}
+  if #message.targets ~= 1 then
+    local labels = Messages.TargetLabels(message)
+    values[1] = {value = SEVERAL_TARGETS, label = labels ~= "" and labels or L["nobody"]}
+  end
+  for _, list in ipairs({ROLE_TARGETS, MemberTargets(), GroupTargets()}) do
+    for _, entry in ipairs(list) do
+      values[#values + 1] = entry
+    end
+  end
+  return values
+end
+
+-- The assignment as one editable sentence for a flow row: "At [1:05] show
+-- [text] to [Healer] on [Messages] for [5] s · Sound [Overlay|Own|TTS]".
+-- Times other than once are shown as text and edited in the full editor.
+function Messages.SentenceItems(message, timing)
+  PRT.NormalizeTargets(message)
+  local items = {{kind = "text", text = L["At"]}}
+  if WhenMode(timing) == "once" then
+    items[#items + 1] = {
+      kind = "input",
+      width = 56,
+      placeholder = "1:30",
+      get = function()
+        return Widgets.FormatTime(FirstSecond(timing) + (timing.offset or 0))
+      end,
+      set = function(text)
+        local times = Widgets.ParseTimeList(text)
+        if times[1] then
+          timing.seconds, timing.offset = {times[1]}, nil
+        end
+      end
+    }
+  else
+    items[#items + 1] = {kind = "text", text = ("|cff%s%s|r"):format(Widgets.BRAND_HEX, Messages.WhenText(timing))}
+  end
+  items[#items + 1] = {kind = "text", text = L["show"]}
+  if message.type == "cooldown" then
+    items[#items + 1] = {
+      kind = "dropdown",
+      width = 190,
+      values = CooldownValues,
+      placeholder = L["Choose"],
+      get = function()
+        return message.spellID
+      end,
+      set = function(spellID)
+        SetCooldown(message, spellID)
+      end
+    }
+  else
+    items[#items + 1] = {
+      kind = "input",
+      width = 220,
+      placeholder = L["Text"],
+      tooltipTitle = L["Text"],
+      tooltip = L["`{rt1}` raid marker, `{spell:31821}` spell icon, `%.0f` remaining seconds."],
+      get = function()
+        return message.message or ""
+      end,
+      set = function(value)
+        message.message = value
+      end
+    }
+  end
+  items[#items + 1] = {kind = "text", text = L["to"]}
+  items[#items + 1] = {
+    kind = "dropdown",
+    width = 150,
+    values = function()
+      return SentenceTargets(message)
+    end,
+    tooltipTitle = L["For whom"],
+    tooltip = L["Several targets, classes and players outside your group: More."],
+    get = function()
+      return #message.targets == 1 and message.targets[1] or SEVERAL_TARGETS
+    end,
+    set = function(value)
+      if value ~= SEVERAL_TARGETS then
+        message.targets = {value}
+      end
+    end
+  }
+  items[#items + 1] = {kind = "text", text = L["on"]}
+  items[#items + 1] = {
+    kind = "dropdown",
+    width = 140,
+    values = OverlayValues,
+    get = function()
+      return message.targetOverlay or 1
+    end,
+    set = function(value)
+      message.targetOverlay = value
+    end
+  }
+  items[#items + 1] = {kind = "text", text = L["for"]}
+  items[#items + 1] = {
+    kind = "input",
+    width = 40,
+    get = function()
+      return tostring(message.duration or 5)
+    end,
+    set = function(text)
+      local seconds = tonumber((text or ""):match("^%s*(%d+%.?%d*)"))
+      if seconds then
+        message.duration = math.max(1, math.min(60, seconds))
+      end
+    end
+  }
+  items[#items + 1] = {kind = "text", text = L["s"]}
+  items[#items + 1] = {kind = "space"}
+  items[#items + 1] = {kind = "text", text = L["Sound"], dim = true}
+  items[#items + 1] = {
+    kind = "chips",
+    values = SOUND_MODES,
+    get = function()
+      return SoundMode(message)
+    end,
+    set = function(value)
+      SetSound(message, value)
+    end
+  }
+  return items
+end
+
+-- Message or cooldown, as chips for a flow row.
+function Messages.TypeItem(message)
+  return {
+    kind = "chips",
+    values = TYPES,
+    get = function()
+      return message.type or "advanced"
+    end,
+    set = function(value)
+      SetType(message, value)
+    end
+  }
+end
