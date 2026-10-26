@@ -13,6 +13,7 @@
 - A new profile is created by pressing Enter in its name field.
 - The debug log shows one line per entry.
 - Every overlay (messages, your next assignments, lead status) has the same text settings: font, size, outline (off, thin, thick) and shadow.
+- *Your next assignments* shows every line in the same size; the next one is no longer larger.
 
 ### Fixed
 - Overlays in icon or bar style and the upcoming list show a message's icon once instead of twice (cooldowns showed their spell icon beside and in the text).
