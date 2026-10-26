@@ -23,9 +23,10 @@ function PRT.IsTimerSupported(timer)
     (START_EVENTS[condition.event] == true and condition.spellID == nil and condition.source == nil and condition.target == nil)
 end
 
--- Timers without difficulties (old imports, the example) run on all.
+-- Timers without difficulties (old imports, the example) run on all; test
+-- mode and the demo run outside of instances.
 local function IsEnabledForDifficulty(timer)
-  if PRT.IsTestMode() then
+  if PRT.IsTestMode() or PRT.Demo.IsRunning() then
     return true
   end
   return PRT.currentDifficulty ~= nil and (timer.enabledDifficulties == nil or timer.enabledDifficulties[PRT.currentDifficulty])
