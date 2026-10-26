@@ -148,7 +148,7 @@ local function ReceiverPage(index)
         },
         {
           type = "checkbox",
-          label = L["Move"],
+          label = L["Unlock"],
           note = L["Shows the anchor to drag it."],
           get = function()
             return not Overlay.Get(config, "locked")
@@ -297,8 +297,8 @@ local function ReceiversCard()
       },
       {
         type = "checkbox",
-        label = L["Move overlays"],
-        note = L["Shows every anchor to drag it."],
+        label = L["Unlock"],
+        note = L["Shows every anchor to drag it. Locks again when you close this window."],
         get = function()
           for _, config in ipairs(Receivers()) do
             if not Overlay.Get(config, "locked") then
@@ -361,7 +361,7 @@ local function UpcomingCard()
     rows = {
       {
         type = "checkbox",
-        label = L["Move"],
+        label = L["Unlock"],
         note = L["Shows it to drag it."],
         get = function()
           return options.locked == false
@@ -403,8 +403,8 @@ local function SenderCard()
     end
   end
   return {
-    title = L["Lead status"],
-    note = L["For the lead during the own plan: every group with the time to its next assignment."],
+    title = L["Raid plan in combat"],
+    note = L["For the lead while your plan runs: the fight time and what's next in the plan."],
     toggle = {get = Get("enabled"), set = Set("enabled")},
     rows = {
       {

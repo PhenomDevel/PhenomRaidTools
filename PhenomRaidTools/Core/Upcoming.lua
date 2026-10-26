@@ -196,6 +196,12 @@ function Upcoming.Stop()
   end
 end
 
+-- Locks it (the options window closed): the placeholder goes away.
+function Upcoming.Lock()
+  Options().locked = true
+  Upcoming.ShowPreview()
+end
+
 -- Placeholder lines to place it (unlocked) or hide it again (locked).
 function Upcoming.ShowPreview()
   Upcoming.Refresh()
