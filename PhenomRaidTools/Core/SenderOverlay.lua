@@ -1,6 +1,5 @@
 local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
-local LSM = LibStub("LibSharedMedia-3.0")
 
 --[[
   Lead status during an encounter (overlay.sender): elapsed time and every
@@ -63,8 +62,7 @@ function SenderOverlay.Refresh()
   local options = Options()
   frame:ClearAllPoints()
   frame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", options.left or 615, -(options.top or 50))
-  local font = (options.fontName and LSM:Fetch("font", options.fontName, true)) or options.font or STANDARD_TEXT_FONT
-  frame.Text:SetFont(font, options.fontSize or 14, "OUTLINE")
+  PRT.SetOverlayFont(frame.Text, options, options.fontSize or 14)
   local color = options.fontColor or {}
   frame.Text:SetTextColor(color.r or 1, color.g or 1, color.b or 1, color.a or 1)
   local backdrop = options.backdropColor or {}

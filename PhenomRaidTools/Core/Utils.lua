@@ -1,5 +1,6 @@
 local _, PRT = ...
 local AceTimer = LibStub("AceTimer-3.0")
+local LSM = LibStub("LibSharedMedia-3.0")
 
 -- Own timer handles: CancelAllTimers() on the library itself would also cancel
 -- timers that other addons schedule on the library directly.
@@ -201,6 +202,20 @@ end
 
 function PRT.RGBAToHex(r, g, b, a)
   return format("%02x%02x%02x%02x", (a * 255), (r * 255), (g * 255), (b * 255))
+end
+
+-- Text style of an overlay: fontName (LibSharedMedia), fontOutline
+-- (NONE | OUTLINE | THICKOUTLINE, default OUTLINE) and fontShadow of `options`.
+function PRT.SetOverlayFont(fontString, options, size)
+  local font = (options.fontName and LSM:Fetch("font", options.fontName, true)) or options.font or STANDARD_TEXT_FONT
+  local outline = options.fontOutline or "OUTLINE"
+  fontString:SetFont(font, size, outline == "NONE" and "" or outline)
+  fontString:SetShadowColor(0, 0, 0, 0.8)
+  if options.fontShadow then
+    fontString:SetShadowOffset(1, -1)
+  else
+    fontString:SetShadowOffset(0, 0)
+  end
 end
 
 function PRT.RandomNumber()

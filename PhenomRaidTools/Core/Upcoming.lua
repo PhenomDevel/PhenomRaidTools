@@ -1,6 +1,5 @@
 local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
-local LSM = LibStub("LibSharedMedia-3.0")
 
 --[[
   Combat view (overlay.upcoming): this player's next assignments during an
@@ -120,13 +119,12 @@ function Upcoming.Refresh()
   local options = Options()
   frame:ClearAllPoints()
   frame:SetPoint("CENTER", UIParent, "CENTER", options.x or 0, options.y or -150)
-  local font = (options.fontName and LSM:Fetch("font", options.fontName, true)) or STANDARD_TEXT_FONT
   local size = options.fontSize or 18
   local y = 0
   for index, line in ipairs(frame.Lines) do
     local lineSize = index == 1 and math.floor(size * 1.4) or size
-    line.Time:SetFont(font, lineSize, "OUTLINE")
-    line.Text:SetFont(font, lineSize, "OUTLINE")
+    PRT.SetOverlayFont(line.Time, options, lineSize)
+    PRT.SetOverlayFont(line.Text, options, lineSize)
     line.Time:SetTextColor(1, 0.82, 0.3)
     line.Icon:SetSize(lineSize + 4, lineSize + 4)
     line:SetSize(MOVER_WIDTH, lineSize + 6)
