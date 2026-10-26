@@ -15,9 +15,12 @@ local DIFFICULTIES = {
   {value = "Mythic", label = L["Mythic"]}
 }
 
-local MESSAGE_TYPES = {
-  {value = "advanced", label = L["Message"]},
-  {value = "cooldown", label = L["Cooldown"]}
+local TARGETS = {
+  {value = "ALL", label = L["Everyone"]},
+  {value = "TANK", label = L["Tanks"]},
+  {value = "HEALER", label = L["Healer"]},
+  {value = "DAMAGER", label = L["Damage"]},
+  {value = "$me", label = L["Me"]}
 }
 
 local function Profile()
@@ -38,15 +41,35 @@ local function Bind(getTable, key, row)
   return row
 end
 
-local function SplitNames(text)
-  local names = {}
-  for name in (text or ""):gmatch("[^,]+") do
-    name = strtrim(name)
-    if name ~= "" then
-      names[#names + 1] = name
-    end
+local function Version()
+  local version = C_AddOns.GetAddOnMetadata("PhenomRaidTools", "Version") or ""
+  if version:find("@project", 1, true) then
+    return L["Development version"]
   end
-  return names
+  return version
+end
+
+local function AboutCard()
+  local _, _, _, interface = GetBuildInfo()
+  return {
+    title = L["About"],
+    note = ("%s %s · %s %d"):format(L["Version"], Version(), L["Interface"], interface),
+    rows = {
+      {
+        type = "button",
+        label = L["Notes of this version"],
+        buttonText = L["What's new"],
+        onClick = function()
+          PRT.WhatsNew.Show()
+        end
+      },
+      {type = "description", label = L["`/prt` opens this window."]},
+      {type = "description", label = L["`/prt sync` sends your plans to the group (also on every ready check)."]},
+      {type = "description", label = L["`/prt versions` checks the versions in your group."]},
+      {type = "description", label = L["`/prt news` shows what's new."]},
+      {type = "description", label = L["`/prt minimap` shows the minimap icon again."]}
+    }
+  }
 end
 
 local function GeneralCard()
@@ -161,17 +184,25 @@ local function DefaultsCard()
     title = L["New messages"],
     note = L["What a new message starts with."],
     rows = {
-      Bind(MessageDefaults, "defaultMessageType", {type = "dropdown", label = L["Type"], values = MESSAGE_TYPES}),
       Bind(MessageDefaults, "defaultMessage", {type = "text", label = L["Text"]}),
       {
-        type = "text",
-        label = L["Targets"],
-        note = L["Separated by commas."],
-        get = function()
-          return table.concat(MessageDefaults().defaultTargets or {}, ", ")
+        type = "multiselect",
+        label = L["For whom"],
+        values = TARGETS,
+        get = function(value)
+          return tContains(MessageDefaults().defaultTargets or {}, value)
         end,
-        set = function(value)
-          MessageDefaults().defaultTargets = SplitNames(value)
+        set = function(value, selected)
+          local targets = {}
+          for _, target in ipairs(MessageDefaults().defaultTargets or {}) do
+            if target ~= value then
+              targets[#targets + 1] = target
+            end
+          end
+          if selected then
+            targets[#targets + 1] = value
+          end
+          MessageDefaults().defaultTargets = targets
         end
       },
       {
@@ -219,7 +250,7 @@ local function DebugCard()
           end
           lines[#lines + 1] = table.concat(parts, " ")
         end
-        return table.concat(lines, " | ")
+        return table.concat(lines, "\n")
       end
     }
   end
@@ -254,7 +285,8 @@ UI.RegisterPage(
         DifficultiesCard(),
         TestCard(),
         DefaultsCard(),
-        DebugCard()
+        DebugCard(),
+        AboutCard()
       }
     end
   }

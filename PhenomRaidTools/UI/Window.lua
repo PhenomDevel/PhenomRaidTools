@@ -506,8 +506,9 @@ rowTypes.nav = {
   end
 }
 
--- Segmented filter ({ values = { { value, label } }, get, set }): one
--- button per value, the current one highlighted. Always rebuilds the page.
+-- Segmented filter ({ values = { { value, label } }, get, set, label }): one
+-- button per value, the current one highlighted; { label } puts a title on
+-- the left. Always rebuilds the page.
 local CHIP_HEIGHT = 22
 local CHIP_GAP = 6
 
@@ -540,6 +541,8 @@ rowTypes.chips = {
   create = function(parent)
     local row = CreateFrame("Frame", nil, parent)
     row.Chips = {}
+    row.Label = Widgets.Text(row, fonts.body)
+    row.Label:SetPoint("TOPLEFT", 0, -9)
     row.ChipClicked = function(self, chip)
       Widgets.SafeCall(self.spec.set, chip.value)
       Render()
@@ -554,23 +557,41 @@ rowTypes.chips = {
   end,
   setup = function(row, spec)
     local values = Resolve(spec.values) or {}
-    local x = 0
+    local total = 0
     for index, entry in ipairs(values) do
       local chip = row.Chips[index] or CreateChip(row)
       row.Chips[index] = chip
       chip.value = entry.value
       chip.Text:SetText(entry.label)
       chip:SetWidth(chip.Text:GetUnboundedStringWidth() + 20)
-      chip:ClearAllPoints()
-      chip:SetPoint("LEFT", x, 0)
       chip:Show()
-      x = x + chip:GetWidth() + CHIP_GAP
+      total = total + chip:GetWidth() + (index > 1 and CHIP_GAP or 0)
     end
     for index = #values + 1, #row.Chips do
       row.Chips[index]:Hide()
     end
-    row:SetSize(rowWidth, CHIP_HEIGHT + 12)
-    return CHIP_HEIGHT + 12
+    -- With a label the chips sit on the right, like the other controls, or
+    -- below it if they don't fit next to it.
+    local x, top, height = 0, 6, CHIP_HEIGHT + 12
+    row.Label:SetShown(spec.label ~= nil)
+    if spec.label then
+      row.Label:SetText(spec.label)
+      local labelWidth = row.Label:GetUnboundedStringWidth() + 12
+      if labelWidth + total <= rowWidth then
+        x = rowWidth - total
+      else
+        top = ROW_HEIGHT - 2
+        height = top + CHIP_HEIGHT + 8
+      end
+    end
+    for index = 1, #values do
+      local chip = row.Chips[index]
+      chip:ClearAllPoints()
+      chip:SetPoint("TOPLEFT", x, -top)
+      x = x + chip:GetWidth() + CHIP_GAP
+    end
+    row:SetSize(rowWidth, height)
+    return height
   end
 }
 

@@ -15,22 +15,6 @@ local ROLES = {
   {value = "both", label = L["Both"]}
 }
 
-local function Role()
-  local profile = PRT.GetProfileDB()
-  if profile.senderMode and profile.receiverMode then
-    return "both"
-  elseif profile.senderMode then
-    return "lead"
-  end
-  return "player"
-end
-
-local function SetRole(role)
-  local profile = PRT.GetProfileDB()
-  profile.senderMode = role == "lead" or role == "both"
-  profile.receiverMode = role == "player" or role == "both"
-end
-
 local function Finish()
   PRT.GetGlobalDB().onboarded = true
   PRT.ReceiverOverlay.SetLocked(true)
@@ -60,7 +44,7 @@ local function Cards()
     {
       title = L["1 · Your role"],
       rows = {
-        {type = "chips", values = ROLES, get = Role, set = SetRole},
+        {type = "chips", values = ROLES, get = UI.GetRole, set = UI.SetRole},
         {type = "hint", label = L["Can be changed any time on the overview."]}
       }
     },

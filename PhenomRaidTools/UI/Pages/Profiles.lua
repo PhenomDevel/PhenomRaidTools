@@ -8,7 +8,6 @@ local UI = PRT.UI
   specialization; the whole profile as an export string.
 ]]
 
-local newName = ""
 local pendingImport = {text = "", data = nil, error = nil}
 
 -- Session state that is not part of a shared profile.
@@ -67,24 +66,15 @@ local function ProfileCard()
     {
       type = "text",
       label = L["New profile"],
-      note = L["Starts with the defaults."],
+      note = L["Starts with the defaults. Enter creates it and switches to it."],
       placeholder = L["Name"],
+      layout = true,
       get = function()
-        return newName
+        return ""
       end,
       set = function(value)
-        newName = value
-      end
-    },
-    {
-      type = "button",
-      label = "",
-      buttonText = L["Create"],
-      layout = true,
-      onClick = function()
-        local name = strtrim(newName or "")
+        local name = strtrim(value or "")
         if name ~= "" then
-          newName = ""
           PRT.SetProfile(name)
         end
       end

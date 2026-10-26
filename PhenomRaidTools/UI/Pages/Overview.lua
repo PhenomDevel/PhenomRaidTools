@@ -50,27 +50,42 @@ local function GroupText()
   return L["Not in a group"]
 end
 
-local function ModeRow(key, label, note)
-  return {
-    type = "checkbox",
-    label = label,
-    note = note,
-    layout = true,
-    get = function()
-      return PRT.GetProfileDB()[key]
-    end,
-    set = function(value)
-      PRT.GetProfileDB()[key] = value
-    end
-  }
+local ROLES = {
+  {value = "lead", label = L["Lead"]},
+  {value = "player", label = L["Player"]},
+  {value = "both", label = L["Both"]}
+}
+
+-- What this client does (nil: neither); shared with the first start guide.
+function UI.GetRole()
+  local profile = PRT.GetProfileDB()
+  if profile.senderMode and profile.receiverMode then
+    return "both"
+  elseif profile.senderMode then
+    return "lead"
+  elseif profile.receiverMode then
+    return "player"
+  end
 end
+
+function UI.SetRole(role)
+  local profile = PRT.GetProfileDB()
+  profile.senderMode = role == "lead" or role == "both"
+  profile.receiverMode = role == "player" or role == "both"
+end
+
+local ROLE_NOTES = {
+  lead = L["Sends the plans of your enabled encounters to the group."],
+  player = L["Runs the plans received from the lead and shows the messages meant for you."],
+  both = L["Sends your plans and shows the messages meant for you."]
+}
 
 local function StatusCard()
   return {
     title = L["Status"],
     rows = {
-      ModeRow("senderMode", L["Lead"], L["Sends the plans of your enabled encounters to the group."]),
-      ModeRow("receiverMode", L["Player"], L["Runs the plans received from the lead and shows the messages meant for you."]),
+      {type = "chips", label = L["Role"], values = ROLES, get = UI.GetRole, set = UI.SetRole},
+      {type = "hint", label = ROLE_NOTES[UI.GetRole()] or L["Choose what you do in the raid."]},
       {
         type = "live",
         get = function()
