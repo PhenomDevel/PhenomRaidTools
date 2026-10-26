@@ -7,6 +7,7 @@
 - The overview picks your role (lead, player or both) the same way as the first start guide.
 - A message's sound is one choice: the overlay's sound, its own sound or read aloud.
 - *Save as template* is one click; the template is named after the message and can be renamed on the templates page.
+- The message editor has no *Tools* card and no *Undo* anymore; loading and saving templates and deleting the assignment are at the end of *Display*.
 - Overlays have one *Unlock* switch instead of lock and unlock buttons, *Raid plan in combat* (formerly *Lead status*) one switch to place it, and the layout options are labeled.
 - *New messages* is its own page with the same options as an assignment (type, text, targets, overlay, duration, sound) plus the difficulties of new assignments. Every new assignment and template starts as this message.
 - Overlays lock again when you close the options window.
