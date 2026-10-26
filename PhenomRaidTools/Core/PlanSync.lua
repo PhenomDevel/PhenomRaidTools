@@ -12,12 +12,14 @@ local LibDeflate = LibStub("LibDeflate")
   /prt sync) and every player runs them locally (EventHandler).
 
   Lead -> group:  { type = "plan", encounterID, name, hash, plan }, one
-                  message per enabled encounter whose plan changed or isn't
-                  confirmed by everyone yet.
+                  message per enabled and shared encounter whose plan changed
+                  or isn't confirmed by everyone yet. Encounters with
+                  `shared = false` stay with the lead.
   Player -> lead: { type = "ack", encounterID, hash } (whisper)
 
-  Plans are accepted only from the group leader or an assistant and stored
-  per encounter in the global DB (receivedPlans).
+  In a raid plans are accepted only from the leader or an assistant; a
+  party (dungeon, Mythic+) has no assistants, so every member may send.
+  Received plans are stored per encounter in the global DB (receivedPlans).
 ]]
 
 local PlanSync = {}
@@ -67,8 +69,17 @@ local function GroupChannel()
   end
 end
 
+-- Whether name may send plans: leader or assistant in a raid, every member
+-- in a party.
 local function IsGroupLead(name)
-  return UnitIsGroupLeader(name) or UnitIsGroupAssistant(name)
+  if IsInRaid() then
+    return UnitIsGroupLeader(name) or UnitIsGroupAssistant(name)
+  end
+  return name == PRT.UnitFullName("player") or UnitInParty(name)
+end
+
+local function IsShared(encounter)
+  return encounter.shared ~= false
 end
 
 local function Send(message, channel, target)
@@ -146,7 +157,7 @@ function PlanSync.SendPlans(force)
 
   local count = 0
   for _, encounter in ipairs(PRT.GetProfileDB().encounters) do
-    local encounterVersion = encounter.enabled and encounter.versions and encounter.versions[encounter.selectedVersion]
+    local encounterVersion = encounter.enabled and IsShared(encounter) and encounter.versions and encounter.versions[encounter.selectedVersion]
     if encounterVersion then
       local plan = BuildPlan(encounterVersion)
       local hash = PlanHash(plan)
@@ -166,13 +177,16 @@ function PlanSync.SendPlans(force)
 end
 
 -- For the overview: the sync state of an encounter's selected version.
--- Returns status ("unsent" | "changed" | "sent"), { { name, confirmed } } for
+-- Returns status ("unsent" | "changed" | "sent" | "local" for encounters
+-- that aren't shared), { { name, confirmed } } for
 -- the other group members, confirmed count.
 function PlanSync.GetStatus(encounter)
   local encounterVersion = encounter.versions and encounter.versions[encounter.selectedVersion]
   local state = sent[encounter.id]
   local status = "unsent"
-  if state and encounterVersion then
+  if not IsShared(encounter) then
+    return "local", {}, 0
+  elseif state and encounterVersion then
     status = state.hash == PlanHash(BuildPlan(encounterVersion)) and "sent" or "changed"
   end
   local members, confirmedCount = {}, 0

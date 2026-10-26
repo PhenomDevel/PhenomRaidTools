@@ -8,9 +8,13 @@
 - **Demo playback:** plays the plan from the playhead on your overlays, in real time or four times as fast. Click on the time axis to move the playhead.
 - **View as** a role or player: the timeline and the demo playback show only what they get. A difficulty filter dims the assignments that don't run on it.
 - In the timeline, drag a marker to move the assignment, with Alt to copy it, and middle-click it to delete it (asks first). The mouse wheel zooms (out to 20 minutes, to plan after the last assignment), Shift + mouse wheel scrolls the time, and repeating assignments show as a bar. The timeline and its markers list these controls.
+- *New encounter* lists the dungeons of the current expansion besides the raids.
+- On Retail it also lists the Mythic+ dungeons of the current season. A dungeon's page lets you add a boss the journal doesn't list, by its encounter ID.
+- Each encounter has a *Share with the group* switch. Encounters you don't share aren't sent to your group and run only for you.
 - Demo: *Overlays → Demo* or `/prt demo` plays a sample fight of about 40 seconds with every kind of message for you (text with countdown, marker, own sound, read aloud, healing and utility cooldowns, a repeating assignment) on your overlays, plus your next assignments and the raid plan in combat. It runs anywhere, out of combat and in every role.
 
 ### Changed
+- In a dungeon group every member can send plans; in a raid it stays the leader and assistants.
 - Simpler window: the overview and the settings are one page (with *About* at the end), and importing an encounter moved to *New encounter*.
 - The overview picks your role (lead, player or both) the same way as the first start guide.
 - A message's sound is one choice: the overlay's sound, its own sound or read aloud.

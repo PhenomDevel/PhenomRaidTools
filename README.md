@@ -54,9 +54,13 @@ What changed: [CHANGELOG.md](https://github.com/PhenomDevel/PhenomRaidTools/blob
 - **Cooldowns:** pick a raid or utility cooldown; it shows with icon and spell
   name (or your text), a few seconds early with a countdown to the moment to
   press it. Text to speech can read any message aloud.
+- **Raids and dungeons:** new encounters start from the bosses of the current
+  raids and dungeons. On Retail the Mythic+ dungeons of the current season
+  are listed too, and you can add bosses the journal doesn't list.
 - **Sync before the pull:** the lead sends the plans on every ready check or
-  with `/prt sync`; the overview shows who has them. Plans are accepted from
-  the group leader and assistants only.
+  with `/prt sync`; the overview shows who has them. In a raid plans are
+  accepted from the leader and assistants only, in a dungeon group from every
+  member. Encounters you don't share stay with you.
 - **Overlays:** messages at the top, healing cooldowns on the left, utility
   cooldowns on the right. Each overlay shows text, icons or bars and grows in
   any direction, with its own font, size, outline and shadow. A preview

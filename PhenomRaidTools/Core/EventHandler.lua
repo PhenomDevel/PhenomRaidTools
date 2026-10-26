@@ -51,7 +51,8 @@ local function NewEncounter()
 end
 
 -- The plan to run: the own one in sender and test mode, otherwise the one
--- received from the raid lead (PlanSync). Returns plan, received.
+-- received from the raid lead (PlanSync) or an own one that isn't shared.
+-- Returns plan, received.
 function EventHandler.GetPlan(encounterID)
   if PRT.IsSender() or PRT.IsTestMode() then
     local _, encounter = PRT.GetEncounterById(PRT.GetProfileDB().encounters, encounterID)
@@ -70,6 +71,11 @@ function EventHandler.GetPlan(encounterID)
     if received then
       PRT.Debug("Running plan received from", PRT.ClassColoredName(received.sender))
       return received.plan, true
+    end
+    local _, encounter = PRT.GetEncounterById(PRT.GetProfileDB().encounters, encounterID)
+    if encounter and encounter.enabled and encounter.shared == false then
+      local _, encounterVersion = PRT.GetSelectedVersionEncounterByID(PRT.GetProfileDB().encounters, encounterID)
+      return encounterVersion, false
     end
   end
 end
