@@ -1,9 +1,8 @@
 local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
-local LSM = LibStub("LibSharedMedia-3.0")
 
 --[[
-  Lead status during an encounter (overlay.sender): elapsed time and every
+  Raid plan in combat (overlay.sender), for the lead: elapsed time and every
   timer with the time to its next timing.
   Updated once a second while the lead's own plan runs; movable out of combat.
 ]]
@@ -14,7 +13,7 @@ PRT.SenderOverlay = SenderOverlay
 local PADDING = 10
 local UPDATE_INTERVAL = 1
 
-local frame
+local frame, previewing
 
 local function Options()
   return PRT.GetProfileDB().overlay.sender
@@ -63,8 +62,7 @@ function SenderOverlay.Refresh()
   local options = Options()
   frame:ClearAllPoints()
   frame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", options.left or 615, -(options.top or 50))
-  local font = (options.fontName and LSM:Fetch("font", options.fontName, true)) or options.font or STANDARD_TEXT_FONT
-  frame.Text:SetFont(font, options.fontSize or 14, "OUTLINE")
+  PRT.SetOverlayFont(frame.Text, options, options.fontSize or 14)
   local color = options.fontColor or {}
   frame.Text:SetTextColor(color.r or 1, color.g or 1, color.b or 1, color.a or 1)
   local backdrop = options.backdropColor or {}
@@ -121,6 +119,7 @@ end
 -- The lead's own plan started; scheduled on the encounter timer, so it
 -- stops with the encounter.
 function SenderOverlay.Start(encounter)
+  previewing = false
   SenderOverlay.Refresh()
   frame:EnableMouse(false)
   frame:Show()
@@ -142,14 +141,23 @@ end
 -- Shows the overlay with a placeholder to place it.
 function SenderOverlay.ShowPreview()
   SenderOverlay.Refresh()
-  SetText(Colored("PhenomRaidTools", PRT.Static.Colors.Primary) .. "|n" .. L["Lead status during encounters. Drag to move."])
+  SetText(Colored("PhenomRaidTools", PRT.Static.Colors.Primary) .. "|n" .. L["Raid plan during encounters. Drag to move."])
   frame:EnableMouse(true)
   frame:Show()
+  previewing = true
 end
 
 function SenderOverlay.Hide()
+  previewing = false
   if frame then
     frame:Hide()
+  end
+end
+
+-- Hides the placeholder (the options window closed), never a running plan.
+function SenderOverlay.HidePreview()
+  if previewing then
+    SenderOverlay.Hide()
   end
 end
 
