@@ -5,9 +5,9 @@
 ### Added
 - Warn earlier: a cooldown shows 5 seconds before its time by default and counts down to the moment you press it, then shows *Now*. Change the default on the *New messages* page or per assignment; text messages can warn earlier too.
 - **The encounter page is one desk:** the bosses of the instance as tiles on top, a toolbar, the timeline across the whole width and the selected assignment below it as one sentence (*At 1:05 show … to … on … for 5 s*). *More* opens the full editor. There is no separate encounter list or assignment page anymore.
-- **Rehearsal:** plays the plan from the playhead on your overlays, in real time or four times as fast. Click on the time axis to move the playhead.
-- **View as** a role or player: the timeline and the rehearsal show only what they get. A difficulty filter dims the assignments that don't run on it.
-- In the timeline, drag a marker to move the assignment, with Alt to copy it, and middle-click it to delete it (asks first). Ctrl + mouse wheel zooms, Shift + mouse wheel scrolls the zoomed timeline, and repeating assignments show as a bar.
+- **Demo playback:** plays the plan from the playhead on your overlays, in real time or four times as fast. Click on the time axis to move the playhead.
+- **View as** a role or player: the timeline and the demo playback show only what they get. A difficulty filter dims the assignments that don't run on it.
+- In the timeline, drag a marker to move the assignment, with Alt to copy it, and middle-click it to delete it (asks first). The mouse wheel zooms (out to 20 minutes, to plan after the last assignment), Shift + mouse wheel scrolls the time, and repeating assignments show as a bar. The timeline and its markers list these controls.
 - Demo: *Overlays → Demo* or `/prt demo` plays a sample fight of about 40 seconds with every kind of message for you (text with countdown, marker, own sound, read aloud, healing and utility cooldowns, a repeating assignment) on your overlays, plus your next assignments and the raid plan in combat. It runs anywhere, out of combat and in every role.
 
 ### Changed
