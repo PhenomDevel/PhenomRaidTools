@@ -301,10 +301,10 @@ end
 
 -- An export knows its encounter id: it replaces that encounter's plan, or
 -- becomes a new encounter if there is none.
-local function ImportPlan(data, encounter)
+local function ImportPlan(data)
   PRT.ForEachMessage({encounters = {{versions = {data}}}}, PRT.NormalizeTargets)
   PRT.CleanEncounterVersion(data)
-  encounter = encounter or (data.id and FindEncounter(data.id))
+  local encounter = data.id and FindEncounter(data.id)
   if not encounter then
     encounter = {enabled = true, id = data.id or NewID(), name = data.name}
     tinsert(Encounters(), encounter)
@@ -314,7 +314,7 @@ local function ImportPlan(data, encounter)
   return encounter
 end
 
-local function ImportRows(encounter)
+local function ImportRows()
   local rows = {
     {
       type = "textarea",
@@ -333,7 +333,7 @@ local function ImportRows(encounter)
     rows[#rows + 1] = {type = "notice", tone = "danger", label = pendingImport.error}
   elseif pendingImport.data then
     local data = pendingImport.data
-    local target = encounter or (data.id and FindEncounter(data.id))
+    local target = data.id and FindEncounter(data.id)
     local summary =
       target and L["Replaces the plan of %s."]:format(target.name or "?") or L["%s: becomes a new encounter."]:format(data.name or "?")
     rows[#rows + 1] = {type = "notice", tone = "ok", label = summary}
@@ -344,14 +344,10 @@ local function ImportRows(encounter)
       layout = true,
       onClick = function()
         local function Import()
-          local imported = ImportPlan(pendingImport.data, encounter)
+          local imported = ImportPlan(pendingImport.data)
           CheckImport("")
           PRT.Info(L["Imported into %s."]:format(PRT.HighlightString(imported.name)))
-          if encounter then
-            UI.Refresh()
-          else
-            UI.Navigate("encounters", imported.id)
-          end
+          UI.Navigate("encounters", imported.id)
         end
         if target then
           UI.Confirm(L["Replace the plan of %s?"]:format(target.name or "?"), L["Replace"], Import)
@@ -443,7 +439,7 @@ local function ListPage()
         {
           type = "button",
           label = L["New encounter"],
-          note = L["From the bosses of the current raids or by its encounter ID."],
+          note = L["From the bosses of the current raids, by its encounter ID or from an export string."],
           buttonText = L["New"],
           onClick = function()
             UI.Push("new")
@@ -459,7 +455,6 @@ local function ListPage()
   if #groups == 0 then
     cards[1].rows[#cards[1].rows + 1] = {type = "hint", label = L["No encounter yet."]}
   end
-  cards[#cards + 1] = {title = L["Import"], note = L["An encounter exported from PRT."], fullWidth = true, rows = ImportRows(nil)}
   return L["Encounters"], L["Plans per boss: what happens when, for whom"], cards
 end
 
@@ -500,6 +495,11 @@ local function NewEncounterPage()
         end
       }
     }
+  }
+  cards[#cards + 1] = {
+    title = L["Import"],
+    note = L["An encounter exported from PRT. Replaces the plan of the same encounter if you have it."],
+    rows = ImportRows()
   }
   local subtitle = JournalRaids() and L["Choose a boss of the current raids."] or L["The dungeon journal is not available: create the encounter by its ID."]
   return L["New encounter"], subtitle, cards
@@ -574,10 +574,7 @@ local function ShareCard(encounter)
       end
     }
   }
-  for _, row in ipairs(ImportRows(encounter)) do
-    rows[#rows + 1] = row
-  end
-  return {title = L["Share"], rows = rows}
+  return {title = L["Share"], note = L["Import on the New encounter page."], rows = rows}
 end
 
 local function LaneKey(message)

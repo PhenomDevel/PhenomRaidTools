@@ -82,10 +82,9 @@ local function ReceiverPage(index)
   local vertical = Overlay.Get(config, "grow") == "UP" or Overlay.Get(config, "grow") == "DOWN"
 
   local layoutRows = {
-    Field(config, "style", {type = "chips", values = STYLES}),
-    {type = "description", label = L["Grows"]},
-    Field(config, "grow", {type = "chips", values = GROW}),
-    Field(config, "from", {type = "chips", values = FROM})
+    Field(config, "style", {type = "chips", label = L["Style"], values = STYLES}),
+    Field(config, "grow", {type = "chips", label = L["Grows"], values = GROW}),
+    Field(config, "from", {type = "chips", label = L["Starts"], values = FROM})
   }
   if vertical then
     layoutRows[#layoutRows + 1] = Field(config, "align", {type = "dropdown", label = L["Alignment"], values = ALIGN})
@@ -147,7 +146,18 @@ local function ReceiverPage(index)
             config.purpose = value ~= "none" and value or nil
           end
         },
-        Field(config, "locked", {type = "checkbox", label = L["Locked"], note = L["Unlock to drag it to its place."], layout = true}),
+        {
+          type = "checkbox",
+          label = L["Move"],
+          note = L["Shows the anchor to drag it."],
+          get = function()
+            return not Overlay.Get(config, "locked")
+          end,
+          set = function(value)
+            config.locked = not value
+            Overlay.Refresh()
+          end
+        },
         {
           type = "button",
           label = L["Show on screen"],
@@ -286,20 +296,19 @@ local function ReceiversCard()
         addLabel = L["New overlay"]
       },
       {
-        type = "button",
-        label = L["Unlock all"],
+        type = "checkbox",
+        label = L["Move overlays"],
         note = L["Shows every anchor to drag it."],
-        buttonText = L["Unlock"],
-        onClick = function()
-          Overlay.SetLocked(false)
-        end
-      },
-      {
-        type = "button",
-        label = L["Lock all"],
-        buttonText = L["Lock"],
-        onClick = function()
-          Overlay.SetLocked(true)
+        get = function()
+          for _, config in ipairs(Receivers()) do
+            if not Overlay.Get(config, "locked") then
+              return true
+            end
+          end
+          return false
+        end,
+        set = function(value)
+          Overlay.SetLocked(not value)
         end
       },
       {
@@ -352,12 +361,14 @@ local function UpcomingCard()
     rows = {
       {
         type = "checkbox",
-        label = L["Locked"],
-        note = L["Unlock to see and drag it."],
+        label = L["Move"],
+        note = L["Shows it to drag it."],
         get = function()
-          return options.locked ~= false
+          return options.locked == false
         end,
-        set = Set("locked")
+        set = function(value)
+          Set("locked")(not value)
+        end
       },
       {type = "slider", label = L["Lines"], min = 1, max = 6, get = Get("count"), set = Set("count")},
       {
@@ -397,17 +408,17 @@ local function SenderCard()
     toggle = {get = Get("enabled"), set = Set("enabled")},
     rows = {
       {
-        type = "button",
-        label = L["Place it"],
-        note = L["Shows it to drag it."],
-        buttonText = L["Show"],
-        onClick = PRT.SenderOverlay.ShowPreview
-      },
-      {
-        type = "button",
-        label = L["Hide it"],
-        buttonText = L["Hide"],
-        onClick = PRT.SenderOverlay.Hide
+        type = "checkbox",
+        label = L["Show to place it"],
+        note = L["Drag it where you want it."],
+        get = PRT.SenderOverlay.IsShown,
+        set = function(value)
+          if value then
+            PRT.SenderOverlay.ShowPreview()
+          else
+            PRT.SenderOverlay.Hide()
+          end
+        end
       },
       {type = "checkbox", label = L["Hide after combat"], get = Get("hideAfterCombat"), set = Set("hideAfterCombat")},
       {type = "checkbox", label = L["Hide disabled groups"], get = Get("hideDisabledTriggers"), set = Set("hideDisabledTriggers")},

@@ -88,6 +88,28 @@ local DIFFICULTIES = {
   {value = "Mythic", label = L["Mythic"]}
 }
 
+-- How a message sounds: the overlay's sound, its own or read aloud.
+local SOUND_MODES = {
+  {value = "overlay", label = L["Overlay"]},
+  {value = "own", label = L["Own"]},
+  {value = "tts", label = L["Read aloud"]}
+}
+
+local SOUND_NOTES = {
+  overlay = L["The sound of the overlay plays."],
+  own = L["Plays this sound instead of the overlay's."],
+  tts = L["Reads the text aloud with the voice of the game's text to speech settings."]
+}
+
+local function SoundMode(message)
+  if message.useTTS then
+    return "tts"
+  elseif message.useCustomSound then
+    return "own"
+  end
+  return "overlay"
+end
+
 -- A repeating assignment never shows more often than this.
 local MAX_REPEATS = 100
 
@@ -739,8 +761,6 @@ local function Overwrite(message, source)
   end
 end
 
-local templateName = ""
-
 local function TemplateValues()
   local values = {}
   for _, name in ipairs(SortedKeys(PRT.GetProfileDB().templateStore.messages)) do
@@ -785,35 +805,26 @@ local function ToolsCard(message, context)
       }
     end
     rows[#rows + 1] = {
-      type = "text",
-      label = L["Save as template"],
-      placeholder = L["Template name"],
-      get = function()
-        return templateName
-      end,
-      set = function(value)
-        templateName = value
-      end
-    }
-    rows[#rows + 1] = {
       type = "button",
-      label = "",
+      label = L["Save as template"],
+      note = L["Rename it on the Templates page."],
       buttonText = L["Save"],
-      layout = true,
       onClick = function()
-        local name = strtrim(templateName or "")
         local store = PRT.GetProfileDB().templateStore.messages
-        if name == "" then
-          PRT.Warn(L["Enter a name for the template first."])
-        elseif store[name] then
-          PRT.Warn(L["A template named %s already exists."]:format(PRT.HighlightString(name)))
-        else
-          local template = PRT.TableUtils.Clone(message)
-          template.name = name
-          store[name] = template
-          templateName = ""
-          PRT.Info(L["Template %s saved."]:format(PRT.HighlightString(name)))
+        -- Named after its text without markers, icons and countdown.
+        local text = (message.message or ""):gsub("{.-}", ""):gsub("%%%S*", ""):gsub("%s+", " ")
+        local base = strtrim(text):sub(1, 40)
+        if base == "" then
+          base = L["Template"]
         end
+        local name, index = base, 2
+        while store[name] do
+          name, index = ("%s (%d)"):format(base, index), index + 1
+        end
+        local template = PRT.TableUtils.Clone(message)
+        template.name = name
+        store[name] = template
+        PRT.Info(L["Template %s saved."]:format(PRT.HighlightString(name)))
       end
     }
   end
@@ -890,35 +901,23 @@ function Messages.Cards(message, context)
       end
     },
     {
-      type = "checkbox",
-      label = L["Own sound"],
-      note = L["Otherwise the overlay's sound plays."],
-      disabled = message.useTTS,
-      layout = true,
+      type = "chips",
+      label = L["Sound"],
+      values = SOUND_MODES,
       get = function()
-        return message.useCustomSound
+        return SoundMode(message)
       end,
       set = function(value)
-        message.useCustomSound = value
+        message.useTTS = value == "tts" or nil
+        message.useCustomSound = value == "own"
       end
     }
   }
-  displayRows[#displayRows + 1] = {
-    type = "checkbox",
-    label = L["Text to speech"],
-    note = L["Reads the text aloud instead of the sound, with the voice of the game's text to speech settings."],
-    layout = true,
-    get = function()
-      return message.useTTS
-    end,
-    set = function(value)
-      message.useTTS = value or nil
-    end
-  }
-  if message.useCustomSound and not message.useTTS then
+  local soundMode = SoundMode(message)
+  if soundMode == "own" then
     displayRows[#displayRows + 1] = {
       type = "sound",
-      label = L["Sound"],
+      label = L["Own sound"],
       indent = 12,
       get = function()
         return message.soundFileName
@@ -929,6 +928,7 @@ function Messages.Cards(message, context)
       end
     }
   end
+  displayRows[#displayRows + 1] = {type = "hint", label = SOUND_NOTES[soundMode]}
   cards[#cards + 1] = {title = L["Display"], rows = displayRows}
   cards[#cards + 1] = ToolsCard(message, context)
   return cards
