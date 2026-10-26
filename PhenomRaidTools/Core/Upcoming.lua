@@ -37,7 +37,8 @@ end
 local function Text(message)
   local text = texts[message]
   if not text then
-    text = PRT.ReceiverOverlay.WithoutTime(PRT.PrepareMessageForDisplay(message.message or ""))
+    local _, rest = PRT.ReceiverOverlay.MessageIcon(message, message.message)
+    text = PRT.ReceiverOverlay.WithoutTime(PRT.PrepareMessageForDisplay(rest))
     texts[message] = text
   end
   return text
