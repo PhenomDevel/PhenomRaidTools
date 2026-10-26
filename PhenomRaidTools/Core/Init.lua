@@ -118,6 +118,7 @@ do
         messageDefaults = {
           defaultMessage = "TODO",
           defaultDuration = 5,
+          defaultLeadTime = 5,
           defaultTargets = {
             "$me"
           }

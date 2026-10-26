@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Added
+- Warn earlier: a cooldown shows 5 seconds before its time by default and counts down to the moment you press it, then shows *Now*. Change the default under *Settings → New messages* or per assignment; text messages can warn earlier too.
+
 ### Changed
 - Simpler window: *About* is now a card on the settings page, and importing an encounter moved to *New encounter*.
 - The overview picks your role (lead, player or both) the same way as the first start guide.

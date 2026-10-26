@@ -219,6 +219,20 @@ local function DefaultsCard()
         end
       },
       {
+        type = "slider",
+        label = L["Warn cooldowns earlier"],
+        note = L["Seconds before their time, for cooldowns without their own setting."],
+        min = 0,
+        max = 30,
+        step = 0.5,
+        get = function()
+          return MessageDefaults().defaultLeadTime or 0
+        end,
+        set = function(value)
+          MessageDefaults().defaultLeadTime = value
+        end
+      },
+      {
         type = "dropdown",
         label = L["Overlay"],
         values = overlays,

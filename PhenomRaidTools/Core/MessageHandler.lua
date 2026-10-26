@@ -46,7 +46,7 @@ function MessageHandler.IsMessageForMe(message)
   return tContains(MessageHandler.validPlayerTargets, message.target) or message.target == UnitGroupRolesAssigned("player")
 end
 
-function MessageHandler.ExecuteMessage(message)
+function MessageHandler.ExecuteMessage(message, pressAt)
   if not PRT.IsReceiver() or not PRT.IsMessageSupported(message) then
     return
   end
@@ -55,6 +55,7 @@ function MessageHandler.ExecuteMessage(message)
       local shown = PRT.TableUtils.Clone(message)
       shown.target = target
       shown.targets = nil
+      shown.pressIn = pressAt and pressAt - GetTime()
       shown.message = PRT.ReplacePlayerNameTokens(shown.message)
       PRT.ReceiverOverlay.AddMessage(shown)
       return
@@ -102,9 +103,10 @@ end
 -------------------------------------------------------------------------------
 -- Public API
 
-function PRT.ExecuteMessage(message)
+-- pressAt: the time (GetTime) the message counts down to, when it shows early.
+function PRT.ExecuteMessage(message, pressAt)
   if message then
-    MessageHandler.ExecuteMessage(message)
+    MessageHandler.ExecuteMessage(message, pressAt)
   end
 end
 

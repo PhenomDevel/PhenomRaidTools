@@ -35,7 +35,8 @@ local function ReceivedPlans()
   return global.receivedPlans
 end
 
--- The selected version with its enabled timers only.
+-- The selected version with its enabled timers only. Lead times are
+-- resolved here, so the lead's default applies on every client.
 local function BuildPlan(encounterVersion)
   local plan = PRT.TableUtils.Clone(encounterVersion)
   PRT.CleanEncounterVersion(plan)
@@ -43,6 +44,11 @@ local function BuildPlan(encounterVersion)
   for _, timer in ipairs(plan.Timers) do
     if timer.enabled ~= false then
       timers[#timers + 1] = timer
+      for _, timing in ipairs(timer.timings or {}) do
+        for _, message in ipairs(timing.messages or {}) do
+          message.leadTime = PRT.MessageLeadTime(message)
+        end
+      end
     end
   end
   plan.Timers = timers

@@ -243,12 +243,13 @@ end
 -- The first card as a sentence: "At 1:15 show ... to ... on Messages for 5 s".
 local function Sentence(message, context)
   local overlay = PRT.GetProfileDB().overlay.receivers[message.targetOverlay or 1]
+  local lead = PRT.MessageLeadTime(message)
   local what =
-    L["show %s to %s on %s for %s s"]:format(
+    (lead > 0 and L["show %s to %s on %s %s s before"] or L["show %s to %s on %s for %s s"]):format(
     Messages.DisplayText(message),
     Messages.TargetsText(message) ~= "" and Messages.TargetsText(message) or L["nobody"],
     overlay and overlay.label or "?",
-    message.duration or 5
+    lead > 0 and lead or message.duration or 5
   )
   if context.timing then
     return L["At %s %s"]:format(Messages.WhenText(context.timing), what)
@@ -885,6 +886,29 @@ function Messages.Cards(message, context)
       set = function(value)
         message.targetOverlay = value
       end
+    },
+    {
+      type = "slider",
+      label = L["Warn earlier"],
+      note = L["Shows the message this many seconds before its time and counts down to it, then \"Now\"."],
+      min = 0,
+      max = 30,
+      step = 0.5,
+      get = function()
+        return PRT.MessageLeadTime(message)
+      end,
+      set = function(value)
+        message.leadTime = value
+      end,
+      -- Cooldowns without their own lead time follow the settings.
+      reset = message.type == "cooldown" and {
+        changed = function()
+          return message.leadTime ~= nil
+        end,
+        reset = function()
+          message.leadTime = nil
+        end
+      } or nil
     },
     {
       type = "slider",
