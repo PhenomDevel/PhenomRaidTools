@@ -729,26 +729,29 @@ local function MRTCard(encounter)
       end
     }
   }
-  if PRT.HasMethodRaidTools() then
-    rows[#rows + 1] = MRTOption("updatePRTTag", L["Only between the PRT tags"], L["Replaces only the part between `{prtstart}` and `{prtend}` in your note."])
-    rows[#rows + 1] = {
-      type = "button",
-      label = L["Write into your MRT note"],
-      buttonText = L["Write"],
-      onClick = function()
-        local function Write()
-          if PRT.WriteMethodRaidToolsNote(PRT.MethodRaidToolsNote(encounter, options), options.updatePRTTag) then
-            PRT.Info(L["MethodRaidTools note updated. Send it with MRT as usual."])
-          end
-        end
-        if options.updatePRTTag then
-          Write()
-        else
-          UI.Confirm(L["Replace your whole MethodRaidTools note?"], L["Replace"], Write)
+  local hasMRT = PRT.HasMethodRaidTools()
+  local tagOption = MRTOption("updatePRTTag", L["Only between the PRT tags"], L["Replaces only the part between `{prtstart}` and `{prtend}` in your note."])
+  tagOption.disabled = not hasMRT
+  rows[#rows + 1] = tagOption
+  rows[#rows + 1] = {
+    type = "button",
+    label = L["Write into your MRT note"],
+    note = not hasMRT and L["Needs MethodRaidTools."] or nil,
+    buttonText = L["Write"],
+    disabled = not hasMRT,
+    onClick = function()
+      local function Write()
+        if PRT.WriteMethodRaidToolsNote(PRT.MethodRaidToolsNote(encounter, options), options.updatePRTTag) then
+          PRT.Info(L["MethodRaidTools note updated. Send it with MRT as usual."])
         end
       end
-    }
-  end
+      if options.updatePRTTag then
+        Write()
+      else
+        UI.Confirm(L["Replace your whole MethodRaidTools note?"], L["Replace"], Write)
+      end
+    end
+  }
   return {title = L["MethodRaidTools note"], rows = rows}
 end
 
