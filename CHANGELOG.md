@@ -11,6 +11,7 @@
 - New messages: the default targets are picked like in the editor. The default type is gone, since new assignments always started as a message.
 - A new profile is created by pressing Enter in its name field.
 - The debug log shows one line per entry.
+- *Your next assignments* shows every line in the same size; the next one is no longer larger.
 
 ### Fixed
 - The button that writes the cooldown assignments into your MethodRaidTools note is back. It is now always shown on the encounter page and grayed out only when MethodRaidTools isn't loaded.
