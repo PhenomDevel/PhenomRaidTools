@@ -184,6 +184,7 @@ L["Move to the left"] = "Nach links verschieben"
 L["Move up"] = "Nach oben"
 L["Mythic"] = "Mythisch"
 L["Name"] = true
+L["Needs MethodRaidTools."] = "Benötigt MethodRaidTools."
 L["New"] = "Neu"
 L["New assignment"] = "Neue Zuweisung"
 L["New encounter"] = "Neuer Encounter"

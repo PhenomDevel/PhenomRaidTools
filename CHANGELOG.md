@@ -12,6 +12,9 @@
 - A new profile is created by pressing Enter in its name field.
 - The debug log shows one line per entry.
 
+### Fixed
+- The button that writes the cooldown assignments into your MethodRaidTools note is back. It is now always shown on the encounter page and grayed out only when MethodRaidTools isn't loaded.
+
 ## v3.1.0 (2026-10-25)
 
 PhenomRaidTools 3.1 for Midnight (12.x) and WoW: Forever. Since Midnight, addons get no combat log and no boss health or power, and they can't message the group during encounters. PRT therefore sends the plans to the group before the pull, and every player runs them locally.
