@@ -56,6 +56,8 @@ What changed: [CHANGELOG.md](https://github.com/PhenomDevel/PhenomRaidTools/blob
   cooldowns on the right. Each overlay shows text, icons or bars and grows in
   any direction. A preview beside the window shows what you are editing.
 - **Your next assignments** during an encounter with a countdown.
+- **Demo:** *Overlays → Demo* or `/prt demo` plays a short sample fight with
+  every kind of message for you, so you see your overlays in action.
 - **One window with search:** overview, encounters grouped by instance with
   boss portraits and import/export, templates, overlays, settings and
   profiles (also per specialization).
@@ -70,6 +72,7 @@ What changed: [CHANGELOG.md](https://github.com/PhenomDevel/PhenomRaidTools/blob
 | `/prt sync` | Send your plans to the group (also happens on every ready check) |
 | `/prt versions` | Print the PRT versions in your group |
 | `/prt news` | Show what's new |
+| `/prt demo` | Play a sample fight with every kind of message for you |
 | `/prt profile` | Open the profiles |
 | `/prt minimap` | Show the minimap icon again |
 

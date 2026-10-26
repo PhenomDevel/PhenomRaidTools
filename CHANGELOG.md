@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Added
+- Demo: *Overlays → Demo* or `/prt demo` plays a sample fight of about 40 seconds with every kind of message for you (text with countdown, marker, own sound, read aloud, healing and utility cooldowns, a repeating assignment) on your overlays, plus your next assignments and the lead's overlay. It runs anywhere, out of combat and in every role.
+
 ### Changed
 - Simpler window: *About* is now a card on the settings page, and importing an encounter moved to *New encounter*.
 - The overview picks your role (lead, player or both) the same way as the first start guide.

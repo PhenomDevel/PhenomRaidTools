@@ -322,6 +322,7 @@ function addon:PrintHelp()
   PRT.Info("/prt versions - Will perform a version check on the current group")
   PRT.Info("/prt sync - Sends your plans to the group (also done on ready check)")
   PRT.Info("/prt news - Shows what's new")
+  PRT.Info("/prt demo - Plays a sample fight with every kind of message for you")
   PRT.Info("/prt minimap - Will enable the minimap icon")
 end
 
@@ -340,6 +341,8 @@ function addon:ExecuteChatCommand(input)
     if PRT.PlanSync.SendPlans(true) == 0 then
       PRT.Info("Nothing sent. Sync needs sender mode, a group and at least one enabled encounter.")
     end
+  elseif input == "demo" then
+    PRT.Demo.Toggle()
   elseif input == "minimap" then
     addon:ToggleMinimapIcon()
   else
