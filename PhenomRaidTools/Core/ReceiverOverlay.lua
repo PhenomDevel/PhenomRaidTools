@@ -117,17 +117,35 @@ end
 ReceiverOverlay.FormatRemaining = FormatRemaining
 ReceiverOverlay.WithoutTime = WithoutTime
 
--- Icon of the message: its spell, a spell or raid marker in the text, or the logo.
-function ReceiverOverlay.MessageIcon(message, raw)
-  local icon = PRT.SpellIcon(message.spellID)
-  if not icon and raw then
-    icon = PRT.SpellIcon(raw:match("{spell:(%d+)}"))
-    if not icon then
-      local marker = raw:match("{rt(%d)}")
-      icon = marker and RAID_TARGET_ICON:format(marker)
-    end
+-- Removes the first `token` from `text`.
+local function WithoutToken(text, token)
+  local first, last = text:find(token, 1, true)
+  if not first then
+    return text
   end
-  return icon or DEFAULT_ICON
+  local before, after = text:sub(1, first - 1):gsub("%s+$", ""), text:sub(last + 1):gsub("^%s+", "")
+  return strtrim(before .. " " .. after)
+end
+
+-- Icon of the message: its spell, a spell or raid marker in the text, or the logo.
+-- Also returns `raw` without the token the icon came from, for displays that
+-- show the icon on its own (cooldown texts start with their spell's icon).
+function ReceiverOverlay.MessageIcon(message, raw)
+  raw = raw or ""
+  local icon = PRT.SpellIcon(message.spellID)
+  if icon then
+    return icon, WithoutToken(raw, ("{spell:%s}"):format(message.spellID))
+  end
+  local spellID = raw:match("{spell:(%d+)}")
+  icon = PRT.SpellIcon(spellID)
+  if icon then
+    return icon, WithoutToken(raw, ("{spell:%s}"):format(spellID))
+  end
+  local marker = raw:match("{rt(%d)}")
+  if marker then
+    return RAID_TARGET_ICON:format(marker), WithoutToken(raw, ("{rt%s}"):format(marker))
+  end
+  return DEFAULT_ICON, raw
 end
 
 -------------------------------------------------------------------------------
@@ -500,9 +518,11 @@ local function AddToDisplay(display, message, silent)
   entry.expires = now + entry.duration
   entry.added = now
   local text = PRT.PrepareMessageForDisplay(raw)
+  local icon, rest = ReceiverOverlay.MessageIcon(message, raw)
   entry.hasFormat = HasFormat(text)
-  entry.text = Get(config, "style") == "text" and text or WithoutTime(text)
-  entry.icon = ReceiverOverlay.MessageIcon(message, raw)
+  -- Icons and bars show the icon beside the text, so not in it as well.
+  entry.text = Get(config, "style") == "text" and text or WithoutTime(PRT.PrepareMessageForDisplay(rest))
+  entry.icon = icon
   SetupEntry(display, entry)
 
   local position = #entries + 1
