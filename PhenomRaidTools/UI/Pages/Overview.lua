@@ -120,7 +120,8 @@ end
 
 local STATUS_TEXT = {
   unsent = L["not sent yet"],
-  changed = L["changed since sending"]
+  changed = L["changed since sending"],
+  ["local"] = L["only for you"]
 }
 
 local function PlanItems()
@@ -129,7 +130,7 @@ local function PlanItems()
     local status, members, confirmed = PRT.PlanSync.GetStatus(encounter)
     local note, color
     if STATUS_TEXT[status] then
-      note, color = STATUS_TEXT[status], colors.notice
+      note, color = STATUS_TEXT[status], status == "local" and colors.dim or colors.notice
     else
       note = L["%d/%d confirmed"]:format(confirmed, #members)
       color = confirmed == #members and colors.ok or colors.notice
@@ -173,7 +174,9 @@ end
 local function ConfirmationPage(encounter)
   local status, members, confirmed = PRT.PlanSync.GetStatus(encounter)
   local rows = {}
-  if STATUS_TEXT[status] then
+  if status == "local" then
+    rows[#rows + 1] = {type = "notice", label = L["This encounter isn't shared with the group."]}
+  elseif STATUS_TEXT[status] then
     rows[#rows + 1] = {type = "notice", label = L["The current plan is %s. The next ready check sends it."]:format(STATUS_TEXT[status])}
   end
   rows[#rows + 1] = {

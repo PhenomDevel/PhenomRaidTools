@@ -1,4 +1,5 @@
 -- luacheck: read globals EJ_GetCurrentTier EJ_SelectTier EJ_GetInstanceByIndex EJ_SelectInstance EJ_GetEncounterInfoByIndex EJ_GetNumTiers EJ_GetCreatureInfo
+-- luacheck: read globals EJ_GetInstanceInfo C_ChallengeMode C_MythicPlus
 local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
@@ -15,11 +16,14 @@ local Rehearsal = UI.Rehearsal
   editable form. Levels (UI.Navigate("encounters", ...)):
 
     {}                  the last shown encounter (or the first one)
-    { "new" }           a new encounter: the raid bosses of the current tier
+    { "new" }           a new encounter: the bosses of the current raids, the
+                        dungeons and (Retail) the Mythic+ season
+    { "new", "i:1234" } the bosses of one dungeon ("m:<map>" for a Mythic+
+                        dungeon the journal doesn't know)
     { id }              one encounter: timeline, settings, MRT note, sharing
     { id, "a:3:2" }     the same with an assignment selected: timing 2 of timer 3
 
-  Only "new" is a level of its own; an encounter and its selection keep the
+  Only "new" (and a dungeon in it) is a level of its own; an encounter and its selection keep the
   page flat (no back button).
 
   Since Midnight a plan is timers from the pull. Each timing holds exactly
@@ -164,7 +168,10 @@ end
 -------------------------------------------------------------------------------
 -- Encounter journal
 
-local journal, journalByEncounter
+local currentTier, journalScan, seasonDungeons
+-- Instances shown on the new encounter page by key ("i:<journal instance>",
+-- "m:<challenge map>"), for the level of one dungeon.
+local listedInstances = {}
 
 -- Bosses of a journal instance: { { id = encounter ID, name, icon } }; the
 -- icon is the boss portrait.
@@ -184,13 +191,15 @@ local function JournalBosses(instanceID)
 end
 
 -- Calls fn(instance) for each raid (or dungeon) of the selected tier, with
--- instance = { name, icon, bosses }.
+-- instance = { key, name, icon, mapID, bosses }; mapID is the instance's map
+-- (GetInstanceInfo), which the Mythic+ maps refer to.
 local function EachJournalInstance(isRaid, fn)
   local index = 1
   local instanceID, name, _, _, _, _, icon = EJ_GetInstanceByIndex(index, isRaid)
   while instanceID do
     EJ_SelectInstance(instanceID)
-    fn({name = name or "?", icon = icon, bosses = JournalBosses(instanceID)})
+    local mapID = EJ_GetInstanceInfo and select(10, EJ_GetInstanceInfo(instanceID))
+    fn({key = "i:" .. instanceID, name = name or "?", icon = icon, mapID = mapID, bosses = JournalBosses(instanceID)})
     index = index + 1
     instanceID, name, _, _, _, _, icon = EJ_GetInstanceByIndex(index, isRaid)
   end
@@ -200,46 +209,50 @@ local function HasJournal()
   return EJ_GetCurrentTier and EJ_GetNumTiers and EJ_SelectTier and EJ_GetInstanceByIndex and EJ_SelectInstance and EJ_GetEncounterInfoByIndex
 end
 
--- Raid bosses of the current tier: { { name, icon, bosses = { { id, name, icon } } } };
--- nil without journal (WoW: Forever).
-local function JournalRaids()
-  if journal ~= nil then
-    return journal or nil
+-- Raids and dungeons of the current tier with bosses:
+-- { raids = { instance }, dungeons = { instance } }; nil without journal.
+local function CurrentTier()
+  if currentTier ~= nil then
+    return currentTier or nil
   end
-  journal = false
+  currentTier = false
   if not HasJournal() then
     return nil
   end
-  local raids = {}
+  local tier = {raids = {}, dungeons = {}}
   local ok =
     pcall(
     function()
       EJ_SelectTier(EJ_GetCurrentTier())
-      EachJournalInstance(
-        true,
-        function(raid)
-          if #raid.bosses > 0 then
-            raids[#raids + 1] = raid
+      for _, isRaid in ipairs({true, false}) do
+        local list = isRaid and tier.raids or tier.dungeons
+        EachJournalInstance(
+          isRaid,
+          function(instance)
+            if #instance.bosses > 0 then
+              list[#list + 1] = instance
+            end
           end
-        end
-      )
+        )
+      end
     end
   )
-  if ok and #raids > 0 then
-    journal = raids
+  if ok and #tier.raids + #tier.dungeons > 0 then
+    currentTier = tier
   end
-  return journal or nil
+  return currentTier or nil
 end
 
--- Every boss of every tier, raids and dungeons, by encounter ID:
--- { instance, instanceIcon, icon }. Scanned once per session.
-local function JournalEncounters()
-  if journalByEncounter then
-    return journalByEncounter
+-- Every instance of every tier, raids and dungeons: { byEncounter =
+-- { [encounter ID] = { instance, instanceIcon, icon } }, byMap = { [map ID] =
+-- instance } }. Scanned once per session.
+local function JournalScan()
+  if journalScan then
+    return journalScan
   end
-  journalByEncounter = {}
+  journalScan = {byEncounter = {}, byMap = {}}
   if not HasJournal() then
-    return journalByEncounter
+    return journalScan
   end
   pcall(
     function()
@@ -249,8 +262,11 @@ local function JournalEncounters()
           EachJournalInstance(
             isRaid,
             function(instance)
+              if instance.mapID then
+                journalScan.byMap[instance.mapID] = instance
+              end
               for _, boss in ipairs(instance.bosses) do
-                journalByEncounter[boss.id] = {instance = instance.name, instanceIcon = instance.icon, icon = boss.icon}
+                journalScan.byEncounter[boss.id] = {instance = instance.name, instanceIcon = instance.icon, icon = boss.icon}
               end
             end
           )
@@ -259,7 +275,45 @@ local function JournalEncounters()
       EJ_SelectTier(EJ_GetCurrentTier())
     end
   )
-  return journalByEncounter
+  return journalScan
+end
+
+local function JournalEncounters()
+  return JournalScan().byEncounter
+end
+
+-- The dungeons of the current Mythic+ season, by name, with their bosses
+-- from the journal (a dungeon the journal doesn't know has none). Retail
+-- only; nil on WoW: Forever or before the season data arrived.
+local function SeasonDungeons()
+  if seasonDungeons then
+    return seasonDungeons
+  end
+  if not PRT.IsRetail() or not (C_ChallengeMode and C_ChallengeMode.GetMapTable and C_ChallengeMode.GetMapUIInfo) then
+    return nil
+  end
+  local dungeons = {}
+  for _, challengeMapID in ipairs(C_ChallengeMode.GetMapTable() or {}) do
+    local name, _, _, texture, _, mapID = C_ChallengeMode.GetMapUIInfo(challengeMapID)
+    if name then
+      dungeons[#dungeons + 1] = mapID and JournalScan().byMap[mapID] or {key = "m:" .. challengeMapID, name = name, icon = texture, bosses = {}}
+    end
+  end
+  if #dungeons == 0 then
+    -- The maps arrive with CHALLENGE_MODE_MAPS_UPDATE; the next visit has them.
+    if C_MythicPlus and C_MythicPlus.RequestMapInfo then
+      C_MythicPlus.RequestMapInfo()
+    end
+    return nil
+  end
+  table.sort(
+    dungeons,
+    function(a, b)
+      return a.name < b.name
+    end
+  )
+  seasonDungeons = dungeons
+  return seasonDungeons
 end
 
 -- The instance of an encounter, remembered once the journal knew it.
@@ -407,6 +461,8 @@ local function BossTile(encounter, current)
   local note = L["%d assignment(s)"]:format(CountAssignments(Version(encounter)))
   if not encounter.enabled then
     note = note .. " · " .. L["off"]
+  elseif encounter.shared == false then
+    note = note .. " · " .. L["only for you"]
   end
   return {
     label = encounter.name or tostring(encounter.id),
@@ -474,13 +530,13 @@ local function EmptyPage()
   local cards = {
     {
       title = L["Encounters"],
-      note = L["Enabled encounters are sent to the group and run on the pull."],
+      note = L["Enabled encounters run on the pull; shared ones are sent to the group before."],
       fullWidth = true,
       rows = {
         {
           type = "button",
           label = L["New encounter"],
-          note = L["From the bosses of the current raids, by its encounter ID or from an export string."],
+          note = L["From the bosses of the current raids and dungeons, by its encounter ID or from an export string."],
           buttonText = L["New"],
           onClick = function()
             UI.Navigate("encounters", "new")
@@ -496,30 +552,64 @@ end
 -------------------------------------------------------------------------------
 -- New encounter
 
+-- One row per boss: creates its encounter or opens the existing one.
+local function BossRows(instance)
+  local rows = {}
+  for _, boss in ipairs(instance.bosses) do
+    local existing = FindEncounter(boss.id)
+    rows[#rows + 1] = {
+      type = "nav",
+      label = WithIcon(boss.icon, boss.name),
+      value = existing and L["added"] or nil,
+      onClick = function()
+        if existing then
+          UI.Navigate("encounters", boss.id)
+        else
+          CreateEncounter(boss.id, boss.name, instance.name)
+        end
+      end
+    }
+  end
+  return rows
+end
+
+-- One row per dungeon, opening its bosses.
+local function DungeonRows(dungeons)
+  local rows = {}
+  for _, dungeon in ipairs(dungeons) do
+    listedInstances[dungeon.key] = dungeon
+    rows[#rows + 1] = {
+      type = "nav",
+      label = WithIcon(dungeon.icon, dungeon.name),
+      value = #dungeon.bosses > 0 and L["%d boss(es)"]:format(#dungeon.bosses) or nil,
+      onClick = function()
+        UI.Push(dungeon.key)
+      end
+    }
+  end
+  return rows
+end
+
 local function NewEncounterPage()
   local cards = {}
-  for _, raid in ipairs(JournalRaids() or {}) do
-    local rows = {}
-    for _, boss in ipairs(raid.bosses) do
-      local existing = FindEncounter(boss.id)
-      rows[#rows + 1] = {
-        type = "nav",
-        label = WithIcon(boss.icon, boss.name),
-        value = existing and L["added"] or nil,
-        onClick = function()
-          if existing then
-            UI.Navigate("encounters", boss.id)
-          else
-            CreateEncounter(boss.id, boss.name, raid.name)
-          end
-        end
-      }
-    end
-    cards[#cards + 1] = {title = WithIcon(raid.icon, raid.name), rows = rows}
+  local tier = CurrentTier()
+  for _, raid in ipairs(tier and tier.raids or {}) do
+    cards[#cards + 1] = {title = WithIcon(raid.icon, raid.name), rows = BossRows(raid)}
+  end
+  if tier and #tier.dungeons > 0 then
+    cards[#cards + 1] = {title = L["Dungeons"], note = L["The dungeons of the current expansion."], rows = DungeonRows(tier.dungeons)}
+  end
+  local season = SeasonDungeons()
+  if season then
+    cards[#cards + 1] = {
+      title = L["Mythic+"],
+      note = L["The dungeons of the current season; you can add bosses that aren't listed."],
+      rows = DungeonRows(season)
+    }
   end
   cards[#cards + 1] = {
     title = L["Other encounter"],
-    note = L["Any boss by its encounter ID, e.g. from a dungeon or an older raid."],
+    note = L["Any boss by its encounter ID, e.g. from an older raid or dungeon."],
     rows = {
       {
         type = "button",
@@ -536,8 +626,72 @@ local function NewEncounterPage()
     note = L["An encounter exported from PRT. Replaces the plan of the same encounter if you have it."],
     rows = ImportRows()
   }
-  local subtitle = JournalRaids() and L["Choose a boss of the current raids."] or L["The dungeon journal is not available: create the encounter by its ID."]
+  local subtitle = tier and L["Choose a boss of the current raids or dungeons."] or L["The dungeon journal is not available: create the encounter by its ID."]
   return L["New encounter"], subtitle, cards
+end
+
+-- A boss of a dungeon that isn't in the list (Retail): name and encounter ID.
+local pendingBoss = {name = "", id = ""}
+
+local function OwnBossCard(dungeon)
+  return {
+    title = L["Add a boss"],
+    note = L["A boss of this dungeon that isn't listed, by the encounter ID of its ENCOUNTER_START."],
+    rows = {
+      {
+        type = "text",
+        label = L["Name"],
+        get = function()
+          return pendingBoss.name
+        end,
+        set = function(value)
+          pendingBoss.name = value or ""
+        end
+      },
+      {
+        type = "text",
+        label = L["Encounter ID"],
+        get = function()
+          return pendingBoss.id
+        end,
+        set = function(value)
+          pendingBoss.id = value or ""
+        end
+      },
+      {
+        type = "button",
+        label = L["Add"],
+        buttonText = L["Create"],
+        onClick = function()
+          local id = tonumber(pendingBoss.id)
+          local existing = id and FindEncounter(id)
+          if not id then
+            PRT.Error(L["The encounter ID must be a number."])
+          elseif existing then
+            PRT.Error(L["The encounter ID %s is taken by %s."]:format(PRT.HighlightString(id), PRT.HighlightString(existing.name)))
+          else
+            local name = pendingBoss.name ~= "" and pendingBoss.name or L["New encounter"]
+            pendingBoss.name, pendingBoss.id = "", ""
+            CreateEncounter(id, name, dungeon.name)
+          end
+        end
+      }
+    }
+  }
+end
+
+-- The bosses of one dungeon; on Retail also bosses the journal doesn't list
+-- (e.g. a changed Mythic+ dungeon).
+local function DungeonPage(dungeon)
+  local rows = BossRows(dungeon)
+  if #rows == 0 then
+    rows[1] = {type = "hint", label = L["The journal lists no boss for this dungeon."]}
+  end
+  local cards = {{title = WithIcon(dungeon.icon, dungeon.name), rows = rows}}
+  if PRT.IsRetail() then
+    cards[2] = OwnBossCard(dungeon)
+  end
+  return dungeon.name, L["Choose a boss."], cards, {L["New encounter"]}
 end
 
 -------------------------------------------------------------------------------
@@ -550,13 +704,24 @@ local function SettingsCard(encounter)
       {
         type = "checkbox",
         label = L["Enabled"],
-        note = L["Sent to the group and run on the pull."],
+        note = L["Runs on the pull."],
         layout = true,
         get = function()
           return encounter.enabled
         end,
         set = function(value)
           encounter.enabled = value
+        end
+      },
+      {
+        type = "checkbox",
+        label = L["Share with the group"],
+        note = L["Sent to your group or raid before the pull. Off: only you see this plan."],
+        get = function()
+          return encounter.shared ~= false
+        end,
+        set = function(value)
+          encounter.shared = value and nil or false
         end
       },
       {
@@ -1226,6 +1391,9 @@ local function EncounterPage(encounter, timerIndex, timingIndex)
     cards[#cards + 1] = ShareCard(encounter)
   end
   local status = encounter.enabled and L["enabled"] or L["off"]
+  if encounter.enabled and encounter.shared == false then
+    status = status .. " · " .. L["only for you"]
+  end
   return encounter.name or "?", encounter.instance and encounter.instance .. " · " .. status or status, cards
 end
 
@@ -1234,7 +1402,12 @@ end
 -- Resolves the path to the deepest level that still exists.
 local function Build(path)
   if path[1] == "new" then
-    return NewEncounterPage()
+    local title, subtitle, cards = NewEncounterPage()
+    local dungeon = path[2] and listedInstances[path[2]]
+    if dungeon then
+      return DungeonPage(dungeon)
+    end
+    return title, subtitle, cards
   end
   local encounter = path[1] and FindEncounter(path[1]) or desk.encounterID and FindEncounter(desk.encounterID) or FirstEncounter()
   if not encounter then
