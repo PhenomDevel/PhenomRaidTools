@@ -87,8 +87,6 @@ local function ListPage()
             end
             local name = L["Template %d"]:format(index)
             local template = PRT.EmptyMessage()
-            template.type = "advanced"
-            template.targets = {"ALL"}
             template.name = name
             Store()[name] = template
             UI.Push(name)

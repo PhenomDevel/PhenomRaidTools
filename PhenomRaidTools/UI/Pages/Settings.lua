@@ -5,8 +5,8 @@ local UI = PRT.UI
 local LibDBIcon = LibStub("LibDBIcon-1.0")
 
 --[[
-  Addon wide settings of the profile: where PRT runs, test and debug mode,
-  the defaults for new messages and the version. They have no page of their
+  Addon wide settings of the profile: where PRT runs, test and debug mode
+  and the version. They have no page of their
   own: the overview shows them below the status (UI.SettingsCards).
 ]]
 
@@ -14,14 +14,6 @@ local DIFFICULTIES = {
   {value = "Normal", label = L["Normal"]},
   {value = "Heroic", label = L["Heroic"]},
   {value = "Mythic", label = L["Mythic"]}
-}
-
-local TARGETS = {
-  {value = "ALL", label = L["Everyone"]},
-  {value = "TANK", label = L["Tanks"]},
-  {value = "HEALER", label = L["Healer"]},
-  {value = "DAMAGER", label = L["Damage"]},
-  {value = "$me", label = L["Me"]}
 }
 
 local function Profile()
@@ -172,67 +164,6 @@ local function TestCard()
   }
 end
 
-local function DefaultsCard()
-  local function MessageDefaults()
-    return Profile().triggerDefaults.messageDefaults
-  end
-  local overlays = {}
-  for index, receiver in ipairs(Profile().overlay.receivers) do
-    overlays[#overlays + 1] = {value = index, label = ("%d: %s"):format(index, receiver.label or "")}
-  end
-  return {
-    title = L["New messages"],
-    note = L["What a new message starts with."],
-    rows = {
-      Bind(MessageDefaults, "defaultMessage", {type = "text", label = L["Text"]}),
-      {
-        type = "multiselect",
-        label = L["For whom"],
-        values = TARGETS,
-        get = function(value)
-          return tContains(MessageDefaults().defaultTargets or {}, value)
-        end,
-        set = function(value, selected)
-          local targets = {}
-          for _, target in ipairs(MessageDefaults().defaultTargets or {}) do
-            if target ~= value then
-              targets[#targets + 1] = target
-            end
-          end
-          if selected then
-            targets[#targets + 1] = value
-          end
-          MessageDefaults().defaultTargets = targets
-        end
-      },
-      {
-        type = "slider",
-        label = L["Duration"],
-        min = 1,
-        max = 60,
-        step = 0.5,
-        get = function()
-          return MessageDefaults().defaultDuration or 5
-        end,
-        set = function(value)
-          MessageDefaults().defaultDuration = value
-        end
-      },
-      {
-        type = "dropdown",
-        label = L["Overlay"],
-        values = overlays,
-        get = function()
-          return MessageDefaults().defaultTargetOverlay or 1
-        end,
-        set = function(value)
-          MessageDefaults().defaultTargetOverlay = value
-        end
-      }
-    }
-  }
-end
-
 local function DebugCard()
   local rows = {}
   if Profile().debugMode then
@@ -276,7 +207,6 @@ function UI.SettingsCards()
     GeneralCard(),
     DifficultiesCard(),
     TestCard(),
-    DefaultsCard(),
     DebugCard(),
     AboutCard()
   }
