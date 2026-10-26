@@ -61,7 +61,7 @@ local TITLE = ("Phenom|cff%sRaidTools|r"):format(Widgets.BRAND_HEX)
 local BREADCRUMB_HEIGHT = 16
 
 -- Derived from the window width by UpdateLayout() before every render.
-local columnCount, columnWidth, rowWidth
+local columnWidth, rowWidth
 
 local frame, scroll, content, sidebar, searchBox, profileButton, backButton, pageTitle, pageSubtitle, breadcrumb
 local pages = {}
@@ -76,8 +76,9 @@ end
 
 local Render, RefreshValues, SetScroll
 
--- Set by a page while it builds (UI.SetPreview), applied after the build.
-local previewSpec
+-- Set by a page while it builds (UI.SetPreview, UI.SetDialog), applied
+-- after the build.
+local previewSpec, dialogSpec
 
 -- After a control changed a value: rebuild the page or refresh the controls.
 local function Commit(spec, value)
@@ -1688,6 +1689,8 @@ rowTypes.tiles = {
 --   { kind = "toggle", label, active, onClick }   small chip, lit while active
 --   { kind = "chips", values, get, set }          one toggle per value
 --   { kind = "dropdown", values, get, set, width, placeholder }
+--   { kind = "dropdown", groups, isSelected(value), toggle(value, selected),
+--     text(), width, placeholder }      multi-select (groups: SetMulti)
 --   { kind = "input", get, set, width, placeholder }
 --   { kind = "space" }                            a wider gap
 -- Each item can have { tooltip, tooltipTitle }. Every change rebuilds the page.
@@ -1868,6 +1871,27 @@ rowTypes.flow = {
           SetChipSelected(control, Resolve(item.active) and true or false)
           live = live or type(item.active) == "function"
           width = control:GetWidth()
+        elseif kind == "dropdown" and item.groups then
+          control:SetWidth(item.width or 150)
+          local changed = false
+          control:SetMulti(
+            Resolve(item.groups) or {},
+            item.isSelected,
+            function(value, selected)
+              Widgets.SafeCall(item.toggle, value, selected)
+              changed = true
+              RefreshValues()
+            end,
+            item.text,
+            item.placeholder,
+            function()
+              if changed then
+                changed = false
+                Render()
+              end
+            end
+          )
+          width = control:GetWidth()
         elseif kind == "dropdown" then
           control:SetWidth(item.width or 150)
           control:SetEntries(
@@ -1997,8 +2021,8 @@ local function AddRow(card, spec, y)
 end
 
 -- Builds a card at (left, top) of the content frame; returns its height.
-local function AddCard(spec, left, top, width)
-  local card = Widgets.Acquire(cardPool, content)
+local function AddCard(spec, parent, left, top, width)
+  local card = Widgets.Acquire(cardPool, parent)
   card.spec = spec
   card:SetWidth(width or columnWidth)
   card:SetPoint("TOPLEFT", left, -top)
@@ -2181,60 +2205,67 @@ end
 -- Scrolling
 --------------------------------------------------------------------------------
 
-local function UpdateScrollBar()
-  local bar = scroll.Bar
-  local range = scroll:GetVerticalScrollRange()
+local function UpdateScrollBar(area)
+  local bar = area.Bar
+  local range = area:GetVerticalScrollRange()
   if range <= 0 then
     bar:Hide()
     return
   end
   bar:Show()
-  local visible = scroll:GetHeight()
+  local visible = area:GetHeight()
   local thumbHeight = math.max(24, visible * visible / (visible + range))
   bar.Thumb:SetHeight(thumbHeight)
   bar.Thumb:ClearAllPoints()
-  bar.Thumb:SetPoint("TOP", 0, -scroll:GetVerticalScroll() / range * (visible - thumbHeight))
+  bar.Thumb:SetPoint("TOP", 0, -area:GetVerticalScroll() / range * (visible - thumbHeight))
+end
+
+-- Scrolls an area (the page or the dialog) within its range.
+local function ScrollTo(area, offset)
+  local range = area:GetVerticalScrollRange()
+  area:SetVerticalScroll(math.max(0, math.min(range, offset)))
+  UpdateScrollBar(area)
 end
 
 SetScroll = function(offset)
-  local range = scroll:GetVerticalScrollRange()
-  scroll:SetVerticalScroll(math.max(0, math.min(range, offset)))
-  UpdateScrollBar()
+  ScrollTo(scroll, offset)
 end
 
 local function OnThumbDrag(thumb)
+  local area = thumb.area
   local _, cursorY = GetCursorPosition()
   cursorY = cursorY / thumb:GetEffectiveScale()
-  local visible = scroll:GetHeight()
+  local visible = area:GetHeight()
   local track = visible - thumb:GetHeight()
   if track > 0 then
-    local range = scroll:GetVerticalScrollRange()
-    SetScroll(thumb.startScroll + (thumb.startY - cursorY) / track * range)
+    local range = area:GetVerticalScrollRange()
+    ScrollTo(area, thumb.startScroll + (thumb.startY - cursorY) / track * range)
   end
 end
 
+-- A scroll frame with a thin bar on its right; the caller places it.
+-- Returns the scroll frame and its content frame.
 local function CreateScrollArea(parent)
-  scroll = CreateFrame("ScrollFrame", nil, parent)
-  scroll:SetPoint("TOPLEFT", SIDEBAR_WIDTH + PADDING, -(HEADER_HEIGHT + 64))
-  scroll:SetPoint("BOTTOMRIGHT", -(PADDING + SCROLLBAR_WIDTH), PADDING)
-  scroll:EnableMouseWheel(true)
-  scroll:SetScript(
+  local area = CreateFrame("ScrollFrame", nil, parent)
+  area:EnableMouseWheel(true)
+  area:SetScript(
     "OnMouseWheel",
     function(self, delta)
-      SetScroll(self:GetVerticalScroll() - delta * SCROLL_STEP)
+      ScrollTo(self, self:GetVerticalScroll() - delta * SCROLL_STEP)
     end
   )
 
-  content = CreateFrame("Frame", nil, scroll)
-  content:SetSize(1, 1)
-  scroll:SetScrollChild(content)
+  local child = CreateFrame("Frame", nil, area)
+  child:SetSize(1, 1)
+  area:SetScrollChild(child)
 
   local bar = CreateFrame("Frame", nil, parent)
-  bar:SetPoint("TOPLEFT", scroll, "TOPRIGHT", 5, 0)
-  bar:SetPoint("BOTTOMLEFT", scroll, "BOTTOMRIGHT", 5, 0)
+  bar:SetPoint("TOPLEFT", area, "TOPRIGHT", 5, 0)
+  bar:SetPoint("BOTTOMLEFT", area, "BOTTOMRIGHT", 5, 0)
   bar:SetWidth(3)
   Widgets.Fill(bar, colors.hover)
   local thumb = CreateFrame("Frame", nil, bar)
+  thumb.area = area
   thumb:SetWidth(3)
   thumb:SetHitRectInsets(-4, -4, 0, 0)
   thumb:EnableMouse(true)
@@ -2244,7 +2275,7 @@ local function CreateScrollArea(parent)
     function(self)
       local _, cursorY = GetCursorPosition()
       self.startY = cursorY / self:GetEffectiveScale()
-      self.startScroll = scroll:GetVerticalScroll()
+      self.startScroll = area:GetVerticalScroll()
       self:SetScript("OnUpdate", OnThumbDrag)
     end
   )
@@ -2267,7 +2298,8 @@ local function CreateScrollArea(parent)
     end
   )
   bar.Thumb = thumb
-  scroll.Bar = bar
+  area.Bar = bar
+  return area, child
 end
 
 --------------------------------------------------------------------------------
@@ -2587,12 +2619,43 @@ end
 --------------------------------------------------------------------------------
 
 local function UpdateLayout()
-  local contentWidth = frame:GetWidth() - SIDEBAR_WIDTH - 2 * PADDING - SCROLLBAR_WIDTH
-  columnCount = math.floor((contentWidth + CARD_GAP) / (MIN_COLUMN_WIDTH + CARD_GAP))
+  content:SetWidth(frame:GetWidth() - SIDEBAR_WIDTH - 2 * PADDING - SCROLLBAR_WIDTH)
+end
+
+-- Places cards on parent (the page or the dialog), `width` wide: cards with
+-- { fullWidth } (e.g. filters) span all columns above the others. The
+-- number of columns follows the width. Returns the height.
+local function LayoutCards(cards, parent, width)
+  local columnCount = math.floor((width + CARD_GAP) / (MIN_COLUMN_WIDTH + CARD_GAP))
   columnCount = math.max(1, math.min(MAX_COLUMNS, columnCount))
-  columnWidth = math.floor((contentWidth - (columnCount - 1) * CARD_GAP) / columnCount)
+  columnWidth = math.floor((width - (columnCount - 1) * CARD_GAP) / columnCount)
+
+  local top = 0
+  rowWidth = width - 2 * CARD_PADDING
+  for _, card in ipairs(cards) do
+    if card.fullWidth then
+      top = top + AddCard(card, parent, 0, top, width) + CARD_GAP
+    end
+  end
+
   rowWidth = columnWidth - 2 * CARD_PADDING
-  content:SetWidth(contentWidth)
+  local columns = {}
+  for i = 1, columnCount do
+    columns[i] = top
+  end
+  for _, card in ipairs(cards) do
+    if not card.fullWidth then
+      local column = 1
+      for i = 2, columnCount do
+        if columns[i] < columns[column] then
+          column = i
+        end
+      end
+      local left = (column - 1) * (columnWidth + CARD_GAP)
+      columns[column] = columns[column] + AddCard(card, parent, left, columns[column]) + CARD_GAP
+    end
+  end
+  return math.max(1, math.max(unpack(columns)) - CARD_GAP)
 end
 
 -- Path above the title on deeper levels: page › level › level (the current
@@ -2680,6 +2743,105 @@ local function UpdateTitle(title, subtitle, trail)
   scroll:SetPoint("TOPLEFT", SIDEBAR_WIDTH + PADDING, -(top + 64))
 end
 
+--------------------------------------------------------------------------------
+-- Dialog
+--------------------------------------------------------------------------------
+-- A second, movable window beside the page for everything about one thing
+-- that doesn't fit the page (e.g. all settings of an assignment). Pages ask
+-- for it while building, like for the preview: UI.SetDialog({ key, title,
+-- subtitle, cards, onClose }). It is rebuilt with the page, keeps its scroll
+-- position while the key stays the same and hides when the page stops
+-- asking for it or the window closes. Its close button calls onClose.
+
+local DIALOG_WIDTH, DIALOG_HEIGHT = 760, 600
+local dialog
+
+local function CreateDialog()
+  dialog = CreateFrame("Frame", "PhenomRaidToolsDialog", UIParent)
+  dialog:SetSize(DIALOG_WIDTH, DIALOG_HEIGHT)
+  dialog:SetPoint("TOPLEFT", frame, "TOPLEFT", SIDEBAR_WIDTH, -HEADER_HEIGHT)
+  dialog:SetFrameStrata("DIALOG")
+  dialog:SetToplevel(true)
+  dialog:SetMovable(true)
+  dialog:SetClampedToScreen(true)
+  dialog:EnableMouse(true)
+  dialog:Hide()
+  Widgets.Fill(dialog, colors.window)
+  Widgets.Border(dialog)
+
+  local header = CreateFrame("Frame", nil, dialog)
+  header:SetPoint("TOPLEFT")
+  header:SetPoint("TOPRIGHT")
+  header:SetHeight(HEADER_HEIGHT)
+  header:EnableMouse(true)
+  header:RegisterForDrag("LeftButton")
+  header:SetScript(
+    "OnDragStart",
+    function()
+      dialog:StartMoving()
+    end
+  )
+  header:SetScript(
+    "OnDragStop",
+    function()
+      dialog:StopMovingOrSizing()
+    end
+  )
+  dialog.Title = Widgets.Text(header, fonts.heading)
+  dialog.Title:SetPoint("TOPLEFT", PADDING, -13)
+  dialog.Subtitle = Widgets.Text(header, fonts.small)
+  dialog.Subtitle:SetPoint("TOPLEFT", dialog.Title, "BOTTOMLEFT", 0, -5)
+
+  local close =
+    Widgets.CreateGlyphButton(
+    header,
+    Widgets.glyphs.close,
+    function()
+      PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+      if dialog.onClose then
+        Widgets.SafeCall(dialog.onClose)
+      end
+      Render()
+    end
+  )
+  close:SetPoint("RIGHT", -PADDING + 4, 0)
+
+  local edge = header:CreateTexture(nil, "BORDER")
+  edge:SetColorTexture(unpack(colors.border))
+  edge:SetPoint("BOTTOMLEFT")
+  edge:SetPoint("BOTTOMRIGHT")
+  edge:SetHeight(1)
+
+  dialog.Scroll, dialog.Content = CreateScrollArea(dialog)
+  dialog.Scroll:SetPoint("TOPLEFT", PADDING, -(HEADER_HEIGHT + PADDING))
+  dialog.Scroll:SetPoint("BOTTOMRIGHT", -(PADDING + SCROLLBAR_WIDTH), PADDING)
+  dialog.Content:SetWidth(DIALOG_WIDTH - 2 * PADDING - SCROLLBAR_WIDTH)
+end
+
+local function ApplyDialog(spec)
+  if not spec then
+    if dialog then
+      dialog:Hide()
+    end
+    return
+  end
+  if not dialog then
+    CreateDialog()
+  end
+  local offset = dialog:IsShown() and dialog.key == spec.key and dialog.Scroll:GetVerticalScroll() or 0
+  local opening = not dialog:IsShown()
+  dialog.key, dialog.onClose = spec.key, spec.onClose
+  dialog.Title:SetText(spec.title or "")
+  dialog.Subtitle:SetText(Markup(spec.subtitle or ""))
+  dialog.Content:SetHeight(LayoutCards(spec.cards or {}, dialog.Content, dialog.Content:GetWidth()))
+  dialog.Scroll:UpdateScrollChildRect()
+  dialog:Show()
+  if opening then
+    dialog:Raise()
+  end
+  ScrollTo(dialog.Scroll, offset)
+end
+
 Render = function()
   local offset = scroll:GetVerticalScroll()
   UpdateLayout()
@@ -2690,42 +2852,15 @@ Render = function()
   wipe(activeRows)
   wipe(activeCards)
 
-  previewSpec = nil
+  previewSpec, dialogSpec = nil, nil
   local title, subtitle, cards, trail = GetPage()
   UpdateTitle(title, subtitle, trail)
   UI.Preview.Apply(frame, state.search == "" and previewSpec or nil)
 
-  -- Cards with { fullWidth } (e.g. filters) span all columns above the others.
-  local top = 0
-  for _, card in ipairs(cards) do
-    if card.fullWidth then
-      local width = content:GetWidth()
-      local columnRowWidth = rowWidth
-      rowWidth = width - 2 * CARD_PADDING
-      top = top + AddCard(card, 0, top, width) + CARD_GAP
-      rowWidth = columnRowWidth
-    end
-  end
-
-  local columns = {}
-  for i = 1, columnCount do
-    columns[i] = top
-  end
-  for _, card in ipairs(cards) do
-    if not card.fullWidth then
-      local column = 1
-      for i = 2, columnCount do
-        if columns[i] < columns[column] then
-          column = i
-        end
-      end
-      local left = (column - 1) * (columnWidth + CARD_GAP)
-      columns[column] = columns[column] + AddCard(card, left, columns[column]) + CARD_GAP
-    end
-  end
-  content:SetHeight(math.max(1, math.max(unpack(columns)) - CARD_GAP))
+  content:SetHeight(LayoutCards(cards, content, content:GetWidth()))
   scroll:UpdateScrollChildRect()
   SetScroll(offset)
+  ApplyDialog(state.search == "" and dialogSpec or nil)
   UpdateSidebar()
   profileButton:Update()
 end
@@ -2833,7 +2968,9 @@ local function CreateWindow()
   frame:SetResizable(true)
   frame:SetResizeBounds(MIN_WIDTH, minHeight, MAX_WIDTH, MAX_HEIGHT)
   frame:SetSize(Clamp(saved.width or DEFAULT_WIDTH, MIN_WIDTH, MAX_WIDTH), Clamp(saved.height or DEFAULT_HEIGHT, minHeight, MAX_HEIGHT))
-  CreateScrollArea(frame)
+  scroll, content = CreateScrollArea(frame)
+  scroll:SetPoint("TOPLEFT", SIDEBAR_WIDTH + PADDING, -(HEADER_HEIGHT + 64))
+  scroll:SetPoint("BOTTOMRIGHT", -(PADDING + SCROLLBAR_WIDTH), PADDING)
   CreateResizeGrip(frame)
 
   breadcrumb = CreateFrame("Frame", nil, frame)
@@ -2868,6 +3005,7 @@ local function CreateWindow()
       PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE)
       Widgets.HideTooltip()
       UI.Preview.Hide()
+      ApplyDialog(nil)
       searchBox:ClearFocus()
       -- Nothing stays movable once the options are closed.
       PRT.ReceiverOverlay.SetLocked(true)
@@ -2894,6 +3032,12 @@ end
 -- preview beside the window while it builds (see UI/Preview.lua).
 function UI.SetPreview(spec)
   previewSpec = spec
+end
+
+-- A page that edits more than fits on it opens the dialog while it builds
+-- (see Dialog above); without the call the dialog closes.
+function UI.SetDialog(spec)
+  dialogSpec = spec
 end
 
 -- UI.Open() reopens the last page; UI.Open(page, id, id, ...) opens a level.

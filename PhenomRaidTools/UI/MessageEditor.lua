@@ -17,6 +17,8 @@ local Widgets = PRT.Widgets
                 onRemove(), isTemplate }
   UI.Messages.Summary(message) -> one line for lists
   UI.Messages.WhenText(timing) -> "1:30", "every 0:30 from 0:45 to 4:00"
+  UI.Messages.FormRows(message, timing) -> flow rows with the main settings,
+    one per line (template, when, what, for whom, overlay, sound, difficulties)
 ]]
 
 local Messages = {}
@@ -88,11 +90,11 @@ local DIFFICULTIES = {
   {value = "Mythic", label = L["Mythic"]}
 }
 
--- How a message sounds: the overlay's sound, its own or read aloud.
+-- How a message sounds: the overlay's sound, its own or text to speech.
 local SOUND_MODES = {
   {value = "overlay", label = L["Overlay"]},
   {value = "own", label = L["Own"]},
-  {value = "tts", label = L["Read aloud"]}
+  {value = "tts", label = L["TTS"]}
 }
 
 local SOUND_NOTES = {
@@ -288,6 +290,21 @@ local function TimeRow(label, note, get, set)
   }
 end
 
+local function RunsOnDifficulty(timing, value)
+  return timing.difficulties == nil or timing.difficulties[value] == true
+end
+
+-- Turns one difficulty of a timing on or off (all on is stored as nil).
+local function SetDifficulty(timing, value, selected)
+  local difficulties = timing.difficulties or {Normal = true, Heroic = true, Mythic = true}
+  difficulties[value] = selected or nil
+  local all = true
+  for _, difficulty in ipairs(DIFFICULTIES) do
+    all = all and difficulties[difficulty.value]
+  end
+  timing.difficulties = not all and difficulties or nil
+end
+
 -- Difficulties of a timing (nil = all, {} = off); also the default of new
 -- assignments on the "New messages" page.
 function Messages.DifficultyRows(timing)
@@ -298,16 +315,10 @@ function Messages.DifficultyRows(timing)
     values = DIFFICULTIES,
     layout = true,
     get = function(value)
-      return timing.difficulties == nil or timing.difficulties[value]
+      return RunsOnDifficulty(timing, value)
     end,
     set = function(value, selected)
-      local difficulties = timing.difficulties or {Normal = true, Heroic = true, Mythic = true}
-      difficulties[value] = selected or nil
-      local all = true
-      for _, difficulty in ipairs(DIFFICULTIES) do
-        all = all and difficulties[difficulty.value]
-      end
-      timing.difficulties = not all and difficulties or nil
+      SetDifficulty(timing, value, selected)
     end
   }
   if timing.difficulties and next(timing.difficulties) == nil then
@@ -316,9 +327,41 @@ function Messages.DifficultyRows(timing)
   return rows
 end
 
+-- Once, repeating or several times, starting from the first time.
+local function SetWhenMode(timing, value)
+  local first = FirstSecond(timing)
+  if value == "repeat" then
+    timing.repeating = {from = first, every = 30, to = first + 120}
+    timing.seconds = RepeatTimes(timing.repeating)
+  else
+    timing.repeating = nil
+    if value == "once" then
+      timing.seconds = {first}
+    elseif #timing.seconds < 2 then
+      timing.seconds = {first, first + 60}
+    end
+  end
+end
+
+-- Older plans shift a timing by an offset; the editors show the real times.
+local function FoldOffset(timing)
+  local offset = timing.offset
+  if not offset then
+    return
+  end
+  for index, second in ipairs(timing.seconds or {}) do
+    timing.seconds[index] = math.max(0, second + offset)
+  end
+  if timing.repeating then
+    timing.repeating.from = math.max(0, (timing.repeating.from or 0) + offset)
+    timing.repeating.to = math.max(0, (timing.repeating.to or 0) + offset)
+  end
+  timing.offset = nil
+end
+
 local function WhenCard(context)
   local timing = context.timing
-  timing.offset = nil
+  FoldOffset(timing)
   local mode = WhenMode(timing)
   local rows = {
     {
@@ -328,18 +371,7 @@ local function WhenCard(context)
         return WhenMode(timing)
       end,
       set = function(value)
-        local first = FirstSecond(timing)
-        if value == "repeat" then
-          timing.repeating = {from = first, every = 30, to = first + 120}
-          timing.seconds = RepeatTimes(timing.repeating)
-        else
-          timing.repeating = nil
-          if value == "once" then
-            timing.seconds = {first}
-          elseif #timing.seconds < 2 then
-            timing.seconds = {first, first + 60}
-          end
-        end
+        SetWhenMode(timing, value)
       end
     }
   }
@@ -788,6 +820,34 @@ local function TemplateValues()
   return values
 end
 
+-- Replaces the message with a copy of a stored template.
+local function LoadTemplate(message, name)
+  local template = PRT.GetProfileDB().templateStore.messages[name]
+  if template then
+    Overwrite(message, template)
+    message.name = nil
+  end
+end
+
+-- Stores a copy of the message, named after its text without markers, icons
+-- and countdown.
+local function SaveAsTemplate(message)
+  local store = PRT.GetProfileDB().templateStore.messages
+  local text = (message.message or ""):gsub("{.-}", ""):gsub("%%%S*", ""):gsub("%s+", " ")
+  local base = strtrim(text):sub(1, 40)
+  if base == "" then
+    base = L["Template"]
+  end
+  local name, index = base, 2
+  while store[name] do
+    name, index = ("%s (%d)"):format(base, index), index + 1
+  end
+  local template = PRT.TableUtils.Clone(message)
+  template.name = name
+  store[name] = template
+  PRT.Info(L["Template %s saved."]:format(PRT.HighlightString(name)))
+end
+
 local function ToolsCard(message, context)
   local rows = {
     {
@@ -815,11 +875,7 @@ local function ToolsCard(message, context)
         get = function()
         end,
         set = function(name)
-          local template = PRT.GetProfileDB().templateStore.messages[name]
-          if template then
-            Overwrite(message, template)
-            message.name = nil
-          end
+          LoadTemplate(message, name)
         end
       }
     end
@@ -829,21 +885,7 @@ local function ToolsCard(message, context)
       note = L["Rename it on the Templates page."],
       buttonText = L["Save"],
       onClick = function()
-        local store = PRT.GetProfileDB().templateStore.messages
-        -- Named after its text without markers, icons and countdown.
-        local text = (message.message or ""):gsub("{.-}", ""):gsub("%%%S*", ""):gsub("%s+", " ")
-        local base = strtrim(text):sub(1, 40)
-        if base == "" then
-          base = L["Template"]
-        end
-        local name, index = base, 2
-        while store[name] do
-          name, index = ("%s (%d)"):format(base, index), index + 1
-        end
-        local template = PRT.TableUtils.Clone(message)
-        template.name = name
-        store[name] = template
-        PRT.Info(L["Template %s saved."]:format(PRT.HighlightString(name)))
+        SaveAsTemplate(message)
       end
     }
   end
@@ -953,54 +995,172 @@ function Messages.Cards(message, context)
 end
 
 -------------------------------------------------------------------------------
--- Sentence
+-- Form
 
--- Stands for several targets in the single choice of the sentence.
-local SEVERAL_TARGETS = "\001several"
+-- Width of the labels in front of each line, so the controls line up.
+local FORM_LABEL_WIDTH = 96
 
-local function SentenceTargets(message)
-  local values = {}
-  if #message.targets ~= 1 then
-    local labels = Messages.TargetLabels(message)
-    values[1] = {value = SEVERAL_TARGETS, label = labels ~= "" and labels or L["nobody"]}
-  end
-  for _, list in ipairs({ROLE_TARGETS, MemberTargets(), GroupTargets()}) do
-    for _, entry in ipairs(list) do
-      values[#values + 1] = entry
-    end
-  end
-  return values
+local function FormRow(label, items)
+  tinsert(items, 1, {kind = "text", text = label, dim = true, width = FORM_LABEL_WIDTH})
+  return {type = "flow", items = items}
 end
 
--- The assignment as one editable sentence for a flow row: "At [1:05] show
--- [text] to [Healer] on [Messages] for [5] s · Sound [Overlay|Own|TTS]".
--- Times other than once are shown as text and edited in the full editor.
-function Messages.SentenceItems(message, timing)
-  PRT.NormalizeTargets(message)
-  local items = {{kind = "text", text = L["At"]}}
-  if WhenMode(timing) == "once" then
+local function TimeInput(get, set, tooltip)
+  return {
+    kind = "input",
+    width = 56,
+    placeholder = "1:30",
+    tooltip = tooltip,
+    get = function()
+      return Widgets.FormatTime(get())
+    end,
+    set = function(text)
+      local times = Widgets.ParseTimeList(text)
+      if times[1] then
+        set(times[1])
+      end
+    end
+  }
+end
+
+local function TemplateItems(message)
+  local items = {}
+  if next(PRT.GetProfileDB().templateStore.messages) then
     items[#items + 1] = {
-      kind = "input",
-      width = 56,
-      placeholder = "1:30",
+      kind = "dropdown",
+      width = 240,
+      values = TemplateValues,
+      placeholder = L["Load template"],
+      tooltipTitle = L["Load template"],
+      tooltip = L["Replaces this message."],
       get = function()
-        return Widgets.FormatTime(FirstSecond(timing) + (timing.offset or 0))
       end,
-      set = function(text)
-        local times = Widgets.ParseTimeList(text)
-        if times[1] then
-          timing.seconds, timing.offset = {times[1]}, nil
-        end
+      set = function(name)
+        LoadTemplate(message, name)
       end
     }
   else
-    items[#items + 1] = {kind = "text", text = ("|cff%s%s|r"):format(Widgets.BRAND_HEX, Messages.WhenText(timing))}
+    items[#items + 1] = {kind = "text", text = L["No templates yet. Save one from any message."], dim = true}
   end
-  items[#items + 1] = {kind = "text", text = L["show"]}
+  items[#items + 1] = {
+    kind = "button",
+    label = L["Save as template"],
+    tooltip = L["Rename it on the Templates page."],
+    onClick = function()
+      SaveAsTemplate(message)
+    end
+  }
+  return items
+end
+
+local function WhenItems(timing)
+  FoldOffset(timing)
+  local items = {
+    {
+      kind = "chips",
+      values = WHEN_MODES,
+      get = function()
+        return WhenMode(timing)
+      end,
+      set = function(value)
+        SetWhenMode(timing, value)
+      end
+    },
+    {kind = "space"}
+  }
+  local mode = WhenMode(timing)
+  if mode == "once" then
+    items[#items + 1] =
+      TimeInput(
+      function()
+        return FirstSecond(timing)
+      end,
+      function(seconds)
+        timing.seconds = {seconds}
+      end,
+      L["After the pull, e.g. `1:30` or `90`."]
+    )
+  elseif mode == "repeat" then
+    local repeating = timing.repeating
+    items[#items + 1] = {kind = "text", text = L["from"]}
+    items[#items + 1] =
+      TimeInput(
+      function()
+        return repeating.from or 0
+      end,
+      function(seconds)
+        repeating.from = seconds
+        repeating.to = math.max(repeating.to or seconds, seconds)
+        timing.seconds = RepeatTimes(repeating)
+      end
+    )
+    items[#items + 1] = {kind = "text", text = L["every"]}
+    items[#items + 1] = {
+      kind = "input",
+      width = 40,
+      tooltip = L["Seconds between two times."],
+      get = function()
+        return tostring(repeating.every or 30)
+      end,
+      set = function(text)
+        local seconds = tonumber((text or ""):match("^%s*(%d+)"))
+        if seconds then
+          repeating.every = math.max(5, math.min(600, seconds))
+          timing.seconds = RepeatTimes(repeating)
+        end
+      end
+    }
+    items[#items + 1] = {kind = "text", text = L["s"]}
+    items[#items + 1] = {kind = "text", text = L["until"]}
+    items[#items + 1] =
+      TimeInput(
+      function()
+        return repeating.to or repeating.from or 0
+      end,
+      function(seconds)
+        repeating.to = seconds
+        timing.seconds = RepeatTimes(repeating)
+      end,
+      L["Not after this time."]
+    )
+  else
+    items[#items + 1] = {
+      kind = "input",
+      width = 260,
+      placeholder = "0:30, 1:15, 90",
+      tooltip = L["e.g. `0:30, 1:15, 90`."],
+      get = function()
+        return Widgets.FormatTimeList(timing.seconds)
+      end,
+      set = function(text)
+        local times = Widgets.ParseTimeList(text)
+        if #times > 0 then
+          timing.seconds = times
+        end
+      end
+    }
+  end
+  return items
+end
+
+local function WhatItems(message)
+  local items = {
+    {
+      kind = "chips",
+      values = TYPES,
+      get = function()
+        return message.type or "advanced"
+      end,
+      set = function(value)
+        SetType(message, value)
+      end
+    },
+    {kind = "space"}
+  }
   if message.type == "cooldown" then
     items[#items + 1] = {
       kind = "dropdown",
-      width = 190,
+      width = 240,
       values = CooldownValues,
       placeholder = L["Choose"],
       get = function()
@@ -1013,7 +1173,7 @@ function Messages.SentenceItems(message, timing)
   else
     items[#items + 1] = {
       kind = "input",
-      width = 220,
+      width = 340,
       placeholder = L["Text"],
       tooltipTitle = L["Text"],
       tooltip = L["`{rt1}` raid marker, `{spell:31821}` spell icon, `%.0f` remaining seconds."],
@@ -1025,76 +1185,149 @@ function Messages.SentenceItems(message, timing)
       end
     }
   end
-  items[#items + 1] = {kind = "text", text = L["to"]}
-  items[#items + 1] = {
-    kind = "dropdown",
-    width = 150,
-    values = function()
-      return SentenceTargets(message)
-    end,
-    tooltipTitle = L["For whom"],
-    tooltip = L["Several targets, classes and players outside your group: More."],
-    get = function()
-      return #message.targets == 1 and message.targets[1] or SEVERAL_TARGETS
-    end,
-    set = function(value)
-      if value ~= SEVERAL_TARGETS then
-        message.targets = {value}
-      end
-    end
-  }
-  items[#items + 1] = {kind = "text", text = L["on"]}
-  items[#items + 1] = {
-    kind = "dropdown",
-    width = 140,
-    values = OverlayValues,
-    get = function()
-      return message.targetOverlay or 1
-    end,
-    set = function(value)
-      message.targetOverlay = value
-    end
-  }
-  items[#items + 1] = {kind = "text", text = L["for"]}
-  items[#items + 1] = {
-    kind = "input",
-    width = 40,
-    get = function()
-      return tostring(message.duration or 5)
-    end,
-    set = function(text)
-      local seconds = tonumber((text or ""):match("^%s*(%d+%.?%d*)"))
-      if seconds then
-        message.duration = math.max(1, math.min(60, seconds))
-      end
-    end
-  }
-  items[#items + 1] = {kind = "text", text = L["s"]}
-  items[#items + 1] = {kind = "space"}
-  items[#items + 1] = {kind = "text", text = L["Sound"], dim = true}
-  items[#items + 1] = {
-    kind = "chips",
-    values = SOUND_MODES,
-    get = function()
-      return SoundMode(message)
-    end,
-    set = function(value)
-      SetSound(message, value)
-    end
-  }
   return items
 end
 
--- Message or cooldown, as chips for a flow row.
-function Messages.TypeItem(message)
+local function TargetItems(message)
+  local groups = {{values = ROLE_TARGETS}}
+  local members = MemberTargets()
+  if #members > 0 then
+    groups[#groups + 1] = {label = L["Your group"], values = members}
+  end
+  groups[#groups + 1] = {label = L["Raid groups"], values = GroupTargets()}
+  groups[#groups + 1] = {label = L["Classes"], values = ClassTargets()}
   return {
-    kind = "chips",
-    values = TYPES,
-    get = function()
-      return message.type or "advanced"
-    end,
-    set = function(value)
-      SetType(message, value)
-    end
+    {
+      kind = "dropdown",
+      width = 340,
+      groups = groups,
+      placeholder = L["nobody"],
+      tooltipTitle = L["For whom"],
+      tooltip = L["Everyone selected sees the message. Players outside your group: Advanced."],
+      isSelected = function(value)
+        return Has(message.targets, value)
+      end,
+      toggle = function(value, selected)
+        SetTarget(message, value, selected)
+      end,
+      text = function()
+        return Messages.TargetLabels(message)
+      end
+    }
+  }
+end
+
+local function OverlayItems(message)
+  return {
+    {
+      kind = "dropdown",
+      width = 200,
+      values = OverlayValues,
+      get = function()
+        return message.targetOverlay or 1
+      end,
+      set = function(value)
+        message.targetOverlay = value
+      end
+    },
+    {kind = "text", text = L["for"]},
+    {
+      kind = "input",
+      width = 40,
+      tooltip = L["Seconds on the overlay."],
+      get = function()
+        return tostring(message.duration or 5)
+      end,
+      set = function(text)
+        local seconds = tonumber((text or ""):match("^%s*(%d+%.?%d*)"))
+        if seconds then
+          message.duration = math.max(1, math.min(60, seconds))
+        end
+      end
+    },
+    {kind = "text", text = L["s"]}
+  }
+end
+
+local function SoundValues()
+  local values = {}
+  for _, name in ipairs(LSM:List("sound")) do
+    values[#values + 1] = {value = name, label = name}
+  end
+  return values
+end
+
+local function SoundItems(message)
+  local items = {
+    {
+      kind = "chips",
+      values = SOUND_MODES,
+      get = function()
+        return SoundMode(message)
+      end,
+      set = function(value)
+        SetSound(message, value)
+      end
+    }
+  }
+  local mode = SoundMode(message)
+  if mode == "own" then
+    items[#items + 1] = {kind = "space"}
+    items[#items + 1] = {
+      kind = "dropdown",
+      width = 220,
+      values = SoundValues,
+      placeholder = L["Choose"],
+      get = function()
+        return message.soundFileName
+      end,
+      set = function(value)
+        message.soundFileName = value
+        message.soundFile = LSM:Fetch("sound", value, true)
+        Widgets.PlaySound(value)
+      end
+    }
+  end
+  items[#items + 1] = {kind = "space"}
+  items[#items + 1] = {kind = "text", text = SOUND_NOTES[mode], dim = true}
+  return items
+end
+
+local function DifficultyItems(timing)
+  local items = {}
+  for _, difficulty in ipairs(DIFFICULTIES) do
+    items[#items + 1] = {
+      kind = "toggle",
+      label = difficulty.label,
+      active = function()
+        return RunsOnDifficulty(timing, difficulty.value)
+      end,
+      onClick = function()
+        SetDifficulty(timing, difficulty.value, not RunsOnDifficulty(timing, difficulty.value))
+      end
+    }
+  end
+  if timing.difficulties and next(timing.difficulties) == nil then
+    items[#items + 1] = {kind = "space"}
+    items[#items + 1] = {kind = "text", text = L["No difficulty: this assignment is off."], dim = true}
+  end
+  return items
+end
+
+-- The main settings of an assignment as labeled lines for a card; the rest
+-- (text options, players outside the group, undo) is in Messages.Cards.
+function Messages.FormRows(message, timing)
+  PRT.NormalizeTargets(message)
+  if not PRT.IsMessageSupported(message) or not message.type then
+    message.type = "advanced"
+  end
+  return {
+    FormRow(L["Template"], TemplateItems(message)),
+    FormRow(L["When"], WhenItems(timing)),
+    FormRow(L["What"], WhatItems(message)),
+    FormRow(L["For whom"], TargetItems(message)),
+    FormRow(L["Overlay"], OverlayItems(message)),
+    FormRow(L["Sound"], SoundItems(message)),
+    FormRow(L["Difficulties"], DifficultyItems(timing))
   }
 end

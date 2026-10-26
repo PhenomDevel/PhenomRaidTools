@@ -12,7 +12,7 @@ local Rehearsal = UI.Rehearsal
   Encounters and their plans, laid out like an editing desk: the bosses as
   tiles on top, a toolbar (rehearsal, view as, difficulty, zoom), the
   timeline across the whole width and below it the selected assignment as an
-  editable sentence. Levels (UI.Navigate("encounters", ...)):
+  editable form. Levels (UI.Navigate("encounters", ...)):
 
     {}                  the last shown encounter (or the first one)
     { "new" }           a new encounter: the raid bosses of the current tier
@@ -37,11 +37,11 @@ local desk = {
   encounterID = nil,
   -- "View as": "" for all targets, a role or a player's name.
   view = "",
-  -- "" for all difficulties, else "Normal", "Heroic" or "Mythic".
-  difficulty = "",
+  -- The difficulties the timeline shows (the others are dimmed).
+  difficulties = {Normal = true, Heroic = true, Mythic = true},
   -- { from, to } while zoomed in.
   zoom = nil,
-  -- The full editor below the sentence.
+  -- The Advanced window with all settings of the selected assignment.
   details = false
 }
 
@@ -701,7 +701,6 @@ local VIEW_ROLES = {
 }
 
 local DIFFICULTIES = {
-  {value = "", label = L["All"]},
   {value = "Normal", label = L["Normal"]},
   {value = "Heroic", label = L["Heroic"]},
   {value = "Mythic", label = L["Mythic"]}
@@ -742,15 +741,14 @@ local function Reaches(message, view)
   return false
 end
 
--- Whether an assignment runs on the chosen difficulty ("" = any).
-local function RunsOn(timing, difficulty)
-  local difficulties = timing.difficulties
-  if difficulties == nil then
-    return true
-  elseif difficulty == "" then
-    return next(difficulties) ~= nil
+-- Whether an assignment runs on one of the chosen difficulties.
+local function RunsOn(timing, chosen)
+  for _, difficulty in ipairs(DIFFICULTIES) do
+    if chosen[difficulty.value] and (timing.difficulties == nil or timing.difficulties[difficulty.value]) then
+      return true
+    end
   end
-  return difficulties[difficulty] == true
+  return false
 end
 
 -- Everyone, the roles and every player of the group or the plan.
@@ -808,7 +806,7 @@ local function RehearsalEvents(encounter)
   return function()
     local events = {}
     for _, assignment in ipairs(Assignments(Version(encounter))) do
-      if RunsOn(assignment.timing, desk.difficulty) and Reaches(assignment.message, desk.view) then
+      if RunsOn(assignment.timing, desk.difficulties) and Reaches(assignment.message, desk.view) then
         for _, at in ipairs(ShowTimes(assignment)) do
           events[#events + 1] = {at = at, message = assignment.message}
         end
@@ -859,6 +857,22 @@ local SPEEDS = {
   {value = 1, label = "1×", tooltip = L["Real time, with sounds."]},
   {value = 4, label = "4×", tooltip = L["Four times as fast, without sounds."]}
 }
+
+-- Each difficulty switches on its own; the timeline dims what runs on none
+-- of the chosen ones.
+local function DifficultyToggle(difficulty)
+  return {
+    kind = "toggle",
+    label = difficulty.label,
+    tooltip = L["Dims the assignments that don't run on the chosen difficulties."],
+    active = function()
+      return desk.difficulties[difficulty.value] == true
+    end,
+    onClick = function()
+      desk.difficulties[difficulty.value] = not desk.difficulties[difficulty.value] or nil
+    end
+  }
+end
 
 local function ToolbarCard(encounter)
   local version = Version(encounter)
@@ -912,16 +926,9 @@ local function ToolbarCard(encounter)
       end
     },
     {kind = "space"},
-    {
-      kind = "chips",
-      values = DIFFICULTIES,
-      get = function()
-        return desk.difficulty
-      end,
-      set = function(value)
-        desk.difficulty = value
-      end
-    },
+    DifficultyToggle(DIFFICULTIES[1]),
+    DifficultyToggle(DIFFICULTIES[2]),
+    DifficultyToggle(DIFFICULTIES[3]),
     {kind = "space"},
     {kind = "text", text = L["Zoom"], dim = true},
     {
@@ -1021,7 +1028,7 @@ end
 local function Marker(encounter, assignment, second, at, selectedKey)
   local message, timing = assignment.message, assignment.timing
   local key = AssignmentKey(assignment.timerIndex, assignment.timingIndex)
-  local off = not RunsOn(timing, desk.difficulty)
+  local off = not RunsOn(timing, desk.difficulties)
   local difficulties = Messages.DifficultyText(timing)
   local targets = Messages.TargetsText(message)
   return {
@@ -1143,57 +1150,46 @@ local function RemoveAssignment(encounter, timer, timingIndex)
   UI.Navigate("encounters", encounter.id)
 end
 
--- The assignment as one sentence below the timeline; More shows the full
--- editor (repeating, difficulties, more targets, own sound, templates).
+-- The selected assignment as a form below the timeline; Advanced opens all
+-- its settings in a window of their own (text options, players outside the
+-- group, undo).
 local function AssignmentCards(encounter, timerIndex, timingIndex)
   local version = Version(encounter)
   local timer = version.Timers[timerIndex]
   local timing = timer.timings[timingIndex]
   local message = timing.messages[1]
-  local difficulties = Messages.DifficultyText(timing)
-  local actions = {
-    Messages.TypeItem(message),
-    {kind = "space"},
-    {
-      kind = "button",
-      label = desk.details and L["Less"] or L["More"],
-      tooltip = L["Repeating, several times, difficulties, more targets, own sound and templates."],
-      onClick = function()
-        desk.details = not desk.details
-      end
-    },
-    {
-      kind = "button",
-      label = L["Close"],
-      onClick = function()
-        UI.Navigate("encounters", encounter.id)
-      end
-    },
-    {
-      kind = "button",
-      label = L["Delete"],
-      danger = true,
-      onClick = function()
-        UI.Confirm(
-          L["Delete this assignment?"],
-          L["Delete"],
-          function()
-            RemoveAssignment(encounter, timer, timingIndex)
-          end
-        )
-      end
-    }
-  }
-  if difficulties then
-    tinsert(actions, 2, {kind = "text", text = difficulties, dim = true})
-  end
-  local cards = {
-    {
-      title = L["Assignment"],
-      fullWidth = true,
-      rows = {
-        {type = "flow", items = Messages.SentenceItems(message, timing)},
-        {type = "flow", items = actions}
+  local rows = Messages.FormRows(message, timing)
+  rows[#rows + 1] = {
+    type = "flow",
+    items = {
+      {
+        kind = "button",
+        label = L["Advanced"],
+        tooltip = L["All settings in a window of their own: text options, players outside your group, undo."],
+        onClick = function()
+          desk.details = not desk.details
+        end
+      },
+      {
+        kind = "button",
+        label = L["Close"],
+        onClick = function()
+          UI.Navigate("encounters", encounter.id)
+        end
+      },
+      {
+        kind = "button",
+        label = L["Delete"],
+        danger = true,
+        onClick = function()
+          UI.Confirm(
+            L["Delete this assignment?"],
+            L["Delete"],
+            function()
+              RemoveAssignment(encounter, timer, timingIndex)
+            end
+          )
+        end
       }
     }
   }
@@ -1205,13 +1201,20 @@ local function AssignmentCards(encounter, timerIndex, timingIndex)
         RemoveAssignment(encounter, timer, timingIndex)
       end
     }
-    for _, card in ipairs(Messages.Cards(message, context)) do
-      cards[#cards + 1] = card
-    end
-  else
-    UI.SetPreview({kind = "message", message = message})
+    UI.SetDialog(
+      {
+        key = tostring(timing),
+        title = L["Advanced"],
+        subtitle = ("%s · %s"):format(Widgets.FormatTime(FirstTime(timing) or 0), Messages.Summary(message)),
+        cards = Messages.Cards(message, context),
+        onClose = function()
+          desk.details = false
+        end
+      }
+    )
   end
-  return cards
+  UI.SetPreview({kind = "message", message = message})
+  return {{title = L["Assignment"], fullWidth = true, rows = rows}}
 end
 
 -------------------------------------------------------------------------------

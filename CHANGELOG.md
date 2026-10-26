@@ -3,16 +3,17 @@
 ## Unreleased
 
 ### Added
-- **The encounter page is one desk:** the bosses of the instance as tiles on top, a toolbar, the timeline across the whole width and the selected assignment below it as one sentence (*At 1:05 show … to … on … for 5 s*). *More* opens the full editor. There is no separate encounter list or assignment page anymore.
+- **The encounter page is one desk:** the bosses of the instance as tiles on top, a toolbar, the timeline across the whole width and the selected assignment below it as a form with one line per setting: template, when (once, repeating or several times), what, for whom, overlay and duration, sound and difficulties. A new assignment can start from a template right there. *Advanced* opens every setting in a window of its own. There is no separate encounter list or assignment page anymore.
 - **Rehearsal:** plays the plan from the playhead on your overlays, in real time or four times as fast. Click on the time axis to move the playhead.
-- **View as** a role or player: the timeline and the rehearsal show only what they get. A difficulty filter dims the assignments that don't run on it.
+- **View as** a role or player: the timeline and the rehearsal show only what they get. Normal, Heroic and Mythic switch on and off one by one; the timeline dims the assignments that run on none of them.
 - In the timeline, drag a marker to move the assignment, with Alt to copy it, and middle-click it to delete it (asks first). Ctrl + mouse wheel zooms, Shift + mouse wheel scrolls the zoomed timeline, and repeating assignments show as a bar.
 - Demo: *Overlays → Demo* or `/prt demo` plays a sample fight of about 40 seconds with every kind of message for you (text with countdown, marker, own sound, read aloud, healing and utility cooldowns, a repeating assignment) on your overlays, plus your next assignments and the raid plan in combat. It runs anywhere, out of combat and in every role.
 
 ### Changed
 - Simpler window: the overview and the settings are one page (with *About* at the end), and importing an encounter moved to *New encounter*.
 - The overview picks your role (lead, player or both) the same way as the first start guide.
-- A message's sound is one choice: the overlay's sound, its own sound or read aloud.
+- A message's sound is one choice: the overlay's sound, its own sound or TTS (text to speech).
+- An assignment's targets are picked with ticks in one list (roles, your group, raid groups, classes), so several targets need no extra step.
 - *Save as template* is one click; the template is named after the message and can be renamed on the templates page.
 - Overlays have one *Unlock* switch instead of lock and unlock buttons, *Raid plan in combat* (formerly *Lead status*) one switch to place it, and the layout options are labeled.
 - *New messages* is its own page with the same options as an assignment (type, text, targets, overlay, duration, sound) plus the difficulties of new assignments. Every new assignment and template starts as this message.
