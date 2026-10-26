@@ -77,15 +77,18 @@ local fonts = Widgets.fonts
 -- references stand out from the prose:
 --   `name`   technical name (frame, setting)
 --   {Label}  an option of this addon
+--   <Click>  a key or mouse action, in gold as in Quality of Life Forever
 
 local SETTING_COLOR = "|cff8fe3a8"
 local OPTION_COLOR = "|cff8cc4ff"
+local ACTION_COLOR = "|cffffd100"
 
 function Widgets.Markup(text)
   if type(text) ~= "string" then
     return text
   end
   text = text:gsub("`([^`]+)`", SETTING_COLOR .. "%1|r")
+  text = text:gsub("<([^<>]+)>", ACTION_COLOR .. "%1|r")
   return (text:gsub("{([^{}]+)}", OPTION_COLOR .. "%1|r"))
 end
 local Markup = Widgets.Markup

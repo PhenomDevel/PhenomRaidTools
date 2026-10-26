@@ -16,7 +16,7 @@ UI.RegisterPage(
     order = 45,
     build = function()
       local defaults = PRT.MessageDefaults()
-      local cards = UI.Messages.Cards(defaults.message, {isTemplate = true})
+      local cards = UI.Messages.Cards(defaults.message, {isTemplate = true, isDefaults = true})
       table.insert(
         cards,
         2,

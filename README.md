@@ -46,14 +46,15 @@ What changed: [CHANGELOG.md](https://github.com/PhenomDevel/PhenomRaidTools/blob
 - **Timeline:** each boss is one large timeline with a lane per target. Click
   where an assignment belongs and edit it in the form below (or start it from
   a template); *Advanced* opens every setting in a window of its own. Drag a marker
-  to move it (with Alt to copy it), middle-click it to delete it, zoom with
-  Ctrl + mouse wheel. An assignment shows once, repeating (every *n* seconds
+  to move it (with Alt to copy it), middle-click it to delete it, zoom with the
+  mouse wheel (up to 20 minutes). An assignment shows once, repeating (every *n* seconds
   from–to) or at several times, for the players, roles, raid groups or classes
   you pick, on the difficulties you pick.
-- **Rehearsal:** play the plan on your overlays in real time or four times as
+- **Demo playback:** play the plan on your overlays in real time or four times as
   fast, for everyone or as a role or player sees it.
 - **Cooldowns:** pick a raid or utility cooldown; it shows with icon and spell
-  name (or your text). Text to speech can read any message aloud.
+  name (or your text), a few seconds early with a countdown to the moment to
+  press it. Text to speech can read any message aloud.
 - **Sync before the pull:** the lead sends the plans on every ready check or
   with `/prt sync`; the overview shows who has them. Plans are accepted from
   the group leader and assistants only.

@@ -3,10 +3,11 @@
 ## Unreleased
 
 ### Added
-- **The encounter page is one desk:** the bosses of the instance as tiles on top, a toolbar, the timeline across the whole width and the selected assignment below it as a form with one line per setting: template, when (once, repeating or several times), what, for whom, overlay and duration, sound and difficulties. A new assignment can start from a template right there. *Advanced* opens every setting in a window of its own. There is no separate encounter list or assignment page anymore.
-- **Rehearsal:** plays the plan from the playhead on your overlays, in real time or four times as fast. Click on the time axis to move the playhead.
-- **View as** a role or player: the timeline and the rehearsal show only what they get. Normal, Heroic and Mythic switch on and off one by one; the timeline dims the assignments that run on none of them.
-- In the timeline, drag a marker to move the assignment, with Alt to copy it, and middle-click it to delete it (asks first). Ctrl + mouse wheel zooms, Shift + mouse wheel scrolls the zoomed timeline, and repeating assignments show as a bar.
+- Warn earlier: a cooldown shows 5 seconds before its time by default and counts down to the moment you press it, then shows *Now*. Change the default on the *New messages* page or per assignment; text messages can warn earlier too.
+- **The encounter page is one desk:** the bosses of the instance as tiles on top, a toolbar, the timeline across the whole width and the selected assignment below it as a form with one line per setting: template, when (once, repeating or several times), what, for whom, overlay, duration and warning, sound and difficulties. A new assignment can start from a template right there. *Advanced* opens every setting in a window of its own. There is no separate encounter list or assignment page anymore.
+- **Demo playback:** plays the plan from the playhead on your overlays, in real time or four times as fast. Click on the time axis to move the playhead.
+- **View as** a role or player: the timeline and the demo playback show only what they get. Normal, Heroic and Mythic switch on and off one by one; the timeline dims the assignments that run on none of them.
+- In the timeline, drag a marker to move the assignment, with Alt to copy it, and middle-click it to delete it (asks first). The mouse wheel zooms (out to 20 minutes, to plan after the last assignment), Shift + mouse wheel scrolls the time, and repeating assignments show as a bar. The timeline and its markers list these controls.
 - Demo: *Overlays → Demo* or `/prt demo` plays a sample fight of about 40 seconds with every kind of message for you (text with countdown, marker, own sound, read aloud, healing and utility cooldowns, a repeating assignment) on your overlays, plus your next assignments and the raid plan in combat. It runs anywhere, out of combat and in every role.
 
 ### Changed
@@ -15,6 +16,7 @@
 - A message's sound is one choice: the overlay's sound, its own sound or TTS (text to speech).
 - An assignment's targets are picked with ticks in one list (roles, your group, raid groups, classes), so several targets need no extra step.
 - *Save as template* is one click; the template is named after the message and can be renamed on the templates page.
+- The message editor has no *Tools* card and no *Undo* anymore; loading and saving templates and deleting the assignment are at the end of *Display*.
 - Overlays have one *Unlock* switch instead of lock and unlock buttons, *Raid plan in combat* (formerly *Lead status*) one switch to place it, and the layout options are labeled.
 - *New messages* is its own page with the same options as an assignment (type, text, targets, overlay, duration, sound) plus the difficulties of new assignments. Every new assignment and template starts as this message.
 - Overlays lock again when you close the options window.
@@ -26,6 +28,7 @@
 ### Fixed
 - The *Every* slider of a repeating assignment can be dragged again.
 - Overlays in icon or bar style and the upcoming list show a message's icon once instead of twice (cooldowns showed their spell icon beside and in the text).
+- *Countdown* now has an effect on overlays in icon or bar style (and in the preview): without it, no remaining seconds show beside the text.
 - The button that writes the cooldown assignments into your MethodRaidTools note is back. It is now always shown on the encounter page and grayed out only when MethodRaidTools isn't loaded.
 
 ## v3.1.0 (2026-10-25)

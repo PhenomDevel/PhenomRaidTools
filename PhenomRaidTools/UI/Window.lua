@@ -1,4 +1,4 @@
--- luacheck: read globals GetCursorPosition PlaySound SOUNDKIT C_Timer GetCurrentKeyBoardFocus IsControlKeyDown IsShiftKeyDown IsAltKeyDown
+-- luacheck: read globals GetCursorPosition PlaySound SOUNDKIT C_Timer GetCurrentKeyBoardFocus IsShiftKeyDown IsAltKeyDown
 local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
@@ -1152,7 +1152,7 @@ rowTypes.sound = {
 --   view = { from, to }      the visible part of 0..length (zoomed in)
 --   onClickTime(seconds)     a click into the plot adds something there
 --   onClickAxis(seconds)     a click on the time axis, e.g. to move the playhead
---   onZoom(factor, seconds)  Ctrl + mouse wheel over the plot, around `seconds`
+--   onZoom(factor, seconds)  mouse wheel over the plot, around `seconds`
 --   onPan(seconds)           Shift + mouse wheel over the plot
 --   playhead() -> seconds    a line that follows the value every frame
 --   onMove(seconds, copy)    dragging a marker (copy while Alt is held)
@@ -1286,14 +1286,15 @@ local function OnTimelinePlotUpdate(plot)
   end
 end
 
--- Ctrl zooms, Shift scrolls the time; otherwise the page scrolls as usual.
+-- The wheel zooms, with Shift it scrolls the time; without either the page
+-- scrolls as usual.
 local function OnTimelineWheel(self, delta)
   local row = self.row
-  if IsControlKeyDown() and row.onZoom then
-    Widgets.SafeCall(row.onZoom, delta > 0 and 0.8 or 1.25, TimelineCursorTime(row))
-    Render()
-  elseif IsShiftKeyDown() and row.onPan then
+  if IsShiftKeyDown() and row.onPan then
     Widgets.SafeCall(row.onPan, -delta * (row.to - row.from) / 10)
+    Render()
+  elseif row.onZoom then
+    Widgets.SafeCall(row.onZoom, delta > 0 and 0.8 or 1.25, TimelineCursorTime(row))
     Render()
   else
     SetScroll(scroll:GetVerticalScroll() - delta * SCROLL_STEP)
