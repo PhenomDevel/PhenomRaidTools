@@ -14,7 +14,7 @@ local Widgets = PRT.Widgets
 
   UI.Messages.Cards(message, context) -> cards
     context = { timing = the assignment's timing (encounters only),
-                onRemove(), isTemplate }
+                onRemove(), isTemplate, isDefaults }
   UI.Messages.Summary(message) -> one line for lists
   UI.Messages.WhenText(timing) -> "1:30", "every 0:30 from 0:45 to 4:00"
 ]]
@@ -284,6 +284,34 @@ local function TimeRow(label, note, get, set)
   }
 end
 
+-- Difficulties of a timing (nil = all, {} = off); also the default of new
+-- assignments on the "New messages" page.
+function Messages.DifficultyRows(timing)
+  local rows = {}
+  rows[#rows + 1] = {
+    type = "multiselect",
+    label = L["Difficulties"],
+    values = DIFFICULTIES,
+    layout = true,
+    get = function(value)
+      return timing.difficulties == nil or timing.difficulties[value]
+    end,
+    set = function(value, selected)
+      local difficulties = timing.difficulties or {Normal = true, Heroic = true, Mythic = true}
+      difficulties[value] = selected or nil
+      local all = true
+      for _, difficulty in ipairs(DIFFICULTIES) do
+        all = all and difficulties[difficulty.value]
+      end
+      timing.difficulties = not all and difficulties or nil
+    end
+  }
+  if timing.difficulties and next(timing.difficulties) == nil then
+    rows[#rows + 1] = {type = "notice", label = L["No difficulty: this assignment is off."]}
+  end
+  return rows
+end
+
 local function WhenCard(context)
   local timing = context.timing
   timing.offset = nil
@@ -384,26 +412,8 @@ local function WhenCard(context)
       end
     }
   end
-  rows[#rows + 1] = {
-    type = "multiselect",
-    label = L["Difficulties"],
-    values = DIFFICULTIES,
-    layout = true,
-    get = function(value)
-      return timing.difficulties == nil or timing.difficulties[value]
-    end,
-    set = function(value, selected)
-      local difficulties = timing.difficulties or {Normal = true, Heroic = true, Mythic = true}
-      difficulties[value] = selected or nil
-      local all = true
-      for _, difficulty in ipairs(DIFFICULTIES) do
-        all = all and difficulties[difficulty.value]
-      end
-      timing.difficulties = not all and difficulties or nil
-    end
-  }
-  if timing.difficulties and next(timing.difficulties) == nil then
-    rows[#rows + 1] = {type = "notice", label = L["No difficulty: this assignment is off."]}
+  for _, row in ipairs(Messages.DifficultyRows(timing)) do
+    rows[#rows + 1] = row
   end
   return {title = L["When"], note = L["Counted from the pull."], rows = rows}
 end
@@ -843,6 +853,43 @@ local function ToolsCard(message, context)
   return {title = L["Tools"], rows = rows}
 end
 
+-- On the defaults page it sets the lead time of cooldowns without their own.
+local function LeadTimeRow(message, context)
+  local row = {
+    type = "slider",
+    label = L["Warn earlier"],
+    note = L["Shows the message this many seconds before its time and counts down to it, then \"Now\"."],
+    min = 0,
+    max = 30,
+    step = 0.5,
+    get = function()
+      return PRT.MessageLeadTime(message)
+    end,
+    set = function(value)
+      message.leadTime = value
+    end,
+    -- Cooldowns without their own lead time follow the default.
+    reset = message.type == "cooldown" and {
+      changed = function()
+        return message.leadTime ~= nil
+      end,
+      reset = function()
+        message.leadTime = nil
+      end
+    } or nil
+  }
+  if context.isDefaults then
+    row.label = L["Warn cooldowns earlier"]
+    row.note = L["Seconds before their time, for cooldowns without their own setting."]
+    row.reset = nil
+    row.get = PRT.CooldownLeadTime
+    row.set = function(value)
+      PRT.MessageDefaults().cooldownLeadTime = value
+    end
+  end
+  return row
+end
+
 -------------------------------------------------------------------------------
 -- Cards
 
@@ -887,29 +934,7 @@ function Messages.Cards(message, context)
         message.targetOverlay = value
       end
     },
-    {
-      type = "slider",
-      label = L["Warn earlier"],
-      note = L["Shows the message this many seconds before its time and counts down to it, then \"Now\"."],
-      min = 0,
-      max = 30,
-      step = 0.5,
-      get = function()
-        return PRT.MessageLeadTime(message)
-      end,
-      set = function(value)
-        message.leadTime = value
-      end,
-      -- Cooldowns without their own lead time follow the settings.
-      reset = message.type == "cooldown" and {
-        changed = function()
-          return message.leadTime ~= nil
-        end,
-        reset = function()
-          message.leadTime = nil
-        end
-      } or nil
-    },
+    LeadTimeRow(message, context),
     {
       type = "slider",
       label = L["Duration"],

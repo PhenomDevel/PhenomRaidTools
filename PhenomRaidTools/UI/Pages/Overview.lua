@@ -7,7 +7,8 @@ local colors = PRT.Widgets.colors
 
 --[[
   Start page: what this client does (lead/player), whether the group has the
-  current plans and which plans this client received. The plan of an
+  current plans and which plans this client received, followed by the
+  settings (Settings.lua). The plan of an
   encounter opens one level deeper with the confirmation of every member.
 ]]
 
@@ -84,6 +85,17 @@ local function StatusCard()
   return {
     title = L["Status"],
     rows = {
+      {
+        type = "checkbox",
+        label = L["Enabled"],
+        note = L["Off: no plans run, no messages show."],
+        get = function()
+          return PRT.GetProfileDB().enabled
+        end,
+        set = function(value)
+          PRT.GetProfileDB().enabled = value
+        end
+      },
       {type = "chips", label = L["Role"], values = ROLES, get = UI.GetRole, set = UI.SetRole},
       {type = "hint", label = ROLE_NOTES[UI.GetRole()] or L["Choose what you do in the raid."]},
       {
@@ -233,6 +245,10 @@ UI.RegisterPage(
     id = "overview",
     label = L["Overview"],
     order = 10,
+    searchable = true,
+    status = function()
+      return PRT.IsEnabled()
+    end,
     build = function(path)
       local encounter = path[1] and PRT.IsSender() and FindEncounter(path[1])
       if encounter then
@@ -244,6 +260,9 @@ UI.RegisterPage(
       end
       if PRT.IsReceiver() then
         cards[#cards + 1] = PlayerCard()
+      end
+      for _, card in ipairs(UI.SettingsCards()) do
+        cards[#cards + 1] = card
       end
       return L["Overview"], GroupText(), cards
     end

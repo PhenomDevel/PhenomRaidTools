@@ -13,6 +13,8 @@ local LSM = LibStub("LibSharedMedia-3.0")
   from        anchor | center            stack starts at the anchor or is centered on it
   align       LEFT | CENTER | RIGHT      text alignment of vertical stacks
   spacing, maxEntries, iconSize, barWidth, barColor, fontSize, fontName, fontColor
+  fontOutline NONE | OUTLINE | THICKOUTLINE
+  fontShadow  shadow below the texts
   x, y        anchor offset from the screen center
 
   Frames are pooled and reused across encounters and profile changes. A
@@ -73,11 +75,6 @@ local function EnsurePosition(config)
   end
 end
 
-local function Font(config)
-  local font = config.fontName and LSM:Fetch("font", config.fontName, true)
-  return font or config.font or STANDARD_TEXT_FONT, Get(config, "fontSize")
-end
-
 local function Color(color, fallback)
   color = color or fallback
   return color.r or 1, color.g or 1, color.b or 1, color.a or 1
@@ -119,17 +116,35 @@ end
 ReceiverOverlay.FormatRemaining = FormatRemaining
 ReceiverOverlay.WithoutTime = WithoutTime
 
--- Icon of the message: its spell, a spell or raid marker in the text, or the logo.
-function ReceiverOverlay.MessageIcon(message, raw)
-  local icon = PRT.SpellIcon(message.spellID)
-  if not icon and raw then
-    icon = PRT.SpellIcon(raw:match("{spell:(%d+)}"))
-    if not icon then
-      local marker = raw:match("{rt(%d)}")
-      icon = marker and RAID_TARGET_ICON:format(marker)
-    end
+-- Removes the first `token` from `text`.
+local function WithoutToken(text, token)
+  local first, last = text:find(token, 1, true)
+  if not first then
+    return text
   end
-  return icon or DEFAULT_ICON
+  local before, after = text:sub(1, first - 1):gsub("%s+$", ""), text:sub(last + 1):gsub("^%s+", "")
+  return strtrim(before .. " " .. after)
+end
+
+-- Icon of the message: its spell, a spell or raid marker in the text, or the logo.
+-- Also returns `raw` without the token the icon came from, for displays that
+-- show the icon on its own (cooldown texts start with their spell's icon).
+function ReceiverOverlay.MessageIcon(message, raw)
+  raw = raw or ""
+  local icon = PRT.SpellIcon(message.spellID)
+  if icon then
+    return icon, WithoutToken(raw, ("{spell:%s}"):format(message.spellID))
+  end
+  local spellID = raw:match("{spell:(%d+)}")
+  icon = PRT.SpellIcon(spellID)
+  if icon then
+    return icon, WithoutToken(raw, ("{spell:%s}"):format(spellID))
+  end
+  local marker = raw:match("{rt(%d)}")
+  if marker then
+    return RAID_TARGET_ICON:format(marker), WithoutToken(raw, ("{rt%s}"):format(marker))
+  end
+  return DEFAULT_ICON, raw
 end
 
 -------------------------------------------------------------------------------
@@ -171,9 +186,9 @@ end
 local function SetupEntry(display, entry)
   local config = display.config
   local style = Get(config, "style")
-  local font, size = Font(config)
+  local size = Get(config, "fontSize")
   local r, g, b, a = Color(config.fontColor, DEFAULT_FONT_COLOR)
-  entry.Text:SetFont(font, size, "OUTLINE")
+  PRT.SetOverlayFont(entry.Text, config, size)
   entry.Text:SetTextColor(r, g, b, a)
   entry.Text:ClearAllPoints()
   entry.Time:ClearAllPoints()
@@ -196,7 +211,7 @@ local function SetupEntry(display, entry)
     entry.Icon:SetTexture(entry.icon)
     entry.Icon:SetSize(iconSize, iconSize)
     entry.Icon:SetPoint("LEFT")
-    entry.Time:SetFont(font, math.max(10, math.floor(iconSize * 0.45)), "OUTLINE")
+    PRT.SetOverlayFont(entry.Time, config, math.max(10, math.floor(iconSize * 0.45)))
     entry.Time:SetTextColor(1, 1, 1, 1)
     entry.Time:SetPoint("CENTER", entry.Icon)
     entry.Text:SetJustifyH("LEFT")
@@ -213,7 +228,7 @@ local function SetupEntry(display, entry)
     entry.Bar:SetPoint("BOTTOMRIGHT")
     entry.Bar:SetStatusBarColor(Color(config.barColor, DEFAULT_BAR_COLOR))
     entry.Bar:SetMinMaxValues(0, math.max(0.01, entry.duration))
-    entry.Time:SetFont(font, math.max(10, size - 4), "OUTLINE")
+    PRT.SetOverlayFont(entry.Time, config, math.max(10, size - 4))
     entry.Time:SetTextColor(r, g, b, a)
     entry.Time:SetPoint("RIGHT", entry.Bar, "RIGHT", -6, 0)
     entry.Text:SetJustifyH("LEFT")
@@ -513,9 +528,11 @@ local function AddToDisplay(display, message, silent)
   end
   entry.added = now
   local text = PRT.PrepareMessageForDisplay(raw)
+  local icon, rest = ReceiverOverlay.MessageIcon(message, raw)
   entry.hasFormat = HasFormat(text)
-  entry.text = Get(config, "style") == "text" and text or WithoutTime(text)
-  entry.icon = ReceiverOverlay.MessageIcon(message, raw)
+  -- Icons and bars show the icon beside the text, so not in it as well.
+  entry.text = Get(config, "style") == "text" and text or WithoutTime(PRT.PrepareMessageForDisplay(rest))
+  entry.icon = icon
   SetupEntry(display, entry)
 
   local position = #entries + 1
