@@ -7,24 +7,47 @@ local UI = PRT.UI
 local Widgets = PRT.Widgets
 local colors = Widgets.colors
 local Messages = UI.Messages
+local Rehearsal = UI.Rehearsal
 
 --[[
-  Encounters and their plans. Levels (UI.Navigate("encounters", ...)):
+  Encounters and their plans, laid out like an editing desk: the bosses as
+  tiles on top, a toolbar (rehearsal, view as, difficulty, zoom), the
+  timeline across the whole width and below it the selected assignment as an
+  editable sentence. Levels (UI.Navigate("encounters", ...)):
 
-    {}                  all encounters
-    { "new" }           a new encounter: the raid bosses of the current tier
-    { id }              one encounter: timeline, assignments, groups, ...
-    { id, "a:3:2" }     an assignment: timing 2 of timer 3
-    { id, "timer:3" }   a group (timer 3) of the selected version
+    {}                  the last shown encounter (or the first one)
+    { "new" }           a new encounter: the bosses of the current raids, the
+                        dungeons and (Retail) the Mythic+ season
+    { "new", "i:1234" } the bosses of one dungeon ("m:<map>" for a Mythic+
+                        dungeon the journal doesn't know)
+    { id }              one encounter: timeline, settings, MRT note, sharing
+    { id, "a:3:2" }     the same with an assignment selected: timing 2 of timer 3
+
+  Only "new" (and a dungeon in it) is a level of its own; an encounter and its selection keep the
+  page flat (no back button).
 
   Since Midnight a plan is timers from the pull. Each timing holds exactly
   one message (PRT.CleanEncounterVersion), so the editor shows them as
-  assignments; timers are groups of assignments that can be switched off or
-  limited to difficulties together.
+  assignments.
 ]]
 
 -- The timeline shows at least this much, so there is room to click.
 local MIN_TIMELINE_LENGTH = 180
+-- Zoomed in, the timeline shows at least this many seconds.
+local MIN_ZOOM_SPAN = 20
+
+-- What the encounter page shows besides the plan, for this session.
+local desk = {
+  encounterID = nil,
+  -- "View as": "" for all targets, a role or a player's name.
+  view = "",
+  -- "" for all difficulties, else "Normal", "Heroic" or "Mythic".
+  difficulty = "",
+  -- { from, to } while zoomed in.
+  zoom = nil,
+  -- The full editor below the sentence.
+  details = false
+}
 
 -------------------------------------------------------------------------------
 -- Data
@@ -134,14 +157,6 @@ local function AddAssignment(encounter, at)
     }
   )
   UI.Navigate("encounters", encounter.id, AssignmentKey(1, #timer.timings))
-end
-
-local function NextFreeTime(version, onlyTimer)
-  local last
-  for _, assignment in ipairs(Assignments(version, onlyTimer)) do
-    last = assignment.first
-  end
-  return last and last + 10 or 10
 end
 
 local function CountAssignments(version)
@@ -410,22 +425,7 @@ local function ImportRows()
 end
 
 -------------------------------------------------------------------------------
--- List of encounters
-
-local function EncounterItem(encounter)
-  local note = L["%d assignment(s)"]:format(CountAssignments(Version(encounter)))
-  if not encounter.enabled then
-    note = note .. " · " .. L["off"]
-  elseif encounter.shared == false then
-    note = note .. " · " .. L["only for you"]
-  end
-  return {
-    label = encounter.name or tostring(encounter.id),
-    note = note,
-    icon = BossIcon(encounter),
-    dim = not encounter.enabled
-  }
-end
+-- Bosses
 
 -- Encounters per instance, instances by name; the ones without at the end.
 local function EncountersByInstance()
@@ -450,37 +450,81 @@ local function EncountersByInstance()
   return groups
 end
 
-local function InstanceCard(group)
-  local encounters = group.encounters
+local function FirstEncounter()
+  local group = EncountersByInstance()[1]
+  return group and group.encounters[1]
+end
+
+local function BossTile(encounter, current)
+  local note = L["%d assignment(s)"]:format(CountAssignments(Version(encounter)))
+  if not encounter.enabled then
+    note = note .. " · " .. L["off"]
+  elseif encounter.shared == false then
+    note = note .. " · " .. L["only for you"]
+  end
   return {
-    title = group.name ~= "" and WithIcon(group.icon, group.name) or L["Other encounters"],
-    fullWidth = true,
-    rows = {
-      {
-        type = "list",
-        items = function()
-          local items = {}
-          for index, encounter in ipairs(encounters) do
-            items[index] = EncounterItem(encounter)
-          end
-          return items
-        end,
-        onClick = function(index)
-          UI.Push(encounters[index].id)
-        end,
-        onRemove = function(index)
-          local _, position = FindEncounter(encounters[index].id)
-          tremove(Encounters(), position)
-        end,
-        confirmRemove = function(index)
-          return L["Delete %s with its assignments?"]:format(encounters[index].name or "?")
-        end
-      }
-    }
+    label = encounter.name or tostring(encounter.id),
+    note = note,
+    icon = BossIcon(encounter),
+    selected = encounter == current,
+    dim = not encounter.enabled,
+    onClick = function()
+      UI.Navigate("encounters", encounter.id)
+    end
   }
 end
 
-local function ListPage()
+-- The bosses of the current encounter's instance as tiles; with several
+-- instances, chips above switch between them.
+local function BossCard(current)
+  local groups = EncountersByInstance()
+  local currentGroup = groups[1]
+  for _, group in ipairs(groups) do
+    for _, encounter in ipairs(group.encounters) do
+      if encounter == current then
+        currentGroup = group
+      end
+    end
+  end
+  local rows = {}
+  if #groups > 1 then
+    local values = {}
+    for index, group in ipairs(groups) do
+      values[index] = {value = group.name, label = group.name ~= "" and group.name or L["Other encounters"]}
+    end
+    rows[#rows + 1] = {
+      type = "chips",
+      values = values,
+      get = function()
+        return currentGroup.name
+      end,
+      set = function(name)
+        for _, group in ipairs(groups) do
+          if group.name == name and group ~= currentGroup then
+            UI.Navigate("encounters", group.encounters[1].id)
+          end
+        end
+      end
+    }
+  end
+  rows[#rows + 1] = {
+    type = "tiles",
+    items = function()
+      local items = {}
+      for index, encounter in ipairs(currentGroup.encounters) do
+        items[index] = BossTile(encounter, current)
+      end
+      return items
+    end,
+    addLabel = L["Boss"],
+    onAdd = function()
+      UI.Navigate("encounters", "new")
+    end
+  }
+  return {fullWidth = true, rows = rows}
+end
+
+local function EmptyPage()
   local cards = {
     {
       title = L["Encounters"],
@@ -493,19 +537,13 @@ local function ListPage()
           note = L["From the bosses of the current raids and dungeons, by its encounter ID or from an export string."],
           buttonText = L["New"],
           onClick = function()
-            UI.Push("new")
+            UI.Navigate("encounters", "new")
           end
-        }
+        },
+        {type = "hint", label = L["No encounter yet."]}
       }
     }
   }
-  local groups = EncountersByInstance()
-  for _, group in ipairs(groups) do
-    cards[#cards + 1] = InstanceCard(group)
-  end
-  if #groups == 0 then
-    cards[1].rows[#cards[1].rows + 1] = {type = "hint", label = L["No encounter yet."]}
-  end
   return L["Encounters"], L["Plans per boss: what happens when, for whom"], cards
 end
 
@@ -655,7 +693,7 @@ local function DungeonPage(dungeon)
 end
 
 -------------------------------------------------------------------------------
--- Encounter
+-- Encounter settings
 
 local function SettingsCard(encounter)
   return {
@@ -665,6 +703,7 @@ local function SettingsCard(encounter)
         type = "checkbox",
         label = L["Enabled"],
         note = L["Runs on the pull."],
+        layout = true,
         get = function()
           return encounter.enabled
         end,
@@ -715,6 +754,26 @@ local function SettingsCard(encounter)
             UI.Navigate("encounters", id)
           end
         end
+      },
+      {
+        type = "button",
+        label = L["Delete encounter"],
+        buttonText = L["Delete"],
+        danger = true,
+        onClick = function()
+          UI.Confirm(
+            L["Delete %s with its assignments?"]:format(encounter.name or "?"),
+            L["Delete"],
+            function()
+              local _, position = FindEncounter(encounter.id)
+              if position then
+                tremove(Encounters(), position)
+              end
+              desk.encounterID = nil
+              UI.Navigate("encounters")
+            end
+          )
+        end
       }
     }
   }
@@ -735,123 +794,6 @@ local function ShareCard(encounter)
     }
   }
   return {title = L["Share"], note = L["Import on the New encounter page."], rows = rows}
-end
-
-local function LaneKey(message)
-  local key = Messages.TargetLabels(message)
-  return key ~= "" and key or L["nobody"]
-end
-
-local MAX_LANES = 10
-
--- Lanes by target, a marker per time of each assignment.
-local function TimelineCard(encounter)
-  local version = Version(encounter)
-  local lanes, laneByKey, length = {}, {}, MIN_TIMELINE_LENGTH
-  local function Lane(key)
-    if not laneByKey[key] and #lanes >= MAX_LANES then
-      key = L["Others"]
-    end
-    local lane = laneByKey[key]
-    if not lane then
-      lane = {label = key, markers = {}}
-      laneByKey[key] = lane
-      lanes[#lanes + 1] = lane
-    end
-    return lane
-  end
-  for _, assignment in ipairs(Assignments(version)) do
-    local message = assignment.message
-    local off = assignment.timing.difficulties ~= nil and next(assignment.timing.difficulties) == nil
-    for _, second in ipairs(assignment.timing.seconds or {}) do
-      local at = math.max(0, second + (assignment.timing.offset or 0) + (message.delay or 0))
-      length = math.max(length, at + 30)
-      local markers = Lane(LaneKey(message)).markers
-      markers[#markers + 1] = {
-        time = at,
-        color = off and colors.control or message.type == "cooldown" and Widgets.brand or colors.accent,
-        icon = Messages.Icon(message),
-        dim = off,
-        tooltipTitle = Widgets.FormatTime(at) .. (Messages.DifficultyText(assignment.timing) and " · " .. Messages.DifficultyText(assignment.timing) or ""),
-        tooltip = ("%s\n\n%s"):format(
-          Messages.DisplayText(message),
-          L["For: %s"]:format(Messages.TargetsText(message) ~= "" and Messages.TargetsText(message) or L["nobody"])
-        ),
-        onClick = function()
-          UI.Navigate("encounters", encounter.id, AssignmentKey(assignment.timerIndex, assignment.timingIndex))
-        end
-      }
-    end
-  end
-  return {
-    title = L["Timeline"],
-    note = L["Click into the timeline to add an assignment at that time, click a marker to edit it."],
-    fullWidth = true,
-    rows = {
-      {
-        type = "timeline",
-        lanes = lanes,
-        length = length,
-        empty = L["Nothing planned yet: click where the first assignment belongs."],
-        onClickTime = function(seconds)
-          AddAssignment(encounter, seconds)
-        end
-      }
-    }
-  }
-end
-
-local function AssignmentItems(version, onlyTimer)
-  local items = {}
-  for _, assignment in ipairs(Assignments(version, onlyTimer)) do
-    local message = assignment.message
-    local note = Messages.WhenText(assignment.timing)
-    local difficulties = Messages.DifficultyText(assignment.timing)
-    local off = difficulties == L["off"]
-    if difficulties then
-      note = note .. " · " .. difficulties
-    end
-    items[#items + 1] = {
-      label = Messages.Summary(message),
-      note = note,
-      icon = Messages.Icon(message),
-      dim = off,
-      tooltip = Messages.DisplayText(message)
-    }
-  end
-  return items
-end
-
-local function AssignmentsRow(encounter, onlyTimer)
-  local version = Version(encounter)
-  return {
-    type = "list",
-    items = function()
-      return AssignmentItems(version, onlyTimer)
-    end,
-    empty = L["No assignment yet."],
-    onClick = function(index)
-      local assignment = Assignments(version, onlyTimer)[index]
-      UI.Navigate("encounters", encounter.id, AssignmentKey(assignment.timerIndex, assignment.timingIndex))
-    end,
-    onRemove = function(index)
-      local assignment = Assignments(version, onlyTimer)[index]
-      tremove(assignment.timer.timings, assignment.timingIndex)
-    end,
-    onAdd = function()
-      AddAssignment(encounter, NextFreeTime(version, onlyTimer))
-    end,
-    addLabel = L["New assignment"]
-  }
-end
-
-local function AssignmentsCard(encounter)
-  return {
-    title = L["Assignments"],
-    note = L["What each player sees and when. Once or repeating, counted from the pull."],
-    fullWidth = true,
-    rows = {AssignmentsRow(encounter)}
-  }
 end
 
 local function MRTOption(key, label, note)
@@ -912,38 +854,561 @@ local function MRTCard(encounter)
   return {title = L["MethodRaidTools note"], rows = rows}
 end
 
-local function EncounterPage(encounter)
-  local cards = {
-    TimelineCard(encounter),
-    AssignmentsCard(encounter),
-    SettingsCard(encounter),
-    MRTCard(encounter),
-    ShareCard(encounter)
+-------------------------------------------------------------------------------
+-- View as, difficulty
+
+local ROLES = {TANK = true, HEALER = true, DAMAGER = true}
+
+local VIEW_ROLES = {
+  {value = "TANK", label = L["Tanks"]},
+  {value = "HEALER", label = L["Healer"]},
+  {value = "DAMAGER", label = L["Damage"]}
+}
+
+local DIFFICULTIES = {
+  {value = "", label = L["All"]},
+  {value = "Normal", label = L["Normal"]},
+  {value = "Heroic", label = L["Heroic"]},
+  {value = "Mythic", label = L["Mythic"]}
+}
+
+-- The players a target stands for in the current group ("$group2" -> its
+-- players, a name -> itself); roles and everyone are checked by the caller.
+local function TokenNames(token)
+  local names = {}
+  if token ~= "ALL" and not ROLES[token] then
+    for name in PRT.ReplacePlayerNameTokens(token):gmatch("[^,]+") do
+      names[strtrim(name)] = true
+    end
+  end
+  return names
+end
+
+-- Whether a message reaches the chosen view: everyone, a role or a player.
+-- Roles of players are only known for the current group.
+local function Reaches(message, view)
+  if view == "" then
+    return true
+  end
+  for _, token in ipairs(message.targets or {}) do
+    if token == "ALL" or token == view then
+      return true
+    end
+    if ROLES[view] then
+      for name in pairs(TokenNames(token)) do
+        if UnitGroupRolesAssigned(name) == view then
+          return true
+        end
+      end
+    elseif (ROLES[token] and UnitGroupRolesAssigned(view) == token) or TokenNames(token)[view] then
+      return true
+    end
+  end
+  return false
+end
+
+-- Whether an assignment runs on the chosen difficulty ("" = any).
+local function RunsOn(timing, difficulty)
+  local difficulties = timing.difficulties
+  if difficulties == nil then
+    return true
+  elseif difficulty == "" then
+    return next(difficulties) ~= nil
+  end
+  return difficulties[difficulty] == true
+end
+
+-- Everyone, the roles and every player of the group or the plan.
+local function ViewValues(version)
+  local names, seen = {}, {}
+  local function Add(name)
+    if name and name ~= "" and not seen[name] then
+      seen[name] = true
+      names[#names + 1] = name
+    end
+  end
+  for _, name in ipairs(PRT.PartyNames(false)) do
+    Add(name)
+  end
+  for _, assignment in ipairs(Assignments(version)) do
+    for _, token in ipairs(assignment.message.targets or {}) do
+      if token ~= "ALL" and not ROLES[token] and token:sub(1, 1) ~= "$" then
+        Add(token)
+      end
+    end
+  end
+  table.sort(names)
+  local values = {{value = "", label = L["All targets"]}}
+  for _, role in ipairs(VIEW_ROLES) do
+    values[#values + 1] = role
+  end
+  for _, name in ipairs(names) do
+    values[#values + 1] = {value = name, label = PRT.ClassColoredName(name)}
+  end
+  return values
+end
+
+-- When a message shows: its time plus the timing's offset and its delay.
+local function ShowTimes(assignment)
+  local times = {}
+  local shift = (assignment.timing.offset or 0) + (assignment.message.delay or 0)
+  for _, second in ipairs(assignment.timing.seconds or {}) do
+    times[#times + 1] = math.max(0, second + shift)
+  end
+  return times
+end
+
+local function Length(version)
+  local length = MIN_TIMELINE_LENGTH
+  for _, assignment in ipairs(Assignments(version)) do
+    for _, at in ipairs(ShowTimes(assignment)) do
+      length = math.max(length, at + 30)
+    end
+  end
+  return length
+end
+
+-- What the rehearsal plays: the assignments of the view on the difficulty.
+local function RehearsalEvents(encounter)
+  return function()
+    local events = {}
+    for _, assignment in ipairs(Assignments(Version(encounter))) do
+      if RunsOn(assignment.timing, desk.difficulty) and Reaches(assignment.message, desk.view) then
+        for _, at in ipairs(ShowTimes(assignment)) do
+          events[#events + 1] = {at = at, message = assignment.message}
+        end
+      end
+    end
+    return events
+  end
+end
+
+-------------------------------------------------------------------------------
+-- Zoom
+
+local function ZoomRange(length)
+  if desk.zoom then
+    return desk.zoom[1], desk.zoom[2]
+  end
+  return 0, length
+end
+
+local function SetZoom(length, from, span)
+  if span >= length then
+    desk.zoom = nil
+    return
+  end
+  from = math.max(0, math.min(from, length - span))
+  desk.zoom = {from, from + span}
+end
+
+-- factor < 1 zooms in around `at` (default: the middle).
+local function Zoom(length, factor, at)
+  local from, to = ZoomRange(length)
+  local span = math.max(MIN_ZOOM_SPAN, math.min(length, (to - from) * factor))
+  at = at or (from + to) / 2
+  SetZoom(length, at - (at - from) / (to - from) * span, span)
+end
+
+local function Pan(length, seconds)
+  local from, to = ZoomRange(length)
+  if desk.zoom then
+    SetZoom(length, from + seconds, to - from)
+  end
+end
+
+-------------------------------------------------------------------------------
+-- Toolbar
+
+local SPEEDS = {
+  {value = 1, label = "1×", tooltip = L["Real time, with sounds."]},
+  {value = 4, label = "4×", tooltip = L["Four times as fast, without sounds."]}
+}
+
+local function ToolbarCard(encounter)
+  local version = Version(encounter)
+  local length = Length(version)
+  local items = {
+    {
+      kind = "button",
+      label = Rehearsal.IsPlaying() and L["Pause"] or L["Rehearse"],
+      tooltipTitle = L["Rehearse"],
+      tooltip = L["Plays the plan from the playhead on your overlays, as the chosen target sees it. Click on the time axis to move the playhead."],
+      onClick = function()
+        if Rehearsal.IsPlaying() then
+          Rehearsal.Pause()
+        else
+          Rehearsal.Play(RehearsalEvents(encounter), length)
+        end
+      end
+    },
+    {
+      kind = "chips",
+      values = SPEEDS,
+      get = function()
+        return Rehearsal.speed
+      end,
+      set = function(speed)
+        Rehearsal.SetSpeed(speed)
+      end
+    },
+    {
+      kind = "text",
+      width = 44,
+      text = function()
+        return ("|cff%s%s|r"):format(Widgets.BRAND_HEX, Widgets.FormatTime(math.floor(Rehearsal.Position())))
+      end
+    },
+    {kind = "space"},
+    {kind = "text", text = L["View as"], dim = true},
+    {
+      kind = "dropdown",
+      width = 150,
+      values = function()
+        return ViewValues(version)
+      end,
+      tooltipTitle = L["View as"],
+      tooltip = L["Shows only the lanes and assignments this role or player gets, also in the rehearsal."],
+      get = function()
+        return desk.view
+      end,
+      set = function(value)
+        desk.view = value
+      end
+    },
+    {kind = "space"},
+    {
+      kind = "chips",
+      values = DIFFICULTIES,
+      get = function()
+        return desk.difficulty
+      end,
+      set = function(value)
+        desk.difficulty = value
+      end
+    },
+    {kind = "space"},
+    {kind = "text", text = L["Zoom"], dim = true},
+    {
+      kind = "toggle",
+      label = "-",
+      tooltip = L["Zoom out. Ctrl + mouse wheel over the timeline zooms there."],
+      onClick = function()
+        Zoom(length, 1.5)
+      end
+    },
+    {
+      kind = "toggle",
+      label = "+",
+      tooltip = L["Zoom in. Shift + mouse wheel scrolls the zoomed timeline."],
+      onClick = function()
+        Zoom(length, 1 / 1.5, desk.zoom == nil and Rehearsal.Position() or nil)
+      end
+    },
+    {
+      kind = "toggle",
+      label = L["All"],
+      tooltip = L["The whole encounter."],
+      active = function()
+        return desk.zoom == nil
+      end,
+      onClick = function()
+        desk.zoom = nil
+      end
+    }
   }
+  return {fullWidth = true, rows = {{type = "flow", items = items}}}
+end
+
+-------------------------------------------------------------------------------
+-- Timeline
+
+local function LaneKey(message)
+  local key = Messages.TargetLabels(message)
+  return key ~= "" and key or L["nobody"]
+end
+
+-- Everyone first, then roles, raid groups, "me", classes and players.
+local function LaneOrder(message)
+  local token = message.targets and message.targets[1]
+  if not token then
+    return 9
+  elseif token == "ALL" then
+    return 1
+  elseif ROLES[token] then
+    return token == "TANK" and 2 or token == "HEALER" and 3 or 4
+  elseif token:match("^%$group") then
+    return 5
+  elseif token == "$me" then
+    return 6
+  elseif token:sub(1, 1) == "$" then
+    return 7
+  end
+  return 8
+end
+
+local MAX_LANES = 16
+
+-- Moves the time `from` of a timing to `to`; a repeating one moves as a whole.
+local function MoveTiming(timing, from, to)
+  local shift = to - from
+  if timing.repeating then
+    timing.repeating.from = math.max(0, (timing.repeating.from or 0) + shift)
+    timing.repeating.to = math.max(timing.repeating.from, (timing.repeating.to or 0) + shift)
+    for index, second in ipairs(timing.seconds) do
+      timing.seconds[index] = math.max(0, second + shift)
+    end
+  else
+    for index, second in ipairs(timing.seconds) do
+      if second == from then
+        timing.seconds[index] = math.max(0, to)
+        break
+      end
+    end
+    table.sort(timing.seconds)
+  end
+end
+
+-- Dragged from `shownAt` (the marker's time) to `seconds`; with copy as a new
+-- assignment.
+local function MoveAssignment(encounter, assignment, second, shownAt, seconds, copy)
+  local timing = assignment.timing
+  local timerIndex, timingIndex = assignment.timerIndex, assignment.timingIndex
+  if copy then
+    timing = PRT.TableUtils.Clone(timing)
+    tinsert(assignment.timer.timings, timing)
+    timingIndex = #assignment.timer.timings
+  end
+  MoveTiming(timing, second, second + seconds - shownAt)
+  UI.Navigate("encounters", encounter.id, AssignmentKey(timerIndex, timingIndex))
+end
+
+local function Marker(encounter, assignment, second, at, selectedKey)
+  local message, timing = assignment.message, assignment.timing
+  local key = AssignmentKey(assignment.timerIndex, assignment.timingIndex)
+  local off = not RunsOn(timing, desk.difficulty)
+  local difficulties = Messages.DifficultyText(timing)
+  local targets = Messages.TargetsText(message)
+  return {
+    time = at,
+    color = off and colors.control or message.type == "cooldown" and Widgets.brand or colors.accent,
+    icon = Messages.Icon(message),
+    dim = off,
+    selected = key == selectedKey,
+    tooltipTitle = Widgets.FormatTime(at) .. (difficulties and " · " .. difficulties or ""),
+    tooltip = ("%s\n\n%s\n\n%s"):format(
+      Messages.DisplayText(message),
+      L["For: %s"]:format(targets ~= "" and targets or L["nobody"]),
+      L["Drag to move, with Alt to copy. Middle click deletes."]
+    ),
+    onClick = function()
+      UI.Navigate("encounters", encounter.id, key)
+    end,
+    onMove = function(seconds, copy)
+      MoveAssignment(encounter, assignment, second, at, seconds, copy)
+    end,
+    confirmRemove = L["Delete this assignment?"],
+    onRemove = function()
+      tremove(assignment.timer.timings, assignment.timingIndex)
+      UI.Navigate("encounters", encounter.id)
+    end
+  }
+end
+
+-- Lanes by target, a marker per time of each assignment, a band over the
+-- span of a repeating one. Only what reaches the view.
+local function Lanes(encounter, selectedKey)
+  local lanes, laneByKey = {}, {}
+  local function Lane(message)
+    local key = LaneKey(message)
+    if not laneByKey[key] and #lanes >= MAX_LANES then
+      key = L["Others"]
+    end
+    local lane = laneByKey[key]
+    if not lane then
+      lane = {label = key, order = key == L["Others"] and 10 or LaneOrder(message), markers = {}, bands = {}}
+      laneByKey[key] = lane
+      lanes[#lanes + 1] = lane
+    end
+    return lane
+  end
+  for _, assignment in ipairs(Assignments(Version(encounter))) do
+    local message = assignment.message
+    if Reaches(message, desk.view) then
+      local lane = Lane(message)
+      local shift = (assignment.timing.offset or 0) + (message.delay or 0)
+      local first, last
+      for _, second in ipairs(assignment.timing.seconds or {}) do
+        local at = math.max(0, second + shift)
+        first, last = math.min(first or at, at), math.max(last or at, at)
+        lane.markers[#lane.markers + 1] = Marker(encounter, assignment, second, at, selectedKey)
+      end
+      if assignment.timing.repeating and first and last > first then
+        lane.bands[#lane.bands + 1] = {from = first, to = last}
+      end
+    end
+  end
+  table.sort(
+    lanes,
+    function(a, b)
+      if a.order ~= b.order then
+        return a.order < b.order
+      end
+      return a.label < b.label
+    end
+  )
+  return lanes
+end
+
+local function TimelineCard(encounter, selectedKey)
+  local version = Version(encounter)
+  local length = Length(version)
+  local from, to = ZoomRange(length)
+  local note = L["Click into the timeline to add an assignment there. Drag a marker to move it, with Alt to copy it."]
+  if desk.view ~= "" then
+    note = note .. " " .. L["Lanes the chosen target doesn't see are hidden."]
+  end
+  return {
+    title = L["Timeline"],
+    note = note,
+    fullWidth = true,
+    rows = {
+      {
+        type = "timeline",
+        laneHeight = 30,
+        length = length,
+        view = {from = from, to = to},
+        empty = L["Nothing planned yet: click where the first assignment belongs."],
+        lanes = function()
+          return Lanes(encounter, selectedKey)
+        end,
+        playhead = Rehearsal.Position,
+        axisTooltipTitle = L["Playhead"],
+        axisTooltip = L["Click to move the playhead of the rehearsal here."],
+        onClickAxis = Rehearsal.Seek,
+        onZoom = function(factor, at)
+          Zoom(length, factor, at)
+        end,
+        onPan = function(seconds)
+          Pan(length, seconds)
+        end,
+        onClickTime = function(seconds)
+          AddAssignment(encounter, seconds)
+        end
+      }
+    }
+  }
+end
+
+-------------------------------------------------------------------------------
+-- Selected assignment
+
+local function RemoveAssignment(encounter, timer, timingIndex)
+  tremove(timer.timings, timingIndex)
+  UI.Navigate("encounters", encounter.id)
+end
+
+-- The assignment as one sentence below the timeline; More shows the full
+-- editor (repeating, difficulties, more targets, own sound, templates).
+local function AssignmentCards(encounter, timerIndex, timingIndex)
+  local version = Version(encounter)
+  local timer = version.Timers[timerIndex]
+  local timing = timer.timings[timingIndex]
+  local message = timing.messages[1]
+  local difficulties = Messages.DifficultyText(timing)
+  local actions = {
+    Messages.TypeItem(message),
+    {kind = "space"},
+    {
+      kind = "button",
+      label = desk.details and L["Less"] or L["More"],
+      tooltip = L["Repeating, several times, difficulties, more targets, own sound and templates."],
+      onClick = function()
+        desk.details = not desk.details
+      end
+    },
+    {
+      kind = "button",
+      label = L["Close"],
+      onClick = function()
+        UI.Navigate("encounters", encounter.id)
+      end
+    },
+    {
+      kind = "button",
+      label = L["Delete"],
+      danger = true,
+      onClick = function()
+        UI.Confirm(
+          L["Delete this assignment?"],
+          L["Delete"],
+          function()
+            RemoveAssignment(encounter, timer, timingIndex)
+          end
+        )
+      end
+    }
+  }
+  if difficulties then
+    tinsert(actions, 2, {kind = "text", text = difficulties, dim = true})
+  end
+  local cards = {
+    {
+      title = L["Assignment"],
+      fullWidth = true,
+      rows = {
+        {type = "flow", items = Messages.SentenceItems(message, timing)},
+        {type = "flow", items = actions}
+      }
+    }
+  }
+  if desk.details then
+    local context = {
+      version = version,
+      timing = timing,
+      onRemove = function()
+        RemoveAssignment(encounter, timer, timingIndex)
+      end
+    }
+    for _, card in ipairs(Messages.Cards(message, context)) do
+      cards[#cards + 1] = card
+    end
+  else
+    UI.SetPreview({kind = "message", message = message})
+  end
+  return cards
+end
+
+-------------------------------------------------------------------------------
+-- Encounter
+
+-- Another encounter starts with a fresh view of it.
+local function Select(encounter)
+  if desk.encounterID ~= encounter.id then
+    desk.encounterID = encounter.id
+    desk.zoom = nil
+    Rehearsal.Stop()
+  end
+end
+
+local function EncounterPage(encounter, timerIndex, timingIndex)
+  local cards = {BossCard(encounter), ToolbarCard(encounter)}
+  local selectedKey = timerIndex and AssignmentKey(timerIndex, timingIndex)
+  cards[#cards + 1] = TimelineCard(encounter, selectedKey)
+  if timerIndex then
+    for _, card in ipairs(AssignmentCards(encounter, timerIndex, timingIndex)) do
+      cards[#cards + 1] = card
+    end
+  else
+    cards[#cards + 1] = SettingsCard(encounter)
+    cards[#cards + 1] = MRTCard(encounter)
+    cards[#cards + 1] = ShareCard(encounter)
+  end
   local status = encounter.enabled and L["enabled"] or L["off"]
   if encounter.enabled and encounter.shared == false then
     status = status .. " · " .. L["only for you"]
   end
   return encounter.name or "?", encounter.instance and encounter.instance .. " · " .. status or status, cards
-end
-
--------------------------------------------------------------------------------
--- Assignment
-
-local function AssignmentPage(encounter, timerIndex, timingIndex)
-  local version = Version(encounter)
-  local timer = version.Timers[timerIndex]
-  local timing = timer.timings[timingIndex]
-  local message = timing.messages[1]
-  local context = {
-    version = version,
-    timing = timing,
-    onRemove = function()
-      tremove(timer.timings, timingIndex)
-      UI.Navigate("encounters", encounter.id)
-    end
-  }
-  return Messages.WhenText(timing), Messages.DisplayText(message), Messages.Cards(message, context), {encounter.name}
 end
 
 -------------------------------------------------------------------------------
@@ -958,18 +1423,20 @@ local function Build(path)
     end
     return title, subtitle, cards
   end
-  local encounter = path[1] and FindEncounter(path[1])
+  local encounter = path[1] and FindEncounter(path[1]) or desk.encounterID and FindEncounter(desk.encounterID) or FirstEncounter()
   if not encounter then
-    return ListPage()
+    return EmptyPage()
   end
+  Select(encounter)
   local version = Version(encounter)
   local kind, key = ParseKey(path[2])
   if kind == "a" then
     local timerIndex, timingIndex = key:match("^(%d+):(%d+)$")
-    local timer = version.Timers[tonumber(timerIndex) or 0]
-    local timing = timer and timer.timings and timer.timings[tonumber(timingIndex)]
+    timerIndex, timingIndex = tonumber(timerIndex), tonumber(timingIndex)
+    local timer = version.Timers[timerIndex or 0]
+    local timing = timer and timer.timings and timer.timings[timingIndex]
     if timing and timing.messages and timing.messages[1] then
-      return AssignmentPage(encounter, tonumber(timerIndex), tonumber(timingIndex))
+      return EncounterPage(encounter, timerIndex, timingIndex)
     end
   end
   return EncounterPage(encounter)
@@ -988,6 +1455,9 @@ UI.RegisterPage(
         end
       end
       return count > 0 and tostring(count) or nil
+    end,
+    flat = function(path)
+      return path[1] ~= "new"
     end,
     build = Build
   }

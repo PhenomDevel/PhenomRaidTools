@@ -1,4 +1,4 @@
--- luacheck: read globals GetCursorPosition PlaySound SOUNDKIT C_Timer GetCurrentKeyBoardFocus
+-- luacheck: read globals GetCursorPosition PlaySound SOUNDKIT C_Timer GetCurrentKeyBoardFocus IsControlKeyDown IsShiftKeyDown IsAltKeyDown
 local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
@@ -74,7 +74,7 @@ local function SavedState()
   return global.ui
 end
 
-local Render, RefreshValues
+local Render, RefreshValues, SetScroll
 
 -- Set by a page while it builds (UI.SetPreview), applied after the build.
 local previewSpec
@@ -1143,32 +1143,131 @@ rowTypes.sound = {
   end
 }
 
--- Assignments over time ({ lanes, length, empty, onClickTime }): one lane per
--- target group, a marker per message at its time after the pull. lanes() ->
--- { { label, markers = { { time, color, icon, dim, tooltipTitle, tooltip, onClick } } } }.
--- A marker is its icon framed in its color, centered on its time. With
--- onClickTime(seconds) a click into the plot adds something there.
+-- Assignments over time ({ lanes, length, view, empty, laneHeight,
+-- onClickTime, onClickAxis, onZoom, onPan, playhead }): one lane per target
+-- group, a marker per message at its time after the pull. lanes() ->
+-- { { label, bands = { { from, to } }, markers = { { time, color, icon, dim,
+-- selected, tooltipTitle, tooltip, onClick, onMove } } } }.
+--   view = { from, to }      the visible part of 0..length (zoomed in)
+--   onClickTime(seconds)     a click into the plot adds something there
+--   onClickAxis(seconds)     a click on the time axis, e.g. to move the playhead
+--   onZoom(factor, seconds)  Ctrl + mouse wheel over the plot, around `seconds`
+--   onPan(seconds)           Shift + mouse wheel over the plot
+--   playhead() -> seconds    a line that follows the value every frame
+--   onMove(seconds, copy)    dragging a marker (copy while Alt is held)
+--   onRemove() + confirmRemove   a middle click on a marker, asked first
+-- A marker is its icon framed in its color, centered on its time; a band is a
+-- thin bar behind the markers, e.g. a repeating assignment.
 local TIMELINE_LABEL_WIDTH = 96
 local TIMELINE_LANE_HEIGHT = 24
 local TIMELINE_AXIS_HEIGHT = 18
 local TIMELINE_MARKER_SIZE = 20
+local TIMELINE_DRAG_THRESHOLD = 4
+
+-- Whole seconds under the cursor, nil outside the plot.
+local function TimelineCursorTime(row)
+  local left = row.Plot:GetLeft()
+  if not left or not row.plotWidth or row.plotWidth <= 0 then
+    return
+  end
+  local span = row.to - row.from
+  local x = GetCursorPosition() / row.Plot:GetEffectiveScale() - left
+  local seconds = math.floor(row.from + math.max(0, math.min(1, x / row.plotWidth)) * span + 0.5)
+  return seconds, (seconds - row.from) / span * row.plotWidth
+end
+
+local function ShowTimelineGuide(row, x, label)
+  row.Guide:ClearAllPoints()
+  row.Guide:SetPoint("TOPLEFT", row.Plot, "TOPLEFT", x, 0)
+  row.Guide:SetPoint("BOTTOMLEFT", row.Plot, "BOTTOMLEFT", x, 0)
+  row.GuideLabel:ClearAllPoints()
+  row.GuideLabel:SetPoint("BOTTOM", row.Plot, "TOPLEFT", x, 2)
+  row.GuideLabel:SetText(label)
+  row.Guide:Show()
+  row.GuideLabel:Show()
+end
+
+local function HideTimelineGuide(row)
+  row.Guide:Hide()
+  row.GuideLabel:Hide()
+end
+
+-- While a marker is held: follows the cursor once it moved a few pixels.
+local function OnTimelineMarkerDrag(marker)
+  local row = marker.row
+  local x = GetCursorPosition() / marker:GetEffectiveScale()
+  if not marker.dragging and math.abs(x - marker.downX) > TIMELINE_DRAG_THRESHOLD then
+    marker.dragging = true
+    Widgets.HideTooltip(marker)
+  end
+  if marker.dragging then
+    local seconds, plotX = TimelineCursorTime(row)
+    if seconds then
+      marker:ClearAllPoints()
+      marker:SetPoint("TOP", row, "TOPLEFT", row.plotLeft + plotX, marker.top)
+      ShowTimelineGuide(row, plotX, (IsAltKeyDown() and "+ " or "") .. Widgets.FormatTime(seconds))
+    end
+  end
+end
 
 local function CreateTimelineMarker(row)
   local marker = CreateFrame("Button", nil, row)
+  marker.row = row
   marker:SetSize(TIMELINE_MARKER_SIZE, TIMELINE_MARKER_SIZE)
   marker:SetFrameLevel(row:GetFrameLevel() + 3)
   marker.Texture = marker:CreateTexture(nil, "BACKGROUND")
   marker.Texture:SetAllPoints()
   marker.Icon = marker:CreateTexture(nil, "ARTWORK")
-  marker.Icon:SetPoint("TOPLEFT", 1, -1)
-  marker.Icon:SetPoint("BOTTOMRIGHT", -1, 1)
   marker.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
   marker:SetScript("OnEnter", Widgets.ShowTooltip)
   marker:SetScript("OnLeave", Widgets.HideTooltip)
+  -- A click opens the marker, a drag moves it (onMove), a middle click
+  -- removes it (onRemove).
   marker:SetScript(
-    "OnClick",
-    function(self)
-      if self.onClick then
+    "OnMouseDown",
+    function(self, button)
+      if button ~= "LeftButton" then
+        return
+      end
+      self.downX = GetCursorPosition() / self:GetEffectiveScale()
+      self.dragging = false
+      if self.onMove then
+        self:SetScript("OnUpdate", OnTimelineMarkerDrag)
+      end
+    end
+  )
+  marker:SetScript(
+    "OnMouseUp",
+    function(self, button)
+      if button == "MiddleButton" and self.onRemove and self:IsMouseOver() then
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+        Widgets.HideTooltip(self)
+        local onRemove = self.onRemove
+        UI.Confirm(
+          self.confirmRemove or L["Remove"],
+          L["Delete"],
+          function()
+            Widgets.SafeCall(onRemove)
+            Render()
+          end
+        )
+        return
+      end
+      self:SetScript("OnUpdate", nil)
+      if button ~= "LeftButton" or not self.downX then
+        return
+      end
+      self.downX = nil
+      if self.dragging then
+        self.dragging = false
+        HideTimelineGuide(row)
+        local seconds = TimelineCursorTime(row)
+        if seconds then
+          PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+          Widgets.SafeCall(self.onMove, seconds, IsAltKeyDown())
+        end
+        Render()
+      elseif self.onClick then
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
         Widgets.HideTooltip(self)
         self.onClick()
@@ -1178,29 +1277,26 @@ local function CreateTimelineMarker(row)
   return marker
 end
 
--- Whole seconds under the cursor, nil outside the plot.
-local function TimelineCursorTime(row)
-  local left = row.Plot:GetLeft()
-  if not left or not row.plotWidth or row.plotWidth <= 0 then
-    return
-  end
-  local x = GetCursorPosition() / row.Plot:GetEffectiveScale() - left
-  local seconds = math.floor(math.max(0, math.min(1, x / row.plotWidth)) * row.length + 0.5)
-  return seconds, seconds / row.length * row.plotWidth
-end
-
 local function OnTimelinePlotUpdate(plot)
   local row = plot.row
   local seconds, x = TimelineCursorTime(row)
-  if not seconds then
-    return
+  if seconds then
+    ShowTimelineGuide(row, x, "+ " .. Widgets.FormatTime(seconds))
   end
-  row.Guide:ClearAllPoints()
-  row.Guide:SetPoint("TOPLEFT", plot, "TOPLEFT", x, 0)
-  row.Guide:SetPoint("BOTTOMLEFT", plot, "BOTTOMLEFT", x, 0)
-  row.GuideLabel:ClearAllPoints()
-  row.GuideLabel:SetPoint("BOTTOM", plot, "TOPLEFT", x, 2)
-  row.GuideLabel:SetText("+ " .. Widgets.FormatTime(seconds))
+end
+
+-- Ctrl zooms, Shift scrolls the time; otherwise the page scrolls as usual.
+local function OnTimelineWheel(self, delta)
+  local row = self.row
+  if IsControlKeyDown() and row.onZoom then
+    Widgets.SafeCall(row.onZoom, delta > 0 and 0.8 or 1.25, TimelineCursorTime(row))
+    Render()
+  elseif IsShiftKeyDown() and row.onPan then
+    Widgets.SafeCall(row.onPan, -delta * (row.to - row.from) / 10)
+    Render()
+  else
+    SetScroll(scroll:GetVerticalScroll() - delta * SCROLL_STEP)
+  end
 end
 
 local function CreateTimelinePlot(row)
@@ -1217,16 +1313,15 @@ local function CreateTimelinePlot(row)
   plot:SetScript(
     "OnEnter",
     function(self)
-      row.Guide:Show()
-      row.GuideLabel:Show()
-      self:SetScript("OnUpdate", OnTimelinePlotUpdate)
+      if row.onClickTime then
+        self:SetScript("OnUpdate", OnTimelinePlotUpdate)
+      end
     end
   )
   plot:SetScript(
     "OnLeave",
     function(self)
-      row.Guide:Hide()
-      row.GuideLabel:Hide()
+      HideTimelineGuide(row)
       self:SetScript("OnUpdate", nil)
     end
   )
@@ -1240,30 +1335,79 @@ local function CreateTimelinePlot(row)
       end
     end
   )
+  plot:SetScript("OnMouseWheel", OnTimelineWheel)
   return plot
 end
 
-local function TimelineStep(length)
-  if length <= 120 then
+-- The time axis above the lanes; clickable with onClickAxis.
+local function CreateTimelineAxis(row)
+  local axis = CreateFrame("Button", nil, row)
+  axis.row = row
+  axis:SetFrameLevel(row:GetFrameLevel() + 2)
+  axis:SetScript("OnEnter", Widgets.ShowTooltip)
+  axis:SetScript("OnLeave", Widgets.HideTooltip)
+  axis:SetScript(
+    "OnClick",
+    function()
+      local seconds = TimelineCursorTime(row)
+      if seconds and row.onClickAxis then
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+        Widgets.SafeCall(row.onClickAxis, seconds)
+        RefreshValues()
+      end
+    end
+  )
+  axis:SetScript("OnMouseWheel", OnTimelineWheel)
+  return axis
+end
+
+local function OnTimelineUpdate(row)
+  local seconds = row.playhead and row.playhead()
+  local visible = seconds and seconds >= row.from and seconds <= row.to
+  row.Playhead:SetShown(visible or false)
+  if visible then
+    local x = (seconds - row.from) / (row.to - row.from) * row.plotWidth
+    row.Playhead:ClearAllPoints()
+    row.Playhead:SetPoint("TOPLEFT", row.Plot, "TOPLEFT", x - 1, TIMELINE_AXIS_HEIGHT - 4)
+    row.Playhead:SetPoint("BOTTOMLEFT", row.Plot, "BOTTOMLEFT", x - 1, 0)
+  end
+end
+
+-- Distance between two labels on the axis for a visible span.
+local function TimelineStep(span)
+  if span <= 60 then
+    return 5
+  elseif span <= 120 then
     return 15
-  elseif length <= 300 then
+  elseif span <= 300 then
     return 30
-  elseif length <= 600 then
+  elseif span <= 600 then
     return 60
   end
   return 120
 end
 
+local function HideAll(list)
+  for _, part in ipairs(list) do
+    part:Hide()
+  end
+end
+
 rowTypes.timeline = {
   create = function(parent)
     local row = CreateFrame("Frame", nil, parent)
-    row.Markers, row.Ticks, row.Lanes = {}, {}, {}
+    row.Markers, row.Ticks, row.Lanes, row.Bands = {}, {}, {}, {}
     row.Axis = row:CreateTexture(nil, "BORDER")
     row.Axis:SetColorTexture(unpack(colors.border))
     row.Axis:SetHeight(1)
     row.Empty = Widgets.Text(row, fonts.dim)
     row.Empty:SetPoint("TOPLEFT", 0, -6)
     row.Plot = CreateTimelinePlot(row)
+    row.AxisButton = CreateTimelineAxis(row)
+    row.Playhead = row:CreateTexture(nil, "OVERLAY")
+    row.Playhead:SetColorTexture(unpack(colors.notice))
+    row.Playhead:SetWidth(2)
+    row.Playhead:Hide()
     row.Update = function()
     end
     return row
@@ -1271,20 +1415,22 @@ rowTypes.timeline = {
   setup = function(row, spec)
     local lanes = Resolve(spec.lanes) or {}
     local length = math.max(30, spec.length or 0)
+    local view = spec.view or {}
+    local from = math.max(0, math.min(view.from or 0, length - 10))
+    local to = math.min(length, math.max(view.to or length, from + 10))
+    local laneHeight = spec.laneHeight or TIMELINE_LANE_HEIGHT
     local plotLeft = TIMELINE_LABEL_WIDTH + TIMELINE_MARKER_SIZE / 2
     local plotWidth = rowWidth - plotLeft - TIMELINE_MARKER_SIZE / 2
-    row.onClickTime, row.length, row.plotWidth = spec.onClickTime, length, plotWidth
+    row.onClickTime, row.onClickAxis, row.onZoom, row.onPan = spec.onClickTime, spec.onClickAxis, spec.onZoom, spec.onPan
+    row.length, row.from, row.to, row.plotLeft, row.plotWidth, row.playhead = length, from, to, plotLeft, plotWidth, spec.playhead
     -- Clickable without messages: one empty lane with the hint in it.
     local hint
     if #lanes == 0 and spec.onClickTime then
       lanes, hint = {{label = "", markers = {}}}, spec.empty
     end
-    for _, part in ipairs(row.Ticks) do
-      part:Hide()
-    end
-    for _, marker in ipairs(row.Markers) do
-      marker:Hide()
-    end
+    HideAll(row.Ticks)
+    HideAll(row.Markers)
+    HideAll(row.Bands)
     for _, lane in ipairs(row.Lanes) do
       lane.Label:Hide()
       lane.Stripe:Hide()
@@ -1292,18 +1438,28 @@ rowTypes.timeline = {
 
     row.Empty:SetShown(#lanes == 0 or hint ~= nil)
     row.Axis:SetShown(#lanes > 0)
-    row.Plot:SetShown(#lanes > 0 and spec.onClickTime ~= nil)
+    row.Plot:SetShown(#lanes > 0)
+    row.Plot:EnableMouse(spec.onClickTime ~= nil or spec.onZoom ~= nil)
+    row.Plot:EnableMouseWheel(spec.onZoom ~= nil or spec.onPan ~= nil)
+    row.AxisButton:SetShown(#lanes > 0 and spec.onClickAxis ~= nil)
+    row.AxisButton:EnableMouseWheel(spec.onZoom ~= nil or spec.onPan ~= nil)
+    row.AxisButton.tooltipTitle, row.AxisButton.tooltipText = spec.axisTooltipTitle, spec.axisTooltip
+    row:SetScript("OnUpdate", spec.playhead and #lanes > 0 and OnTimelineUpdate or nil)
+    row.Playhead:Hide()
     if #lanes == 0 then
       row.Empty:SetText(spec.empty or L["Nothing here yet."])
       row:SetSize(rowWidth, 26)
       return 26
     end
 
+    local function X(seconds)
+      return plotLeft + (seconds - from) / (to - from) * plotWidth
+    end
     row.Axis:ClearAllPoints()
     row.Axis:SetPoint("TOPLEFT", plotLeft, -TIMELINE_AXIS_HEIGHT + 2)
     row.Axis:SetPoint("TOPRIGHT", 0, -TIMELINE_AXIS_HEIGHT + 2)
-    local step, tickIndex = TimelineStep(length), 0
-    for seconds = 0, length, step do
+    local step, tickIndex = TimelineStep(to - from), 0
+    for seconds = math.ceil(from / step) * step, to, step do
       tickIndex = tickIndex + 1
       local tick = row.Ticks[tickIndex]
       if not tick then
@@ -1311,12 +1467,12 @@ rowTypes.timeline = {
         row.Ticks[tickIndex] = tick
       end
       tick:ClearAllPoints()
-      tick:SetPoint("TOP", row, "TOPLEFT", plotLeft + seconds / length * plotWidth, 0)
+      tick:SetPoint("TOP", row, "TOPLEFT", X(seconds), 0)
       tick:SetText(Widgets.FormatTime(seconds))
       tick:Show()
     end
 
-    local markerIndex = 0
+    local markerIndex, bandIndex = 0, 0
     for laneIndex, laneSpec in ipairs(lanes) do
       local lane = row.Lanes[laneIndex]
       if not lane then
@@ -1326,37 +1482,67 @@ rowTypes.timeline = {
         lane.Stripe:SetColorTexture(unpack(colors.hover))
         row.Lanes[laneIndex] = lane
       end
-      local top = TIMELINE_AXIS_HEIGHT + (laneIndex - 1) * TIMELINE_LANE_HEIGHT
+      local top = TIMELINE_AXIS_HEIGHT + (laneIndex - 1) * laneHeight
       lane.Label:ClearAllPoints()
       lane.Label:SetPoint("TOPLEFT", 0, -top)
-      lane.Label:SetSize(TIMELINE_LABEL_WIDTH - 8, TIMELINE_LANE_HEIGHT)
+      lane.Label:SetSize(TIMELINE_LABEL_WIDTH - 8, laneHeight)
       lane.Label:SetText(laneSpec.label)
       lane.Label:Show()
       lane.Stripe:ClearAllPoints()
       lane.Stripe:SetPoint("TOPLEFT", plotLeft, -top - 2)
       lane.Stripe:SetPoint("TOPRIGHT", 0, -top - 2)
-      lane.Stripe:SetHeight(TIMELINE_LANE_HEIGHT - 4)
+      lane.Stripe:SetHeight(laneHeight - 4)
       lane.Stripe:SetShown(laneIndex % 2 == 1)
+      for _, bandSpec in ipairs(laneSpec.bands or {}) do
+        local bandFrom, bandTo = math.max(from, bandSpec.from), math.min(to, bandSpec.to)
+        if bandTo > bandFrom then
+          bandIndex = bandIndex + 1
+          local band = row.Bands[bandIndex]
+          if not band then
+            band = row:CreateTexture(nil, "BORDER")
+            row.Bands[bandIndex] = band
+          end
+          local color = bandSpec.color or colors.accent
+          band:SetColorTexture(color[1], color[2], color[3], 0.35)
+          band:ClearAllPoints()
+          band:SetPoint("TOPLEFT", row, "TOPLEFT", X(bandFrom), -top - laneHeight / 2 + 2)
+          band:SetSize(math.max(1, X(bandTo) - X(bandFrom)), 4)
+          band:Show()
+        end
+      end
       for _, markerSpec in ipairs(laneSpec.markers or {}) do
-        markerIndex = markerIndex + 1
-        local marker = row.Markers[markerIndex] or CreateTimelineMarker(row)
-        row.Markers[markerIndex] = marker
-        marker:ClearAllPoints()
-        local x = plotLeft + math.min(markerSpec.time, length) / length * plotWidth
-        marker:SetPoint("TOP", row, "TOPLEFT", x, -top - (TIMELINE_LANE_HEIGHT - TIMELINE_MARKER_SIZE) / 2)
-        marker.Texture:SetColorTexture(unpack(markerSpec.color or Widgets.brand))
-        marker.Icon:SetTexture(markerSpec.icon)
-        marker.Icon:SetDesaturated(markerSpec.dim or false)
-        marker.Icon:SetAlpha(markerSpec.dim and 0.5 or 1)
-        marker.tooltipTitle, marker.tooltipText = markerSpec.tooltipTitle, markerSpec.tooltip
-        marker.onClick = markerSpec.onClick
-        marker:Show()
+        if markerSpec.time >= from and markerSpec.time <= to then
+          markerIndex = markerIndex + 1
+          local marker = row.Markers[markerIndex] or CreateTimelineMarker(row)
+          row.Markers[markerIndex] = marker
+          local size = markerSpec.selected and TIMELINE_MARKER_SIZE + 4 or TIMELINE_MARKER_SIZE
+          local inset = markerSpec.selected and 2 or 1
+          marker:SetSize(size, size)
+          marker.Icon:ClearAllPoints()
+          marker.Icon:SetPoint("TOPLEFT", inset, -inset)
+          marker.Icon:SetPoint("BOTTOMRIGHT", -inset, inset)
+          marker.top = -top - (laneHeight - size) / 2
+          marker:ClearAllPoints()
+          marker:SetPoint("TOP", row, "TOPLEFT", X(markerSpec.time), marker.top)
+          marker.Texture:SetColorTexture(unpack(markerSpec.selected and colors.text or markerSpec.color or Widgets.brand))
+          marker.Icon:SetTexture(markerSpec.icon)
+          marker.Icon:SetDesaturated(markerSpec.dim or false)
+          marker.Icon:SetAlpha(markerSpec.dim and 0.5 or 1)
+          marker:SetFrameLevel(row:GetFrameLevel() + (markerSpec.selected and 4 or 3))
+          marker.tooltipTitle, marker.tooltipText = markerSpec.tooltipTitle, markerSpec.tooltip
+          marker.onClick, marker.onMove = markerSpec.onClick, markerSpec.onMove
+          marker.onRemove, marker.confirmRemove = markerSpec.onRemove, markerSpec.confirmRemove
+          marker:Show()
+        end
       end
     end
-    local height = TIMELINE_AXIS_HEIGHT + #lanes * TIMELINE_LANE_HEIGHT + 4
+    local height = TIMELINE_AXIS_HEIGHT + #lanes * laneHeight + 4
     row.Plot:ClearAllPoints()
     row.Plot:SetPoint("TOPLEFT", plotLeft, -TIMELINE_AXIS_HEIGHT)
     row.Plot:SetPoint("BOTTOMRIGHT", row, "TOPRIGHT", 0, -(height - 4))
+    row.AxisButton:ClearAllPoints()
+    row.AxisButton:SetPoint("TOPLEFT", plotLeft - TIMELINE_MARKER_SIZE / 2, 0)
+    row.AxisButton:SetPoint("BOTTOMRIGHT", row, "TOPRIGHT", 0, -TIMELINE_AXIS_HEIGHT)
     if hint then
       row.Empty:ClearAllPoints()
       row.Empty:SetPoint("LEFT", row.Plot, "LEFT", 8, 0)
@@ -1365,6 +1551,361 @@ rowTypes.timeline = {
       row.Empty:ClearAllPoints()
       row.Empty:SetPoint("TOPLEFT", 0, -6)
     end
+    row:SetSize(rowWidth, height)
+    return height
+  end
+}
+
+-- Tiles in lines that wrap ({ items, onAdd, addLabel }), e.g. the bosses
+-- above an encounter. items() -> { { label, note, icon, selected, dim,
+-- tooltip, onClick } }; onAdd() adds a tile with addLabel at the end.
+local TILE_HEIGHT = 40
+local TILE_ICON = 28
+local TILE_GAP = 6
+local TILE_MAX_TEXT = 140
+
+local function SetTileState(tile, hovered)
+  local color = tile.selected and colors.accent or colors.text
+  local alpha = tile.selected and (hovered and 0.36 or 0.28) or (hovered and 0.09 or 0.04)
+  tile.Background:SetColorTexture(color[1], color[2], color[3], alpha)
+  Widgets.SetBorderColor(tile.Edges, tile.selected and colors.accent or colors.border)
+  tile.Marker:SetShown(tile.selected or false)
+end
+
+local function CreateTile(row)
+  local tile = CreateFrame("Button", nil, row)
+  tile:SetHeight(TILE_HEIGHT)
+  tile.Background = Widgets.Fill(tile, colors.hover)
+  tile.Edges = Widgets.Border(tile)
+  tile.Marker = tile:CreateTexture(nil, "ARTWORK")
+  tile.Marker:SetColorTexture(unpack(colors.accent))
+  tile.Marker:SetPoint("BOTTOMLEFT")
+  tile.Marker:SetPoint("BOTTOMRIGHT")
+  tile.Marker:SetHeight(2)
+  tile.Icon = tile:CreateTexture(nil, "ARTWORK")
+  tile.Icon:SetSize(TILE_ICON, TILE_ICON)
+  tile.Icon:SetPoint("LEFT", 6, 0)
+  tile.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+  tile.Label = Widgets.Text(tile, fonts.body)
+  tile.Label:SetWordWrap(false)
+  tile.Note = Widgets.Text(tile, fonts.dim)
+  tile.Note:SetWordWrap(false)
+  tile:SetScript(
+    "OnEnter",
+    function(self)
+      SetTileState(self, true)
+      Widgets.ShowTooltip(self)
+    end
+  )
+  tile:SetScript(
+    "OnLeave",
+    function(self)
+      SetTileState(self, false)
+      Widgets.HideTooltip(self)
+    end
+  )
+  tile:SetScript(
+    "OnClick",
+    function(self)
+      PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+      Widgets.HideTooltip(self)
+      Widgets.SafeCall(self.onClick)
+    end
+  )
+  return tile
+end
+
+local function SetupTile(tile, entry)
+  tile.selected, tile.onClick = entry.selected, entry.onClick
+  tile.tooltipTitle, tile.tooltipText = entry.label, entry.tooltip
+  local left = 10
+  tile.Icon:SetShown(entry.icon ~= nil)
+  if entry.icon then
+    tile.Icon:SetTexture(entry.icon)
+    tile.Icon:SetDesaturated(entry.dim or false)
+    left = TILE_ICON + 14
+  end
+  tile.Label:SetText(entry.label)
+  tile.Label:SetTextColor(unpack(entry.add and Widgets.brand or entry.dim and colors.dim or colors.text))
+  tile.Note:SetText(entry.note or "")
+  local textWidth = math.min(TILE_MAX_TEXT, math.max(tile.Label:GetUnboundedStringWidth(), tile.Note:GetUnboundedStringWidth()))
+  tile.Label:SetWidth(textWidth + 1)
+  tile.Note:SetWidth(textWidth + 1)
+  tile.Label:ClearAllPoints()
+  tile.Note:ClearAllPoints()
+  if entry.note and entry.note ~= "" then
+    tile.Label:SetPoint("BOTTOMLEFT", tile, "LEFT", left, 1)
+    tile.Note:SetPoint("TOPLEFT", tile, "LEFT", left, -1)
+    tile.Note:Show()
+  else
+    tile.Label:SetPoint("LEFT", left, 0)
+    tile.Note:Hide()
+  end
+  tile:SetWidth(left + textWidth + 10)
+  SetTileState(tile, false)
+end
+
+rowTypes.tiles = {
+  create = function(parent)
+    local row = CreateFrame("Frame", nil, parent)
+    row.Tiles = {}
+    row.Update = function()
+    end
+    return row
+  end,
+  setup = function(row, spec)
+    local items = Resolve(spec.items) or {}
+    if spec.onAdd then
+      items[#items + 1] = {label = "+ " .. (spec.addLabel or L["Add"]), add = true, onClick = spec.onAdd}
+    end
+    local x, y = 0, 4
+    for index, entry in ipairs(items) do
+      local tile = row.Tiles[index] or CreateTile(row)
+      row.Tiles[index] = tile
+      SetupTile(tile, entry)
+      local width = tile:GetWidth()
+      if x > 0 and x + width > rowWidth then
+        x, y = 0, y + TILE_HEIGHT + TILE_GAP
+      end
+      tile:ClearAllPoints()
+      tile:SetPoint("TOPLEFT", x, -y)
+      tile:Show()
+      x = x + width + TILE_GAP
+    end
+    for index = #items + 1, #row.Tiles do
+      row.Tiles[index]:Hide()
+    end
+    local height = y + TILE_HEIGHT + 6
+    row:SetSize(rowWidth, height)
+    return height
+  end
+}
+
+-- Controls in a line that wraps ({ items }), e.g. a toolbar or a sentence
+-- with fields in it. Items:
+--   { kind = "text", text, dim, width }   text may be a function (updated live)
+--   { kind = "button", label, onClick, danger }
+--   { kind = "toggle", label, active, onClick }   small chip, lit while active
+--   { kind = "chips", values, get, set }          one toggle per value
+--   { kind = "dropdown", values, get, set, width, placeholder }
+--   { kind = "input", get, set, width, placeholder }
+--   { kind = "space" }                            a wider gap
+-- Each item can have { tooltip, tooltipTitle }. Every change rebuilds the page.
+local FLOW_HEIGHT = 22
+local FLOW_GAP = 6
+local FLOW_LINE_GAP = 6
+local FLOW_LIVE_INTERVAL = 0.1
+
+local function FlowTooltip(control)
+  control:HookScript(
+    "OnEnter",
+    function(self)
+      if self.flowTooltip then
+        Widgets.ShowTooltipAt(self, "BOTTOMLEFT", "TOPLEFT", 0, 4, self.flowTooltipTitle or "", self.flowTooltip)
+      end
+    end
+  )
+  control:HookScript(
+    "OnLeave",
+    function()
+      Widgets.HideTooltip()
+    end
+  )
+end
+
+local flowCreate = {
+  text = function(row)
+    local text = Widgets.Text(row, fonts.body)
+    text:SetJustifyV("MIDDLE")
+    text:SetWordWrap(false)
+    return text
+  end,
+  button = function(row)
+    local button = Widgets.CreateButton(row)
+    button:SetScript(
+      "OnClick",
+      function(self)
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+        Widgets.SafeCall(self.item.onClick)
+        Render()
+      end
+    )
+    FlowTooltip(button)
+    return button
+  end,
+  toggle = function(row)
+    local chip = CreateFrame("Button", nil, row)
+    chip:SetHeight(FLOW_HEIGHT)
+    chip.Background = Widgets.Fill(chip, colors.control)
+    chip.Edges = Widgets.Border(chip)
+    chip.Text = Widgets.Text(chip, fonts.small, "CENTER")
+    chip.Text:SetPoint("LEFT", 8, 0)
+    chip.Text:SetPoint("RIGHT", -8, 0)
+    chip.Text:SetJustifyV("MIDDLE")
+    chip:SetScript(
+      "OnClick",
+      function(self)
+        PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+        Widgets.SafeCall(self.item.onClick)
+        Render()
+      end
+    )
+    FlowTooltip(chip)
+    return chip
+  end,
+  dropdown = function(row)
+    local dropdown = Widgets.CreateDropdown(row)
+    FlowTooltip(dropdown)
+    return dropdown
+  end,
+  input = function(row)
+    local input = Widgets.CreateInput(row, false)
+    FlowTooltip(input.EditBox)
+    return input
+  end
+}
+
+local function FlowControl(row, kind)
+  local list = row.Controls[kind]
+  row.used[kind] = row.used[kind] + 1
+  local control = list[row.used[kind]]
+  if not control then
+    control = flowCreate[kind](row)
+    list[row.used[kind]] = control
+  end
+  control:ClearAllPoints()
+  control:Show()
+  return control
+end
+
+local function FlowText(item)
+  return Resolve(item.text) or ""
+end
+
+local function UpdateFlow(row)
+  for _, entry in ipairs(row.entries) do
+    local item, control = entry.item, entry.control
+    if entry.kind == "text" then
+      control:SetText(Markup(FlowText(item)))
+    elseif entry.kind == "toggle" then
+      SetChipSelected(control, Resolve(item.active) and true or false)
+    elseif entry.kind == "dropdown" or entry.kind == "input" then
+      control:Update()
+    end
+  end
+end
+
+local function OnFlowUpdate(row, elapsed)
+  row.sinceUpdate = (row.sinceUpdate or 0) + elapsed
+  if row.sinceUpdate >= FLOW_LIVE_INTERVAL then
+    row.sinceUpdate = 0
+    UpdateFlow(row)
+  end
+end
+
+-- Chips become one toggle per value.
+local function FlowItems(items)
+  local list = {}
+  for _, item in ipairs(items) do
+    if item.kind == "chips" then
+      for _, entry in ipairs(Resolve(item.values) or {}) do
+        list[#list + 1] = {
+          kind = "toggle",
+          label = entry.label,
+          tooltip = entry.tooltip,
+          active = function()
+            return item.get() == entry.value
+          end,
+          onClick = function()
+            item.set(entry.value)
+          end
+        }
+      end
+    else
+      list[#list + 1] = item
+    end
+  end
+  return list
+end
+
+rowTypes.flow = {
+  create = function(parent)
+    local row = CreateFrame("Frame", nil, parent)
+    row.Controls = {text = {}, button = {}, toggle = {}, dropdown = {}, input = {}}
+    row.Update = UpdateFlow
+    return row
+  end,
+  setup = function(row, spec)
+    for _, list in pairs(row.Controls) do
+      HideAll(list)
+    end
+    row.used = {text = 0, button = 0, toggle = 0, dropdown = 0, input = 0}
+    row.entries = {}
+    local live = false
+    local x, y = 0, 0
+    for _, item in ipairs(FlowItems(Resolve(spec.items) or {})) do
+      local kind, control, width = item.kind, nil, 0
+      if kind == "space" then
+        width = 10
+      else
+        control = FlowControl(row, kind)
+        if kind == "text" then
+          control:SetFontObject(item.dim and fonts.dim or fonts.body)
+          control:SetText(Markup(FlowText(item)))
+          live = live or type(item.text) == "function"
+          width = item.width or control:GetUnboundedStringWidth()
+          control:SetSize(width + 1, FLOW_HEIGHT)
+        elseif kind == "button" then
+          control.item = item
+          control:SetLabel(item.label)
+          control:SetDanger(item.danger)
+          control:SetWidth(control.Text:GetUnboundedStringWidth() + 24)
+          width = control:GetWidth()
+        elseif kind == "toggle" then
+          control.item = item
+          control.Text:SetText(item.label)
+          control:SetWidth(control.Text:GetUnboundedStringWidth() + 16)
+          SetChipSelected(control, Resolve(item.active) and true or false)
+          live = live or type(item.active) == "function"
+          width = control:GetWidth()
+        elseif kind == "dropdown" then
+          control:SetWidth(item.width or 150)
+          control:SetEntries(
+            Resolve(item.values) or {},
+            item.get,
+            function(value)
+              Widgets.SafeCall(item.set, value)
+              Render()
+            end,
+            item.placeholder
+          )
+          width = control:GetWidth()
+        elseif kind == "input" then
+          control:SetWidth(item.width or 120)
+          control:SetBinding(
+            item.get,
+            function(value)
+              Widgets.SafeCall(item.set, value)
+              Render()
+            end,
+            item.placeholder
+          )
+          width = control:GetWidth()
+        end
+        local hover = kind == "input" and control.EditBox or control
+        hover.flowTooltipTitle, hover.flowTooltip = item.tooltipTitle, item.tooltip
+        row.entries[#row.entries + 1] = {kind = kind, item = item, control = control}
+      end
+      if x > 0 and x + width > rowWidth then
+        x, y = 0, y + FLOW_HEIGHT + FLOW_LINE_GAP
+      end
+      if control then
+        control:SetPoint("TOPLEFT", x, -(y + 4))
+      end
+      x = x + width + FLOW_GAP
+    end
+    row:SetScript("OnUpdate", live and OnFlowUpdate or nil)
+    local height = y + FLOW_HEIGHT + 8
     row:SetSize(rowWidth, height)
     return height
   end
@@ -1620,6 +2161,13 @@ local function SearchPage()
   return L["Search results"], subtitle, cards
 end
 
+-- Pages with { flat(path) } keep a selection in the path but show no back
+-- button or breadcrumb for it.
+local function IsFlat()
+  local page = pages[state.page]
+  return state.search == "" and page ~= nil and page.flat ~= nil and page.flat(state.path) or false
+end
+
 local function GetPage()
   if state.search ~= "" then
     return SearchPage()
@@ -1648,7 +2196,7 @@ local function UpdateScrollBar()
   bar.Thumb:SetPoint("TOP", 0, -scroll:GetVerticalScroll() / range * (visible - thumbHeight))
 end
 
-local function SetScroll(offset)
+SetScroll = function(offset)
   local range = scroll:GetVerticalScrollRange()
   scroll:SetVerticalScroll(math.max(0, math.min(range, offset)))
   UpdateScrollBar()
@@ -2090,7 +2638,7 @@ end
 -- the breadcrumb is shown.
 local function UpdateBreadcrumb(trail)
   local labels = {}
-  local depth = state.search == "" and #state.path or 0
+  local depth = state.search == "" and not IsFlat() and #state.path or 0
   if depth > 0 then
     labels[1] = pages[state.page].label
     for level = 1, depth - 1 do
@@ -2121,7 +2669,7 @@ end
 
 -- The back button stands in front of the title on deeper levels.
 local function UpdateTitle(title, subtitle, trail)
-  local hasBack = state.search == "" and #state.path > 0
+  local hasBack = state.search == "" and #state.path > 0 and not IsFlat()
   local top = HEADER_HEIGHT + (UpdateBreadcrumb(trail) and BREADCRUMB_HEIGHT or 0)
   backButton:SetShown(hasBack)
   backButton:SetPoint("TOPLEFT", SIDEBAR_WIDTH + PADDING - 4, -(top + 14))
@@ -2333,7 +2881,7 @@ end
 -- API
 --------------------------------------------------------------------------------
 
--- page = { id, label, order, section, searchable, status, badge,
+-- page = { id, label, order, section, searchable, status, badge, flat,
 --          build = function(path) return title, subtitle, cards, trail end }
 -- path = ids of the levels below the page ({} on the page itself); trail =
 -- their labels for the breadcrumb. Ids may be stale (e.g. a deleted

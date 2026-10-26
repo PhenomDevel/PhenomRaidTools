@@ -113,6 +113,10 @@ function EventHandler.StartEncounter(encounterID, encounterName)
     wipe(PRT.GetProfileDB().debugLog)
     -- A start without an end before (e.g. test mode, a reload in combat).
     PRT.EncounterTimer:CancelAllTimers()
+    -- The real pull ends a rehearsal on the encounter page.
+    if PRT.UI and PRT.UI.Rehearsal then
+      PRT.UI.Rehearsal.Stop()
+    end
 
     PRT.currentEncounter = NewEncounter()
 

@@ -3,6 +3,10 @@
 ## Unreleased
 
 ### Added
+- **The encounter page is one desk:** the bosses of the instance as tiles on top, a toolbar, the timeline across the whole width and the selected assignment below it as one sentence (*At 1:05 show … to … on … for 5 s*). *More* opens the full editor. There is no separate encounter list or assignment page anymore.
+- **Rehearsal:** plays the plan from the playhead on your overlays, in real time or four times as fast. Click on the time axis to move the playhead.
+- **View as** a role or player: the timeline and the rehearsal show only what they get. A difficulty filter dims the assignments that don't run on it.
+- In the timeline, drag a marker to move the assignment, with Alt to copy it, and middle-click it to delete it (asks first). Ctrl + mouse wheel zooms, Shift + mouse wheel scrolls the zoomed timeline, and repeating assignments show as a bar.
 - *New encounter* lists the dungeons of the current expansion besides the raids.
 - On Retail it also lists the Mythic+ dungeons of the current season. A dungeon's page lets you add a boss the journal doesn't list, by its encounter ID.
 - Each encounter has a *Share with the group* switch. Encounters you don't share aren't sent to your group and run only for you.
