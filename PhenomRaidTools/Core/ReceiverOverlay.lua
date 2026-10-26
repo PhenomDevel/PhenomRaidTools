@@ -198,7 +198,9 @@ local function SetupEntry(display, entry)
   entry.dynamic = style ~= "text" or entry.hasFormat
   entry.Icon:SetShown(style ~= "text")
   entry.Bar:SetShown(style == "bars")
-  entry.Time:SetShown(style ~= "text")
+  -- Icons and bars show the remaining time beside the text only for a
+  -- message with a countdown ("%.0f" in its text).
+  entry.Time:SetShown(style ~= "text" and entry.hasFormat)
   entry.lastShown = nil
 
   if style == "text" then
@@ -758,7 +760,7 @@ end
 function ReceiverOverlay.SampleMessages(config)
   return {
     {message = (config.label or "") .. " %.0f", duration = 6},
-    {message = "{spell:31821} " .. L["Aura Mastery"], duration = 9, spellID = 31821},
+    {message = "{spell:31821} " .. L["Aura Mastery"] .. " %.0f", duration = 9, spellID = 31821},
     {message = "{rt1} " .. L["Soak"], duration = 4}
   }
 end

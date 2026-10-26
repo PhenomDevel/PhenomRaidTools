@@ -26,6 +26,7 @@
 ### Fixed
 - The *Every* slider of a repeating assignment can be dragged again.
 - Overlays in icon or bar style and the upcoming list show a message's icon once instead of twice (cooldowns showed their spell icon beside and in the text).
+- *Countdown* now has an effect on overlays in icon or bar style (and in the preview): without it, no remaining seconds show beside the text.
 - The button that writes the cooldown assignments into your MethodRaidTools note is back. It is now always shown on the encounter page and grayed out only when MethodRaidTools isn't loaded.
 
 ## v3.1.0 (2026-10-25)
