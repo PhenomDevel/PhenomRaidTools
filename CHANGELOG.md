@@ -2,11 +2,12 @@
 
 ## Unreleased
 
-### New
+### Added
 - **The encounter page is one desk:** the bosses of the instance as tiles on top, a toolbar, the timeline across the whole width and the selected assignment below it as one sentence (*At 1:05 show … to … on … for 5 s*). *More* opens the full editor. There is no separate encounter list or assignment page anymore.
 - **Rehearsal:** plays the plan from the playhead on your overlays, in real time or four times as fast. Click on the time axis to move the playhead.
 - **View as** a role or player: the timeline and the rehearsal show only what they get. A difficulty filter dims the assignments that don't run on it.
 - In the timeline, drag a marker to move the assignment, with Alt to copy it, and middle-click it to delete it (asks first). Ctrl + mouse wheel zooms, Shift + mouse wheel scrolls the zoomed timeline, and repeating assignments show as a bar.
+- Demo: *Overlays → Demo* or `/prt demo` plays a sample fight of about 40 seconds with every kind of message for you (text with countdown, marker, own sound, read aloud, healing and utility cooldowns, a repeating assignment) on your overlays, plus your next assignments and the raid plan in combat. It runs anywhere, out of combat and in every role.
 
 ### Changed
 - Simpler window: the overview and the settings are one page (with *About* at the end), and importing an encounter moved to *New encounter*.
@@ -22,6 +23,7 @@
 - *Your next assignments* shows every line in the same size; the next one is no longer larger.
 
 ### Fixed
+- The *Every* slider of a repeating assignment can be dragged again.
 - Overlays in icon or bar style and the upcoming list show a message's icon once instead of twice (cooldowns showed their spell icon beside and in the text).
 - The button that writes the cooldown assignments into your MethodRaidTools note is back. It is now always shown on the encounter page and grayed out only when MethodRaidTools isn't loaded.
 

@@ -59,6 +59,7 @@ Core\ImportExport.lua
 Core\SenderOverlay.lua
 Core\ReceiverOverlay.lua
 Core\Upcoming.lua
+Core\Demo.lua
 Core\VersionMigration.lua
 Core\MethodRaidToolsExport.lua
 
