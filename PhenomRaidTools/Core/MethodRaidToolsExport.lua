@@ -11,17 +11,17 @@ local MethodRaidToolsCombatEventTranslations = {
   ["SPELL_AURA_REMOVED"] = "SAR"
 }
 
--- MRT was called ExRT before; support both addon and SavedVariables names.
+-- MRT was called ExRT before; support both SavedVariables names. The check
+-- goes by the SavedVariables and not by the addon folder name, so a renamed
+-- or repackaged MRT is found too. MRT only creates its note table once the
+-- note module ran, so create it if the SavedVariables are there.
 local function GetMethodRaidToolsNote()
-  local db
-
-  if C_AddOns.IsAddOnLoaded("MRT") then
-    db = _G.VMRT
-  elseif C_AddOns.IsAddOnLoaded("ExRT") then
-    db = _G.VExRT
+  local db = _G.VMRT or _G.VExRT
+  if type(db) ~= "table" then
+    return nil
   end
-
-  return db and db.Note
+  db.Note = db.Note or {}
+  return db.Note
 end
 
 local function IsValidMessage(message)

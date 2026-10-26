@@ -186,6 +186,7 @@ L["Move to the left"] = true
 L["Move up"] = true
 L["Mythic"] = true
 L["Name"] = true
+L["Needs MethodRaidTools."] = true
 L["New"] = true
 L["New assignment"] = true
 L["New encounter"] = true
