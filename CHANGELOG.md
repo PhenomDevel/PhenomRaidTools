@@ -6,6 +6,7 @@
 - *New encounter* lists the dungeons of the current expansion besides the raids.
 - On Retail it also lists the Mythic+ dungeons of the current season. A dungeon's page lets you add a boss the journal doesn't list, by its encounter ID.
 - Each encounter has a *Share with the group* switch. Encounters you don't share aren't sent to your group and run only for you.
+- Demo: *Overlays → Demo* or `/prt demo` plays a sample fight of about 40 seconds with every kind of message for you (text with countdown, marker, own sound, read aloud, healing and utility cooldowns, a repeating assignment) on your overlays, plus your next assignments and the raid plan in combat. It runs anywhere, out of combat and in every role.
 
 ### Changed
 - In a dungeon group every member can send plans; in a raid it stays the leader and assistants.
@@ -19,8 +20,10 @@
 - A new profile is created by pressing Enter in its name field.
 - The debug log shows one line per entry.
 - Every overlay (messages, your next assignments, lead status) has the same text settings: font, size, outline (off, thin, thick) and shadow.
+- *Your next assignments* shows every line in the same size; the next one is no longer larger.
 
 ### Fixed
+- The *Every* slider of a repeating assignment can be dragged again.
 - Overlays in icon or bar style and the upcoming list show a message's icon once instead of twice (cooldowns showed their spell icon beside and in the text).
 - The button that writes the cooldown assignments into your MethodRaidTools note is back. It is now always shown on the encounter page and grayed out only when MethodRaidTools isn't loaded.
 

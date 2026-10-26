@@ -84,6 +84,28 @@ end
 -- cheap because a check only compares numbers.
 local TIMING_INTERVAL = 0.1
 
+-- Runs a plan from now on. received: the lead's plan, so no raid plan
+-- overlay; demo: the demo plan (PRT.Demo), shown in any role.
+function EventHandler.RunPlan(plan, received, demo)
+  PRT.currentEncounter.running = true
+  PRT.currentEncounter.received = received
+  PRT.currentEncounter.demo = demo
+  PRT.currentEncounter.encounter = PRT.TableUtils.Clone(plan)
+  PRT.currentEncounter.encounter.Timers = PRT.currentEncounter.encounter.Timers or {}
+  PRT.currentEncounter.encounter.startedAt = GetTime()
+
+  PRT.StartTimers(PRT.currentEncounter.encounter.Timers)
+  PRT.CheckTimerTimings(PRT.currentEncounter.encounter.Timers)
+  PRT.EncounterTimer:ScheduleRepeatingTimer(PRT.CheckTimerTimings, TIMING_INTERVAL, PRT.currentEncounter.encounter.Timers)
+
+  if not received and PRT.GetProfileDB().overlay.sender.enabled then
+    PRT.SenderOverlay.Start(PRT.currentEncounter.encounter)
+  end
+  if demo or PRT.IsReceiver() then
+    PRT.Upcoming.Start(PRT.currentEncounter.encounter)
+  end
+end
+
 -- Pull and combat start are the same moment here: combat starts before
 -- ENCOUNTER_START, and test mode starts on combat without an encounter.
 function EventHandler.StartEncounter(encounterID, encounterName)
@@ -99,22 +121,7 @@ function EventHandler.StartEncounter(encounterID, encounterName)
 
     if plan then
       PRT.Debug(L["Running PhenomRaidTools version %s"]:format(PRT.HighlightString(PRT.GetProfileDB().version)))
-      PRT.currentEncounter.running = true
-      PRT.currentEncounter.received = received
-      PRT.currentEncounter.encounter = PRT.TableUtils.Clone(plan)
-      PRT.currentEncounter.encounter.Timers = PRT.currentEncounter.encounter.Timers or {}
-      PRT.currentEncounter.encounter.startedAt = GetTime()
-
-      PRT.StartTimers(PRT.currentEncounter.encounter.Timers)
-      PRT.CheckTimerTimings(PRT.currentEncounter.encounter.Timers)
-      PRT.EncounterTimer:ScheduleRepeatingTimer(PRT.CheckTimerTimings, TIMING_INTERVAL, PRT.currentEncounter.encounter.Timers)
-
-      if not received and PRT.GetProfileDB().overlay.sender.enabled then
-        PRT.SenderOverlay.Start(PRT.currentEncounter.encounter)
-      end
-      if PRT.IsReceiver() then
-        PRT.Upcoming.Start(PRT.currentEncounter.encounter)
-      end
+      EventHandler.RunPlan(plan, received)
     end
   else
     PRT.Debug(PRT.HighlightString("PhenomRaidTools"), "is disabled. We won't start encounter.")
@@ -135,6 +142,17 @@ end
 
 -------------------------------------------------------------------------------
 -- Public API
+
+-- A plan outside of an encounter (the demo); stopped like one.
+function PRT.RunPlan(plan, received, demo)
+  EventHandler.StopEncounter()
+  PRT.currentEncounter = NewEncounter()
+  EventHandler.RunPlan(plan, received, demo)
+end
+
+function PRT.StopPlan()
+  EventHandler.StopEncounter()
+end
 
 function PRT.RegisterEvents(events)
   for _, event in ipairs(events) do
