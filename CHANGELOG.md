@@ -4,6 +4,7 @@
 
 ### Added
 - Warn earlier: a cooldown shows 5 seconds before its time by default and counts down to the moment you press it, then shows *Now*. Change the default on the *New messages* page or per assignment; text messages can warn earlier too.
+- Demo: *Overlays → Demo* or `/prt demo` plays a sample fight of about 40 seconds with every kind of message for you (text with countdown, marker, own sound, read aloud, healing and utility cooldowns, a repeating assignment) on your overlays, plus your next assignments and the raid plan in combat. It runs anywhere, out of combat and in every role.
 
 ### Changed
 - Simpler window: the overview and the settings are one page (with *About* at the end), and importing an encounter moved to *New encounter*.
@@ -19,6 +20,7 @@
 - *Your next assignments* shows every line in the same size; the next one is no longer larger.
 
 ### Fixed
+- The *Every* slider of a repeating assignment can be dragged again.
 - Overlays in icon or bar style and the upcoming list show a message's icon once instead of twice (cooldowns showed their spell icon beside and in the text).
 - The button that writes the cooldown assignments into your MethodRaidTools note is back. It is now always shown on the encounter page and grayed out only when MethodRaidTools isn't loaded.
 

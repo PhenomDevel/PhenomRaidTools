@@ -47,7 +47,7 @@ function MessageHandler.IsMessageForMe(message)
 end
 
 function MessageHandler.ExecuteMessage(message, pressAt)
-  if not PRT.IsReceiver() or not PRT.IsMessageSupported(message) then
+  if not (PRT.IsReceiver() or PRT.Demo.IsRunning()) or not PRT.IsMessageSupported(message) then
     return
   end
   for _, target in ipairs(MessageHandler.ExpandMessageTargets(message)) do
