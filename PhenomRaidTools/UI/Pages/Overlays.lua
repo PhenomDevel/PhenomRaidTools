@@ -298,7 +298,7 @@ local function ReceiversCard()
       {
         type = "checkbox",
         label = L["Unlock"],
-        note = L["Shows every anchor to drag it."],
+        note = L["Shows every anchor to drag it. Locks again when you close this window."],
         get = function()
           for _, config in ipairs(Receivers()) do
             if not Overlay.Get(config, "locked") then

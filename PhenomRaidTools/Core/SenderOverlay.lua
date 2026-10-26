@@ -14,7 +14,7 @@ PRT.SenderOverlay = SenderOverlay
 local PADDING = 10
 local UPDATE_INTERVAL = 1
 
-local frame
+local frame, previewing
 
 local function Options()
   return PRT.GetProfileDB().overlay.sender
@@ -121,6 +121,7 @@ end
 -- The lead's own plan started; scheduled on the encounter timer, so it
 -- stops with the encounter.
 function SenderOverlay.Start(encounter)
+  previewing = false
   SenderOverlay.Refresh()
   frame:EnableMouse(false)
   frame:Show()
@@ -145,11 +146,20 @@ function SenderOverlay.ShowPreview()
   SetText(Colored("PhenomRaidTools", PRT.Static.Colors.Primary) .. "|n" .. L["Raid plan during encounters. Drag to move."])
   frame:EnableMouse(true)
   frame:Show()
+  previewing = true
 end
 
 function SenderOverlay.Hide()
+  previewing = false
   if frame then
     frame:Hide()
+  end
+end
+
+-- Hides the placeholder (the options window closed), never a running plan.
+function SenderOverlay.HidePreview()
+  if previewing then
+    SenderOverlay.Hide()
   end
 end
 
