@@ -480,6 +480,22 @@ local function SenderCard()
   }
 end
 
+-- Rebuilt after a start or stop to switch the button.
+local function DemoCard()
+  return {
+    title = L["Demo"],
+    note = L["A sample fight of about 40 seconds: every kind of message for you on your overlays, your next assignments and the raid plan in combat. Also `/prt demo`."],
+    rows = {
+      {
+        type = "button",
+        label = PRT.Demo.IsRunning() and L["The demo is running."] or L["Play the demo"],
+        buttonText = PRT.Demo.IsRunning() and L["Stop"] or L["Start"],
+        onClick = PRT.Demo.Toggle
+      }
+    }
+  }
+end
+
 UI.RegisterPage(
   {
     id = "overlays",
@@ -491,7 +507,7 @@ UI.RegisterPage(
       if index and Receivers()[index] then
         return ReceiverPage(index)
       end
-      return L["Overlays"], L["Where messages show up"], {ReceiversCard(), UpcomingCard(), SenderCard()}
+      return L["Overlays"], L["Where messages show up"], {DemoCard(), ReceiversCard(), UpcomingCard(), SenderCard()}
     end
   }
 )
