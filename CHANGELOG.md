@@ -4,9 +4,9 @@
 
 ### Added
 - Warn earlier: a cooldown shows 5 seconds before its time by default and counts down to the moment you press it, then shows *Now*. Change the default on the *New messages* page or per assignment; text messages can warn earlier too.
-- **The encounter page is one desk:** the bosses of the instance as tiles on top, a toolbar, the timeline across the whole width and the selected assignment below it as one sentence (*At 1:05 show … to … on … for 5 s*). *More* opens the full editor. There is no separate encounter list or assignment page anymore.
+- **The encounter page is one desk:** the bosses of the instance as tiles on top, a toolbar, the timeline across the whole width and the selected assignment below it as a form with one line per setting: template, when (once, repeating or several times), what, for whom, overlay, duration and warning, sound and difficulties. A new assignment can start from a template right there. *Advanced* opens every setting in a window of its own. There is no separate encounter list or assignment page anymore.
 - **Demo playback:** plays the plan from the playhead on your overlays, in real time or four times as fast. Click on the time axis to move the playhead.
-- **View as** a role or player: the timeline and the demo playback show only what they get. A difficulty filter dims the assignments that don't run on it.
+- **View as** a role or player: the timeline and the demo playback show only what they get. Normal, Heroic and Mythic switch on and off one by one; the timeline dims the assignments that run on none of them.
 - In the timeline, drag a marker to move the assignment, with Alt to copy it, and middle-click it to delete it (asks first). The mouse wheel zooms (out to 20 minutes, to plan after the last assignment), Shift + mouse wheel scrolls the time, and repeating assignments show as a bar. The timeline and its markers list these controls.
 - *New encounter* lists the dungeons of the current expansion besides the raids.
 - On Retail it also lists the Mythic+ dungeons of the current season. A dungeon's page lets you add a boss the journal doesn't list, by its encounter ID.
@@ -17,7 +17,8 @@
 - In a dungeon group every member can send plans; in a raid it stays the leader and assistants.
 - Simpler window: the overview and the settings are one page (with *About* at the end), and importing an encounter moved to *New encounter*.
 - The overview picks your role (lead, player or both) the same way as the first start guide.
-- A message's sound is one choice: the overlay's sound, its own sound or read aloud.
+- A message's sound is one choice: the overlay's sound, its own sound or TTS (text to speech).
+- An assignment's targets are picked with ticks in one list (roles, your group, raid groups, classes), so several targets need no extra step.
 - *Save as template* is one click; the template is named after the message and can be renamed on the templates page.
 - The message editor has no *Tools* card and no *Undo* anymore; loading and saving templates and deleting the assignment are at the end of *Display*.
 - Overlays have one *Unlock* switch instead of lock and unlock buttons, *Raid plan in combat* (formerly *Lead status*) one switch to place it, and the layout options are labeled.

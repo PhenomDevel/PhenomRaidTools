@@ -1,4 +1,4 @@
--- luacheck: read globals CreateColorFromHexString CreateFont STANDARD_TEXT_FONT MenuUtil PlaySound PlaySoundFile SOUNDKIT strtrim geterrorhandler ColorPickerFrame C_Spell GameTooltip
+-- luacheck: read globals CreateColorFromHexString CreateFont STANDARD_TEXT_FONT MenuUtil MenuResponse PlaySound PlaySoundFile SOUNDKIT strtrim geterrorhandler ColorPickerFrame C_Spell GameTooltip
 local _, PRT = ...
 local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 local LSM = LibStub("LibSharedMedia-3.0")
@@ -358,15 +358,24 @@ end
 
 -- dropdown:SetEntries(entries, getValue, setValue, placeholder);
 -- entries = { { value = ..., label = ... }, ... }
+-- dropdown:SetMulti(groups, isSelected, setSelected, getText, placeholder,
+-- onClosed) makes it a multi-select: groups = { { label, values = entries } },
+-- a group with a label is a submenu. The menu stays open while ticking
+-- entries; onClosed() runs when it closes.
 local DROPDOWN_SCROLL_AFTER = 20
 local DROPDOWN_SCROLL_HEIGHT = 400
 
 local function UpdateDropdownText(dropdown)
-  local current = dropdown.getValue and dropdown.getValue()
   local text
-  for _, entry in ipairs(dropdown.entries or {}) do
-    if entry.value == current then
-      text = entry.label
+  if dropdown.multi then
+    text = dropdown.getText and dropdown.getText()
+    text = text ~= "" and text or nil
+  else
+    local current = dropdown.getValue and dropdown.getValue()
+    for _, entry in ipairs(dropdown.entries or {}) do
+      if entry.value == current then
+        text = entry.label
+      end
     end
   end
   if text then
@@ -392,7 +401,13 @@ function Widgets.CreateDropdown(parent)
   Widgets.Line(dropdown, dropdown, "RIGHT", -11, -2, -7, 2)
 
   dropdown.SetEntries = function(self, entries, getValue, setValue, placeholder)
+    self.multi = nil
     self.entries, self.getValue, self.setValue, self.placeholder = entries, getValue, setValue, placeholder
+    UpdateDropdownText(self)
+  end
+  dropdown.SetMulti = function(self, groups, isSelected, setSelected, getText, placeholder, onClosed)
+    self.multi, self.entries, self.onClosed = groups, nil, onClosed
+    self.isSelected, self.setSelected, self.getText, self.placeholder = isSelected, setSelected, getText, placeholder
     UpdateDropdownText(self)
   end
   dropdown.Update = UpdateDropdownText
@@ -412,6 +427,43 @@ function Widgets.CreateDropdown(parent)
   dropdown:SetScript(
     "OnClick",
     function(self)
+      if self.multi then
+        MenuUtil.CreateContextMenu(
+          self,
+          function(_, root)
+            if self.onClosed and root.AddMenuReleasedCallback then
+              root:AddMenuReleasedCallback(self.onClosed)
+            end
+            for _, group in ipairs(self.multi) do
+              local menu = root
+              if group.label then
+                menu = root:CreateButton(group.label)
+                if #group.values > DROPDOWN_SCROLL_AFTER and menu.SetScrollMode then
+                  menu:SetScrollMode(DROPDOWN_SCROLL_HEIGHT)
+                end
+              end
+              for _, entry in ipairs(group.values) do
+                local checkbox =
+                  menu:CreateCheckbox(
+                  entry.label,
+                  function()
+                    return self.isSelected(entry.value)
+                  end,
+                  function()
+                    self.setSelected(entry.value, not self.isSelected(entry.value))
+                    UpdateDropdownText(self)
+                    return MenuResponse and MenuResponse.Refresh
+                  end
+                )
+                if MenuResponse and checkbox.SetResponse then
+                  checkbox:SetResponse(MenuResponse.Refresh)
+                end
+              end
+            end
+          end
+        )
+        return
+      end
       MenuUtil.CreateContextMenu(
         self,
         function(_, root)

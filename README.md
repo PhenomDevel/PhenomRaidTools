@@ -44,7 +44,8 @@ What changed: [CHANGELOG.md](https://github.com/PhenomDevel/PhenomRaidTools/blob
 ## Features
 
 - **Timeline:** each boss is one large timeline with a lane per target. Click
-  where an assignment belongs and edit it below as one sentence; drag a marker
+  where an assignment belongs and edit it in the form below (or start it from
+  a template); *Advanced* opens every setting in a window of its own. Drag a marker
   to move it (with Alt to copy it), middle-click it to delete it, zoom with the
   mouse wheel (up to 20 minutes). An assignment shows once, repeating (every *n* seconds
   from–to) or at several times, for the players, roles, raid groups or classes
