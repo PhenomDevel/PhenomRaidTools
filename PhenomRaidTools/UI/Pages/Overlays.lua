@@ -403,8 +403,8 @@ local function SenderCard()
     end
   end
   return {
-    title = L["Lead status"],
-    note = L["For the lead during the own plan: every group with the time to its next assignment."],
+    title = L["Raid plan in combat"],
+    note = L["For the lead while your plan runs: the fight time and what's next in the plan."],
     toggle = {get = Get("enabled"), set = Set("enabled")},
     rows = {
       {

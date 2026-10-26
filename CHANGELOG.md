@@ -7,7 +7,7 @@
 - The overview picks your role (lead, player or both) the same way as the first start guide.
 - A message's sound is one choice: the overlay's sound, its own sound or read aloud.
 - *Save as template* is one click; the template is named after the message and can be renamed on the templates page.
-- Overlays have one *Unlock* switch instead of lock and unlock buttons, the lead status one switch to place it, and the layout options are labeled.
+- Overlays have one *Unlock* switch instead of lock and unlock buttons, *Raid plan in combat* (formerly *Lead status*) one switch to place it, and the layout options are labeled.
 - New messages: the default targets are picked like in the editor. The default type is gone, since new assignments always started as a message.
 - A new profile is created by pressing Enter in its name field.
 - The debug log shows one line per entry.

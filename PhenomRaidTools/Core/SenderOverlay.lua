@@ -3,7 +3,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 local LSM = LibStub("LibSharedMedia-3.0")
 
 --[[
-  Lead status during an encounter (overlay.sender): elapsed time and every
+  Raid plan in combat (overlay.sender), for the lead: elapsed time and every
   timer with the time to its next timing.
   Updated once a second while the lead's own plan runs; movable out of combat.
 ]]
@@ -142,7 +142,7 @@ end
 -- Shows the overlay with a placeholder to place it.
 function SenderOverlay.ShowPreview()
   SenderOverlay.Refresh()
-  SetText(Colored("PhenomRaidTools", PRT.Static.Colors.Primary) .. "|n" .. L["Lead status during encounters. Drag to move."])
+  SetText(Colored("PhenomRaidTools", PRT.Static.Colors.Primary) .. "|n" .. L["Raid plan during encounters. Drag to move."])
   frame:EnableMouse(true)
   frame:Show()
 end
