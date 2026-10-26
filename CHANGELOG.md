@@ -13,6 +13,7 @@
 - The debug log shows one line per entry.
 
 ### Fixed
+- The *Every* slider of a repeating assignment can be dragged again.
 - The button that writes the cooldown assignments into your MethodRaidTools note is back. It is now always shown on the encounter page and grayed out only when MethodRaidTools isn't loaded.
 
 ## v3.1.0 (2026-10-25)

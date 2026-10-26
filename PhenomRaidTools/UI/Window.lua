@@ -234,6 +234,17 @@ rowTypes.slider = {
     row.Value:SetPoint("TOPRIGHT", 0, -9)
     row.Control = Widgets.CreateSlider(row)
     Widgets.ForwardHover(row.Control, row)
+    -- A rebuild hides the slider and ends the drag: { layout } rows rebuild
+    -- once the thumb is let go.
+    row.Control:HookScript(
+      "OnMouseUp",
+      function()
+        if row.renderPending then
+          row.renderPending = nil
+          Render()
+        end
+      end
+    )
     row.Update = function(self)
       local value = self.spec.get()
       if value == nil then
@@ -251,8 +262,15 @@ rowTypes.slider = {
     local slider = row.Control
     slider:SetMinMaxValues(spec.min, spec.max)
     slider:SetValueStep(spec.step or 1)
+    row.renderPending = nil
     slider.onChange = function(value)
-      Commit(spec, value)
+      if spec.layout and slider:IsDraggingThumb() then
+        Widgets.SafeCall(spec.set, value)
+        row.renderPending = true
+        RefreshValues()
+      else
+        Commit(spec, value)
+      end
       row.Value:SetText(FormatSliderValue(spec, value))
     end
     local height = SetupRow(row, spec, 60, ROW_HEIGHT + SLIDER_EXTRA)
