@@ -12,6 +12,7 @@
 - Overlays lock again when you close the options window.
 - A new profile is created by pressing Enter in its name field.
 - The debug log shows one line per entry.
+- Every overlay (messages, your next assignments, lead status) has the same text settings: font, size, outline (off, thin, thick) and shadow.
 
 ### Fixed
 - The button that writes the cooldown assignments into your MethodRaidTools note is back. It is now always shown on the encounter page and grayed out only when MethodRaidTools isn't loaded.

@@ -13,6 +13,8 @@ local LSM = LibStub("LibSharedMedia-3.0")
   from        anchor | center            stack starts at the anchor or is centered on it
   align       LEFT | CENTER | RIGHT      text alignment of vertical stacks
   spacing, maxEntries, iconSize, barWidth, barColor, fontSize, fontName, fontColor
+  fontOutline NONE | OUTLINE | THICKOUTLINE
+  fontShadow  shadow below the texts
   x, y        anchor offset from the screen center
 
   Frames are pooled and reused across encounters and profile changes. A
@@ -69,11 +71,6 @@ local function EnsurePosition(config)
     config.x = math.floor((config.left or width / 2) - width / 2 + 0.5)
     config.y = math.floor(height / 2 - (config.top or height / 2) + 0.5)
   end
-end
-
-local function Font(config)
-  local font = config.fontName and LSM:Fetch("font", config.fontName, true)
-  return font or config.font or STANDARD_TEXT_FONT, Get(config, "fontSize")
 end
 
 local function Color(color, fallback)
@@ -169,9 +166,9 @@ end
 local function SetupEntry(display, entry)
   local config = display.config
   local style = Get(config, "style")
-  local font, size = Font(config)
+  local size = Get(config, "fontSize")
   local r, g, b, a = Color(config.fontColor, DEFAULT_FONT_COLOR)
-  entry.Text:SetFont(font, size, "OUTLINE")
+  PRT.SetOverlayFont(entry.Text, config, size)
   entry.Text:SetTextColor(r, g, b, a)
   entry.Text:ClearAllPoints()
   entry.Time:ClearAllPoints()
@@ -194,7 +191,7 @@ local function SetupEntry(display, entry)
     entry.Icon:SetTexture(entry.icon)
     entry.Icon:SetSize(iconSize, iconSize)
     entry.Icon:SetPoint("LEFT")
-    entry.Time:SetFont(font, math.max(10, math.floor(iconSize * 0.45)), "OUTLINE")
+    PRT.SetOverlayFont(entry.Time, config, math.max(10, math.floor(iconSize * 0.45)))
     entry.Time:SetTextColor(1, 1, 1, 1)
     entry.Time:SetPoint("CENTER", entry.Icon)
     entry.Text:SetJustifyH("LEFT")
@@ -211,7 +208,7 @@ local function SetupEntry(display, entry)
     entry.Bar:SetPoint("BOTTOMRIGHT")
     entry.Bar:SetStatusBarColor(Color(config.barColor, DEFAULT_BAR_COLOR))
     entry.Bar:SetMinMaxValues(0, math.max(0.01, entry.duration))
-    entry.Time:SetFont(font, math.max(10, size - 4), "OUTLINE")
+    PRT.SetOverlayFont(entry.Time, config, math.max(10, size - 4))
     entry.Time:SetTextColor(r, g, b, a)
     entry.Time:SetPoint("RIGHT", entry.Bar, "RIGHT", -6, 0)
     entry.Text:SetJustifyH("LEFT")
