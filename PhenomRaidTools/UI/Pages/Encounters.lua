@@ -29,8 +29,10 @@ local Rehearsal = UI.Rehearsal
 
 -- The timeline shows at least this much, so there is room to click.
 local MIN_TIMELINE_LENGTH = 180
--- Zoomed in, the timeline shows at least this many seconds.
+-- Zoomed in, the timeline shows at least this many seconds; zoomed out at
+-- most this many (or the whole plan, if it is longer).
 local MIN_ZOOM_SPAN = 20
+local MAX_ZOOM_SPAN = 20 * 60
 
 -- What the encounter page shows besides the plan, for this session.
 local desk = {
@@ -828,11 +830,9 @@ local function ZoomRange(length)
   return 0, length
 end
 
+-- Wider than the plan, the view starts at the pull and leaves room after the
+-- last assignment.
 local function SetZoom(length, from, span)
-  if span >= length then
-    desk.zoom = nil
-    return
-  end
   from = math.max(0, math.min(from, length - span))
   desk.zoom = {from, from + span}
 end
@@ -840,7 +840,7 @@ end
 -- factor < 1 zooms in around `at` (default: the middle).
 local function Zoom(length, factor, at)
   local from, to = ZoomRange(length)
-  local span = math.max(MIN_ZOOM_SPAN, math.min(length, (to - from) * factor))
+  local span = math.max(MIN_ZOOM_SPAN, math.min(math.max(MAX_ZOOM_SPAN, length), (to - from) * factor))
   at = at or (from + to) / 2
   SetZoom(length, at - (at - from) / (to - from) * span, span)
 end
@@ -866,9 +866,9 @@ local function ToolbarCard(encounter)
   local items = {
     {
       kind = "button",
-      label = Rehearsal.IsPlaying() and L["Pause"] or L["Rehearse"],
-      tooltipTitle = L["Rehearse"],
-      tooltip = L["Plays the plan from the playhead on your overlays, as the chosen target sees it. Click on the time axis to move the playhead."],
+      label = Rehearsal.IsPlaying() and L["Pause"] or L["Demo playback"],
+      tooltipTitle = L["Demo playback"],
+      tooltip = L["Plays the plan from the playhead on your overlays, as the chosen target sees it.\n<Click> on the time axis to move the playhead."],
       onClick = function()
         if Rehearsal.IsPlaying() then
           Rehearsal.Pause()
@@ -903,7 +903,7 @@ local function ToolbarCard(encounter)
         return ViewValues(version)
       end,
       tooltipTitle = L["View as"],
-      tooltip = L["Shows only the lanes and assignments this role or player gets, also in the rehearsal."],
+      tooltip = L["Shows only the lanes and assignments this role or player gets, also in the demo playback."],
       get = function()
         return desk.view
       end,
@@ -920,35 +920,6 @@ local function ToolbarCard(encounter)
       end,
       set = function(value)
         desk.difficulty = value
-      end
-    },
-    {kind = "space"},
-    {kind = "text", text = L["Zoom"], dim = true},
-    {
-      kind = "toggle",
-      label = "-",
-      tooltip = L["Zoom out. Ctrl + mouse wheel over the timeline zooms there."],
-      onClick = function()
-        Zoom(length, 1.5)
-      end
-    },
-    {
-      kind = "toggle",
-      label = "+",
-      tooltip = L["Zoom in. Shift + mouse wheel scrolls the zoomed timeline."],
-      onClick = function()
-        Zoom(length, 1 / 1.5, desk.zoom == nil and Rehearsal.Position() or nil)
-      end
-    },
-    {
-      kind = "toggle",
-      label = L["All"],
-      tooltip = L["The whole encounter."],
-      active = function()
-        return desk.zoom == nil
-      end,
-      onClick = function()
-        desk.zoom = nil
       end
     }
   }
@@ -1034,7 +1005,7 @@ local function Marker(encounter, assignment, second, at, selectedKey)
     tooltip = ("%s\n\n%s\n\n%s"):format(
       Messages.DisplayText(message),
       L["For: %s"]:format(targets ~= "" and targets or L["nobody"]),
-      L["Drag to move, with Alt to copy. Middle click deletes."]
+      L["<Click> to edit it.\n<Drag> to move it, with <Alt> to copy it.\n<Middle-click> to delete it."]
     ),
     onClick = function()
       UI.Navigate("encounters", encounter.id, key)
@@ -1099,9 +1070,17 @@ local function TimelineCard(encounter, selectedKey)
   local version = Version(encounter)
   local length = Length(version)
   local from, to = ZoomRange(length)
-  local note = L["Click into the timeline to add an assignment there. Drag a marker to move it, with Alt to copy it."]
+  local note = table.concat(
+    {
+      L["<Click> into the timeline to add an assignment there."],
+      L["<Drag> a marker to move it, with <Alt> to copy it."],
+      L["<Middle-click> a marker to delete it."],
+      L["<Mouse wheel> zooms (up to 20:00), with <Shift> it scrolls the time."]
+    },
+    "\n"
+  )
   if desk.view ~= "" then
-    note = note .. " " .. L["Lanes the chosen target doesn't see are hidden."]
+    note = note .. "\n" .. L["Lanes the chosen target doesn't see are hidden."]
   end
   return {
     title = L["Timeline"],
@@ -1111,7 +1090,8 @@ local function TimelineCard(encounter, selectedKey)
       {
         type = "timeline",
         laneHeight = 30,
-        length = length,
+        -- Zoomed out further than the plan: room to add more after it.
+        length = math.max(length, to),
         view = {from = from, to = to},
         empty = L["Nothing planned yet: click where the first assignment belongs."],
         lanes = function()
@@ -1119,7 +1099,7 @@ local function TimelineCard(encounter, selectedKey)
         end,
         playhead = Rehearsal.Position,
         axisTooltipTitle = L["Playhead"],
-        axisTooltip = L["Click to move the playhead of the rehearsal here."],
+        axisTooltip = L["<Click> to move the playhead of the demo playback here."],
         onClickAxis = Rehearsal.Seek,
         onZoom = function(factor, at)
           Zoom(length, factor, at)
