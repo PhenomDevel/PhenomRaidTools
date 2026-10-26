@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### New
+- **The encounter page is one desk:** the bosses of the instance as tiles on top, a toolbar, the timeline across the whole width and the selected assignment below it as one sentence (*At 1:05 show … to … on … for 5 s*). *More* opens the full editor. There is no separate encounter list or assignment page anymore.
+- **Rehearsal:** plays the plan from the playhead on your overlays, in real time or four times as fast. Click on the time axis to move the playhead.
+- **View as** a role or player: the timeline and the rehearsal show only what they get. A difficulty filter dims the assignments that don't run on it.
+- In the timeline, drag a marker to move the assignment, with Alt to copy it, and middle-click it to delete it (asks first). Ctrl + mouse wheel zooms, Shift + mouse wheel scrolls the zoomed timeline, and repeating assignments show as a bar.
+
 ### Changed
 - Simpler window: *About* is now a card on the settings page, and importing an encounter moved to *New encounter*.
 - The overview picks your role (lead, player or both) the same way as the first start guide.

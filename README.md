@@ -43,10 +43,14 @@ What changed: [CHANGELOG.md](https://github.com/PhenomDevel/PhenomRaidTools/blob
 
 ## Features
 
-- **Timeline:** click into a boss's timeline to add an assignment. It shows
-  once, repeating (every *n* seconds from–to) or at several times, for the
-  players, roles, raid groups or classes you pick, on the difficulties you
-  pick.
+- **Timeline:** each boss is one large timeline with a lane per target. Click
+  where an assignment belongs and edit it below as one sentence; drag a marker
+  to move it (with Alt to copy it), middle-click it to delete it, zoom with
+  Ctrl + mouse wheel. An assignment shows once, repeating (every *n* seconds
+  from–to) or at several times, for the players, roles, raid groups or classes
+  you pick, on the difficulties you pick.
+- **Rehearsal:** play the plan on your overlays in real time or four times as
+  fast, for everyone or as a role or player sees it.
 - **Cooldowns:** pick a raid or utility cooldown; it shows with icon and spell
   name (or your text). Text to speech can read any message aloud.
 - **Sync before the pull:** the lead sends the plans on every ready check or
@@ -56,8 +60,8 @@ What changed: [CHANGELOG.md](https://github.com/PhenomDevel/PhenomRaidTools/blob
   cooldowns on the right. Each overlay shows text, icons or bars and grows in
   any direction. A preview beside the window shows what you are editing.
 - **Your next assignments** during an encounter with a countdown.
-- **One window with search:** overview, encounters grouped by instance with
-  boss portraits and import/export, templates, overlays, settings and
+- **One window with search:** overview, encounters with the bosses of each
+  instance as tiles and import/export, templates, overlays, settings and
   profiles (also per specialization).
 - **MethodRaidTools note:** writes the cooldown assignments of a boss into
   your MRT note.

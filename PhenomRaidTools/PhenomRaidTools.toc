@@ -67,6 +67,7 @@ UI\Widgets.lua
 UI\Window.lua
 UI\MessageEditor.lua
 UI\Preview.lua
+UI\Rehearsal.lua
 UI\Pages\Overview.lua
 UI\Pages\Encounters.lua
 UI\Pages\Templates.lua
