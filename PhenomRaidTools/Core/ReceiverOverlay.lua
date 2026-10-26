@@ -46,6 +46,8 @@ local DEFAULT_ICON = "Interface\\AddOns\\PhenomRaidTools\\Media\\Logo.blp"
 local RAID_TARGET_ICON = "Interface\\TargetingFrame\\UI-RaidTargetingIcon_%s"
 local BAR_TEXTURE = "Interface\\Buttons\\WHITE8X8"
 local UPDATE_INTERVAL = 0.05
+-- A message with a lead time stays at least this long after its time, showing "Now".
+local NOW_HOLD = 2
 local MOVER_WIDTH, MOVER_HEIGHT = 180, 44
 
 local displays = {}
@@ -237,9 +239,11 @@ local function SetupEntry(display, entry)
   end
 end
 
+-- Counts down to the message's time (lead time) or to its end.
 local function UpdateEntry(display, entry, now)
-  local remaining = math.max(0, entry.expires - now)
-  local shown = math.floor(remaining * 10 + 0.5) / 10
+  local remaining = math.max(0, (entry.pressAt or entry.expires) - now)
+  local due = entry.pressAt ~= nil and remaining == 0
+  local shown = due and -1 or math.floor(remaining * 10 + 0.5) / 10
   if shown == entry.lastShown then
     if entry.Bar:IsShown() then
       entry.Bar:SetValue(remaining)
@@ -248,9 +252,9 @@ local function UpdateEntry(display, entry, now)
   end
   entry.lastShown = shown
   if Get(display.config, "style") == "text" then
-    entry.Text:SetText(WithTime(entry.text, shown))
+    entry.Text:SetText(due and strtrim(WithoutTime(entry.text) .. " " .. L["Now"]) or WithTime(entry.text, shown))
   else
-    entry.Time:SetText(FormatRemaining(remaining))
+    entry.Time:SetText(due and L["Now"] or FormatRemaining(remaining))
     if entry.Bar:IsShown() then
       entry.Bar:SetValue(remaining)
     end
@@ -511,8 +515,17 @@ local function AddToDisplay(display, message, silent)
 
   local entry = AcquireEntry(display)
   local now = GetTime()
-  entry.duration = message.duration or 5
-  entry.expires = now + entry.duration
+  if (message.pressIn or 0) > 0 then
+    -- Shown early: the countdown and the bar run to the message's time, it
+    -- stays for its duration but past its time.
+    entry.pressAt = now + message.pressIn
+    entry.duration = message.pressIn
+    entry.expires = math.max(entry.pressAt + NOW_HOLD, now + (message.duration or 5))
+  else
+    entry.pressAt = nil
+    entry.duration = message.duration or 5
+    entry.expires = now + entry.duration
+  end
   entry.added = now
   local text = PRT.PrepareMessageForDisplay(raw)
   local icon, rest = ReceiverOverlay.MessageIcon(message, raw)
@@ -537,7 +550,8 @@ local function AddToDisplay(display, message, silent)
   display.frame:SetScript("OnUpdate", OnUpdate)
 end
 
--- message: { message, duration, targetOverlay, spellID, useCustomSound, soundFile(Name), useTTS }
+-- message: { message, duration, targetOverlay, spellID, useCustomSound, soundFile(Name), useTTS, pressIn }
+-- pressIn: seconds to the message's time when it shows early (lead time).
 function ReceiverOverlay.AddMessage(message, silent)
   local display = GetDisplay(message.targetOverlay or 1)
   if display then

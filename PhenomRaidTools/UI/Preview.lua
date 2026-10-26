@@ -90,7 +90,7 @@ local function Signature(spec)
   Append(parts, Receiver(spec))
   if spec.kind == "message" then
     local message = spec.message
-    Append(parts, {message.message, message.duration, message.spellID, message.type})
+    Append(parts, {message.message, message.duration, message.spellID, message.type, PRT.MessageLeadTime(message)})
   end
   return table.concat(parts, "\001")
 end
@@ -100,7 +100,15 @@ local function Samples(spec, config)
     return PRT.ReceiverOverlay.SampleMessages(config)
   end
   local message = spec.message
-  return {{message = message.message or "", duration = message.duration or 5, spellID = message.spellID}}
+  local lead = PRT.MessageLeadTime(message)
+  return {
+    {
+      message = message.message or "",
+      duration = message.duration or 5,
+      spellID = message.spellID,
+      pressIn = lead > 0 and lead or nil
+    }
+  }
 end
 
 local function Play()

@@ -809,8 +809,11 @@ local function RehearsalEvents(encounter)
     local events = {}
     for _, assignment in ipairs(Assignments(Version(encounter))) do
       if RunsOn(assignment.timing, desk.difficulty) and Reaches(assignment.message, desk.view) then
+        local lead = PRT.MessageLeadTime(assignment.message)
         for _, at in ipairs(ShowTimes(assignment)) do
-          events[#events + 1] = {at = at, message = assignment.message}
+          -- Shown early by its lead time, counting down to its time.
+          local showAt = math.max(0, at - lead)
+          events[#events + 1] = {at = showAt, pressIn = at - showAt, message = assignment.message}
         end
       end
     end

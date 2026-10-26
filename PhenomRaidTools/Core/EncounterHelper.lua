@@ -107,6 +107,22 @@ function PRT.SpellName(spellID)
   return info and info.name
 end
 
+-- Seconds a message shows before its time, counting down to it: its own
+-- lead time, or the default for cooldowns (they have to be pressed on time).
+function PRT.CooldownLeadTime()
+  return PRT.MessageDefaults().cooldownLeadTime or 5
+end
+
+function PRT.MessageLeadTime(message)
+  if message.leadTime then
+    return message.leadTime
+  end
+  if message.type == "cooldown" then
+    return PRT.CooldownLeadTime()
+  end
+  return 0
+end
+
 -- Text of a cooldown message: its icon and its custom text, or else the spell's name.
 function PRT.CooldownMessageText(message)
   local label = message.cooldownText

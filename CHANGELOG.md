@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+- Warn earlier: a cooldown shows 5 seconds before its time by default and counts down to the moment you press it, then shows *Now*. Change the default on the *New messages* page or per assignment; text messages can warn earlier too.
 - **The encounter page is one desk:** the bosses of the instance as tiles on top, a toolbar, the timeline across the whole width and the selected assignment below it as one sentence (*At 1:05 show … to … on … for 5 s*). *More* opens the full editor. There is no separate encounter list or assignment page anymore.
 - **Rehearsal:** plays the plan from the playhead on your overlays, in real time or four times as fast. Click on the time axis to move the playhead.
 - **View as** a role or player: the timeline and the rehearsal show only what they get. A difficulty filter dims the assignments that don't run on it.

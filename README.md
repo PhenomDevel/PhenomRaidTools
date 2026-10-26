@@ -52,7 +52,8 @@ What changed: [CHANGELOG.md](https://github.com/PhenomDevel/PhenomRaidTools/blob
 - **Rehearsal:** play the plan on your overlays in real time or four times as
   fast, for everyone or as a role or player sees it.
 - **Cooldowns:** pick a raid or utility cooldown; it shows with icon and spell
-  name (or your text). Text to speech can read any message aloud.
+  name (or your text), a few seconds early with a countdown to the moment to
+  press it. Text to speech can read any message aloud.
 - **Sync before the pull:** the lead sends the plans on every ready check or
   with `/prt sync`; the overview shows who has them. Plans are accepted from
   the group leader and assistants only.
