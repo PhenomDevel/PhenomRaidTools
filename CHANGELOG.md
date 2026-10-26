@@ -2,7 +2,13 @@
 
 ## Unreleased
 
+### Added
+- *New encounter* lists the dungeons of the current expansion besides the raids.
+- On Retail it also lists the Mythic+ dungeons of the current season. A dungeon's page lets you add a boss the journal doesn't list, by its encounter ID.
+- Each encounter has a *Share with the group* switch. Encounters you don't share aren't sent to your group and run only for you.
+
 ### Changed
+- In a dungeon group every member can send plans; in a raid it stays the leader and assistants.
 - Simpler window: the overview and the settings are one page (with *About* at the end), and importing an encounter moved to *New encounter*.
 - The overview picks your role (lead, player or both) the same way as the first start guide.
 - A message's sound is one choice: the overlay's sound, its own sound or read aloud.
