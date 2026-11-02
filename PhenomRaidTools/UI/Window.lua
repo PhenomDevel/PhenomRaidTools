@@ -1279,11 +1279,15 @@ local function CreateTimelineMarker(row)
 end
 
 -- Shows the visible part from `from` on, without a page render, so the
--- dragged plot keeps the mouse.
+-- dragged plot keeps the mouse. rowWidth belongs to the card laid out last,
+-- so the row's own width stands in for it meanwhile.
 local function ShowTimelineFrom(row, from)
   local span = row.to - row.from
   local spec = setmetatable({view = {from = from, to = from + span}}, {__index = row.spec})
+  local pageRowWidth = rowWidth
+  rowWidth = row:GetWidth()
   rowTypes.timeline.setup(row, spec)
+  rowWidth = pageRowWidth
 end
 
 -- While the left button is held on the plot: once moved a few pixels, the
