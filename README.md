@@ -47,7 +47,7 @@ What changed: [CHANGELOG.md](https://github.com/PhenomDevel/PhenomRaidTools/blob
   where an assignment belongs and edit it in the form below (or start it from
   a template); *Advanced* opens every setting in a window of its own. Drag a marker
   to move it (with Alt to copy it), middle-click it to delete it, zoom with the
-  mouse wheel (up to 20 minutes). An assignment shows once, repeating (every *n* seconds
+  mouse wheel (up to 20 minutes) and drag an empty spot to scroll. An assignment shows once, repeating (every *n* seconds
   from–to) or at several times, for the players, roles, raid groups or classes
   you pick, on the difficulties you pick.
 - **Demo playback:** play the plan on your overlays in real time or four times as

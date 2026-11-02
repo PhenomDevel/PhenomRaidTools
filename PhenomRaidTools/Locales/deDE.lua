@@ -70,6 +70,7 @@ L["Click into an encounter's timeline to add an assignment there, once or repeat
 L["Click to select, then copy with Ctrl+C."] = "Klicken zum Markieren, dann mit Strg+C kopieren."
 L["<Click> into the timeline to add an assignment there."] = "<Klicke> in die Zeitleiste, um dort eine Zuweisung anzulegen."
 L["<Drag> a marker to move it, with <Alt> to copy it."] = "<Ziehe> eine Markierung, um sie zu verschieben, mit <Alt>, um sie zu kopieren."
+L["<Drag> an empty spot to scroll the zoomed timeline."] = "<Ziehe> eine freie Stelle, um die gezoomte Zeitleiste zu verschieben."
 L["<Middle-click> a marker to delete it."] = "<Mittelklick> auf eine Markierung löscht sie."
 L["<Mouse wheel> zooms (up to 20:00), with <Shift> it scrolls the time."] = "<Mausrad> zoomt (bis 20:00), mit <Umschalt> scrollt es die Zeit."
 L["<Click> to edit it.\n<Drag> to move it, with <Alt> to copy it.\n<Middle-click> to delete it."] = "<Klicken> zum Bearbeiten.\n<Ziehen> zum Verschieben, mit <Alt> zum Kopieren.\n<Mittelklick> zum Löschen."

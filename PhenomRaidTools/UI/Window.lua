@@ -1153,7 +1153,7 @@ rowTypes.sound = {
 --   onClickTime(seconds)     a click into the plot adds something there
 --   onClickAxis(seconds)     a click on the time axis, e.g. to move the playhead
 --   onZoom(factor, seconds)  mouse wheel over the plot, around `seconds`
---   onPan(seconds)           Shift + mouse wheel over the plot
+--   onPan(seconds)           Shift + mouse wheel over the plot, or dragging it
 --   playhead() -> seconds    a line that follows the value every frame
 --   onMove(seconds, copy)    dragging a marker (copy while Alt is held)
 --   onRemove() + confirmRemove   a middle click on a marker, asked first
@@ -1278,10 +1278,44 @@ local function CreateTimelineMarker(row)
   return marker
 end
 
+-- Shows the visible part from `from` on, without a page render, so the
+-- dragged plot keeps the mouse.
+local function ShowTimelineFrom(row, from)
+  local span = row.to - row.from
+  local spec = setmetatable({view = {from = from, to = from + span}}, {__index = row.spec})
+  rowTypes.timeline.setup(row, spec)
+end
+
+-- While the left button is held on the plot: once moved a few pixels, the
+-- visible part follows the cursor. Released, onPan gets the whole shift.
+local function OnTimelinePan(plot)
+  local row = plot.row
+  local x = GetCursorPosition() / plot:GetEffectiveScale()
+  local dx = x - plot.panX
+  if not plot.panning and math.abs(dx) > TIMELINE_DRAG_THRESHOLD then
+    plot.panning = true
+    HideTimelineGuide(row)
+  end
+  if plot.panning then
+    local span = plot.panTo - plot.panFrom
+    local from = plot.panFrom - dx / row.plotWidth * span
+    from = math.max(0, math.min(from, row.length - span))
+    if from ~= row.from then
+      ShowTimelineFrom(row, from)
+    end
+  end
+end
+
 local function OnTimelinePlotUpdate(plot)
   local row = plot.row
+  if plot.panX then
+    OnTimelinePan(plot)
+    if plot.panning then
+      return
+    end
+  end
   local seconds, x = TimelineCursorTime(row)
-  if seconds then
+  if seconds and row.onClickTime then
     ShowTimelineGuide(row, x, "+ " .. Widgets.FormatTime(seconds))
   end
 end
@@ -1324,12 +1358,51 @@ local function CreateTimelinePlot(row)
     "OnLeave",
     function(self)
       HideTimelineGuide(row)
-      self:SetScript("OnUpdate", nil)
+      if not self.panX then
+        self:SetScript("OnUpdate", nil)
+      end
+    end
+  )
+  -- Held and dragged, the left button moves the visible time (onPan).
+  plot:SetScript(
+    "OnMouseDown",
+    function(self, button)
+      self.dragged = false
+      if button ~= "LeftButton" or not row.onPan then
+        return
+      end
+      self.panX = GetCursorPosition() / self:GetEffectiveScale()
+      self.panFrom, self.panTo, self.panning = row.from, row.to, false
+      self:SetScript("OnUpdate", OnTimelinePlotUpdate)
+    end
+  )
+  plot:SetScript(
+    "OnMouseUp",
+    function(self)
+      if not self.panX then
+        return
+      end
+      local panning, shift = self.panning, row.from - self.panFrom
+      self.panX, self.panning = nil, false
+      if not (row.onClickTime and self:IsMouseOver()) then
+        self:SetScript("OnUpdate", nil)
+      end
+      if panning then
+        self.dragged = true
+        if shift ~= 0 then
+          Widgets.SafeCall(row.onPan, shift)
+        end
+        Render()
+      end
     end
   )
   plot:SetScript(
     "OnClick",
-    function()
+    function(self)
+      if self.dragged or self.panning then
+        self.dragged = false
+        return
+      end
       local seconds = TimelineCursorTime(row)
       if seconds and row.onClickTime then
         PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)

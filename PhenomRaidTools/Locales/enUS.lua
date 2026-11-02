@@ -70,6 +70,7 @@ L["Click into an encounter's timeline to add an assignment there, once or repeat
 L["Click to select, then copy with Ctrl+C."] = true
 L["<Click> into the timeline to add an assignment there."] = true
 L["<Drag> a marker to move it, with <Alt> to copy it."] = true
+L["<Drag> an empty spot to scroll the zoomed timeline."] = true
 L["<Middle-click> a marker to delete it."] = true
 L["<Mouse wheel> zooms (up to 20:00), with <Shift> it scrolls the time."] = true
 L["<Click> to edit it.\n<Drag> to move it, with <Alt> to copy it.\n<Middle-click> to delete it."] = true
