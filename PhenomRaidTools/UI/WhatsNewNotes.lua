@@ -8,6 +8,22 @@ local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 PRT.whatsNew = {
   {
+    version = "3.2.0",
+    notes = {
+      "# " .. L["Encounter page"],
+      L["The encounter page is one desk: bosses as tiles, the timeline across the full width and the selected assignment below as a form. *Advanced* opens all settings in their own window."],
+      L["In the timeline, drag a marker to move the assignment (with Alt to copy it, middle-click deletes it). The mouse wheel zooms; Shift + mouse wheel or dragging an empty spot scrolls."],
+      L["*Demo playback* plays the plan from the playhead on your overlays. *View as* shows only what a role or player gets."],
+      "# " .. L["Dungeons"],
+      L["*New encounter* also lists the dungeons of the current expansion and, on Retail, the Mythic+ dungeons of the season. In a dungeon group every member can send plans."],
+      L["Encounters you don't share with the group (*Share with the group*) run only for you."],
+      "# " .. L["Overlays"],
+      L["Cooldowns show 5 seconds early and count down to the moment you press them. Change it on *New messages* or per assignment."],
+      L["Every overlay has its own font, size, outline and shadow."],
+      L["*Overlays → Demo* or `/prt demo` plays a short sample fight with every kind of message on your overlays."]
+    }
+  },
+  {
     version = "3.1.0",
     notes = {
       "# " .. L["Midnight and WoW: Forever"],

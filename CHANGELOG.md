@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v3.2.0 (2026-11-02)
 
 ### Added
 - Warn earlier: a cooldown shows 5 seconds before its time by default and counts down to the moment you press it, then shows *Now*. Change the default on the *New messages* page or per assignment; text messages can warn earlier too.
