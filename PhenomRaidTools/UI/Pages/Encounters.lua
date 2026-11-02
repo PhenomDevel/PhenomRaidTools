@@ -1249,6 +1249,7 @@ local function TimelineCard(encounter, selectedKey)
     {
       L["<Click> into the timeline to add an assignment there."],
       L["<Drag> a marker to move it, with <Alt> to copy it."],
+      L["<Drag> an empty spot to scroll the zoomed timeline."],
       L["<Middle-click> a marker to delete it."],
       L["<Mouse wheel> zooms (up to 20:00), with <Shift> it scrolls the time."]
     },
