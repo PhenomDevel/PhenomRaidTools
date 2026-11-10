@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- New "About" page in the window: who made the addon (Phenom), version, and links to Discord, CurseForge, Wago, GitHub and bug reports, ready to copy. The version card on the overview is now called "Version and commands".
+
 ## v3.2.0 (2026-11-02)
 
 ### Added

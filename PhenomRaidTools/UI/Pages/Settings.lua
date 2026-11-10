@@ -45,7 +45,7 @@ end
 local function AboutCard()
   local _, _, _, interface = GetBuildInfo()
   return {
-    title = L["About"],
+    title = L["Version and commands"],
     note = ("%s %s · %s %d"):format(L["Version"], Version(), L["Interface"], interface),
     rows = {
       {
