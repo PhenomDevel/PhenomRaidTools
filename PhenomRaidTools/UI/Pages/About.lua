@@ -6,7 +6,7 @@ local UI = PRT.UI
 -- About page: who made the addon, version and links. The same page (content
 -- and layout) exists in all addons by Phenom.
 
-local DISCORD = "https://discord.gg/GAYDjBF"
+local DISCORD = "https://discord.gg/4fSVKCVJWy"
 
 local links = {
   {label = "Discord", url = DISCORD},
