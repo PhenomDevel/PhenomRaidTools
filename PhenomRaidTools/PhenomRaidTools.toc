@@ -76,6 +76,7 @@ UI\Pages\Defaults.lua
 UI\Pages\Overlays.lua
 UI\Pages\Settings.lua
 UI\Pages\Profiles.lua
+UI\Pages\About.lua
 UI\Pages\Welcome.lua
 UI\Pages\Components.lua
 UI\WhatsNewNotes.lua
