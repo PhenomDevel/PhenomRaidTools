@@ -8,6 +8,12 @@ local L = LibStub("AceLocale-3.0"):GetLocale("PhenomRaidTools")
 
 PRT.whatsNew = {
   {
+    version = "3.3.0",
+    notes = {
+      L["New *About* page: who made the addon, version, and links to Discord, CurseForge, Wago and GitHub, ready to copy."]
+    }
+  },
+  {
     version = "3.2.0",
     notes = {
       "# " .. L["Encounter page"],

@@ -29,6 +29,7 @@ L["Links"] = true
 L["Made by Phenom"] = true
 L["Many small quality-of-life improvements, each switchable on its own."] = true
 L["More addons by Phenom"] = true
+L["New *About* page: who made the addon, version, and links to Discord, CurseForge, Wago and GitHub, ready to copy."] = true
 L["Plan per boss which player sees which message when; the raid lead syncs the plan before the pull."] = true
 L["Questions, ideas or problems? Join Phenom's Discord:"] = true
 L["Report a bug"] = true
