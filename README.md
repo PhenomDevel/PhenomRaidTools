@@ -89,7 +89,7 @@ What changed: [CHANGELOG.md](https://github.com/PhenomDevel/PhenomRaidTools/blob
 
 ## Support
 
-- Questions: [Discord](https://discord.gg/GAYDjBF)
+- Questions: [Discord](https://discord.gg/esXpgyPy4y)
 - Bugs and ideas: [GitHub issues](https://github.com/PhenomDevel/PhenomRaidTools/issues)
 - If you like the addon, star it on GitHub or leave a tip on
   [Streamlabs](https://streamlabs.com/phenombutbetter/tip).
