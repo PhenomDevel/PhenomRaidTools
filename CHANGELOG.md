@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v3.3.1 (2026-11-22)
 
 - The Discord link on the *About* page points to Phenom's new Discord server.
 
